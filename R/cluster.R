@@ -1,0 +1,4 @@
+"cluster" <- function(x)
+ {
+	x
+ }
