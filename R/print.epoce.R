@@ -1,4 +1,4 @@
-
+##' @export
 print.epoce <- function(x, digits = 3, ...)
 {
         if(class(x)!="epoce"){

@@ -1,4 +1,20 @@
-
+#' Print a Short Summary of parameter estimates of an additive frailty model
+#' 
+#' Prints a short summary of the parameter estimates of an additive frailty
+#' model or more generally of an 'additivePenal' object
+#' 
+#' 
+#' @usage \method{print}{additivePenal}(x, digits = max(options()$digits - 4, 6),
+#' ...)
+#' @param x the result of a call to the additivePenal function
+#' @param digits number of digits to print
+#' @param \dots other unused arguments
+#' @return
+#' 
+#' Print the parameter estimates of the survival or hazard functions.
+#' @seealso \code{\link{additivePenal}}
+#' @keywords methods
+##' @export
 "print.additivePenal" <- function (x, digits = max(options()$digits - 4, 6), ...) 
 {
 	if (!is.null(cl <- x$call)){

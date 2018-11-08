@@ -1,3 +1,43 @@
+#' summary of parameter estimates of a joint nested frailty model
+#' 
+#' This function returns hazard rations (HR) and its confidence intervals.
+#' 
+#' 
+#' @aliases summary.jointNestedPenal print.summary.jointNestedPenal
+#' @usage \method{summary}{jointNestedPenal}(object, level = 0.95, len = 6, d =
+#' 2, lab="hr", ...)
+#' @param object output from a call to frailtyPenal for joint nested models
+#' @param level significance level of confidence interval. Default is 95\%.
+#' @param d the desired number of digits after the decimal point. Default of 6
+#' digits is used.
+#' @param len the total field width. Default is 6.
+#' @param lab label of printed results.
+#' @param \dots other unused arguments.
+#' @return Prints HR and its confidence intervals for each covariate.
+#' Confidence level is allowed (level argument).
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords methods
+##' @export
+#' @examples
+#' 
+#' 
+#' \dontrun{
+#' 
+#' #-- here is generated cluster (30 clusters)
+#' readmissionNested <- transform(readmission,group=id%%30+1)
+#' 
+#' # Baseline hazard function approximated with splines with calendar-timescale
+#' 
+#' model.spli.AG <- frailtyPenal(formula = Surv(t.start, t.stop, event)
+#'  ~ subcluster(id) + cluster(group) + dukes + terminal(death), 
+#'  formula.terminalEvent = ~dukes, data = readmissionNested, 
+#'  recurrentAG = TRUE, n.knots = 8, kappa = c(9.55e+9, 1.41e+12),
+#'  initialize = TRUE)
+#' 
+#' summary(model.spli.AG)
+#' 
+#' }
+#' 
  "summary.jointNestedPenal"<-
  function(object,level=.95, len=6, d=2, lab="hr", ...)
     {

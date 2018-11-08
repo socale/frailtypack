@@ -1,3 +1,4 @@
+##' @export
 print.predJointNested <- function(x, digits = 3, ...) 
 {
 	if(class(x)!="predJointNested") stop("The object x must be a class predJoint.")

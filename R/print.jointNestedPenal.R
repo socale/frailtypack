@@ -1,4 +1,22 @@
- 
+#' Print a Short Summary of parameter estimates of a joint nested frailty model
+#' 
+#' Prints a short summary of parameter estimates of a joint nested frailty
+#' model, or more generally an object of class 'jointNestedPenal' for joint
+#' nested frailty models.
+#' 
+#' 
+#' @usage \method{print}{jointNestedPenal}(x, digits = max(options()$digits - 4,
+#' 6), ...)
+#' @param x the result of a call to the jointNestedPenal function
+#' @param digits number of digits to print
+#' @param \dots other unused arguments
+#' @return
+#' 
+#' Print, separately for each type of event (recurrent and terminal), the
+#' parameter estimates of the survival or hazard functions.
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords methods
+##' @export
 "print.jointNestedPenal" <- function (x, digits = max(options()$digits - 4, 6), ...){  
 	if (!is.null(cl <- x$call)){
 		cat("Call:\n")

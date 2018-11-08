@@ -1,4 +1,24 @@
-
+#' Print a Summary of parameter estimates of a joint model for longitudinal
+#' data, recurrent events and a terminal event
+#' 
+#' Prints a short summary of parameter estimates of a joint model for
+#' longitudinal data, recurrent events and a terminal event, an object
+#' inheriting from class 'trivPenal'.
+#' 
+#' 
+#' @usage
+#' 
+#' \method{print}{trivPenal}(x, digits = max(options()$digits - 4, 6), ...)
+#' @param x an object inheriting from \code{trivPenal} class
+#' @param digits number of digits to print
+#' @param \dots other unused arguments
+#' @return
+#' 
+#' Print, separately for each part of the model (longitudinal, recurrent and
+#' terminal) the parameter estimates and details on the estimation.
+#' @seealso \code{\link{trivPenal}}
+#' @keywords methods
+##' @export
 "print.trivPenal" <- function (x, digits = max(options()$digits - 4, 6), ...)
 {
 

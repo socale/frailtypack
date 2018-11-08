@@ -1,4 +1,4 @@
-
+##' @export
 print.predLongi <- function(x, digits = 3, ...)
 {
         if(class(x)!="predLongi"){

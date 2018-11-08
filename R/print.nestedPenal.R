@@ -1,4 +1,28 @@
-
+#' Print a Short Summary of parameter estimates of a nested frailty model
+#' 
+#' Prints a short summary of parameter estimates of a nested frailty model
+#' 
+#' 
+#' @usage \method{print}{nestedPenal}(x, digits = max(options()$digits - 4, 6),
+#' ...)
+#' @param x the result of a call to the frailtyPenal function for nested
+#' frailty models
+#' @param digits number of digits to print
+#' @param \dots other unused arguments
+#' @return \item{n}{the number of observations used in the fit.}
+#' \item{n.groups}{the maximum number of groups used in the fit}
+#' \item{n.events}{the number of events observed in the fit}
+#' \item{eta}{variance of the subcluster effect \eqn{(Var(w_{ij}))}}
+#' \item{theta}{variance of the cluster effect \eqn{(Var(v_{i}))}}
+#' \item{coef}{the coefficients of the linear predictor, which multiply the
+#' columns of the model matrix.} \item{SE(H)}{the standard error of the
+#' estimates deduced from the variance matrix of theta and of the
+#' coefficients.} \item{SE(HIH)}{the standard error of the estimates deduced
+#' from the robust estimation of the variance matrix of theta and of the
+#' coefficients.} \item{p}{p-value}
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords methods
+##' @export
 "print.nestedPenal" <- function (x, digits = max(options()$digits - 4, 6), ...) 
 {
 	if (!is.null(cl <- x$call)) {

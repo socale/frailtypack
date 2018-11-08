@@ -1,4 +1,18 @@
-
+#' Print a short summary of results of Cmeasure function.
+#' 
+#' Print a short summary of results of the concordance measure estimated by the
+#' Cmeasure function.
+#' 
+#' 
+#' @usage \method{print}{Cmeasures}(x, ...)
+#' @param x a Cmeasures object.
+#' @param \dots Other unused arguments
+#' @return
+#' 
+#' Print concordance measures estimated.
+#' @seealso \code{\link{Cmeasures}}
+#' @keywords methods
+##' @export
 print.Cmeasures <- function(x, ...) 
 {
 	cl <- x$call

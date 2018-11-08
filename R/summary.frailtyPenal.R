@@ -1,3 +1,53 @@
+#' summary of parameter estimates of a shared frailty model
+#' 
+#' This function returns hazard rations (HR) and its confidence intervals
+#' 
+#' 
+#' @aliases summary.frailtyPenal print.summary.frailtyPenal
+#' @usage \method{summary}{frailtyPenal}(object, level = 0.95, len = 6, d = 2,
+#' lab="hr", ...)
+#' @param object output from a call to frailtyPenal.
+#' @param level significance level of confidence interval. Default is 95\%.
+#' @param d the desired number of digits after the decimal point. Default of 6
+#' digits is used.
+#' @param len the total field width. Default is 6.
+#' @param lab label of printed results.
+#' @param \dots other unused arguments.
+#' @return Prints HR and its confidence intervals. Confidence level is allowed
+#' (level argument).
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords methods
+##' @export
+#' @examples
+#' 
+#' 
+#' \dontrun{
+#' 
+#' data(kidney)
+#' 
+#' ##-- Shared frailty model --##
+#' 
+#' modSha <- frailtyPenal(Surv(time,status)~age+sex+cluster(id),
+#' n.knots=8,kappa=10000,data=kidney,hazard="Splines")
+#' 
+#' ##-- Cox proportional hazard model --##
+#' 
+#' modCox <- frailtyPenal(Surv(time,status)~age+sex,
+#' n.knots=8,kappa=10000,data=kidney,hazard="Splines")
+#' 
+#' #-- confidence interval at 95% level (default)
+#' 
+#' summary(modSha)
+#' summary(modCox)
+#' 
+#' #-- confidence interval at 99% level
+#' 
+#' summary(modSha,level=0.99)
+#' summary(modCox,level=0.99)
+#' 
+#' }
+#' 
+#' 
 "summary.frailtyPenal" <- function(object,level=.95, len=6, d=2, lab="hr", ...)
 {
 

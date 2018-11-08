@@ -1,3 +1,65 @@
+#' Plot Method for a Shared frailty model.
+#' 
+#' Plots estimated baseline survival and hazard functions from an object of
+#' class 'frailtyPenal'. Confidence bands are allowed.
+#' 
+#' 
+#' @aliases plot.frailtyPenal lines.frailtyPenal
+#' @usage
+#' 
+#' \method{plot}{frailtyPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
+#' pos.legend = "topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab
+#' = "Hazard function", ...)
+#' @param x A shared frailty model, i.e. a \code{frailtyPenal} class object
+#' (output from calling \code{frailtyPenal} function).
+#' @param type.plot a character string specifying the type of curve. Possible
+#' value are "Hazard", or "Survival". The default is "Hazard". Only the first
+#' letters are required, e.g "Haz", "Su"
+#' @param conf.bands Logical value. Determines whether confidence bands will be
+#' plotted.  The default is to do so.
+#' @param pos.legend The location of the legend can be specified by setting
+#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
+#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+#' '"center"'. The default is '"topright"'
+#' @param cex.legend character expansion factor *relative* to current
+#' 'par("cex")'. Default is 0.7
+#' @param main title of plot
+#' @param color color of the curve (integer)
+#' @param Xlab Label of x-axis. Default is '"Time"'
+#' @param Ylab Label of y-axis. Default is '"Hazard function"'
+#' @param ... other unused arguments
+#' @return Print a plot of a shared frailty model.
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords file
+##' @export
+#' @examples
+#' 
+#' 
+#' \dontrun{
+#' 
+#' data(readmission)
+#' 
+#' ###--- Shared frailty model ---###
+#' 
+#' modSha <- frailtyPenal(Surv(time,event)~as.factor(dukes)+cluster(id),
+#' n.knots=10,kappa=10000,data=readmission,hazard="Splines")
+#' 
+#' plot(modSha,type="surv",conf=FALSE)
+#' 
+#' ###--- Cox proportional hazard model ---###
+#' 
+#' modCox <- frailtyPenal(Surv(time,event)~as.factor(dukes),n.knots=10,
+#' kappa=10000,data=readmission,hazard="Splines")
+#' 
+#' plot(modCox)
+#' 
+#' #-- no confidence bands
+#' plot(modSha,conf.bands=FALSE)
+#' plot(modCox,conf.bands=FALSE)
+#' 
+#' }
+#' 
+#' 
 "plot.frailtyPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab = "Hazard function", ...)
 {
 	plot.type <- charmatch(type.plot, c("Hazard", "Survival"),nomatch = 0)

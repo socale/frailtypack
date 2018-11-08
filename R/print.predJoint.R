@@ -1,4 +1,4 @@
-
+##' @export
 print.predJoint <- function(x, digits = 3, ...) 
 {
 # 	cl <- x$call

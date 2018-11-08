@@ -1,3 +1,65 @@
+#' Plot Method for a Non-Linear Trivariate Joint Model for Recurrent Events and
+#' a Terminal Event with a Biomarker Described with an ODE.
+#' 
+#' Plots estimated baseline survival and hazard functions of a joint model
+#' (output from an object of class 'trivPenalNL') for each type of event
+#' (terminal or recurrent). Confidence bands are allowed.
+#' 
+#' 
+#' @aliases plot.trivPenalNL lines.trivPenalNL
+#' @usage
+#' 
+#' \method{plot}{trivPenalNL}(x, event = "Both", type.plot = "Hazard", conf.bands
+#' = FALSE, pos.legend="topright", cex.legend = 0.7, ylim, main, color = 2,
+#' Xlab = "Time", Ylab = "Hazard function", ...)
+#' @param x A joint model, an object of class \code{trivPenalNL}.
+#' @param event a character string specifying the type of curve. Possible value
+#' are "terminal", "recurrent", or "both". The default is "both".
+#' @param type.plot a character string specifying the type of curve. Possible
+#' value are "Hazard", or "survival". The default is "hazard". Only the first
+#' words are required, e.g "haz", "su"
+#' @param conf.bands logical value. Determines whether confidence bands will be
+#' plotted. The default is to do so.
+#' @param pos.legend The location of the legend can be specified by setting
+#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
+#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+#' '"center"'. The default is '"topright"'
+#' @param cex.legend character expansion factor *relative* to current
+#' 'par("cex")'. Default is 0.7
+#' @param ylim y-axis limits
+#' @param main plot title
+#' @param color curve color (integer)
+#' @param Xlab Label of x-axis. Default is '"Time"'
+#' @param Ylab Label of y-axis. Default is '"Hazard function"'
+#' @param ... other unused arguments
+#' @return Print a plot of the baseline survival or hazard functions for each
+#' type of event or both with the confidence bands or not (conf.bands argument)
+#' @seealso \code{\link{trivPenalNL}}
+#' @keywords methods
+##' @export
+#' @examples
+#' 
+#' \dontrun{
+#' ###--- Trivariate joint model for longitudinal data, ---###
+#' ###--- recurrent events and a terminal event ---###
+#' 
+#' data(colorectal)
+#' data(colorectalLongi)
+#' 
+#' # Weibull baseline hazard function
+#' # Random effects as the link function, Gap timescale
+#' # (computation takes around 30 minutes)
+#' model.weib.RE.gap <-trivPenal(Surv(gap.time, new.lesions) ~ cluster(id)
+#' + age + treatment + who.PS + prev.resection + terminal(state),
+#' formula.terminalEvent =~ age + treatment + who.PS + prev.resection, 
+#' tumor.size ~ year * treatment + age + who.PS, data = colorectal,
+#' data.Longi = colorectalLongi, random = c("1", "year"), id = "id", 
+#' link = "Random-effects", left.censoring = -3.33, recurrentAG = FALSE,
+#' hazard = "Weibull", method.GH="Pseudo-adaptive", n.nodes = 7)
+#' 
+#' plot(model.weib.RE.gap)
+#' plot(model.weib.RE.gap, type = "survival")
+#' }
 "plot.trivPenalNL" <-
   function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim, main, color=2,  Xlab = "Time", Ylab = "Hazard function", ...)
   {

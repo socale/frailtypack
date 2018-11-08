@@ -1,4 +1,4 @@
-
+##' @export
 "lines.frailtyPenal"<-
 function (x, type.plot="hazard", conf.bands=TRUE, ...) 
 {

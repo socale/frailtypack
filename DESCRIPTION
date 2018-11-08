@@ -29,3 +29,4 @@ Repository: CRAN
 Date/Publication: 2018-09-25 10:50:03 UTC
 Packaged: 2018-09-21 08:16:26 UTC; agnie
 NeedsCompilation: yes
+RoxygenNote: 6.0.1

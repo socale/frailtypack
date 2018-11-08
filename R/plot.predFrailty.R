@@ -1,4 +1,26 @@
-
+#' Plot predictions using a Cox or a shared frailty model.
+#' 
+#' Plots predicted probabilities of event. Confidence intervals are allowed.
+#' 
+#' 
+#' @usage \method{plot}{predFrailty}(x, conf.bands=FALSE, pos.legend="topright",
+#' cex.legend=0.7, ylim=c(0,1), Xlab = "Time t", Ylab, ...)
+#' @param x An object from the 'prediction' function, i.e. a \code{predFrailty}
+#' class object.
+#' @param conf.bands Logical value. Determines whether confidence intervals
+#' will be plotted. The default is FALSE.
+#' @param pos.legend The location of the legend can be specified by setting
+#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
+#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+#' '"center"'. The default is '"topright"'.
+#' @param cex.legend size of the legend. Default is 0.7.
+#' @param ylim range of y-axis. Default is from 0 to 1.
+#' @param Xlab Label of x-axis. Default is '"Time t"'
+#' @param Ylab Label of y-axis.
+#' @param \dots Other unused arguments.
+#' @return Print one plot with as many curves as the number of profiles.
+#' @keywords file
+##' @export
 "plot.predFrailty" <- function (x, conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim=c(0,1), Xlab = "Time t", Ylab, ...)
 {
 	if ((conf.bands) & (!x$icproba)) stop("Confidence intervals were not calculated. Use the MC.sample argument in the 'prediction' function")

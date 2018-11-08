@@ -1,4 +1,4 @@
-
+##' @export
 print.Diffepoce <- function(x, digits = 3, ...) 
 {
 	if(class(x)!="Diffepoce"){

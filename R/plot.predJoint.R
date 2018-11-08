@@ -1,4 +1,30 @@
-
+#' Plot predictions using a joint frailty model.
+#' 
+#' Plots predicted probabilities of terminal event. Confidence intervals are
+#' allowed.
+#' 
+#' 
+#' @usage \method{plot}{predJoint}(x, conf.bands=FALSE,
+#' relapses=TRUE,pos.legend="topright", cex.legend=0.7, ylim=c(0,1), Xlab =
+#' "Time t", Ylab = "Prediction probability of event", ...)
+#' @param x An object from the 'prediction' function, more generaly a
+#' \code{predJoint} class object.
+#' @param conf.bands Logical value. Determines whether confidence intervals
+#' will be plotted. The default is FALSE.
+#' @param relapses Logical value. Determines whether observed recurrent events
+#' will be plotted. The default is TRUE.
+#' @param pos.legend The location of the legend can be specified by setting
+#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
+#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+#' '"center"'. The default is '"topright"'
+#' @param cex.legend size of the legend. Default is 0.7
+#' @param ylim range of y-axis. Default is from 0 to 1
+#' @param Xlab Label of x-axis. Default is '"Time t"'
+#' @param Ylab Label of y-axis. Default is '"Prediction probability of event"'
+#' @param \dots Other unused arguments
+#' @return Print as many plots as the number of subjects.
+#' @keywords file
+##' @export
 "plot.predJoint" <- function (x, conf.bands=FALSE, relapses=TRUE, pos.legend="topright", cex.legend=0.7, ylim=c(0,1), Xlab = "Time t", Ylab = "Prediction probability of event", ...){	
 	event.type <- x$event
 	

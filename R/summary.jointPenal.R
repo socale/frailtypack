@@ -1,3 +1,48 @@
+#' summary of parameter estimates of a joint frailty model
+#' 
+#' This function returns hazard rations (HR) and its confidence intervals.
+#' 
+#' 
+#' @aliases summary.jointPenal print.summary.jointPenal
+#' @usage \method{summary}{jointPenal}(object, level = 0.95, len = 6, d = 2,
+#' lab="hr", ...)
+#' @param object output from a call to frailtyPenal for joint models
+#' @param level significance level of confidence interval. Default is 95\%.
+#' @param d the desired number of digits after the decimal point. Default of 6
+#' digits is used.
+#' @param len the total field width. Default is 6.
+#' @param lab label of printed results.
+#' @param \dots other unused arguments.
+#' @return Prints HR and its confidence intervals for each covariate.
+#' Confidence level is allowed (level argument).
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords methods
+##' @export
+#' @examples
+#' 
+#' 
+#' \dontrun{
+#' 
+#' data(readmission)
+#' 
+#' #-- gap-time
+#' modJoint.gap <- frailtyPenal(Surv(time,event)~cluster(id)+sex+dukes+
+#' charlson+terminal(death),formula.terminalEvent=~sex+dukes+charlson,
+#' data=readmission,n.knots=14,kappa=c(9.55e+9,1.41e+12))
+#' 
+#' #-- calendar time
+#' modJoint.calendar <- frailtyPenal(Surv(t.start,t.stop,event)~cluster(id)+
+#' sex+dukes+charlson+terminal(death),formula.terminalEvent=~sex+dukes+charlson,
+#' data=readmission,n.knots=10,kappa=c(9.55e+9,1.41e+12),recurrentAG=TRUE)
+#' 
+#' #-- It takes around 1 minute to converge
+#' 
+#' summary(modJoint.gap)
+#' summary(modJoint.calendar)
+#' 
+#' }
+#' 
+#' 
 "summary.jointPenal"<-
  function(object,level=.95, len=6, d=2, lab="hr", ...)
     {

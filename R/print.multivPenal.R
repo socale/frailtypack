@@ -1,4 +1,21 @@
-
+#' Print a Short Summary of parameter estimates of a multivariate frailty model
+#' 
+#' Prints a short summary of parameter estimates of a multivariate frailty
+#' model, or more generally an object of class 'multivPenal'.
+#' 
+#' 
+#' @usage \method{print}{multivPenal}(x, digits = max(options()$digits - 4, 6),
+#' ...)
+#' @param x the result of a call to the multivPenal function
+#' @param digits number of digits to print
+#' @param \dots other unused arguments
+#' @return
+#' 
+#' Print, separately for each type of event (recurrent1, recurrent2 and
+#' terminal), the parameter estimates of the survival or hazard functions.
+#' @seealso \code{\link{multivPenal}}
+#' @keywords methods multiv
+##' @export
 "print.multivPenal" <- function (x, digits = max(options()$digits - 4, 6), ...) 
 {
 	if (!is.null(cl <- x$call)){

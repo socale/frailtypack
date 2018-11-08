@@ -1,3 +1,56 @@
+#' Short summary of fixed covariates estimates of a non-linear trivariate joint
+#' model for longitudinal data, recurrent events and a terminal event
+#' 
+#' This function returns coefficients estimates and their standard error with
+#' p-values of the Wald test for the biomarker growth (KG) and decline (KD) and
+#' hazard ratios and their confidence intervals for the terminal event.
+#' 
+#' 
+#' @aliases summary.trivPenalNL print.summary.trivPenalNL
+#' @usage \method{summary}{trivPenalNL}(object, level = 0.95, len = 6, d = 2,
+#' lab=c("coef","hr"), ...)
+#' @param object an object inheriting from \code{trivPenal} class
+#' @param level significance level of confidence interval. Default is 95\%.
+#' @param d the desired number of digits after the decimal point. Default of 6
+#' digits is used.
+#' @param len the total field width for the terminal part. Default is 6.
+#' @param lab labels of printed results for the longitudinal outcome and the
+#' terminal event respectively.
+#' @param \dots other unused arguments.
+#' @return For the longitudinal outcome it prints the estimates of coefficients
+#' of the fixed covariates with their standard error and p-values of the Wald
+#' test (separetely for the biomarker growth and decline).  For the terminal
+#' event it prints HR and its confidence intervals for each covariate.
+#' Confidence level is allowed (level argument).
+#' @seealso \code{\link{trivPenalNL}}
+#' @keywords methods
+##' @export
+#' @examples
+#' 
+#' 
+#' \dontrun{
+#' 
+#' ###--- Trivariate joint model for longitudinal data, ---###
+#' ###--- recurrent events and a terminal event ---###
+#' 
+#' data(colorectal)
+#' data(colorectalLongi)
+#' 
+#' # Weibull baseline hazard function
+#' # Random effects as the link function, Gap timescale
+#' # (computation takes around 30 minutes)
+#' model.weib.RE.gap <-trivPenal(Surv(gap.time, new.lesions) ~ cluster(id)
+#' + age + treatment + who.PS + prev.resection + terminal(state),
+#' formula.terminalEvent =~ age + treatment + who.PS + prev.resection, 
+#' tumor.size ~ year * treatment + age + who.PS, data = colorectal,
+#' data.Longi = colorectalLongi, random = c("1", "year"), id = "id", 
+#' link = "Random-effects", left.censoring = -3.33, recurrentAG = FALSE,
+#' hazard = "Weibull", method.GH="Pseudo-adaptive", n.nodes = 7)
+#' 
+#' summary(model.weib.RE.gap)
+#' }
+#' 
+#' 
 "summary.trivPenalNL"<-
   function(object,level=.95, len=6, d=2, lab=c("coef","hr"), ...)
   {

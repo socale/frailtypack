@@ -1,3 +1,55 @@
+#' Plot Method for a Nested frailty model.
+#' 
+#' Plots estimated baseline survival and hazard functions (output from an
+#' object of class 'NestedPenal' for nested frailty models). Confidence bands
+#' are allowed.
+#' 
+#' 
+#' @aliases plot.nestedPenal lines.nestedPenal
+#' @usage
+#' 
+#' \method{plot}{nestedPenal}(x, type.plot="Hazard", conf.bands=TRUE,
+#' pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab =
+#' "Hazard function", ...)
+#' @param x A nested model, i.e. an object of class \code{frailtyPenal} for
+#' Nested frailty models (output from calling \code{frailtyPenal} function).
+#' @param type.plot a character string specifying the type of curve. Possible
+#' value are "Hazard", or "Survival". The default is "Hazard". Only the first
+#' words are required, e.g "Haz", "Su"
+#' @param conf.bands logical value. Determines whether confidence bands will be
+#' plotted. The default is to do so.
+#' @param pos.legend The location of the legend can be specified by setting
+#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
+#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+#' '"center"'. The default is '"topright"'
+#' @param cex.legend character expansion factor *relative* to current
+#' 'par("cex")'. Default is 0.7
+#' @param main plot title
+#' @param color curve color (integer)
+#' @param Xlab Label of x-axis. Default is '"Time"'
+#' @param Ylab Label of y-axis. Default is '"Hazard function"'
+#' @param \dots Other graphical parameters like those in
+#' \code{\link{plot.frailtyPenal}}
+#' @return Print a plot of the baseline survival or hazard functions with the
+#' confidence bands or not (conf.bands argument)
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords methods
+##' @export
+#' @examples
+#' 
+#' 
+#' \dontrun{
+#' 
+#' data(dataNested)
+#' modNested <- frailtyPenal(Surv(t1,t2,event)~cluster(group)+
+#' subcluster(subgroup)+cov1+cov2,data=dataNested,n.knots=8,
+#' kappa=50000,hazard="Splines")
+#' 
+#' plot(modNested,conf.bands=FALSE)
+#' 
+#' }
+#' 
+#' 
 "plot.nestedPenal" <- "plot.additivePenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab = "Hazard function", ...)
 {
   

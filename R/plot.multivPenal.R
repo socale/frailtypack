@@ -1,3 +1,48 @@
+#' Plot Method for a multivariate frailty model.
+#' 
+#' Plots of estimated baseline survival and hazard functions of a multivariate
+#' frailty model (output from an object of class 'multivPenal' for multivariate
+#' frailty models ) for each type of event (recurrent, terminal and second
+#' recurrent). Confidence intervals are allowed.
+#' 
+#' 
+#' @usage \method{plot}{multivPenal}(x, event = "Both", type.plot = "Hazard",
+#' conf.bands = FALSE, pos.legend = "topright", cex.legend = 0.7, ylim, main,
+#' color1="red", color2="blue", colorEnd="green", Xlab = "Time", Ylab = "Hazard
+#' function", ...)
+#' @param x A joint multivariate model, i.e. an object of class
+#' \code{multivPenal} (output from calling \code{multivPenal} function).
+#' @param event a character string specifying the type of outcome. Possible
+#' value are "Terminal", "Recurrent", "Recurrent2", or "Both". The default is
+#' "Both".
+#' @param type.plot a character string specifying the type of curve. Possible
+#' value are "Hazard", or "Survival". The default is "Hazard". Only the first
+#' words are required, e.g "Haz", "Su"
+#' @param conf.bands logical value. Determines whether confidence intervals
+#' will be plotted. The default is to do so.
+#' @param pos.legend The location of the legend can be specified by setting
+#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
+#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+#' '"center"'. The default is '"topright"'
+#' @param cex.legend character expansion factor *relative* to current
+#' 'par("cex")'. Default is 0.7
+#' @param ylim y-axis limits
+#' @param main plot title
+#' @param color1 curve color for recurrent event of type 1 (integer or color
+#' name in quotation marks)
+#' @param color2 curve color for recurrent event of type 2 (integer or color
+#' name in quotation marks)
+#' @param colorEnd curve color for terminal event (integer or color name in
+#' quotation marks)
+#' @param Xlab Label of x-axis. Default is '"Time"'
+#' @param Ylab Label of y-axis. Default is '"Hazard function"'
+#' @param \dots Other graphical parameters
+#' @return Print a plot of the baseline survival or hazard functions for each
+#' type of event or both with the confidence intervals or not (conf.bands
+#' argument)
+#' @seealso \code{\link{multivPenal}}
+##' @export
+#' @keywords methods
 "plot.multivPenal" <-
 function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim, main, color1="red", color2="blue", colorEnd="green", Xlab = "Time", Ylab = "Hazard function",...) 
 {

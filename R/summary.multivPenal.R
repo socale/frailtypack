@@ -1,3 +1,23 @@
+#' summary of parameter estimates of a multivariate frailty model.
+#' 
+#' This function returns hazard ratio (HR) and its confidence intervals.
+#' 
+#' 
+#' @usage \method{summary}{multivPenal}(object, level = 0.95, len = 6, d = 2, lab
+#' = "hr", ...)
+#' @param object output from a call to multivPenal for joint multivariate
+#' models
+#' @param level significance level of confidence interval. Default is 95\%.
+#' @param d the desired number of digits after the decimal point. Default of 6
+#' digits is used.
+#' @param len the total field width. Default is 6.
+#' @param lab label of printed results.
+#' @param \dots other unused arguments.
+#' @return Prints HR and its confidence intervals for each covariate.
+#' Confidence level is allowed (level argument)
+#' @seealso \code{\link{multivPenal}}
+#' @keywords methods multiv
+##' @export
 "summary.multivPenal"<-
  function(object,level=.95, len=6, d=2, lab="hr", ...)
     {

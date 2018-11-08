@@ -40,5 +40,5 @@ R_init_frailtypack(DllInfo *dll)
 {
     R_registerRoutines(dll, NULL, NULL, FortEntries, NULL);
     R_useDynamicSymbols(dll, FALSE);
-	R_forceSymbols(dll, TRUE);
+	  R_forceSymbols(dll, TRUE);
 }

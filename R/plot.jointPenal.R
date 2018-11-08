@@ -1,3 +1,69 @@
+#' Plot Method for a Joint frailty model.
+#' 
+#' Plots estimated baseline survival and hazard functions of a joint frailty
+#' model (output from an object of class 'JointPenal' for joint frailty models
+#' ) for each type of event (terminal or recurrent). Confidence bands are
+#' allowed.
+#' 
+#' 
+#' @aliases plot.jointPenal lines.jointPenal
+#' @usage
+#' 
+#' \method{plot}{jointPenal}(x, event = "Both", type.plot = "Hazard", conf.bands
+#' = FALSE, pos.legend="topright", cex.legend = 0.7, ylim, main, color = 2,
+#' Xlab = "Time", Ylab = "Hazard function", ...)
+#' @param x A joint model, i.e. an object of class \code{frailtyPenal} for
+#' Joint frailty model (output from calling \code{frailtyPenal} function).
+#' @param event a character string specifying the type of curve. Possible value
+#' are "Terminal", "Recurrent", or "Both". The default is "Both".
+#' @param type.plot a character string specifying the type of curve. Possible
+#' value are "Hazard", or "Survival". The default is "Hazard". Only the first
+#' letters are required, e.g "Haz", "Su"
+#' @param conf.bands logical value. Determines whether confidence bands will be
+#' plotted. The default is to do so.
+#' @param pos.legend The location of the legend can be specified by setting
+#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
+#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+#' '"center"'. The default is '"topright"'
+#' @param cex.legend character expansion factor *relative* to current
+#' 'par("cex")'. Default is 0.7
+#' @param ylim y-axis limits
+#' @param main plot title
+#' @param color curve color (integer)
+#' @param Xlab Label of x-axis. Default is '"Time"'
+#' @param Ylab Label of y-axis. Default is '"Hazard function"'
+#' @param ... other unused arguments
+#' @return Print a plot of the baseline survival or hazard functions for each
+#' type of event or both with the confidence bands or not (conf.bands argument)
+#' @seealso \code{\link{frailtyPenal}}
+#' @keywords methods
+##' @export
+#' @examples
+#' 
+#' 
+#' \dontrun{
+#' 
+#' data(readmission)
+#' 
+#' #-- Gap-time
+#' modJoint.gap <- frailtyPenal(Surv(time,event)~cluster(id)+sex+dukes+
+#' charlson+terminal(death),formula.terminalEvent=~sex+dukes+charlson,
+#' data=readmission,n.knots=14,kappa=c(100,100))
+#' 
+#' #-- It takes around 1 minute to converge --#
+#' 
+#' plot(modJoint.gap,type.plot="Haz",event="recurrent",conf.bands=TRUE)
+#' plot(modJoint.gap,type.plot="Haz",event="terminal",conf.bands=TRUE)
+#' plot(modJoint.gap,type.plot="Haz",event="both",conf.bands=TRUE)
+#' 
+#' plot(modJoint.gap,type.plot="Su",event="recurrent",conf.bands=TRUE)
+#' plot(modJoint.gap,type.plot="Su",event="terminal",conf.bands=TRUE)
+#' plot(modJoint.gap,type.plot="Su",event="both",conf.bands=TRUE)
+#' 
+#' 
+#' }
+#' 
+#' 
 "plot.jointPenal" <-
 function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim, main, color=2, Xlab = "Time", Ylab = "Hazard function", ...)
 {

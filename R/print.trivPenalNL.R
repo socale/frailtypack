@@ -1,4 +1,25 @@
-
+#' Print a Summary of parameter estimates of a non-linear trivariate joint
+#' model for longitudinal data, recurrent events and a terminal event
+#' 
+#' Prints a short summary of parameter estimates of a non-linear trivariate
+#' joint model for longitudinal data, recurrent events and a terminal event, an
+#' object inheriting from class 'trivPenalNL'.
+#' 
+#' 
+#' @usage
+#' 
+#' \method{print}{trivPenalNL}(x, digits = max(options()$digits - 4, 6), ...)
+#' @param x an object inheriting from \code{trivPenaNLl} class
+#' @param digits number of digits to print
+#' @param \dots other unused arguments
+#' @return
+#' 
+#' Print, separately for each part of the model (biomarker growth, biomarker
+#' decline, recurrent events and terminal event) the parameter estimates and
+#' details on the estimation.
+#' @seealso \code{\link{trivPenalNL}}
+#' @keywords methods
+##' @export
 "print.trivPenalNL" <- function (x, digits = max(options()$digits - 4, 6), ...)
 {
 
