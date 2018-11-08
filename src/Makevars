@@ -1,0 +1,90 @@
+# -*- Makefile -*-
+
+# important command about parallel make
+$(SHLIB): $(OBJECTS)
+
+# Setup dependencies for parallel make
+prediction.o: Aparameters.o
+predictionfam.o: Aparameters.o
+prediction_log.o: Aparameters.o
+prediction_sha_logn.o: aaOptim.o aaOptimres.o Aparameters.o
+prediction_Recurr_Sha.o: aaOptim.o aaOptimres.o Aparameters.o
+prediction_biv.o: aaOptim.o aaOptimres.o Aparameters.o
+prediction_tri.o: aaOptim.o aaOptimres.o Aparameters.o
+prediction_tri_nl.o: aaOptim.o aaOptimres.o Aparameters.o
+aamarq98o.o: aaOptim.o aaOptimres.o Aparameters.o
+aaOptim.o: Aparameters.o 
+afuncpasres.o: aaOptim.o aaOptimres.o Aparameters.o
+aresidusMartingale.o: aaOptim.o aaOptimres.o Aparameters.o
+aaUseFunction.o: aaOptim.o aaOptimres.o Aparameters.o
+aaUseFunctionG.o: aaOptim.o aaOptimres.o Aparameters.o
+aaOptimres.o: Aparameters.o
+distance.o: aaOptim.o aaOptimres.o Aparameters.o
+
+additive.o : aaOptim.o aaOptimres.o
+funcpaasplines.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaacpm.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaaweib.o: aaOptim.o aaOptimres.o Aparameters.o
+
+frailtypack.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpassplines.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpascpm.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasweib.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpassplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpascpm_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpassplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpascpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpas_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+
+joint.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajgeneral.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajsplines.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajsplines_fam.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajcpm.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajweib.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajweib_fam.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajsplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajsplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajcpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaj_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGsplines.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGcpm.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGweib.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGsplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGcpm_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGsplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGcpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaGweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaG_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+
+nested.o: aaOptim.o aaOptimres.o
+funcpancpm.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpanweib.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpansplines.o: aaOptim.o aaOptimres.o Aparameters.o
+
+multiveJoint.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpaMultivSplines.o: aaOptim.o aaOptimres.o AparamMultive.o
+funcpaMultivCpm.o: aaOptim.o aaOptimres.o AparamMultive.o
+funcpaMultivWeib.o: aaOptim.o aaOptimres.o AparamMultive.o
+
+joint_longi.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajlongisplines.o: aaOptim.o aaOptimres.o Aparameters.o ahrmsym.o
+funcpajlongiweib.o: aaOptim.o aaOptimres.o Aparameters.o ahrmsym.o
+
+joint_longi_nl.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajlongisplines_nl.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajlongiweib_nl.o: aaOptim.o aaOptimres.o Aparameters.o
+
+longi_uni_nl.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpalongi_uni.o: aaOptim.o aaOptimres.o Aparameters.o
+
+epoce_log.o: aaOptim.o aaOptimres.o Aparameters.o
+epoce.o: aaOptim.o aaOptimres.o Aparameters.o
+epoce_long.o: aaOptim.o aaOptimres.o Aparameters.o
+epoce_long_nl.o: aaOptim.o aaOptimres.o Aparameters.o
+survival.o: aaOptim.o aaOptimres.o Aparameters.o
