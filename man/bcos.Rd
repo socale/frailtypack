@@ -1,0 +1,30 @@
+
+\name{bcos}
+\docType{data}
+\alias{bcos}
+
+\title{Breast Cosmesis Data}
+\usage{data(bcos)}
+
+\description{
+The often used data set for interval-censored data, described and given in full in Finkelstein and Wolfe (1985).
+It involves 94 breast cancer patients who were randomized to either radiation therapy with chemotherapy
+or radiation therapy alone. The outcome is time until the onset of breast retraction which is interval-censored between
+the last clinic visit before the event was observed and the first visit when the event was observed. Patients without breast retraction were right-censored.
+}
+
+\format{
+  A data frame with 94 observations and 3 variables:
+  \describe{
+    \item{left}{left end point of the breast retraction interval}
+    \item{right}{right end point of the breast retraction interval}
+    \item{treatment}{type of treatment received}
+  }
+}
+
+\source{
+ Finkelstein, D.M. and Wolfe, R.A. (1985). A semiparametric model for regression analysis of interval-censored failure time data.
+\emph{Biometrics} \bold{41}, 731-740.
+}
+
+\keyword{datasets}

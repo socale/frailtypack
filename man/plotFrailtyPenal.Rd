@@ -1,0 +1,76 @@
+
+\name{plot.frailtyPenal}
+\Rdversion{1.1}
+\alias{plot.frailtyPenal}
+\alias{lines.frailtyPenal}
+
+
+\title{Plot Method for a Shared frailty model.}
+
+\description{
+  Plots estimated baseline survival and hazard functions from an object of class 'frailtyPenal'. Confidence bands are allowed. 
+}
+
+\usage{
+
+\method{plot}{frailtyPenal}(x, type.plot = "Hazard", conf.bands=TRUE, pos.legend = "topright",
+	cex.legend=0.7, main, color=2, Xlab = "Time", 
+	Ylab = "Hazard function", ...)
+
+}
+
+\arguments{
+  \item{x}{ A shared frailty model, i.e. a \code{frailtyPenal} class object (output from calling \code{frailtyPenal}
+    function).}
+  \item{type.plot}{ a character string specifying the type of curve. Possible
+                   value are "Hazard", or "Survival". The default
+                   is "Hazard". Only the first letters are required, e.g "Haz", "Su"}
+  \item{conf.bands}{ Logical value. Determines whether confidence bands will be plotted.  The default is to do so.}
+ \item{pos.legend}{The location of the legend can be specified by setting this argument to a single keyword from the list '"bottomright"', '"bottom"', '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+     '"center"'. The default is '"topright"'}
+  \item{cex.legend}{character expansion factor *relative* to current
+          'par("cex")'. Default is 0.7}
+  \item{main}{title of plot}
+  \item{color}{color of the curve (integer)} 
+  \item{Xlab}{Label of x-axis. Default is '"Time"'}  
+  \item{Ylab}{Label of y-axis. Default is '"Hazard function"'}
+  \item{...}{other unused arguments}
+}
+
+\value{
+     Print a plot of a shared frailty model.
+}
+
+\seealso{
+ \code{\link{frailtyPenal}}
+}
+
+\examples{
+
+\dontrun{
+
+data(readmission)
+
+###--- Shared frailty model ---###
+
+modSha <- frailtyPenal(Surv(time,event)~as.factor(dukes)+cluster(id),
+n.knots=10,kappa=10000,data=readmission,hazard="Splines")
+
+plot(modSha,type="surv",conf=FALSE)
+
+###--- Cox proportional hazard model ---###
+
+modCox <- frailtyPenal(Surv(time,event)~as.factor(dukes),n.knots=10,
+kappa=10000,data=readmission,hazard="Splines")
+
+plot(modCox)
+
+#-- no confidence bands
+plot(modSha,conf.bands=FALSE)
+plot(modCox,conf.bands=FALSE)
+
+}
+
+}
+
+\keyword{ file }

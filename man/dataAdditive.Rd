@@ -1,0 +1,37 @@
+
+
+\name{dataAdditive}
+\docType{data}
+\alias{dataAdditive}
+
+\title{Simulated data as a gathering of clinical trials databases}
+\usage{data(dataAdditive)}
+
+\description{
+This contains simulated samples of 100 clusters with 100 subjects in each cluster, like a gathering of clinical trials databases. Two correlated centred gaussian random effects are generated with the same variance fixed at 0.3 and the covariance at -0.2. The regression coefficient \eqn{\beta} is fixed at -0.11. The percentage of right-censored data is around 30 percent which are generated from a uniform distribution on [1,150]. The baseline hazard function is considered as a simple Weibull.
+}
+
+\format{
+  This data frame contains the following columns:
+  \describe{
+    \item{group}{identification variable}
+    \item{t1}{start of interval (=0, because left-truncated data are not allowed)}
+    \item{t2}{end of interval (death or censoring time)}
+    \item{event}{censoring status (0:alive, 1:death, as acensoring indicator}
+    \item{var1}{dichotomous covariate (=0 or 1,as a treatment variable)}
+    \item{var2}{dichotomous covariate (=0 or 1,as a treatment variable)}
+  }
+
+}
+
+\source{
+
+V. Rondeau, S. Michiels, B.Liquet, and J.P. Pignon (2008). Investigating trial and treatment heterogeneity in an individual patient data meta-analysis of survival data by mean of the maximum penalized likelihood approach.
+\emph{Statistics in Medecine}, \bold{27}, 1894-1910.
+
+}
+
+
+
+\keyword{datasets}
+

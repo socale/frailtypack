@@ -1,0 +1,38 @@
+
+\name{colorectalLongi}
+\docType{data}
+\alias{colorectalLongi}
+
+\title{Follow-up of metastatic colorectal cancer patients : longitudinal measurements of tumor size}
+
+\usage{data(colorectalLongi)}
+
+\description{
+Randomly chosen 150 patients from the follow-up of the FFCD 2000-05 multicenter phase III clinical trial originally including 410 patients with metastatic colorectal cancer randomized into two therapeutic strategies: combination and sequential. The dataset contains measurements of tumor size (left-censored sums of the longest diameters of target lesions; transformed using Box-Cox) with baseline characteristics(treatment arm, age, WHO performance status and previous resection).
+}
+
+\format{
+  This data frame contains the following columns:
+   \describe{
+    \item{id}{identification of each subject. Repeated for each recurrence}
+     \item{year}{time of visit counted in years from baseline}
+    \item{tumor.size}{Individual longitudinal measurement of transformed (Box-Cox with parameter 0.3) sums of the longest diameters, left-censored due to  a detection limit (threshold \eqn{s=-3.33}). }
+    \item{treatment}{To which treatment arm a patient was allocated? 1: sequential (S); 2: combination (C)}
+    \item{age}{Age at baseline: 1: <50 years, 2: 50-69 years, 3: >69 years}
+    \item{who.PS}{WHO performance status at baseline: 1: status 0, 2: status 1, 3: status 2}
+    \item{prev.resection}{Previous resection of the primate tumor?  0: No, 1: Yes}
+   }}
+
+   \note{We thank the Federation Francophone de Cancerologie Digestive and Gustave Roussy for sharing the data of the
+FFCD 2000-05 trial supported by an unrestricted Grant from Sanofi.}
+
+  \references{Ducreux, M., Malka, D., Mendiboure, J., Etienne, P.-L., Texereau, P., Auby, D., Rougier,
+P., Gasmi, M., Castaing, M., Abbas, M., Michel, P., Gargot, D., Azzedine, A., Lombard-
+Bohas, C., Geoffroy, P., Denis, B., Pignon, J.-P., Bedenne, L., and Bouche, O. (2011).
+Sequential versus combination chemotherapy for the treatment of advanced colorectal
+cancer (FFCD 2000-05): an open-label, randomised, phase 3 trial.  \emph{The Lancet Oncology}
+\bold{12}, 1032-44.
+}
+
+\keyword{datasets}
+

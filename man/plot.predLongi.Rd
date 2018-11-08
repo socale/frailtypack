@@ -1,0 +1,32 @@
+
+\name{plot.predLongi}
+\alias{plot.predLongi}
+
+\title{Plot predictions using a joint model for longitudinal data and a terminal event or a trivariate joint model for longitudinal data, recurrent events and a terminal event.}
+
+\description{
+  Plots predicted probabilities of the event. Confidence intervals are allowed.
+}
+
+\usage{
+  \method{plot}{predLongi}(x, conf.bands=FALSE, pos.legend="topright", cex.legend=0.7,
+	ylim=c(0,1), Xlab = "Time t", Ylab, ...)
+}
+
+\arguments{
+  \item{x}{An object inheriting from \code{predLongi}.}
+  \item{conf.bands}{Logical value. Determines whether confidence intervals will be plotted. The default is FALSE.}
+  \item{pos.legend}{The location of the legend can be specified by setting this argument to a single keyword from the list
+                    '"bottomright"', '"bottom"', '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and '"center"'. The default is '"topright"'.}
+  \item{cex.legend}{size of the legend. Default is 0.7.}
+  \item{ylim}{range of y-axis. Default is from 0 to 1.} 
+  \item{Xlab}{Label of x-axis. Default is '"Time t"'}  
+  \item{Ylab}{Label of y-axis.}
+  \item{\dots}{Other unused arguments.}
+}
+
+\value{
+  Print one plot with as many curves as the number of profiles.
+}
+
+\keyword{file}

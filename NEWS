@@ -1,0 +1,342 @@
+Changes in Version 2.13.2 September 2018
+
+ o Bug fixed for predictions for prediction data with only one observation per individual
+
+
+Changes in Version 2.13.1 September 2018
+
+o  NEW: Weighted penalized maximum likelihood approach for joint frailty models for data from nested case-control studies
+
+o  Bug corrected in predictions with joint nested frailty models that do not include power parameters 
+
+
+Changes in Version 2.12.7 July 2018
+
+o  Now the p-values of the estimates can be directly extracted from the models
+
+o  Small bugs corrected in epoce, trivPenal, trivPenalNL, prediction and print.JointNestedPenal
+
+o Shared frailty model (Weibull baseline hazard function, calendar time-scale and log-normal frailty) now works
+
+
+Changes in Version 2.12.6 October 2017
+
+o For joint nested and nested models martingale residuals are calculated at the lower level of clustering (individual level)
+
+
+Changes in Version 2.12.3 July 2017 
+
+o Bug fixed in predictions for trivariate joint models.
+
+
+Changes in Version 2.12.2 June 2017
+
+o Bug fixed in predictions for joint nested frailty models.
+
+
+Changes in Version 2.12.0 June 2017
+
+ o New model added: trivariate joint model for a longitudinal biomarker, recurrent events and a terminal event using a mechanistic approach for the biomarker (with analytical solution)
+ 
+ o Extension for functions longiPenal and trivPenal: up to three random effects for the biomarker can be applied
+ 
+ o Bug fixed : Estimation error in joint, joint general, joint nested, trivPenal and longiPenal models when data are unordered.
+ 
+ o Bug fixed for predictions using joint nested models - application of Gamma function
+ 
+ 
+Changes in Version 2.11.1 March 2017
+
+ o Warnings about native subroutine registry fixed
+
+ 
+Changes in Version 2.11.0 March 2017
+
+ o NEW : Marginal prediction method in the Joint Nested Frailty model, only for terminal event.
+
+ 
+Changes in Version 2.10.6 March 2017
+
+ o Bug fixed in the conditional prediction for shared frailty model. 
+ 
+ o New warning for the prediction in joint general model.
+ 
+ 
+Changes in Version 2.10.5 February 2017
+
+ o Bug fixed : use of a subcluster/cluster covariate named with upper case in joint and joint nested models 
+ 
+ o Bug fixed : Joint nested model estimation 
+ 
+ o Bug fixed : Conditional prediction for recurrent events from a shared model.
+ 
+ o Bug fixed : examples of the documentation (plot of epoce, additive model, trivariate and joint nested model)
+
+ 
+Changes in Version 2.10.4 January 2017
+
+ o Changes in the joint nested frailty model : add calculation of the bayesian frailties estimates (for families and for individuals)
+
+ o Problem fixed : survival() function in frailtypack can now be computed with a gamma shared frailty model with a piecewise baseline hazard function
+ 
+ o Changes in the prediction() function : 'group' argument removed and 'conditional' boolean argument added
+
+ o Changes in the conditional prediction method for shared modelling : possibility to compute prediction for more than one group
+
+ o Display of prediction's results : for each indivual you can see the true ID
+
+ o Problem fixed : prediction() function is now able to compute with disorderly individuals
+
+ o Changes in the prediction method : you can now use the prediction methods with time-dependant covariates 
+    
+ o NEW: Marginal prediction method in the shared modelling, for a recurrent event.
+ 
+ o Correction applied on the mathematical expression of prediction method from shared model
+
+ 
+Changes in Version 2.10.3 October 2016
+
+ o "na.pass" global function defined in the NAMESPACE file
+ 
+ o Update of the vignettes 'Package_summary.Rmd' in the 'inst/doc' directory  
+ 
+ 
+Changes in Version 2.10.2 October 2016
+
+ o Vignettes modified (legend in the title)
+ 
+ o 'event' legend deleted in the plot of a shared model
+ 
+ o Compiling warnings fixed
+ 
+ o Plot bug fixed in the plot of a shared model
+ 
+
+Changes in Version 2.10.1 July 2016
+ 
+ o New prediction option for a new recurrent event.
+ 
+ o Bug fixed for the gfortran compilation
+ 
+
+Changes in Version 2.9.4 July 2016
+
+ o Bug fixed for the vignettes builder
+
+
+Changes in Version 2.9.3 July 2016
+
+ o New model added : Joint Nested frailty model for recurrent (with two clustering levels) and terminal events, accounts for two frailty terms.
+ 
+ o For all the plot methods of frailtypack : addition of 'Xlab' and 'Ylab' (labels for the X-axis and Y-axis)
+ 
+ o Warning added if left truncation with joint frailty model
+ 
+ o Warning added for the use of interval-censored data in joint frailty model, the option is not available for the model
+ 
+ o New option "initialize = TRUE" for fitting a joint frailty model to provide new initial values, before fitting the joint nested model. 
+ 
+ o Bug fixed in models prediction with formulas defined separately
+
+ o Bug fixed for trivPenal and longiPenal for definition of individuals identificators
+ 
+ o Bug fixed for global Wald test for qualitative covariates in the nested and the joint frailty model
+ 
+ 
+Changes in version 2.8.3 January 2016
+
+ o Bug fixed for predictions for frailty models
+
+ o Bug fixed for calculation of residuals for longitudinal biomarker in bivariate and trivariate models
+
+
+Changes in version 2.8.2 December 2015
+
+ o Description of the different models and options in Frailtypack using a vignette ("Package_summary")
+
+
+Changes in version 2.8 November 2015
+
+ o New models added: joint model for longitudinal data and a terminal event (longiPenal function) and trivariate joint model for longitudinal data, recurrent events and a terminal event (trivPenal function)
+
+ o For these models summary, print and plot methods are available as well as functions epoce, Diffepoce and predictions were adapted 
+
+ o Functions form altered: all the character options start with a capital letter, eg. was: plot(x, type.plot = "hazard") is now plot(x, type.plot = "Hazard")
+ 
+ o Joint frailty models for clustered data now are modelled in a framework of semi-competing risks (the parameter alpha is not recommended in these semi-competing models)
+ 
+ o Interactions are now available for all the models (using "*" or ":")
+
+
+Changes in version 2.7.6 August 2015
+
+ o New model added: Joint General frailty model for recurrent and terminal events with 2 covariates
+
+
+Changes in Version 2.7.5 March  2015
+
+ o Bug fixed for Martingale residuals (in shared and joint models with log normal frailties)
+
+
+Changes in Version 2.7.3 February 2015
+
+ o Prediction and Monte Carlo confidence bands added for shared and joint gaussian frailty models.
+
+ o Bug fixed for the prediction function with shared or Cox models (reading of survival times)
+
+ o Bug fixed for plotting the baseline hazard and survival functions in Weibull shared and joint models
+
+o  New functions to compute estimators of Expected Prognostic Observed Cross-Entropy (EPOCE) evaluating prediction accuracy in joint gaussian frailty models.
+
+
+Changes in Version 2.7.1 October 2014
+
+ o Bug fixed for the multivariate Wald test for covariates with more than 3 categories.
+
+ o Bug fixed for EPOCE, definition of kappa.
+
+
+Changes in Version 2.7     August 2014
+
+  o In 'frailPenal' and 'additivePenal' functions, no more 'kappa1', 'kappa2', 'nb.int1' and 'nb.int2'. Replaced by two vectors 'kappa' and 'nb.int'.
+
+  o More levels of stratification (up to 6) for shared frailty model.
+
+  o Now possible stratification in a joint frailty model for the recurrent event part (up to 6 levels).
+
+  o New construction of the dataframe when using 'prediction' function on a joint frailty model. Need now the event indicator variable.
+
+
+Changes in Version 2.6.1     July 2014
+
+  o Different way to do Monte-Carlo method to compute confidence intervals in 'prediction' function giving less variability.
+
+  o Back to knots placed using equidistant by default for estimating baseline hazard function with splines. You can now use the option 'hazard="Splines-per"' in frailtyPenal in order to have knots placed using percentiles.
+
+  o Back to value 10-3 by default for the three convergence criteria.
+
+  o No longer need to use as.factor() in command to print Wald tests on covariates.
+
+  o Print p-value of one-sided Wald test for frailty parameter and two-sided Wald test for alpha parameter in joint model.
+
+  o New functions to compute estimators of Expected Prognostic Observed Cross-Entropy (EPOCE) evaluating prediction accuracy in joint model.
+
+
+Changes in Version 2.6       March 2014
+
+  o NEW: Fit now a multivariate gaussian frailty model (two types of recurrent events and a terminal event).
+
+  o Major evolution of frailtyPenal function. 'Frailty' and 'joint' arguments removed.
+
+  o Now estimation of baseline hazard functions with splines, knots are placed using percentile (previously using equidistant intervals).
+
+  o Significant change of prediction function. You can compute predictions in two different ways: with a variable prediction time or a variable window of prediction.
+
+  o 'type' argument of prediction function removed. As long as there is a 'group' argument, for a shared model, computation of conditional predictions will be done.
+
+  o 'B' argument added in 2.4.1 to initialize regression coefficients was renamed 'init.B'
+
+  o Possibility to initialize the variance of the frailties with argument 'init.Theta' in shared and joint frailty models.
+
+  o Possibility to initialize the coefficient with argument 'init.Alpha' in joint frailty model.
+
+  o Moreover, with 'Alpha="none"', frailtyPenal can fit a joint model with a fixed alpha (=1).
+
+  o New argument: 'print.times', added in every model to print iteration process.
+
+
+Changes in Version 2.5.1       February 2014
+
+  o Bug fixed about joint frailty model without any covariate.
+
+
+Changes in Version 2.5         November 2013
+
+  o New dynamic tool of prediction added for Cox proportionnal hazard, shared and joint frailty model.
+
+  o Add IPCW estimation of concordance measures as Uno (Stat Med 2011). Significant changes in the printing of 'Cmeasures' function.
+
+  o Bug fixed about parametrical survival functions plotting with left truncated data.
+
+  o Bug fixed which allowed cross validation with interval-censored data.
+
+  o Possibility to print and change the three convergence criterions in frailtyPenal and additivePenal.
+
+
+Changes in Version 2.4.1         April 2013
+
+  o Bug fixed about estimation of frailties in shared models using recurrentAG=TRUE.
+
+  o Printing bug about standard deviation of the random effet variance in a model without covariate.
+
+  o Possibility to initialize regression coefficients in shared and joint frailty models.
+
+
+Changes in Version 2.4           April 2013
+
+  o Fit now a model with time-varying effects for covariates (only for Cox, shared gamma and a joint gamma frailty model).
+
+
+Changes in Version 2.3           February 2013
+
+  o Fit now a Shared and a Joint Frailty model with a log-normal distribution for the random effects.
+
+  o "Breast cosmesis" dataset added for interval-censoring illustration ("Diabetes" dataset removed).
+
+  o Weibull hazard parameters bug fixed : shape and scale were reversed.
+
+  o Linear predictors : output reorganized.
+
+  o Plot options improved (now color is allowed).
+
+  o Use of 'SurvIC' function modified. Now for the left-truncated and interval-censored data we use : SurvIC(left-trunc-time,lower-time,upper-time,event).
+
+  o No need of the intcens argument to fit a model for interval-censored data anymore, 'SurvIC' function is enough.
+
+
+Changes in Version 2.2-27        November 2012
+
+  o Fit now a Joint Frailty model for clustered data.
+
+
+Changes in Version 2.2-26        October 2012
+
+  o Minor bug fixed about loglikelihood in Nested Frailty model.
+
+  o The package accepts samples unsorted on clusters.
+
+
+Changes in Version 2.2-25        September 2012
+
+  o "Diabetes" dataset added for interval-censoring illustration.
+
+
+Changes in Version 2.2-24        July 2012
+
+  o Fit a Shared Gamma Frailty or a Cox proportional hazard model for interval-censored data.
+
+  o No longer need to use cluster function for fitting a Cox proportional hazard model.
+
+  o Minor bug fixed in Nested Frailty model.
+
+  o Printing bug fixed in multivariate Wald test.
+
+
+Changes in Version 2.2-22        March 2012
+
+  o Fit a Shared Gamma Frailty model using a parametric estimation.
+
+  o Fit Joint Frailty model for recurrent and terminal events using a parametric estimation.
+
+  o Fit a Nested Frailty model using a parametric estimation.
+
+  o Fit an Additive Frailty model using a parametric estimation.
+
+  o Concordance measures in shared frailty and Cox models (Cmeasures).
+
+
+Changes in Version 2.2-10
+
+  o NEW VERSION OF FRAILTYPACK including Additive, Nested and Joint Frailty models
+  
+  o Paper submitted to Journal of Stat Software

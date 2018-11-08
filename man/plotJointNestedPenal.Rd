@@ -1,0 +1,73 @@
+
+% --- Source file: plot.jointPenal.Rd ---
+\name{plot.jointNestedPenal}
+\Rdversion{1.1}
+\alias{plot.jointNestedPenal}
+\alias{lines.jointNestedPenal}
+
+\title{Plot method for a joint nested frailty model.}
+
+\description{
+  Plots estimated baseline survival and hazard functions of a joint nested frailty model (output from an object of class 'jointNestedPenal' for joint nested frailty models) for each type of event (terminal or recurrent). Confidence bands are allowed. 
+}
+
+\usage{
+
+\method{plot}{jointNestedPenal}(x, event = "Both", type.plot = "Hazard", conf.bands = FALSE,
+	pos.legend="topright", cex.legend = 0.7, ylim, main, color = 2, 
+	Xlab = "Time", Ylab = "Hazard function", ...)
+
+}
+
+\arguments{
+  \item{x}{A joint nested model, i.e. an object of class \code{jointNestedPenal} for joint nested frailty model (output from calling \code{frailtyPenal}
+    function).}
+ \item{event}{ a character string specifying the type of curve. Possible
+                   value are "Terminal", "Recurrent", or "Both". The default
+                   is "Both".}
+  \item{type.plot}{ a character string specifying the type of curve. Possible
+                   value are "Hazard", or "Survival". The default
+                   is "Hazard". Only the first letters are required, e.g "Haz", "Su"}
+  \item{conf.bands}{logical value. Determines whether confidence bands will be plotted. The default is to do so.}
+ \item{pos.legend}{The location of the legend can be specified by setting this argument to a single keyword from the list '"bottomright"', '"bottom"', '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
+     '"center"'. The default is '"topright"'}
+  \item{cex.legend}{character expansion factor *relative* to current
+          'par("cex")'. Default is 0.7}
+  \item{ylim}{y-axis limits}
+  \item{main}{plot title}
+  \item{color}{curve color (integer)} 
+  \item{Xlab}{Label of x-axis. Default is '"Time"'}  
+  \item{Ylab}{Label of y-axis. Default is '"Hazard function"'}
+  \item{...}{other unused arguments}
+}
+\value{
+     Print a plot of the baseline survival or hazard functions for each type of event or both with the confidence bands or not (conf.bands argument)
+}
+
+\seealso{
+ \code{\link{frailtyPenal}}
+}
+\examples{
+
+\dontrun{
+
+#-- here is generated cluster (30 clusters)
+readmissionNested <- transform(readmission,group=id\%\%30+1)
+
+# Baseline hazard function approximated with splines with calendar-timescale
+
+model.spli.AG <- frailtyPenal(formula = Surv(t.start, t.stop, event) 
+~ subcluster(id) + cluster(group) + dukes + terminal(death), 
+formula.terminalEvent = ~dukes, data = readmissionNested, recurrentAG = TRUE,
+ n.knots = 8, kappa = c(9.55e+9, 1.41e+12),initialize = TRUE)
+
+# Plot the estimated baseline hazard function with the confidence intervals
+plot(model.spli.AG)	
+
+# Plot the estimated baseline hazard function with the confidence intervals
+plot(model.spli.RE, type = "Survival")
+	
+}
+}
+
+\keyword{methods}

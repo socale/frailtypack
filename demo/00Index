@@ -1,0 +1,5 @@
+frailtypack_frailtyPenal     frailtyPenal Frailty model. 
+frailtypack_additivePenal    additivePenal Frailty model. 
+frailtypack_nestedPenal	     nestedPenal Frailty model.
+frailtypack_jointPenal       jointPenal Frailty model.
+frailtypack_multivPenal      multivPenal Frailty model.

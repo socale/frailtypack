@@ -1,0 +1,31 @@
+Package: frailtypack
+Version: 2.13.2
+Date: 2018-09-21
+Title: General Frailty Models: Shared, Joint and Nested Frailty Models
+        with Prediction
+Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
+        Mauguen, Agnieszka Krol, Amadou Diakite, Alexandre Laurent and Myriam Lopez
+Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
+Depends: R (>= 2.10), survival, boot, MASS, survC1
+Imports: statmod, nlme
+LazyLoad: no
+Description: The following several classes of frailty models using a penalized likelihood estimation on the hazard function but also a parametric estimation can be fit using this R package:
+        1) A shared frailty model (with gamma or log-normal frailty distribution) and Cox proportional hazard model. Clustered and recurrent survival times can be studied.
+        2) Additive frailty models for proportional hazard models with two correlated random effects (intercept random effect with random slope).
+        3) Nested frailty models for hierarchically clustered data (with 2 levels of clustering) by including two iid gamma random effects.
+        4) Joint frailty models in the context of the joint modelling for recurrent events with terminal event for clustered data or not. A joint frailty model for two semi-competing risks and clustered data is also proposed.
+		5) Joint general frailty models in the context of the joint modelling for recurrent events with terminal event data with two independent frailty terms.
+		6) Joint Nested frailty models in the context of the joint modelling for recurrent events with terminal event, for hierarchically clustered data (with two levels of clustering) by including two iid gamma random effects.
+		7) Multivariate joint frailty models for two types of recurrent events and a terminal event.
+		8) Joint models for longitudinal data and a terminal event.
+		9) Trivariate joint models for longitudinal data, recurrent events and a terminal event. 
+		Prediction values are available (for a terminal event or for a new recurrent event). Left-truncated (not for Joint model), right-censored data, interval-censored data (only for Cox proportional hazard and shared frailty model) and strata are allowed. In each model, the random effects have the gamma or normal distribution. Now, you can also consider time-varying covariates effects in Cox, shared and joint frailty models (1-5). The package includes concordance measures for Cox proportional hazards models and for shared frailty models.
+License: GPL (>= 2.0)
+URL:
+        https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+Repository: CRAN
+Date/Publication: 2018-09-25 10:50:03 UTC
+Packaged: 2018-09-21 08:16:26 UTC; agnie
+NeedsCompilation: yes

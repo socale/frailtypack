@@ -1,0 +1,34 @@
+
+\name{plot.epoce}
+\alias{plot.epoce}
+
+\title{Plot values of estimators of the Expected Prognostic Observed Cross-Entropy (EPOCE).}
+
+\description{
+  Plots values of estimators MPOL and CVPOL for evaluating EPOCE. No confidence interval.
+}
+
+\usage{
+\method{plot}{epoce}(x, type, pos.legend="topright", cex.legend=0.7, 
+	Xlab="Time",Ylab="Epoce", ...)
+}
+
+\arguments{
+  \item{x}{An object inheriting from \code{epoce} class}
+  \item{type}{Type of estimator to plot. If new dataset was used only mpol can be plotted (\code{"mpol"}), otherwise mpol and cvpol can be plotted (\code{"mpol"} and \code{"cvpol"}, default is \code{"cvpol"}).}
+  \item{pos.legend}{The location of the legend can be specified by setting this argument to a single keyword from the list
+                    '"bottomright"', '"bottom"', '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and '"center"'. The default is '"topright"'.}
+  \item{cex.legend}{size of the legend. Default is 0.7.}
+  \item{Xlab}{Label of x-axis. Default is '"Time"'}
+  \item{Ylab}{Label of y-axis. Default is '"Epoce"'}
+  \item{\dots}{Other unused arguments.}
+}
+
+\value{
+  Print a curve of the estimator of EPOCE using time points defined in \code{epoce}.
+}
+\seealso{
+ \code{\link{epoce}}
+}
+
+\keyword{file}

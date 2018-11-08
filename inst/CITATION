@@ -1,0 +1,65 @@
+citHeader("To cite frailtypack in publications use:")
+
+citEntry(entry = "Article",
+  title        = "{frailtypack}: An {{R}} Package for the Analysis of Correlated Survival Data with Frailty Models Using Penalized Likelihood Estimation or Parametrical Estimation",
+  author       = personList(as.person("Virginie Rondeau"),
+                   as.person("Yassin Mazroui"),
+                   as.person("Juan R. Gonzalez")),
+  journal      = "Journal of Statistical Software",
+  year         = "2012",
+  volume       = "47",
+  number       = "4",
+  pages        = "1-28",
+  url          = "http://www.jstatsoft.org/v47/i04/",
+
+  textVersion  =
+  paste("Virginie Rondeau, Yassin Mazroui, Juan R. Gonzalez (2012).",
+        "frailtypack: An R Package for the Analysis of Correlated Survival Data with Frailty Models Using Penalized Likelihood Estimation or Parametrical Estimation.",
+        "Journal of Statistical Software, 47(4), 1-28.",
+        "URL http://www.jstatsoft.org/v47/i04/.")
+)
+
+citEntry(entry = "Article",
+  title        = "Frailtypack: A computer program for the analysis of correlated failure time data using penalized likelihood estimation",
+  author       = personList(as.person("Virginie Rondeau"),
+                   as.person("Juan R. Gonzalez")),
+  journal      = "Computer Methods and Programs in Biomedicine",
+  year         = "2005",
+  volume       = "80",
+  number       = "2",
+  pages        = "154-164",
+
+  textVersion  =
+  paste("Virginie Rondeau, Juan R. Gonzalez (2005).",
+        "{Frailtypack}: A computer program for the analysis of correlated failure time data using penalized likelihood estimation",
+        "Computer Methods and Programs in Biomedicine, 80(2), 154-164.")
+)
+
+bibentry(bibtype = "Article",
+  title        = "Tutorial in Joint Modeling and Prediction: A Statistical Software for Correlated Longitudinal Outcomes, Recurrent Events and a Terminal Event",
+  author       = c(person(given = "Agnieszka",
+                          family = "Kr\\'{o}l",
+                          email = "Agnieszka.Listwon@u-bordeaux.fr"),
+                   person(given = "Audrey",
+                          family = "Mauguen",
+                          email = "Audrey.Mauguen@u-bordeaux.fr"),
+                   person(given = "Yassin",
+                          family = "Mazroui",
+                          email = "Yassin.Mazroui@upmc.fr"),
+                   person(given = "Alexandre",
+                          family = "Laurent"),
+                   person(given = "Stefan",
+                          family = "Michiels",
+                          email = "Stefan.Michiels@gustaveroussy.fr"),
+                   person(given = "Virginie",
+                          family = "Rondeau",
+                          email = "Virginie.Rondeau@u-bordeaux.fr")),
+  journal      = "Journal of Statistical Software",
+  year         = "2017",
+  volume       = "81",
+  number       = "3",
+  pages        = "1--52",
+  doi          = "10.18637/jss.v081.i03",
+
+  header       = "To cite frailtypack in publications use:"
+)

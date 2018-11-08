@@ -1,0 +1,235 @@
+\name{multivPenal}
+\alias{multivPenal}
+\alias{transfo.table}
+\alias{multivPenal for multivariate frailty model}
+
+\title{
+Fit a multivariate frailty model for two types of recurrent events and a terminal event.
+}
+\description{
+Fit a multivariate frailty model for two types of recurrent events with a terminal event using a penalized likelihood estimation on the hazard function or a parametric estimation. Right-censored data are allowed. Left-truncated data and stratified analysis are not possible.
+Multivariate frailty models allow studying, with a joint model, three survival dependent processes for two types of recurrent events and a terminal event. Multivariate joint frailty models are applicable in mainly two settings. First, when focus is on the terminal event and we wish to account for the effect of previous endogenous recurrent event. Second, when focus is on a recurrent event and we wish to correct for informative censoring. 
+
+The multivariate frailty model for two types of recurrent events with a terminal event is (in the calendar or time-to-event timescale):
+
+\deqn{\left\{
+\begin{array}{lll}
+r_{i}^{(1)}(t|u_i,v_i) &= r_0^{(1)}(t)\exp({{\beta_1^{'}}}Z_{i}(t)+u_i) &\quad \mbox{(rec. of type 1)}\\
+r_{i}^{(2)}(t|u_i,v_i) &= r_0^{(2)}(t)\exp({{\beta_2^{'}}}Z_{i}(t)+v_i) &\quad \mbox{(rec. of type 2)}\\
+\lambda_i(t|u_i,v_i) &= \lambda_0(t)\exp({{\beta_3^{'}}}Z_{i}(t)+\alpha_1u_i+\alpha_2v_i) &\quad \mbox{(death)}\\
+\end{array}
+\right.
+}
+
+where \eqn{r_0^{(l)}(t)}, \eqn{l\in{1,2}} and \eqn{\lambda_0(t)} are respectively the recurrent and terminal event baseline hazard functions, and \eqn{\beta_1,\beta_2,\beta_3} the regression coefficient vectors associated with \eqn{Z_{i}(t)} the covariate vector. The covariates could be different for the different event hazard functions and may be time-dependent. We consider that death stops new occurrences of recurrent events of any type, hence given \eqn{t>D}, \eqn{dN^{R(l)*}(t), l\in{1,2}} takes the value 0. Thus, the terminal and the two recurrent event processes are not independent or even conditional upon frailties and covariates. We consider the hazard functions of recurrent events among individuals still alive. 
+%
+The three components in the above multivariate frailty model are linked together by two Gaussian and correlated random effects \eqn{u_i,v_i}:
+%
+
+\eqn{(u_i,v_i)^{T}\sim\mathcal{N}\left({{0}},\Sigma_{uv}\right)}, with \deqn{\Sigma_{uv}=\left(\begin{array}{cc}
+\theta_1 & \rho\sqrt{\theta_1\theta_2} \\
+\rho\sqrt{\theta_1\theta_2}&\theta_2
+\end{array}\right)}
+
+Dependencies between these three types of event are taken into account by two correlated random effects and parameters \eqn{\theta_1,\theta_2} the variance of the random effects and \eqn{\alpha_1,\alpha_2} the coefficients for these random effects into the terminal event part. If \eqn{\alpha_1} and \eqn{\theta_1} are both significantly different from 0, then the recurrent events of type 1 and death are significantly associated (the sign of the association is the sign of \eqn{\alpha_1}).
+If \eqn{\alpha_2} and \eqn{\theta_2} are both significantly different from 0, then the recurrent events of type 2 and death are significantly associated (the sign of the association is the sign of \eqn{\alpha_2}).
+If \eqn{\rho}, the correlation between the two random effects, is significantly different from 0, then the recurrent events of type 1 and the recurrent events of type 2 are significantly associated (the sign of the association is the sign of \eqn{\rho}).
+
+}
+
+\usage{
+
+multivPenal(formula, formula.Event2, formula.terminalEvent, data,
+            initialize = TRUE, recurrentAG = FALSE, n.knots, kappa,
+            maxit = 350, hazard = "Splines", nb.int, 
+            print.times = TRUE)
+}
+
+\arguments{
+  \item{formula}{
+ a formula object, with the response for the first recurrent event on the left of a \eqn{\sim} operator, and the terms on the right. The response must be a survival object as returned by the 'Surv' function like in survival package.  Interactions are possible using * or :.
+}
+  \item{formula.Event2}{
+a formula object, with the response for the second recurrent event on the left of a \eqn{\sim} operator, and the terms on the right. The response must be a survival object as returned by the 'Surv' function like in survival package.  Interactions are possible using * or :.
+}
+  \item{formula.terminalEvent}{
+a formula object, with the response for the terminal event on the left of a \eqn{\sim} operator, and the terms on the right. The response must be a survival object as returned by the 'Surv' function like in survival package.
+}
+  \item{data}{
+ a 'data.frame' with the variables used in 'formula', 'formula.Event2' and 'formula.terminalEvent'.
+}
+  \item{initialize}{
+Logical value to initialize regression coefficients and baseline hazard functions parameters. When the estimation is semi-parametric with splines, this initialization produces also values for smoothing parameters (by cross validation). When initialization is requested, the program first fit two shared frailty models (for the two types of recurrent events) and a Cox proportional hazards model (for the terminal event). Default is TRUE.
+}
+  \item{recurrentAG}{
+Logical value. Is Andersen-Gill model fitted? If so indicates that recurrent event times with the counting process approach of Andersen and Gill is used. This formulation can be used for dealing with time-dependent covariates. The default is FALSE.
+}
+  \item{n.knots}{
+integer vector of length 3 (for the three outcomes) giving the number of knots to use. First is for the recurrent of type 1, second is for the recurrent of type 2 and third is for the terminal event hazard function. Value required in the penalized likelihood estimation. It corresponds to the (n.knots+2) splines functions for the approximation of the hazard or the survival functions. Number of knots must be between 4 and 20. (See Note)
+}
+  \item{kappa}{
+vector of length 3 (for the three outcomes) for positive smoothing parameters in the penalized likelihood estimation. First is for the recurrent of type 1, second is for the recurrent of type 2 and third is for the terminal event hazard function. The coefficient kappa of the integral of the squared second derivative of hazard function in the fit (penalized log likelihood). Initial values for the kappas can be obtained with the option "initialize=TRUE". We advise the user to identify several possible tuning parameters, note their defaults and look at the sensitivity of the results to varying them. Value required.(See Note)
+}
+  \item{maxit}{
+maximum number of iterations for the Marquardt algorithm. Default is 350.
+}
+  \item{hazard}{
+Type of hazard functions: "Splines" for semi-parametric hazard functions with the penalized likelihood estimation, "Piecewise-per" for piecewise constant hazard function using percentile, "Piecewise-equi" for piecewise constant hazard function using equidistant intervals, "Weibull" for parametric Weibull function. Default is "Splines".
+}
+  \item{nb.int}{
+An integer vector of length 3 (for the three outcomes). First is the Number of intervals (between 1 and 20) for the recurrent of type 1 parametric hazard functions ("Piecewise-per", "Piecewise-equi"). Second is the Number of intervals (between 1 and 20) for the recurrent of type 2 parametric hazard functions ("Piecewise-per", "Piecewise-equi"). Third is Number of intervals (between 1 and 20) for the death parametric hazard functions ("Piecewise-per", "Piecewise-equi")
+}
+  \item{print.times}{
+a logical parameter to print iteration process. Default is TRUE.
+}
+}
+
+\value{
+Parameters estimates of a multivariate joint frailty model, more generally a 'fraityPenal' object. Methods defined for 'frailtyPenal' objects are provided for print,  plot and summary. The following components are included in a 'multivPenal' object for multivariate Joint frailty models.
+
+\item{b}{sequence of the corresponding estimation of the splines coefficients, the random effects variances, the coefficients of the frailties and the regression coefficients.}
+\item{call}{The code used for fitting the model.}
+\item{n}{the number of observations used in the fit.}
+\item{groups}{the number of subjects used in the fit.}
+\item{n.events}{the number of recurrent events of type 1 observed in the fit.}
+\item{n.events2}{the number of the recurrent events of type 2 observed in the fit.}
+\item{n.deaths}{the number of deaths observed in the fit.}
+\item{loglikPenal}{the complete marginal penalized log-likelihood in the semi-parametric case.}
+\item{loglik}{the marginal log-likelihood in the parametric case.}
+\item{LCV}{the approximated likelihood cross-validation criterion in the semi parametric case (with H minus the converged Hessian matrix, and l(.) the full log-likelihood.\deqn{LCV=\frac{1}{n}(trace(H^{-1}_{pl}H) - l(.))})}
+\item{AIC}{the Akaike information Criterion for the parametric case.\deqn{AIC=\frac{1}{n}(np - l(.))}}
+\item{theta1}{variance of the frailty parameter for recurrences of type 1 \eqn{(\bold{Var}(u_i))}}
+\item{theta2}{variance of the frailty parameter for recurrences of type 2 \eqn{(\bold{Var}(v_i))}}
+\item{alpha1}{the coefficient associated with the frailty parameter \eqn{u_i} in the terminal hazard function.}
+\item{alpha2}{the coefficient associated with the frailty parameter \eqn{v_i} in the terminal hazard function.}
+\item{rho}{the correlation coefficient between \eqn{u_i} and \eqn{v_i}}
+\item{npar}{number of parameters.}
+\item{coef}{the regression coefficients.}
+\item{nvar}{A vector with the number of covariates of each type of hazard function as components.}
+\item{varH}{the variance matrix of all parameters before positivity constraint transformation (theta, the regression coefficients and the spline coefficients). Then, the delta method is needed to obtain the estimated variance parameters.}
+\item{varHIH}{the robust estimation of the variance matrix of all parameters (theta, the regression coefficients and the spline coefficients).}
+\item{formula}{the formula part of the code used for the model for the recurrent event.}
+\item{formula.Event2}{the formula part of the code used for the model for the second recurrent event.}
+\item{formula.terminalEvent}{the formula part of the code used for the model for the terminal event.}
+\item{x1}{vector of times for hazard functions of the recurrent events of type 1 are estimated. By default seq(0,max(time),length=99), where time is the vector of survival times.}
+\item{lam1}{matrix of hazard estimates and confidence bands for recurrent events of type 1.}
+\item{xSu1}{vector of times for the survival function of the recurrent event of type 1.}
+\item{surv1}{matrix of baseline survival estimates and confidence bands for recurrent events of type 1.}
+\item{x2}{vector of times for the recurrent event of type 2 (see x1 value).}
+\item{lam2}{the same value as lam1 for the recurrent event of type 2.}
+\item{xSu2}{vector of times for the survival function of the recurrent event of type 2}
+\item{surv2}{the same value as surv1 for the recurrent event of type 2.}
+\item{xEnd}{vector of times for the terminal event (see x1 value).}
+\item{lamEnd}{the same value as lam1 for the terminal event.}
+\item{xSuEnd}{vector of times for the survival function of the terminal event}
+\item{survEnd}{the same value as surv1 for the terminal event.}
+\item{type.of.Piecewise}{Type of Piecewise hazard functions (1:"percentile", 0:"equidistant").}
+\item{n.iter}{number of iterations needed to converge.}
+\item{type.of.hazard}{Type of hazard functions (0:"Splines", "1:Piecewise", "2:Weibull").}
+\item{n.knots}{a vector with number of knots for estimating the baseline functions.}
+\item{kappa}{a vector with the smoothing parameters in the penalized likelihood estimation corresponding to each baseline function as components.}
+\item{n.knots.temp}{initial value for the number of knots.}
+\item{zi}{splines knots.}
+\item{time}{knots for Piecewise hazard function for the recurrent event of type 1.}
+\item{timedc}{knots for Piecewise hazard function for the terminal event.}
+\item{time2}{knots for Piecewise hazard function for the recurrent event of type 2.}
+\item{noVar}{indicator vector for recurrent, death and recurrent 2 explanatory variables.}
+\item{nvarRec}{number of the recurrent of type 1 explanatory variables.}
+\item{nvarEnd}{number of death explanatory variables.}
+\item{nvarRec2}{number of the recurrent of type 2 explanatory variables.}
+\item{nbintervR}{Number of intervals (between 1 and 20) for the the recurrent of type 1 parametric hazard functions ("Piecewise-per", "Piecewise-equi").}
+\item{nbintervDC}{Number of intervals (between 1 and 20) for the death parametric hazard functions ("Piecewise-per", "Piecewise-equi").}
+\item{nbintervR2}{Number of intervals (between 1 and 20) for the the recurrent of type 2 parametric hazard functions ("Piecewise-per", "Piecewise-equi").}
+\item{istop}{Vector of the convergence criteria.}
+\item{shape.weib}{shape parameters for the Weibull hazard function.}
+\item{scale.weib}{scale parameters for the Weibull hazard function.}
+
+\item{martingale.res}{martingale residuals for each cluster (recurrent of type 1).}
+\item{martingale2.res}{martingale residuals for each cluster (recurrent of type 2).}
+\item{martingaledeath.res}{martingale residuals for each cluster (death).}
+\item{frailty.pred}{empirical Bayes prediction of the first frailty term.}
+\item{frailty2.pred}{empirical Bayes prediction of the second frailty term.}
+\item{frailty.var}{variance of the empirical Bayes prediction of the first frailty term.}
+\item{frailty2.var}{variance of the empirical Bayes prediction of the second frailty term.}
+\item{frailty.corr}{Correlation between the empirical Bayes prediction of the two frailty.}
+\item{linear.pred}{linear predictor: uses Beta'X + ui in the multivariate frailty models.}
+\item{linear2.pred}{linear predictor: uses Beta'X + vi in the multivariate frailty models.}
+\item{lineardeath.pred}{linear predictor for the terminal part form the multivariate frailty models: Beta'X + alpha1 ui + alpha2 vi}
+
+\item{global_chisq}{Recurrent event of type 1: a vector with the values of each multivariate Wald test.}
+\item{dof_chisq}{Recurrent event of type 1: a vector with the degree of freedom for each multivariate Wald test.}
+\item{global_chisq.test}{Recurrent event of type 1: a binary variable equals to 0 when no multivariate Wald is given, 1 otherwise.}
+\item{p.global_chisq}{Recurrent event of type 1: a vector with the p-values for each global multivariate Wald test.}
+\item{names.factor}{Recurrent event of type 1: Names of the "as.factor" variables.}
+
+\item{global_chisq2}{Recurrent event of type 2: a vector with the values of each multivariate Wald test.}
+\item{dof_chisq2}{Recurrent event of type 2: a vector with the degree of freedom for each multivariate Wald test.}
+\item{global_chisq.test2}{Recurrent event of type 2: a binary variable equals to 0 when no multivariate Wald is given, 1 otherwise.}
+\item{p.global_chisq2}{Recurrent event of type 2: a vector with the p_values for each global multivariate Wald test.}
+\item{names.factor2}{Recurrent event of type 2: Names of the "as.factor" variables.}
+
+\item{global_chisq_d}{Terminal event: a vector with the values of each multivariate Wald test.}
+\item{dof_chisq_d}{Terminal event: a vector with the degree of freedom for each multivariate Wald test.}
+\item{global_chisq.test_d}{Terminal event: a binary variable equals to 0 when no multivariate Wald is given, 1 otherwise.}
+\item{p.global_chisq_d}{Terminal event: a vector with the p-values for each global multivariate Wald test.}
+\item{names.factordc}{Terminal event: Names of the "as.factor" variables.}
+
+
+}
+
+\note{
+"kappa" (kappa[1], kappa[2] and kappa[3]) and "n.knots" (n.knots[1], n.knots[2] and n.knots[3]) are the arguments that the user has to change if the fitted model does not converge. 
+"n.knots" takes integer values between 4 and 20. But with n.knots=20, the model will take a long time to converge. So, usually, begin first with n.knots=7, and increase it step by step until it converges.
+"kappa" only takes positive values. So, choose a value for kappa (for instance 10000), and if it does not converge, multiply or divide this value by 10 or 5 until it converges. 
+Moreover, it may be useful to change the value of the initialize argument.
+
+}
+
+\references{
+
+Mazroui Y., Mathoulin-Pellissier S., MacGrogan G., Brouste V., Rondeau V. (2013). Multivariate frailty models for two types of recurrent events with an informative terminal event : Application to breast cancer data.
+\emph{Biometrical journal}, \bold{55(6)}, 866-884.
+
+}
+
+\seealso{
+ \code{\link{terminal}},\code{\link{event2}},
+ \code{\link{print.multivPenal}},\code{\link{summary.multivPenal}},\code{\link{plot.multivPenal}}
+}
+
+\examples{
+
+\dontrun{
+
+###--- Multivariate Frailty model ---###
+
+data(dataMultiv)
+
+# (computation takes around 60 minutes)
+modMultiv.spli <- multivPenal(Surv(TIMEGAP,INDICREC)~cluster(PATIENT)+v1+v2+
+             event2(INDICMETA)+terminal(INDICDEATH),formula.Event2=~v1+v2+v3,
+             formula.terminalEvent=~v1,data=dataMultiv,n.knots=c(8,8,8),
+             kappa=c(1,1,1),initialize=FALSE)
+
+print(modMultiv.spli)
+
+modMultiv.weib <- multivPenal(Surv(TIMEGAP,INDICREC)~cluster(PATIENT)+v1+v2+
+             event2(INDICMETA)+terminal(INDICDEATH),formula.Event2=~v1+v2+v3,
+             formula.terminalEvent=~v1,data=dataMultiv,hazard="Weibull")
+
+print(modMultiv.weib)
+
+modMultiv.cpm <- multivPenal(Surv(TIMEGAP,INDICREC)~cluster(PATIENT)+v1+v2+
+             event2(INDICMETA)+terminal(INDICDEATH),formula.Event2=~v1+v2+v3,
+             formula.terminalEvent=~v1,data=dataMultiv,hazard="Piecewise-per",
+             nb.int=c(6,6,6))
+
+print(modMultiv.cpm)
+
+}
+
+}
+
+\keyword{models}
+\keyword{methods}
+\keyword{multiv}

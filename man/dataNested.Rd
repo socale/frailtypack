@@ -1,0 +1,36 @@
+
+\name{dataNested}
+\docType{data}
+\alias{dataNested}
+
+\title{Simulated data with two levels of grouping}
+\usage{data(dataNested)}
+\description{
+This contains a  simulated sample of 400 observations which allow establishing 20 clusters with 4 subgroups and 5 subjects in each subgroup, in order to obtain two levels of grouping. This data set is useful to illustrate how to fit a nested model.
+Two independent gamma frailty parameters with a variance fixed at 0.1 for the cluster effect and at 0.5 for the subcluster effect were generated. Independent survival times were generated from a simple Weibull baseline risk function. The percentage of censoring data was around 30 per cent. The right-censoring variables were generated from a uniform distribution on [1,36] and a left-truncating variable was generated with a uniform distribution on [0,10]. Observations were included only if the survival time is greater than the truncated time.
+
+
+}
+
+\format{
+  This data frame contains the following columns:
+  \describe{
+    \item{group}{group identification variable}
+    \item{subgroup}{subgroup identification variable}
+    \item{t1}{start of interval (0 or truncated time)}
+    \item{t2}{end of interval (death or censoring time)}
+    \item{event}{censoring status (0: alive, 1: death)}
+    \item{cov1}{dichotomous covariate (0,1)}
+    \item{cov2}{dichotomous covariate (0,1)}
+  }
+}
+
+\source{
+
+V. Rondeau, L. Filleul, P. Joly (2006). Nested frailty models using maximum penalized likelihood estimation.
+\emph{Statistics in Medecine}, \bold{25}, 4036-4052.
+
+
+}
+
+\keyword{datasets}
