@@ -1,7 +1,5 @@
-
 #' Fit an Additive Frailty model using a semiparametric penalized likelihood
 #' estimation or a parametric estimation
-#' 
 #' 
 #' @description{
 #' Fit an additive frailty model using a semiparametric penalized likelihood
