@@ -1,10 +1,11 @@
 Package: frailtypack
-Version: 2.13.2
-Date: 2018-09-21
+Version: 2.13.3
+Date: 2018-11-08
 Title: General Frailty Models: Shared, Joint and Nested Frailty Models
         with Prediction
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
-        Mauguen, Agnieszka Krol, Amadou Diakite, Alexandre Laurent and Myriam Lopez
+        Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
+        Agnieszka Krol and Casimir L. SOFEU
 Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
 Depends: R (>= 2.10), survival, boot, MASS, survC1
 Imports: statmod, nlme
