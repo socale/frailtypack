@@ -264,11 +264,11 @@ NULL
 #' 
 #' @name print.prediction
 #' @aliases print.predFrailty print.predJoint print.predLongi
-#' @usage{
+#' @usage
 #' \method{print}{predFrailty}(x, digits = 3, ...)
 #' \method{print}{predJoint}(x, digits = 3, ...) 
 #' \method{print}{predLongi}(x, digits = 3, ...)
-#' }
+#' 
 #' @param x An object from the 'prediction' function, objects inheriting from
 #' \code{predFrailty}, \code{predJoint} and \code{predLongi} classes.
 #' @param digits Number of digits to print
