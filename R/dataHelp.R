@@ -1,5 +1,3 @@
-
-
 #' Breast Cosmesis Data
 #' 
 #' The often used data set for interval-censored data, described and given in
