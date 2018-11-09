@@ -6,7 +6,7 @@
 \title{summary of parameter estimates of an additive frailty model}
 \usage{
 \method{summary}{additivePenal}(object, level = 0.95, len = 6, d = 2,
-lab="hr", \dots{})
+lab="hr", \dots)
 }
 \arguments{
 \item{object}{output from a call to additivePenal.}

@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{multivPenal}(x, event = "Both", type.plot = "Hazard",
 conf.bands = FALSE, pos.legend = "topright", cex.legend = 0.7, ylim, main,
-color1="red", color2="blue", colorEnd="green", Xlab = "Time", Ylab = "Hazard
-function", ...)
+color1="red", color2="blue", colorEnd="green", Xlab = "Time", Ylab = "Hazard function",
+ ...)
 }
 \arguments{
 \item{x}{A joint multivariate model, i.e. an object of class

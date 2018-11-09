@@ -5,7 +5,7 @@
 #' 
 #' @aliases summary.additivePenal print.summary.additivePenal
 #' @usage \method{summary}{additivePenal}(object, level = 0.95, len = 6, d = 2,
-#' lab="hr", \dots{})
+#' lab="hr", \dots)
 #' @param object output from a call to additivePenal.
 #' @param level significance level of confidence interval. Default is 95\%.
 #' @param d the desired number of digits after the decimal point. Default of 6
