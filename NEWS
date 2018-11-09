@@ -1,4 +1,4 @@
-changes in Version 2.13.2 November 2018
+changes in Version 2.13.3 November 2018
 
 o Parsing all the Rd files under the man directory and updating the corresponding R source code by inserting roxygen documentation in to the R scripts
 
