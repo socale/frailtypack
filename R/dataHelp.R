@@ -199,9 +199,6 @@ NULL
 NULL
 
 
-
-
-
 #' Simulated data with two levels of grouping
 #' 
 #' This contains a simulated sample of 400 observations which allow
@@ -263,6 +260,78 @@ NULL
 #' among colorectal cancer patients. \emph{Journal of Epidemiology and
 #' Community Health}, \bold{59}, 6, 506-511.
 #' @keywords datasets
+NULL
+
+##' Advanced Ovarian Cancer dataset
+##' 
+##' This dataset combines the data  that were collected in four double-blind randomized
+##' clinical trials in advanced ovarian cancer. In these trials, the objective was to 
+##' examine the efficacy of cyclophosphamide plus cisplatin (CP) versus cyclophosphamide 
+##' plus adriamycin plus cisplatin (CAP) to treat advanced ovarian cancer. The candidate 
+##' surrogate endpoint \bold{S} is progression-free survival time, defined as the time (in years)
+##' from randomization to clinical progression of the disease or death. The true endpoint
+##' \bold{T} is survival time, defined as the time (in years) from randomization to death of any 
+##' cause
+##' 
+##' 
+##' @name dataOvarian
+##' @docType data
+##' @usage data(dataOvarian)
+##' @format This data frame contains the following columns: 
+##' \describe{
+##' \item{patienID}{The identification number of a patient} 
+##' \item{trialID}{The center in which a patient was treated}
+##' \item{trt}{The treatment indicator, coded as 0 = cyclophosphamide plus cisplatin (CP)
+##' and 1 = cyclophosphamide plus adriamycin plus cisplatin(CAP)}
+##' \item{timeS}{The candidate surrogate (progression-free survival)}
+##' \item{statusS}{Censoring indicator for for Progression-free survival}
+##' \item{timeT}{The true endpoint (survival time)}
+##' \item{statusT}{Censoring indicator for survival time}
+##' }
+##' @source
+##' 
+##' Ovarian cancer Meta-Analysis Project (1991). Cyclophosphamide plus cisplatin plus adriamycin
+##' versus Cyclophosphamide, doxorubicin, and cisplatin chemotherapy of ovarian carcinoma: 
+##' A meta-analysis. \emph{Classic Papers and Current Comments}, \bold{3}, 237-234.
+##' @keywords datasets
+NULL
+
+##' Advanced Gastric Cancer dataset
+##' 
+##' This meta-analysis was carried out by the GASTRIC (Global Advanced/Adjuvant Stomach 
+##' Tumor Research international Collaboration) group, using individual data on patients 
+##' with curatively resected gastric cancer. Data from all published randomized trials, 
+##' with a patient recruitment end date before 2004, and comparing adjuvant chemotherapy 
+##' with surgery alone for resectable gastric cancers, were searched electronically. 
+##' The candidate surrogate endpoint \bold{S} was Desease-free survival time, defined 
+##' as the time (in days) to relapse, second cancer or dead from any cause. The true 
+##' endpoint \bold{T} was the overall survival time, defined as the time (in days) from 
+##' randomization to death of any cause or to the last follow-up.
+##' 
+##' 
+##' @name gastadj
+##' @docType data
+##' @usage data(gastadj)
+##' @format This data frame contains the following columns: 
+##' \describe{
+##' \item{trialID}{The trial in which the patient was treated}
+##' \item{patienID}{The identification number of a patient} 
+##' \item{trt}{The treatment indicator, coded as 0 = Control and 1 = Experimental}
+##' \item{timeS}{The candidate surrogate (progression-free survival in days) }
+##' \item{statusS}{Censoring indicator for for Progression-free survival 
+##' (0 = alive and progression-free, 1 = with progression or dead)}
+##' \item{timeT}{The true endpoint (overall survival time in days)}
+##' \item{statusT}{Censoring indicator for survival time (0 = alive, 1 = dead)}
+##' }
+##' @source
+##' 
+##' Oba K, Paoletti X, Alberts S, Bang YJ, Benedetti J, Bleiberg H, Catalona P, 
+##' Lordick F, Michiels S, Morita A, Okashi Y, Pignon JP, Rougier P, Sasako M, 
+##' Sakamoto J, Sargent D, Shitara K, Van Cutsem E, Buyse M, Burzykowski T on 
+##' behalf of the GASTRIC group (2013). Disease-Free Survival as a Surrogate 
+##' for Overall Survival in Adjuvant Trials of Gastric Cancer: A Meta-Analysis. 
+##' \emph{JNCI: Journal of the National Cancer Institute};\bold{105(21)}:1600-1607
+##' @keywords datasets
 NULL
 
 

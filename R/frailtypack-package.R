@@ -1,5 +1,5 @@
 #' General Frailty models: shared, joint and nested frailty models with
-#' prediction
+#' prediction; Evaluation of failure-time surrogate endpoints
 #' 
 #' Frailtypack fits several classes of frailty models using a penalized
 #' likelihood estimation on the hazard function but also a parametric
@@ -26,7 +26,11 @@
 #' gamma or normal distribution. Now, you can also consider time-varying effect
 #' covariates in Cox, shared and joint frailty models. The package includes
 #' concordance measures for Cox proportional hazards models and for shared
-#' frailty models.
+#' frailty models. 10) Joint frailty models for the validation of surrogate 
+#' endpoints in multiple randomized clinical trials with failure-time endpoints. 
+#' This model includes a shared individual-level random effect, a shared trial 
+#' random-effct associated with the hazard risks and a correlated random 
+#' effects-by-trial interaction.
 #' 
 #' \tabular{ll}{ Package: \tab frailtypack\cr Type: \tab Package\cr Version:
 #' \tab 2.8.3\cr Date: \tab 2016-01-12\cr License: \tab GPL (>= 2.0)\cr
@@ -35,8 +39,9 @@
 #' @name frailtypack-package
 #' @aliases frailtypack-package frailtypack
 #' @docType package
-#' @author Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen,
-#' Agnieszka Krol, Amadou Diakite and Alexandre Laurent
+#' @author Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, 
+#' Amadou Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and 
+#' Casimir L. SOFEU
 #' @references V. Rondeau, Y. Mazroui and J. R. Gonzalez (2012). Frailtypack:
 #' An R package for the analysis of correlated survival data with frailty
 #' models using penalized likelihood estimation or parametric estimation.
@@ -73,7 +78,7 @@
 #' penalized likelihood estimation. \emph{Statistics in Medecine}, \bold{25},
 #' 4036-4052.
 #' @useDynLib "frailtypack", .registration = TRUE, .fixes = "C_"
-##' @import survival boot MASS survC1 nlme
+##' @import survival boot MASS survC1 nlme doBy
 ##' @importFrom graphics abline legend lines matlines matplot par plot
 ##' @importFrom stats .getXlevels aggregate as.formula complete.cases
 ##' contrasts get_all_vars is.empty.model model.extract model.matrix 
@@ -190,6 +195,20 @@
 #' 3.02, -0.30, 0.05, -0.63, -0.02, -0.29, 0.11, 0.74)) #biomarker covariates
 #' 
 #' }
+#' 
+#' ##---Surrogacy evaluation based on ganerated data with a combination 
+#' ##of Monte Carlo and classical Gaussian Hermite integration.
+#' ## (Computation takes around 5 minutes)
+#' 
+#' # Generation of data to use 
+#' data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
+#'          alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, 
+#'          sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25, 
+#'          full.data = 0, random.generator = 1, seed = 0, nb.reject.data = 0)
+#' 
+#' # Joint surrogate model estimation
+#' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
+#'                    nb.mc = 300, nb.gh = 20)
 #' 
 #' 
 NULL
