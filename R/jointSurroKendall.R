@@ -1,25 +1,3 @@
-
-#' Kendall's \eqn{\tau} estimation using Gaussian Hermite quadrature integrarion
-#' 
-#' idem a la fonction \link{jointSurroKendall}, seulement tout le code ici est fait sur R
-#' alors qu'avec l'autre fonction, le calcul se fait sur Fortran
-#'
-#' @param theta h
-#' @param gamma h
-#' @param alpha h
-#' @param eta h
-#' @param adaptative h
-#' @param ui variable binaire (1 = oui, 0 = non) qui dit si on prend en compte l'heterogeneite 
-#' sur les risque de base ou pas
-#' @param npg h
-#' @param ui.chap.Essai h
-#' @param invBi.chol.Essai.k  h
-#'
-#' @return Cette fonction retourne le resultat du calcul integrale par quadratur de gauss 
-#' hermite classique ou pseudo-adaptative
-#'
-#' 
-#' 
 jointSurroKendall <- function(theta, gamma, alpha = 1, eta = 1, adaptative = 0, npg = 20, ui = 1,
                               ui.chap.Essai=rep(0,4), invBi.chol.Essai.k = matrix(rep(0,16), nrow = 4, ncol = 4)){
   

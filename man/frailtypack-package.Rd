@@ -5,7 +5,7 @@
 \alias{frailtypack-package}
 \alias{frailtypack}
 \title{General Frailty models: shared, joint and nested frailty models with
-prediction; Evaluation of failure-time surrogate endpoints}
+prediction; Evaluation of Failure-Time Surrogate Endpoints}
 \description{
 Frailtypack fits several classes of frailty models using a penalized
 likelihood estimation on the hazard function but also a parametric

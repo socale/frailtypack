@@ -17,8 +17,7 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
   # source("fusion_resultats_simul.r")
   # source("kendall_bootstrap.r")
   # source("fusion_resultats_Tkandal.r")
-  # source("P:/_PRIVÉ/socale/PHD-Thesis/programmes/programme_R_PHD/indiceModalite.r")
-  
+
   # synthese resultats simulations avec 500 boucles MC
   
   # estimates du model complet

@@ -3,15 +3,21 @@
 \name{plot.nestedPenal}
 \alias{plot.nestedPenal}
 \alias{lines.nestedPenal}
-\title{Plot Method for a Nested frailty model.}
+\alias{plot.additivePenal}
+\alias{lines.additivePenal}
+\title{Plot Method for a Nested frailty model and an Additive frailty model.}
 \usage{
 \method{plot}{nestedPenal}(x, type.plot="Hazard", conf.bands=TRUE,
+pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab =
+"Hazard function", ...)
+\method{plot}{additivePenal}(x, type.plot="Hazard", conf.bands=TRUE,
 pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab =
 "Hazard function", ...)
 }
 \arguments{
 \item{x}{A nested model, i.e. an object of class \code{frailtyPenal} for
-Nested frailty models (output from calling \code{frailtyPenal} function).}
+Nested frailty models (output from calling \code{frailtyPenal} function), or
+a fitted additive frailty model (output from calling \code{additivePenal}).}
 
 \item{type.plot}{a character string specifying the type of curve. Possible
 value are "Hazard", or "Survival". The default is "Hazard". Only the first
@@ -45,8 +51,9 @@ confidence bands or not (conf.bands argument)
 }
 \description{
 Plots estimated baseline survival and hazard functions (output from an
-object of class 'NestedPenal' for nested frailty models). Confidence bands
-are allowed.
+object of class 'NestedPenal' for nested frailty models and an object 
+of class'additivePenal' object for additive frailty model ). 
+Confidence bands are allowed.
 }
 \examples{
 
@@ -59,6 +66,15 @@ subcluster(subgroup)+cov1+cov2,data=dataNested,n.knots=8,
 kappa=50000,hazard="Splines")
 
 plot(modNested,conf.bands=FALSE)
+
+data(dataAdditive)
+
+modAdd <- additivePenal(Surv(t1,t2,event)~cluster(group)+var1+slope(var1),
+correlation=TRUE,data=dataAdditive,n.knots=8,kappa=862,hazard="Splines")
+
+#-- 'var1' is boolean as a treatment variable
+
+plot(modAdd)
 
 }
 
