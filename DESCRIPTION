@@ -2,7 +2,7 @@ Package: frailtypack
 Version: 2.14
 Date: 2018-11-13
 Title: General Frailty Models: Shared, Joint and Nested Frailty Models
-        with Prediction; Evaluation of failure-time surrogate endpoints
+        with Prediction; Evaluation of Failure-Time Surrogate Endpoints
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
         Agnieszka Krol and Casimir L. SOFEU
@@ -25,8 +25,7 @@ Description: The following several classes of frailty models using a penalized l
 License: GPL (>= 2.0)
 URL:
         https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
-Suggests: knitr, rmarkdown,
-    testthat
+Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 Repository: CRAN
 Date/Publication: 2018-09-25 10:50:03 UTC
