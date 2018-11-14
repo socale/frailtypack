@@ -1088,7 +1088,8 @@
     if (timedep & logNormal) stop("You can not use time-varying effect covariates with a log normal distribution of the frailties")
 	
 	if (intcens & joint & length(subcluster)) stop("Cox model doesn't support intervall-censored survival data")
-    
+  if (intcens & !joint & length(subcluster)) stop ("Nested model doesn't support intervall-censored survival data")
+   
     if(is.null(num.id)){
 		joint.clust <- 1
     }else{
@@ -1645,7 +1646,7 @@
 		fit$formula <- formula(Terms)
 				
 		fit$x <- matrix(ans[[25]], nrow = size1, ncol = uni.strat)
-		fit$lam <- array(ans[[26]], dim = c(size1,3,uni.strat))
+		fit$lam <- if(typeof == 1){array(ans[[26]][seq(1,length(ans[[26]]),3)], dim = c(nb.int,3,uni.strat))} else{array(ans[[26]], dim = c(size1,3,uni.strat))} # Le lam s'écrit différemment selon la fonction de hasard (Piecewise selon le nombre d'intervalles spécifiés, Weibull et Splines selon size1 = 100)
 		fit$xSu <- matrix(ans$xSuT, nrow = 100, ncol = uni.strat)
 		fit$surv <- array(ans[[28]], dim = c(size2,3,uni.strat))
       
@@ -2462,12 +2463,12 @@
 	#	fit$formula <- formula(Terms)
       
 		fit$xR <- matrix(ans$xR, nrow = size1, ncol = uni.strat)
-		fit$lamR <- array(ans$lamR, dim = c(size1,3,uni.strat))
+		fit$lamR <- if(typeof == 1){array(ans$lamR[seq(1,length(ans$lamR),3)], dim = c(nb.int[1],3,uni.strat))} else{array(ans$lamR, dim = c(size1,3,uni.strat))} 
 		fit$xSuR <- matrix(ans$xSuR, nrow = 100, ncol = uni.strat)
 		fit$survR <- array(ans$survR, dim = c(mt11,3,uni.strat))
       
 		fit$xD <- ans$xD
-		fit$lamD <- matrix(ans$lamD, nrow = size2, ncol = 3)
+		fit$lamD <- if(typeof == 1) {matrix(ans$lamD[seq(1,length(ans$lamD),3)], nrow = nb.int[2], ncol = 3)} else{matrix(ans$lamD, nrow = size2, ncol = 3)}
 		fit$xSuD <- ans$xSuD
 		fit$survD <- matrix(ans$survD, nrow = mt12, ncol = 3)
       
@@ -2821,7 +2822,7 @@
 	#	fit$formula <- formula(Terms)
       
 		fit$x <- cbind(ans$x1,ans$x2)
-		fit$lam <- array(c(ans$lam,ans$lam2), dim=c(size1,3,2))
+		fit$lam <- if(typeof == 1) {array(c(ans$lam[seq(1,length(ans$lam),3)],ans$lam2[seq(1,length(ans$lam2),3)]), dim=c(nb.int,3,2))} else{array(c(ans$lam,ans$lam2), dim=c(size1,3,2))}
 		fit$xSu <- cbind(ans$xSu1,ans$xSu2)
 		fit$surv <- array(c(ans$surv,ans$surv2), dim=c(size2,3,2))
       
