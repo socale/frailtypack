@@ -124,7 +124,7 @@
 #' @param print.times a logical parameter to print iteration process. Default
 #' is TRUE.
 #' @return Parameters estimates of a multivariate joint frailty model, more
-#' generally a 'fraityPenal' object. Methods defined for 'frailtyPenal' objects
+#' generally a 'multivPenal' object. Methods defined for 'frailtyPenal' objects
 #' are provided for print, plot and summary. The following components are
 #' included in a 'multivPenal' object for multivariate Joint frailty models.
 #' 
