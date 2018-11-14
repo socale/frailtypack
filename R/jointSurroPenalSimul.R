@@ -666,6 +666,7 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   # }
   
   file.remove(c("kappa_valid_crois.txt", "true.txt", "surrogate.txt", "outjoint"))
+  try(file.remove("OutJoint_Result_surrogate.txt"))
   
   class(result) <- "jointSurroPenalSimul"
   

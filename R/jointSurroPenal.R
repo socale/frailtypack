@@ -1021,8 +1021,10 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
   # =====================++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   file.remove(c("true.txt", "surrogate.txt", "outjoint"))
+  try(file.remove("OutJoint_Result_surrogate.txt"))
+  try(file.remove("kappa_valid_crois.txt"))
   
-  class(result) <- "jointSurroPenal"
+  if(!is.na(result$n.iter)) class(result) <- "jointSurroPenal"
   
   # impression du temps de calcul
   if (print.times){
