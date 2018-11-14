@@ -1,5 +1,5 @@
 #' General Frailty models: shared, joint and nested frailty models with
-#' prediction; Evaluation of failure-time surrogate endpoints
+#' prediction; Evaluation of Failure-Time Surrogate Endpoints
 #' 
 #' Frailtypack fits several classes of frailty models using a penalized
 #' likelihood estimation on the hazard function but also a parametric
@@ -212,67 +212,6 @@
 #' 
 #' 
 NULL
-
-
-
-
-
-#' Plot Method for an Additive frailty model.
-#' 
-#' Plots estimated baseline survival and hazard functions of an additive
-#' frailty model, more generally of a class `additivePenal' object. Confidence
-#' bands are allowed.
-#' 
-#' @name plot.additivePenal
-#' @aliases plot.additivePenal lines.additivePenal
-#' @usage
-#' 
-#' \method{plot}{additivePenal}(x, type.plot="Hazard", conf.bands=TRUE,
-#' pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab =
-#' "Hazard function", ...)
-#' @param x A fitted additive frailty model (output from calling
-#' \code{additivePenal})
-#' @param type.plot a character string specifying the type of curve. Possible
-#' value are "Hazard", or "Survival". The default is "Hazard". Only the first
-#' words are required, e.g "Haz", "Su"
-#' @param conf.bands logical value. Determines whether confidence bands will be
-#' plotted. The default is to do so.
-#' @param pos.legend The location of the legend can be specified by setting
-#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
-#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
-#' '"center"'. The default is '"topright"'
-#' @param cex.legend character expansion factor *relative* to current
-#' 'par("cex")'. Default is 0.7
-#' @param main plot title
-#' @param color curve color (integer)
-#' @param Xlab Label of x-axis. Default is '"Time"'
-#' @param Ylab Label of y-axis. Default is '"Hazard function"'
-#' @param \dots Other graphical parameters like those in
-#' \code{\link{plot.frailtyPenal}}
-#' @return Print a plot of HR and survival function of a class
-#' \code{additivePenal} object
-#' @seealso \code{\link{additivePenal}}
-#' @keywords methods
-#' @export
-#' @examples
-#' 
-#' 
-#' \dontrun{
-#' 
-#' data(dataAdditive)
-#' 
-#' modAdd <- additivePenal(Surv(t1,t2,event)~cluster(group)+var1+slope(var1),
-#' correlation=TRUE,data=dataAdditive,n.knots=8,kappa=862,hazard="Splines")
-#' 
-#' #-- 'var1' is boolean as a treatment variable
-#' 
-#' plot(modAdd)
-#' 
-#' }
-#' 
-#' 
-NULL
-
 
 
 
