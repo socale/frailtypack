@@ -193,7 +193,7 @@
                          signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1),
                          signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1)))
        dimnames(bio_pam) <- list(c("Initial level: y_0", "Natural net growth: K_G0",
-                                  "Drug induced decline: K_D0", "Resistane to the drug: lambda" )
+                                  "Drug induced decline: K_D0", "Resistance to the drug: lambda" )
                                 , c("estimation", "SE estimation (H)", "z", "p"))
       cat("Biomarker parameters:\n")
       cat("\n")
