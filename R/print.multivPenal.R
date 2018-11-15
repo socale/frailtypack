@@ -64,17 +64,15 @@
 			seH <- sqrt(diag(x$varH))[-c(1,2)]
 			seHIH <- sqrt(diag(x$varHIH))[-c(1,2)]
 			if (x$typeof == 0){
-				tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, signif(1 - 
-				pchisq((coef/seH)^2, 1), digits - 1))
-				if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-				if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
-				if(x$global_chisq.test2==1) tmpwald2 <- cbind(x$global_chisq2,x$dof_chisq2,x$p.global_chisq2)
+			  tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+			  if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+			  if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
+			  if(x$global_chisq.test2==1) tmpwald2 <- cbind(x$global_chisq2, x$dof_chisq2, ifelse(x$p.global_chisq2 == 0, "< 1e-16", x$p.global_chisq2))
 			}else{
-				tmp <- cbind(coef, exp(coef), seH, coef/seH, signif(1 - 
-				pchisq((coef/seH)^2, 1), digits - 1))
-				if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-				if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
-				if(x$global_chisq.test2==1) tmpwald2 <- cbind(x$global_chisq2,x$dof_chisq2,x$p.global_chisq2)
+			  tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+			  if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+			  if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
+			  if(x$global_chisq.test2==1) tmpwald2 <- cbind(x$global_chisq2, x$dof_chisq2, ifelse(x$p.global_chisq2 == 0, "< 1e-16", x$p.global_chisq2))
 			}
 			cat("\n")
 			cat("  Multivariate joint gaussian frailty model for two survival outcomes and a terminal event","\n")
@@ -204,10 +202,10 @@
 # 			cat("   rho :", x$rho, "(SE (H):", sqrt(diag(x$varH))[5], ")", "\n")
 # 			cat(" \n")
 # 		}
-		cat("   theta1 :", theta1, "(SE (H):", seH.theta1, ")", "p =", signif(1 - pnorm(theta1/seH.theta1), digits - 1), "\n")
-		cat("   theta2 :", theta2, "(SE (H):", seH.theta2, ")", "p =", signif(1 - pnorm(theta2/seH.theta2), digits - 1), "\n")
-		cat("   alpha1 :", x$alpha1, "(SE (H):", sqrt(diag(x$varH))[3], ")", "p =", signif(1 - pchisq((x$alpha1/sqrt(diag(x$varH))[3])^2,1), digits - 1), "\n")
-		cat("   alpha2 :", x$alpha2, "(SE (H):", sqrt(diag(x$varH))[4], ")", "p =", signif(1 - pchisq((x$alpha2/sqrt(diag(x$varH))[4])^2,1), digits - 1), "\n")
+		cat("   theta1 :", theta1, "(SE (H):", seH.theta1, ")", "p =", ifelse(signif(1 - pnorm(theta1/seH.theta1), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(theta1/seH.theta1))), "\n")
+		cat("   theta2 :", theta2, "(SE (H):", seH.theta2, ")", "p =", ifelse(signif(1 - pnorm(theta2/seH.theta2), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(theta2/seH.theta2))), "\n")
+		cat("   alpha1 :", x$alpha1, "(SE (H):", sqrt(diag(x$varH))[3], ")", "p =", ifelse(signif(1 - pchisq((x$alpha1/sqrt(diag(x$varH))[3])^2,1) , digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$alpha1/sqrt(diag(x$varH))[3])^2,1) , digits - 1)), "\n")
+		cat("   alpha2 :", x$alpha2, "(SE (H):", sqrt(diag(x$varH))[4], ")", "p =", ifelse(signif(1 - pchisq((x$alpha2/sqrt(diag(x$varH))[4])^2,1), digits - 1)  == 0, "< 1e-16", signif(1 - pchisq((x$alpha2/sqrt(diag(x$varH))[4])^2,1), digits - 1)), "\n")
 		cat("   rho :", x$rho, "(SE (H):", sqrt(diag(x$varH))[5], ")", "\n")
 		cat(" \n")
 

@@ -88,27 +88,32 @@
         seH <- sqrt(diag(x$varH))
         seHIH <- sqrt(diag(x$varHIH))
 
-      if (x$typeof == 0){
-
-        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-        if(x$global_chisq.testR==1) tmpwald <- cbind(x$global_chisqR,x$dof_chisqR,x$p.global_chisqR)
-        if(x$global_chisq.testT==1) tmpwalddc <- cbind(x$global_chisqT,x$dof_chisqT,x$p.global_chisqT)
-
-
-        if(x$global_chisq.testKG==1) tmpwaldKG <- cbind(x$global_chisqKG,x$dof_chisqKG,x$p.global_chisqKG)
-        if(x$global_chisq.testKD==1) tmpwaldKD <- cbind(x$global_chisqKD,x$dof_chisqKD,x$p.global_chisqKD)
-        
-      }else{
-
-        tmp <- cbind(coef, exp(coef), seH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-        if(x$global_chisq.testR==1) tmpwald <- cbind(x$global_chisqR,x$dof_chisqR,x$p.global_chisqR)
-        if(x$global_chisq.testT==1) tmpwalddc <- cbind(x$global_chisqT,x$dof_chisqT,x$p.global_chisqT)
-
-
-        if(x$global_chisq.testKG==1) tmpwaldKG <- cbind(x$global_chisqKG,x$dof_chisqKG,x$p.global_chisqKG)
-        if(x$global_chisq.testKD==1) tmpwaldKD <- cbind(x$global_chisqKD,x$dof_chisqKD,x$p.global_chisqKD)
-        
-      }
+        if (x$typeof == 0){
+          
+          #tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
+          #if(x$global_chisq.testR==1) tmpwald <- cbind(x$global_chisqR,x$dof_chisqR,x$p.global_chisqR)
+          #if(x$global_chisq.testT==1) tmpwalddc <- cbind(x$global_chisqT,x$dof_chisqT,x$p.global_chisqT)
+          tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+          if(x$global_chisq.testR==1) tmpwald <- cbind(x$global_chisqR, x$dof_chisqR, ifelse(x$p.global_chisqR == 0, "< 1e-16", x$p.global_chisqR))
+          if(x$global_chisq.testT==1) tmpwalddc <- cbind(x$global_chisqT, x$dof_chisqT, ifelse(x$p.global_chisqT == 0, "< 1e-16", x$p.global_chisqT))
+          
+          if(x$global_chisq.testKG==1) tmpwaldKG <- cbind(x$global_chisqKG,x$dof_chisqKG,ifelse(x$p.global_chisqKG == 0, "< 1e-16", x$p.global_chisqKG))
+          if(x$global_chisq.testKD==1) tmpwaldKD <- cbind(x$global_chisqKD,x$dof_chisqKD,ifelse(x$p.global_chisqKD == 0, "< 1e-16", x$p.global_chisqKD))
+          
+        }else{
+          
+          #tmp <- cbind(coef, exp(coef), seH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
+          #if(x$global_chisq.testR==1) tmpwald <- cbind(x$global_chisqR,x$dof_chisqR,x$p.global_chisqR)
+          #if(x$global_chisq.testT==1) tmpwalddc <- cbind(x$global_chisqT,x$dof_chisqT,x$p.global_chisqT)
+          tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+          if(x$global_chisq.testR==1) tmpwald <- cbind(x$global_chisqR, x$dof_chisqR, ifelse(x$p.global_chisqR == 0, "< 1e-16", x$p.global_chisqR))
+          if(x$global_chisq.testT==1) tmpwalddc <- cbind(x$global_chisqT, x$dof_chisqT, ifelse(x$p.global_chisqT == 0, "< 1e-16", x$p.global_chisqT))
+          
+          
+          if(x$global_chisq.testKG==1) tmpwaldKG <- cbind(x$global_chisqKG,x$dof_chisqKG,ifelse(x$p.global_chisqKG == 0, "< 1e-16", x$p.global_chisqKG))
+          if(x$global_chisq.testKD==1) tmpwaldKD <- cbind(x$global_chisqKD,x$dof_chisqKD,ifelse(x$p.global_chisqKD == 0, "< 1e-16", x$p.global_chisqKD))
+          
+        }
       cat("\n")
       cat(" Mechanistic Trivariate Joint Model for Longitudinal Data, Recurrent Events and a Terminal Event","\n")
       if (x$typeof == 0){
@@ -188,10 +193,11 @@
       
       bio_pam <- cbind(c(x$y_0, x$K_G0, x$K_D0, x$lambda),c(x$se.y_0, x$se.K_G0, x$se.K_D0, x$se.lambda),
                        c(x$y_0/x$se.y_0, x$K_G0/x$se.K_G0, x$K_D0/x$se.K_D0, x$lambda/x$se.lambda),
-                       c(signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1), 
-                         signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1),
-                         signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1),
-                         signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1)))
+                       c(ifelse(signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1)),
+                         ifelse(signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1)),
+                         ifelse(signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1)),
+                         ifelse(signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1))))
+      
        dimnames(bio_pam) <- list(c("Initial level: y_0", "Natural net growth: K_G0",
                                   "Drug induced decline: K_D0", "Resistane to the drug: lambda" )
                                 , c("estimation", "SE estimation (H)", "z", "p"))
@@ -294,8 +300,8 @@
 
     cat("Recurrent event and longitudinal outcome association: \n")
     if(x$link=='Random-effects'){
-      tab.Asso <- cbind(x$etaR, x$se.etaR, x$etaR/x$se.etaR, signif(1 - pchisq((x$etaR/x$se.etaR)^2, 1), digits - 1))
-
+      tab.Asso <- cbind(x$etaR, x$se.etaR, x$etaR/x$se.etaR, ifelse(signif(1 - pchisq((x$etaR/x$se.etaR)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$etaR/x$se.etaR)^2, 1), digits - 1)))
+      
       if(sum(tab.Asso[,4]<1e-16)>1){
         d1 <- dim(tab.Asso)[1]
         d2 <- dim(tab.Asso)[2]
@@ -313,8 +319,8 @@
       dimnames(tab.Asso) <- list(paste("Asso:",x$names.re,sep=""),c("coef",  "SE", "z", "p"))
       prmatrix(tab.Asso,quote=FALSE,right=TRUE)
     }else{
-      tab.Asso <- cbind(x$etaR, x$se.etaR, x$etaR/x$se.etaR, signif(1 - pchisq((x$etaR/x$se.etaR)^2, 1), digits - 1))
-
+      tab.Asso <- cbind(x$etaR, x$se.etaR, x$etaR/x$se.etaR, ifelse(signif(1 - pchisq((x$etaR/x$se.etaR)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$etaR/x$se.etaR)^2, 1), digits - 1)))
+      
       if(sum(tab.Asso[,4]<1e-16)>1){
         d1 <- dim(tab.Asso)[1]
         d2 <- dim(tab.Asso)[2]
@@ -336,8 +342,8 @@
     cat("Terminal event and longitudinal outcome association: \n")
     if(x$link=='Random-effects'){
 
-      tab.Asso <- cbind(x$etaT, x$se.etaT, x$etaT/x$se.etaT, signif(1 - pchisq((x$etaT/x$se.etaT)^2, 1), digits - 1))
-
+      tab.Asso <- cbind(x$etaT, x$se.etaT, x$etaT/x$se.etaT, ifelse(signif(1 - pchisq((x$etaT/x$se.etaT)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$etaT/x$se.etaT)^2, 1), digits - 1)))
+      
       if(sum(tab.Asso[,4]<1e-16)>1){
         d1 <- dim(tab.Asso)[1]
         d2 <- dim(tab.Asso)[2]
@@ -355,8 +361,8 @@
       dimnames(tab.Asso) <- list(paste("Asso:",x$names.re,sep=""),c("coef",  "SE", "z", "p"))
       prmatrix(tab.Asso,quote=FALSE,right=TRUE)
     }else{
-      tab.Asso <- cbind(x$etaT, x$se.etaT, x$etaT/x$se.etaT, signif(1 - pchisq((x$etaT/x$se.etaT)^2, 1), digits - 1))
-
+      tab.Asso <- cbind(x$etaT, x$se.etaT, x$etaT/x$se.etaT, ifelse(signif(1 - pchisq((x$etaT/x$se.etaT)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$etaT/x$se.etaT)^2, 1), digits - 1)))
+      
       if(sum(tab.Asso[,4]<1e-16)>1){
         d1 <- dim(tab.Asso)[1]
         d2 <- dim(tab.Asso)[2]

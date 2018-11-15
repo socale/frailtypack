@@ -92,13 +92,13 @@
         seHIH <- sqrt(diag(x$varHIH))[-1]
       }
       if (x$typeof == 0){
-        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
+        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
       }else{
-        tmp <- cbind(coef, exp(coef), seH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
+        tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
       }
       cat("\n")
       if (x$joint.clust == 0) cat("  For clustered data","\n")
@@ -233,19 +233,19 @@
     # 			cat(" \n")
     # 		}
     if (x$logNormal == 0){
-		if (indic_alpha == 1 & x$joint.clust<=1){
-			cat("   theta (variance of Frailties, w):", frail, "(SE (H):",seH.frail, ")", "p =", signif(1 - pnorm(frail/seH.frail), digits - 1), "\n")
-			cat("   alpha (w^alpha for terminal event):", x$alpha, "(SE (H):",sqrt(diag(x$varH))[2], ")", "p =", signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[2])^2,1), digits - 1), "\n")
-		}else if (x$joint.clust ==2) {
-			cat("   theta (variance of u, association between recurrences and terminal event):", frail, "(SE (H):",seH.frail, ")", "p =", signif(1 - pnorm(frail/seH.frail), digits - 1), "\n")
-			cat("   eta (variance of v, intra-subject correlation):", x$eta, "(SE (H):",sqrt(((2 * (x$eta^0.5))^2) * diag(x$varH)[2]), ")", "p =", signif(1 - pnorm (x$eta/sqrt(((2 * (x$eta^0.5))^2) * diag(x$varH)[2]),1), digits - 1), "\n")
-		} else {
-			cat("   theta (variance of Frailties, w):", frail, "(SE (H):",seH.frail, ")", "p =", signif(1 - pnorm(frail/seH.frail), digits - 1), "\n")
-			cat("   alpha is fixed (=1) \n")
-		}
+      if (indic_alpha == 1 & x$joint.clust<=1){
+        cat("   theta (variance of Frailties, w):", frail, "(SE (H):",seH.frail, ")", "p =", ifelse(signif(1 - pnorm(frail/seH.frail), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH.frail), digits - 1)), "\n")
+        cat("   alpha (w^alpha for terminal event):", x$alpha, "(SE (H):",sqrt(diag(x$varH))[2], ")", "p =", ifelse(signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[2])^2,1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[2])^2,1), digits - 1)), "\n")
+      }else if (x$joint.clust ==2) {
+        cat("   theta (variance of u, association between recurrences and terminal event):", frail, "(SE (H):",seH.frail, ")", "p =", ifelse(signif(1 - pnorm(frail/seH.frail), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH.frail), digits - 1)), "\n")
+        cat("   eta (variance of v, intra-subject correlation):", x$eta, "(SE (H):",sqrt(((2 * (x$eta^0.5))^2) * diag(x$varH)[2]), ")", "p =", ifelse(signif(1 - pnorm (x$eta/sqrt(((2 * (x$eta^0.5))^2) * diag(x$varH)[2]),1), digits - 1) == 0, "< 1e-16", signif(1 - pnorm (x$eta/sqrt(((2 * (x$eta^0.5))^2) * diag(x$varH)[2]),1), digits - 1)), "\n")
+      } else {
+        cat("   theta (variance of Frailties, w):", frail, "(SE (H):",seH.frail, ")", "p =", ifelse(signif(1 - pnorm(frail/seH.frail), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH.frail), digits - 1)), "\n")
+        cat("   alpha is fixed (=1) \n")
+      }
     }else{
-      cat("   sigma square (variance of Frailties, eta):", frail, "(SE (H):",seH.frail, ")", "p =", signif(1 - pnorm(frail/seH.frail), digits - 1), "\n")
-      if (indic_alpha == 1) cat("   alpha (exp(alpha.eta) for terminal event):", x$alpha, "(SE (H):",sqrt(diag(x$varH))[2], ")", "p =", signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[2])^2,1), digits - 1), "\n")
+      cat("   sigma square (variance of Frailties, eta):", frail, "(SE (H):",seH.frail, ")", "p =", ifelse(signif(1 - pnorm(frail/seH.frail), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH.frail), digits - 1)), "\n")
+      if (indic_alpha == 1) cat("   alpha (exp(alpha.eta) for terminal event):", x$alpha, "(SE (H):",sqrt(diag(x$varH))[2], ")", "p =", ifelse(signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[2])^2,1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[2])^2,1), digits - 1)), "\n")
       else cat("   alpha is fixed (=1) \n")
     }
     cat(" \n")

@@ -64,16 +64,16 @@
 				seH <- sqrt(diag(x$varH))[-c(1:2)]
 				seHIH <- sqrt(diag(x$varHIH))[-c(1:2)]
 			}
-			if (x$typeof == 0){
-				tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-				if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-				if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
-			}
-			else{
-				tmp <- cbind(coef, exp(coef), seH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-				if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-				if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
-			}
+		  if (x$typeof == 0){
+		    tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+		    if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+		    if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
+		  }
+		  else{
+		    tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+		    if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+		    if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
+		  }
 			cat("\n")
 			
 			cat("  Joint nested gamma frailty model for recurrent and a terminal event processes","\n")
@@ -136,11 +136,11 @@
 		}
 	
 		cat(" Frailty parameters: \n")
-		cat("   theta (variance of Frailties, u):", frail1, "(SE (H):",seH.frail1, ")", "p =", signif(1 - pnorm(frail1/seH.frail1), digits - 1), "\n")
-		cat("	eta (variance of Frailties, w) :", frail2, "(SE (H) :", seH.frail2,")", "p =", signif(1 - pnorm(frail2/seH.frail2), digits - 1), "\n")
-		if (indic_alpha == 1) cat("   alpha (u^alpha for terminal event):", x$alpha, "(SE (H):",sqrt(diag(x$varH))[3], ")", "p =", signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[3])^2,1), digits - 1), "\n")
-		if (indic_xi == 1 & indic_alpha == 1) cat("   ksi (w^ksi for recurrent event):", x$ksi, "(SE (H):",sqrt(diag(x$varH))[4], ")", "p =", signif(1 - pchisq((x$ksi/sqrt(diag(x$varH))[4])^2,1), digits - 1), "\n")
-		if (indic_xi == 1 & indic_alpha == 0) cat("   ksi (w^ksi for recurrent event):", x$ksi, "(SE (H):",sqrt(diag(x$varH))[3], ")", "p =", signif(1 - pchisq((x$ksi/sqrt(diag(x$varH))[3])^2,1), digits - 1), "\n")
+		cat("   theta (variance of Frailties, u):", frail1, "(SE (H):",seH.frail1, ")", "p =", ifelse(signif(1 - pnorm(frail1/seH.frail1), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail1/seH.frail1), digits - 1)), "\n")
+		cat("	eta (variance of Frailties, w) :", frail2, "(SE (H) :", seH.frail2,")", "p =", ifelse(signif(1 - pnorm(frail2/seH.frail2), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail2/seH.frail2), digits - 1)), "\n")
+		if (indic_alpha == 1) cat("   alpha (u^alpha for terminal event):", x$alpha, "(SE (H):",sqrt(diag(x$varH))[3], ")", "p =", ifelse(signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[3])^2,1), digits - 1) == 0,"< 1e-16", signif(1 - pchisq((x$alpha/sqrt(diag(x$varH))[3])^2,1), digits - 1)), "\n")
+		if (indic_xi == 1 & indic_alpha == 1) cat("   ksi (w^ksi for recurrent event):", x$ksi, "(SE (H):",sqrt(diag(x$varH))[4], ")", "p =", ifelse(signif(1 - pchisq((x$ksi/sqrt(diag(x$varH))[4])^2,1), digits - 1) == 0,"< 1e-16",signif(1 - pchisq((x$ksi/sqrt(diag(x$varH))[4])^2,1), digits - 1)), "\n")
+		if (indic_xi == 1 & indic_alpha == 0) cat("   ksi (w^ksi for recurrent event):", x$ksi, "(SE (H):",sqrt(diag(x$varH))[3], ")", "p =", ifelse(signif(1 - pchisq((x$ksi/sqrt(diag(x$varH))[3])^2,1), digits - 1) == 0,"< 1e-16", signif(1 - pchisq((x$ksi/sqrt(diag(x$varH))[3])^2,1), digits - 1)), "\n")
 		cat(" \n")
     
 		if (x$typeof == 0){

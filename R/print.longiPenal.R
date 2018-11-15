@@ -88,14 +88,13 @@
         seHIH <- sqrt(x$varHIH)
       }
       if (x$typeof == 0){
-        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-
-        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
+        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
       }else{
-        tmp <- cbind(coef, exp(coef), seH, coef/seH, signif(1 - pchisq((coef/seH)^2, 1), digits - 1))
-        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,x$p.global_chisq)
-        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d,x$dof_chisq_d,x$p.global_chisq_d)
+        tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
+        if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
       }
 
       cat("\n")
@@ -220,7 +219,7 @@
 
     cat("Association parameters: \n")
     if(x$link=='Random-effects'){
-      tab.Asso <- cbind(x$eta, x$se.eta, x$eta/x$se.eta, signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1))
+      tab.Asso <- cbind(x$eta, x$se.eta, x$eta/x$se.eta, ifelse(signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1)))
 
       if(sum(tab.Asso[,4]<1e-16)>1){
         d1 <- dim(tab.Asso)[1]
@@ -247,8 +246,8 @@
       dimnames(tab.Asso) <- list(x$names.re,c("coef",  "SE", "z", "p"))
       prmatrix(tab.Asso,quote=FALSE,right=TRUE)
     }else{
-      tab.Asso <- cbind(x$eta, x$se.eta, x$eta/x$se.eta, signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1))
-     # d1 <- dim(tab.Asso)[1]
+      tab.Asso <- cbind(x$eta, x$se.eta, x$eta/x$se.eta, ifelse(signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1)))
+      # d1 <- dim(tab.Asso)[1]
     #  d2 <- dim(tab.Asso)[2]
      # which <- which(tab.Asso[,4]<1e-16)
      # sprint<-paste("%.",digits,"f",sep="")
