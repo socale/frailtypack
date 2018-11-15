@@ -194,7 +194,6 @@
 #' -0.23, -0.1, -0.09, -0.12, 0.8, -0.23, #terminal event covariates
 #' 3.02, -0.30, 0.05, -0.63, -0.02, -0.29, 0.11, 0.74)) #biomarker covariates
 #' 
-#' }
 #' 
 #' ##---Surrogacy evaluation based on ganerated data with a combination 
 #' ##of Monte Carlo and classical Gaussian Hermite integration.
@@ -210,7 +209,7 @@
 #' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
 #'                    nb.mc = 300, nb.gh = 20)
 #' 
-#' 
+#' }
 NULL
 
 
