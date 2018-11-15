@@ -150,7 +150,6 @@ n.nodes=7, init.B = c(-0.07, -0.13, -0.16, -0.17, 0.42, #recurrent events covari
 -0.23, -0.1, -0.09, -0.12, 0.8, -0.23, #terminal event covariates
 3.02, -0.30, 0.05, -0.63, -0.02, -0.29, 0.11, 0.74)) #biomarker covariates
 
-}
 
 ##---Surrogacy evaluation based on ganerated data with a combination 
 ##of Monte Carlo and classical Gaussian Hermite integration.
@@ -166,7 +165,7 @@ data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24,
 joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
                    nb.mc = 300, nb.gh = 20)
 
-
+}
 }
 \references{
 V. Rondeau, Y. Mazroui and J. R. Gonzalez (2012). Frailtypack:
