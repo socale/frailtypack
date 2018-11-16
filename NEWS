@@ -1,8 +1,14 @@
-changes in Version 3.0.0 November 2018
-o New model add: Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints
+Changes in Version 3.0.0 November 2018
+o New model add: Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints (vignettes file updated)
 
 o Parsing all the Rd files under the man directory and updating the corresponding R source code by inserting roxygen documentation into the R scripts
 
+o Bug fixed for displaying for baseline hazard function (lam) for Piecewise hazard functions in frailtyPenal
+o Bug fixed for trivPenalNL: missing parenthesis was leading to an error when adjusting on covariates in KG part
+
+o Modification in longiPenal: Switch optimizer from nlminb to optim (BFGS) to get the initial values for pseudo-adaptive quadrature (better convergence rates)
+
+o Modification of the writing of the p-value
 
 Changes in Version 2.13.2 September 2018
 
