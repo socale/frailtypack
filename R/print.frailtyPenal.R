@@ -87,7 +87,7 @@
 				seHIH <- sqrt(x$varHIH)
 			}
 		  if (x$typeof == 0){
-		    tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour éviter que R n'affiche pval = 0 lorsque celle-ci est très petite
+		    tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour eviter que R n'affiche pval = 0 lorsque celle-ci est tres petite
 		    if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
 		  }else{
 		    tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))

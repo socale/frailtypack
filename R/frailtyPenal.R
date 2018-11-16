@@ -1646,7 +1646,7 @@
 		fit$formula <- formula(Terms)
 				
 		fit$x <- matrix(ans[[25]], nrow = size1, ncol = uni.strat)
-		fit$lam <- if(typeof == 1){array(ans[[26]][seq(1,length(ans[[26]]),3)], dim = c(nb.int,3,uni.strat))} else{array(ans[[26]], dim = c(size1,3,uni.strat))} # Le lam s'écrit différemment selon la fonction de hasard (Piecewise selon le nombre d'intervalles spécifiés, Weibull et Splines selon size1 = 100)
+		fit$lam <- if(typeof == 1){array(ans[[26]][seq(1,length(ans[[26]]),3)], dim = c(nb.int,3,uni.strat))} else{array(ans[[26]], dim = c(size1,3,uni.strat))} # Le lam s'ecrit differemment selon la fonction de hasard (Piecewise selon le nombre d'intervalles specifies, Weibull et Splines selon size1 = 100)
 		fit$xSu <- matrix(ans$xSuT, nrow = 100, ncol = uni.strat)
 		fit$surv <- array(ans[[28]], dim = c(size2,3,uni.strat))
       
