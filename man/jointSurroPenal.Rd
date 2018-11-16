@@ -154,7 +154,7 @@ The default is \code{4}.}
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
 at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-as a seed. In the last case, it is not possible to reproduce the generated datesets". 
+as a seed. In the last case, it is not possible to reproduce the generated datasets". 
 The default is \code{0}.}
 
 \item{random.nb.sim}{If \code{random} is set to \code{1}, a binary that indicates the number 
@@ -179,8 +179,8 @@ This function return an object of class jointSurroPenal with elements :
 
    \item{EPS}{A vector containing the obtained convergence thresholds with the Marquardt algorithm,  
     for the parameters, the log-likelihood and for the gradient;}
-   \item{b}{Sequence of the corresponding estimation of the coefficients for the hazard functions 
-   (splines parameter s), the power s parameter \eqn{\zeta} (if \code{indice.zeta} is set to \code{1}),
+   \item{b}{A vector containing estimates for the splines parameter's, 
+   the power's parameter \eqn{\zeta} (if \code{indice.zeta} is set to \code{1}),
     the variance of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}), 
     the variances of the random effects \eqn{v_{S_i}} and \eqn{v_{T_i}} 
     (\eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}}), the covariance of the random effects 
@@ -203,18 +203,18 @@ This function return an object of class jointSurroPenal with elements :
    \item{lamT}{array (dim = 3) of hazard estimates and confidence bands, for true endpoint;}
    \item{survT}{array (dim = 3) of baseline survival estimates and confidence bands, for true endpoint;}
    \item{n.iter}{number of iterations needed to converge;}
-   \item{theta}{Estimate for \eqn{\theta}}
-   \item{gamma}{Estimate for \eqn{\gamma}}
-   \item{alpha}{Estimate for \eqn{\alpha}}
-   \item{zeta}{Estimate for \eqn{\zeta}}
-   \item{sigma.s}{Estimate for \eqn{\sigma_S}}
-   \item{sigma.t}{Estimate for \eqn{\sigma_T}}
-   \item{sigma.st}{Estimate for \eqn{\sigma_{ST}}}
-   \item{beta.s}{Estimate for \eqn{\beta_S}}
-   \item{beta.t}{Estimate for \eqn{\beta_T}}
+   \item{theta}{Estimate for \eqn{\theta};}
+   \item{gamma}{Estimate for \eqn{\gamma};}
+   \item{alpha}{Estimate for \eqn{\alpha};}
+   \item{zeta}{Estimate for \eqn{\zeta};}
+   \item{sigma.s}{Estimate for \eqn{\sigma_S};}
+   \item{sigma.t}{Estimate for \eqn{\sigma_T};}
+   \item{sigma.st}{Estimate for \eqn{\sigma_{ST}};}
+   \item{beta.s}{Estimate for \eqn{\beta_S};}
+   \item{beta.t}{Estimate for \eqn{\beta_T};}
    \item{ui}{A binary, that indicates if the heterogeneity between trial on the baseline risk 
    has been Considered (\code{1}), using the shared cluster specific frailties (\eqn{u_i}), 
-   or not (\code{0})}
+   or not (\code{0});}
    \item{ktau}{The Kendall's \eqn{\tau} with the correspondant 95  \eqn{\%} CI computed using the parametric bootstrap;}
    \item{R2.boot}{The \eqn{R^2_{trial}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
@@ -269,7 +269,7 @@ both individual and trial-level heterogeneities between the surrogate and the tr
 
 We proposed new definitions of Kendall's \eqn{\tau} and coefficient of determination as 
 individual-level and trial-level association measurements, to evaluate a candidate 
-surrogate endpoint (Sofeu \emph{et al.}, 2018). The formulations are given below:
+surrogate endpoint (Sofeu \emph{et al.}, 2018). The formulations are given below.
 
 \bold{Individual-level surrogacy}
 
@@ -427,7 +427,7 @@ of surrogate endpoints in meta-analyses of randomized experiments. Biostatistics
 
 Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
 endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-\code{Submitted}
+\code{Under review}
 }
 \seealso{
 \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}, \code{\link{jointSurroPenalSimul}}

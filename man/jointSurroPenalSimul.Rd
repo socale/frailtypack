@@ -195,7 +195,7 @@ by the changing of the number of nodes for the Gauss-Hermite quadrature. The def
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
 at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-as a seed. In the last case, it is not possible to reproduce the generated datesets". 
+as a seed. In the last case, it is not possible to reproduce the generated datasets". 
 The default is \code{0}.}
 
 \item{random.nb.sim}{If \code{random} is set to \code{1}, a binary that indicates the number 
@@ -313,7 +313,7 @@ summary(joint.simul, d = 3, R2boot = 0) # Delta-method
 \references{
 Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
 endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-\code{Submitted}
+\code{Under review}
 }
 \seealso{
 \code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}

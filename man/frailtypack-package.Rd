@@ -40,7 +40,7 @@ effects-by-trial interaction.
 }
 \details{
 \tabular{ll}{ Package: \tab frailtypack\cr Type: \tab Package\cr Version:
-\tab 2.8.3\cr Date: \tab 2016-01-12\cr License: \tab GPL (>= 2.0)\cr
+\tab 2.14\cr Date: \tab 2018-11-16\cr License: \tab GPL (>= 2.0)\cr
 LazyLoad: \tab no\cr }
 }
 \examples{
@@ -207,6 +207,6 @@ penalized likelihood estimation. \emph{Statistics in Medecine}, \bold{25},
 \author{
 Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, 
 Amadou Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and 
-Casimir L. SOFEU
+Casimir L. Sofeu
 }
 \keyword{package}

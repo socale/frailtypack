@@ -89,7 +89,7 @@ joint.surrogate <- jointSurroPenal(data = data.sim, nb.mc = 300,
 \references{
 Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
 endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-\code{Submitted}
+\code{Under review}
 }
 \seealso{
 \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}

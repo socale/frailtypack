@@ -33,7 +33,7 @@
 #' effects-by-trial interaction.
 #' 
 #' \tabular{ll}{ Package: \tab frailtypack\cr Type: \tab Package\cr Version:
-#' \tab 2.8.3\cr Date: \tab 2016-01-12\cr License: \tab GPL (>= 2.0)\cr
+#' \tab 2.14\cr Date: \tab 2018-11-16\cr License: \tab GPL (>= 2.0)\cr
 #' LazyLoad: \tab no\cr }
 #' 
 #' @name frailtypack-package
@@ -41,7 +41,7 @@
 #' @docType package
 #' @author Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, 
 #' Amadou Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and 
-#' Casimir L. SOFEU
+#' Casimir L. Sofeu
 #' @references V. Rondeau, Y. Mazroui and J. R. Gonzalez (2012). Frailtypack:
 #' An R package for the analysis of correlated survival data with frailty
 #' models using penalized likelihood estimation or parametric estimation.

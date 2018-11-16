@@ -192,7 +192,7 @@
 #' by the changing of the number of nodes for the Gauss-Hermite quadrature. The default is \code{4}.
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-#' as a seed. In the last case, it is not possible to reproduce the generated datesets". 
+#' as a seed. In the last case, it is not possible to reproduce the generated datasets". 
 #' The default is \code{0}.
 #' @param random.nb.sim If \code{random} is set to \code{1}, a binary that indicates the number 
 #' of generations that will be made, equal to \code{nb.dataset} in this case.
@@ -245,7 +245,7 @@
 #' @references
 #' Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
 #' endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-#' \code{Submitted}
+#' \code{Under review}
 #' 
 #' @export
 #' @importFrom doBy orderBy
