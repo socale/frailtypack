@@ -953,7 +953,7 @@ inn <-paste("pdSymm(form=~",random_lme,")",sep="")
 rand <- list(eval(parse(text=inn)))
 names(rand) <- id
 
-m_lme<-lme(formula.LongitudinalData,data = data.Longi, random = rand)
+m_lme<-lme(formula.LongitudinalData,data = data.Longi, random = rand, control=lmeControl(opt='optim'))
 
 b_lme <-as.matrix(ranef(m_lme))
 

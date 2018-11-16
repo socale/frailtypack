@@ -2288,7 +2288,7 @@
   paGH <- ans$b_pred
   
   
-  if(nvarKG >= 1)Beta[np-nvar+nvarR+nvarT+1:np-nvar+nvarR+nvarT+nvarKG] <- b_init[np_uni-nvar_uni+1:np_uni-nvar_uni+nvarKG]
+  if(nvarKG >= 1)Beta[(np-nvar+nvarR+nvarT+1):(np-nvar+nvarR+nvarT+nvarKG)] <- b_init[(np_uni-nvar_uni+1):(np_uni-nvar_uni+nvarKG)]
   if(nvarKD >= 1)Beta[(np-nvar+nvarR+nvarT+nvarKG+1):(np-nvar+nvarR+nvarT+nvarKG+nvarKD)] <- b_init[(np_uni-nvar_uni+nvarKG+1):(np_uni-nvar_uni+nvarKG+nvarKD)]
   
   Beta[np-nvar-nRE+1]=	b_init[np_uni-nvar_uni-nRE+1]
