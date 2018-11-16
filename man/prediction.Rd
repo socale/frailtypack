@@ -505,7 +505,7 @@ plot(pred.sha.rec.marg,conf.bands=TRUE)
 pred.sha.rec.cond <- prediction(sha,datapred,t=200,window=seq(50,1900,50),
 event='Recurrent',conditional = TRUE,MC.sample=100)
 
-plot(pred.sha.cond,conf.bands=TRUE)
+plot(pred.sha.rec.cond,conf.bands=TRUE)
 #####################################################
 ######## prediction on a JOINT frailty model ########
 #####################################################
