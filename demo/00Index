@@ -3,3 +3,5 @@ frailtypack_additivePenal    additivePenal Frailty model.
 frailtypack_nestedPenal	     nestedPenal Frailty model.
 frailtypack_jointPenal       jointPenal Frailty model.
 frailtypack_multivPenal      multivPenal Frailty model.
+frailtypack_jointSurroPenal      One-step joint surrogate model for the validation of surrogate endpoints with time-to-event endpoints. 
+frailtypack_jointSurroPenalSimul Simulation studies for the one-step joint surrogate model.

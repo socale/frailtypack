@@ -3,6 +3,11 @@
 # important command about parallel make
 $(SHLIB): $(OBJECTS)
 
+# nouvel ajout pour OpenMP: scl_20-06-2018
+# pour Fortran 90/95: see Writing R Extensions (Version 3.5.0 Patched (2018-06-18)), page 24
+PKG_FCFLAGS = $(SHLIB_OPENMP_FCFLAGS)
+PKG_LIBS = $(SHLIB_OPENMP_FCFLAGS)
+
 # Setup dependencies for parallel make
 prediction.o: Aparameters.o
 predictionfam.o: Aparameters.o
@@ -88,3 +93,21 @@ epoce.o: aaOptim.o aaOptimres.o Aparameters.o
 epoce_long.o: aaOptim.o aaOptimres.o Aparameters.o
 epoce_long_nl.o: aaOptim.o aaOptimres.o Aparameters.o
 survival.o: aaOptim.o aaOptimres.o Aparameters.o
+
+# Nouvel ajout pour la surrogacy
+
+aaOptim_SCL_0.o: Aparameters.o
+aaOptim_New_scl.o: Aparameters.o
+aaOptim_New_scl2.o: Aparameters.o
+autres_fonctions.o: Adonnees.o Aparameters.o
+Integrant_scl.o: Aparameters.o Adonnees.o autres_fonctions.o
+funcpa_adaptative.o: Aparameters.o aaOptim_New_scl.o Integrant_scl.o
+funcpa_laplace.o: Aparameters.o aaOptim_New_scl.o
+Integrale_mult_scl.o: Aparameters.o autres_fonctions.o aaOptim_New_scl2.o funcpa_laplace.o funcpa_adaptative.o Adonnees.o Integrant_scl.o
+funcpajsplines_surrogate_scl_1.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o
+funcpajsplines_surrogate_scl_2.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o
+Pour_Adaptative.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o
+joint_surrogate.o: Aparameters.o aaOptim_SCL_0.o Adonnees.o
+jointSurrogate.o: Aparameters.o autres_fonctions.o
+surrosim.o: Aparameters.o autres_fonctions.o
+jointsurrokendall.o: Integrant_scl.o

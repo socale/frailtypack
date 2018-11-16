@@ -1,13 +1,13 @@
 Package: frailtypack
-Version: 2.13.3
-Date: 2018-11-08
+Version: 2.14
+Date: 2018-11-13
 Title: General Frailty Models: Shared, Joint and Nested Frailty Models
-        with Prediction
+        with Prediction; Evaluation of Failure-Time Surrogate Endpoints
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
-        Agnieszka Krol and Casimir L. SOFEU
+        Agnieszka Krol and Casimir L. Sofeu
 Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
-Depends: R (>= 2.10), survival, boot, MASS, survC1
+Depends: R (>= 2.10), survival, boot, MASS, survC1, doBy
 Imports: statmod, nlme
 LazyLoad: no
 Description: The following several classes of frailty models using a penalized likelihood estimation on the hazard function but also a parametric estimation can be fit using this R package:
@@ -20,14 +20,15 @@ Description: The following several classes of frailty models using a penalized l
 		7) Multivariate joint frailty models for two types of recurrent events and a terminal event.
 		8) Joint models for longitudinal data and a terminal event.
 		9) Trivariate joint models for longitudinal data, recurrent events and a terminal event. 
+		10) Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints 
 		Prediction values are available (for a terminal event or for a new recurrent event). Left-truncated (not for Joint model), right-censored data, interval-censored data (only for Cox proportional hazard and shared frailty model) and strata are allowed. In each model, the random effects have the gamma or normal distribution. Now, you can also consider time-varying covariates effects in Cox, shared and joint frailty models (1-5). The package includes concordance measures for Cox proportional hazards models and for shared frailty models.
 License: GPL (>= 2.0)
 URL:
         https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 Repository: CRAN
 Date/Publication: 2018-09-25 10:50:03 UTC
-Packaged: 2018-09-21 08:16:26 UTC; agnie
+Packaged: 2018-09-21 08:16:26 UTC; Casimir
 NeedsCompilation: yes
 RoxygenNote: 6.0.1

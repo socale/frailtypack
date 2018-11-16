@@ -255,3 +255,40 @@ F77_SUB(survival2)(double *t, double *the0, int *nz, double *zi0, double *su, in
 void 
 F77_SUB(survivalj_cpm2)(double *t, double *b, int *nst, int *nbintervR, int *nbintervDC, 
 						double *time, double *timedc, double *surv);
+void F77_SUB(somme)(double *ab, double *s, int *nboot, int *nbr, double *vOut);
+             
+void
+F77_SUB(jointsurrogate)(int *nsujet1, int *ng, int *ntrials1, int *maxiter, int *nst,
+             int *nparamfrail, int *indice_a_estime, int *param_risque_base, int *nbrevar,
+             int *filtre0, double *donnees, double *death, int *n_sim1,
+             double *EPS2, double *kappa0, int *logNormal, int *nsim_node, int *Param_kendall_boot,
+             int *vrai_val_init, double *param_init, double *revision_echelle,
+             int *random_generator0, int *sujet_equi, double *prop_trait, double *paramSimul,
+             int *autreParamSim, double *fichier_kendall, double *fichier_R2, double *param_estimes, int *sizeVect,
+             double *b, double *H_hessOut, double *HIHOut, double *resOut, double *LCV,
+             double *x1Out, double *lamOut, double *xSu1, double *suOut, double *x2Out,
+             double *lam2Out, double *xSu2, double *su2Out, int *ni, int *ier, int *istop,
+             double *ziOut, int *affiche_itter);
+
+void
+F77_SUB(surrosim)(double *don_simul, double *don_simulS1, int *n_obs, int *n_col,
+              int *lognormal, int *affiche_stat,double *vrai_theta, int *ng, int *ver,
+              double *truealpha, double *propC, double *cens_A, double *gamma1, double *gamma2,
+              double *theta2, double *lambda_S, double *nu_S, double *lambda_T, double *nu_T,
+              double *betas, double *betat, int *n_essai, double *rsqrt, double *sigma_s,
+              double *sigma_t, double *p, double *prop_i, double *gamma, double *alpha,
+              int *frailt_base, int *random_generator0, int *aleatoire, int *nbre_sim , 
+              int *graine, int *nbre_don_non_cons, int *param_weibull);
+
+void
+F77_SUB(jointsurrokendall)(
+          double *theta, double *gamma, double *alpha, double *eta,
+          int *adaptative, int *npg, int *ndim,
+          double *ui_chap_Essai, double *invBi_chol_Essai_k,double *xx1, double *ww1,
+          double *sigma_v, int *methodeInt, int *N_MC_kendall, int *method_int_kendal, 
+          int *random_gen, int *aleatoire, int *nbre_sim, int *seed, double *tau_kendal_00, 
+          double *tau_kendal_01, double *tau_kendal_10, double *tau_kendal_11, double *ss
+  );
+  
+
+void F77_SUB(test)(double *donnee, int *nrow, double *som);

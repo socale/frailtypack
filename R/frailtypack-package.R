@@ -1,5 +1,5 @@
 #' General Frailty models: shared, joint and nested frailty models with
-#' prediction
+#' prediction; Evaluation of Failure-Time Surrogate Endpoints
 #' 
 #' Frailtypack fits several classes of frailty models using a penalized
 #' likelihood estimation on the hazard function but also a parametric
@@ -26,17 +26,22 @@
 #' gamma or normal distribution. Now, you can also consider time-varying effect
 #' covariates in Cox, shared and joint frailty models. The package includes
 #' concordance measures for Cox proportional hazards models and for shared
-#' frailty models.
+#' frailty models. 10) Joint frailty models for the validation of surrogate 
+#' endpoints in multiple randomized clinical trials with failure-time endpoints. 
+#' This model includes a shared individual-level random effect, a shared trial 
+#' random-effct associated with the hazard risks and a correlated random 
+#' effects-by-trial interaction.
 #' 
 #' \tabular{ll}{ Package: \tab frailtypack\cr Type: \tab Package\cr Version:
-#' \tab 2.8.3\cr Date: \tab 2016-01-12\cr License: \tab GPL (>= 2.0)\cr
+#' \tab 2.14\cr Date: \tab 2018-11-16\cr License: \tab GPL (>= 2.0)\cr
 #' LazyLoad: \tab no\cr }
 #' 
 #' @name frailtypack-package
 #' @aliases frailtypack-package frailtypack
 #' @docType package
-#' @author Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen,
-#' Agnieszka Krol, Amadou Diakite and Alexandre Laurent
+#' @author Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, 
+#' Amadou Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and 
+#' Casimir L. Sofeu
 #' @references V. Rondeau, Y. Mazroui and J. R. Gonzalez (2012). Frailtypack:
 #' An R package for the analysis of correlated survival data with frailty
 #' models using penalized likelihood estimation or parametric estimation.
@@ -73,7 +78,7 @@
 #' penalized likelihood estimation. \emph{Statistics in Medecine}, \bold{25},
 #' 4036-4052.
 #' @useDynLib "frailtypack", .registration = TRUE, .fixes = "C_"
-##' @import survival boot MASS survC1 nlme
+##' @import survival boot MASS survC1 nlme doBy
 ##' @importFrom graphics abline legend lines matlines matplot par plot
 ##' @importFrom stats .getXlevels aggregate as.formula complete.cases
 ##' contrasts get_all_vars is.empty.model model.extract model.matrix 
@@ -189,71 +194,23 @@
 #' -0.23, -0.1, -0.09, -0.12, 0.8, -0.23, #terminal event covariates
 #' 3.02, -0.30, 0.05, -0.63, -0.02, -0.29, 0.11, 0.74)) #biomarker covariates
 #' 
-#' }
 #' 
+#' ##---Surrogacy evaluation based on ganerated data with a combination 
+#' ##of Monte Carlo and classical Gaussian Hermite integration.
+#' ## (Computation takes around 5 minutes)
 #' 
-NULL
-
-
-
-
-
-#' Plot Method for an Additive frailty model.
+#' # Generation of data to use 
+#' data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
+#'          alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, 
+#'          sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25, 
+#'          full.data = 0, random.generator = 1, seed = 0, nb.reject.data = 0)
 #' 
-#' Plots estimated baseline survival and hazard functions of an additive
-#' frailty model, more generally of a class `additivePenal' object. Confidence
-#' bands are allowed.
-#' 
-#' @name plot.additivePenal
-#' @aliases plot.additivePenal lines.additivePenal
-#' @usage
-#' 
-#' \method{plot}{additivePenal}(x, type.plot="Hazard", conf.bands=TRUE,
-#' pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab =
-#' "Hazard function", ...)
-#' @param x A fitted additive frailty model (output from calling
-#' \code{additivePenal})
-#' @param type.plot a character string specifying the type of curve. Possible
-#' value are "Hazard", or "Survival". The default is "Hazard". Only the first
-#' words are required, e.g "Haz", "Su"
-#' @param conf.bands logical value. Determines whether confidence bands will be
-#' plotted. The default is to do so.
-#' @param pos.legend The location of the legend can be specified by setting
-#' this argument to a single keyword from the list '"bottomright"', '"bottom"',
-#' '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"', '"right"' and
-#' '"center"'. The default is '"topright"'
-#' @param cex.legend character expansion factor *relative* to current
-#' 'par("cex")'. Default is 0.7
-#' @param main plot title
-#' @param color curve color (integer)
-#' @param Xlab Label of x-axis. Default is '"Time"'
-#' @param Ylab Label of y-axis. Default is '"Hazard function"'
-#' @param \dots Other graphical parameters like those in
-#' \code{\link{plot.frailtyPenal}}
-#' @return Print a plot of HR and survival function of a class
-#' \code{additivePenal} object
-#' @seealso \code{\link{additivePenal}}
-#' @keywords methods
-#' @export
-#' @examples
-#' 
-#' 
-#' \dontrun{
-#' 
-#' data(dataAdditive)
-#' 
-#' modAdd <- additivePenal(Surv(t1,t2,event)~cluster(group)+var1+slope(var1),
-#' correlation=TRUE,data=dataAdditive,n.knots=8,kappa=862,hazard="Splines")
-#' 
-#' #-- 'var1' is boolean as a treatment variable
-#' 
-#' plot(modAdd)
+#' # Joint surrogate model estimation
+#' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
+#'                    nb.mc = 300, nb.gh = 20)
 #' 
 #' }
-#' 
-#' 
 NULL
-
 
 
 

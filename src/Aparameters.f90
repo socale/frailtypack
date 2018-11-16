@@ -320,3 +320,57 @@
 
     end module splines
 
+    module var_surrogate
+    
+    implicit none
+    
+! scl nouvelles variables pour surrogacy
+        integer, save::Nmax, nsim,ntrials,posind_i,cpteu,position_i, affiche_itteration !Nmax= nombre total de sujet, nsim= nombre de simulation pour le montecarlo aumoins 10000,posind_i=position de l'individu courant pour l'integrant
+        integer, save::methodInt ! methode d'integration,0= MC,1=MC+quadrature,2=quadrature guaussienne
+        integer, dimension(:),allocatable,save ::nsujeti,pourtrial ! nombe de sujet par cluster, la taille vaut ng; indice essai des individu: la taille vaut nsujet
+        integer,dimension(:),allocatable,save ::delta,deltastar ! Indicateur d'evenement surrogate, indocateur d'evenement true endpoint, la taille vaut Nmax
+        integer,dimension(:),allocatable,save ::nigs,cdcs,nigts,cdcts! nombre de personnes avec progression et decede par essai, nigts,cdcts avec traitement
+        integer, save:: indice_alpha,indice_sigma,indice_eta,indice_theta,indice_varS, indice_varT,indice_covST,&
+                        indice_gamma,indice_alpha_ui,indice_gamma_t,indice_gamma_st,indice_theta_t,indice_theta_st! ces variables sont initialisees a 1 si le parametre correspondant est pris en compte dans le modele
+        integer, save::type_mod_surr,type_joint ! model considere: 1= frailti individel et essais gaussiens, 0= individuel gamma et essai guassien
+        double precision, save::sigma2,theta2,varS, varT,covST,alpha_ui,gamma_ui,theta2_t,theta_st,gamma_ui_t,gamma_ui_st !variances et covariances frailty trial specific(V_S,V_T)
+        double precision,dimension(:),allocatable,save::const_res4,const_res5,res2s,res2_dcs,res2s_sujet,res2_dcs_sujet ! utiliser dans le calsul integrale, fourni dans funcpac,  la taille vaut nsujet. ,res2s,res2_dcs la taille vaut ntrial
+        double precision,dimension(:),allocatable,save::const_res1,const_aux1 ! utiliser pour le calcul integrale dans funcpa
+        double precision,dimension(2,2), save::varcov,varcovinv !matrice des variances covariance des fragilites (Vsi,Vti) et son inverse
+        double precision,save::determinant ! contiendra le determinantde la matrice de la variance covariance pour le calcul de la vraisemblance
+        !double precision,dimension(:,:),allocatable,save::ve ! matrice des variable explicatives avec le traitement comme premiere variable
+        integer,save::ndim,npoint! ndim: dimension de l'integrale ou encore le nombre d'integration, npoint=nbre de point d'integration
+        integer,save::zeta,nparamfrail! nombre de parametres associes aux effets aleatoires: eta+theta+varvs+varvt+covst=5
+        logical, save::adaptative ! adaptative un boulien qui dit si on veux approximer par adaptative(.true.) ou pas (.false.)
+        double precision,dimension(:),allocatable,save:: mu,mui,xx1,ww1 !mu= vecteur des mu pour monte carlo et mui=vecteur des bi chapeau pour l'adaptative, xx1,ww1 points et poids de quadrature
+        double precision,dimension(:,:),allocatable,save:: vc,vcinv !vc= matrice de var-cov des enffet aleatoires MC, invBi_chol=inverse de la matrice de cholesky pour l'adaptative,vcinv=matrice inverse des vc
+        double precision,dimension(:),allocatable,save:: invBi_chol_Essai,invBi_chol_Individuel! contient les element de la cholesky du determinant de la hessienne, niveau essai et individuel
+        double precision,dimension(:,:),allocatable,save:: ui_chap,ui_chap_Essai ! ui_chap=matrice des effets aleatoires estimes pour l'adaptative, ui_chap_Essai pour les estimation au niveau essai
+        double precision,dimension(:),allocatable,save:: invBi_cholDet_Essai ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky au niveau essa
+        !double precision,dimension(:),allocatable,save:: invBi_cholDet ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky: utiliser la subroutine dmfsd pour le calcul de la matrice de cholesky, niveau individuel
+        integer,save::a_deja_simul! dit si on a deja simule une fois les donnees pour le calcul integrale par MC
+        integer,save::sujet_essai_max,vectorisation,individu_j ! taille du plus grand essai, vectorisation= indique si l'on fait de la vectorisation dans le calcul integral pour reduire les temps de calcul ou pas
+        double precision,dimension(:,:),allocatable,save::Vect_sim_MC ! vecteur des nombre simules pour l'estimation de l'integrale par Monte carlo, wij_chap: pour contenir solution de k(w_ij) laplaca
+        double precision,parameter::pi=3.141592653589793d0
+        double precision,dimension(:,:),allocatable,save::Chol,wij_chap ! la cholesky de la matrice de variance covariance des effets aleatoires au niveau essai
+        double precision,save::vs_i,vt_i,u_i,penalisation! pour l'adaptative
+        integer,save::estim_wij_chap ! dit si l'on a deja estimer les wij pour la pseudo adaptative
+        !integer,save::indice_B_essai ! compte le nombe d'element du vecteur invBi_chol_Essai des elements de la matrice B
+        integer,save::Int_essai,control_param ! dit si l'on est entrain d'integrer sur les w_ij (0) ou alors sur les (vs_i,vt_i)(1)
+        integer,save::essai_courant,control_adaptative ! donne la position du cluster courant, control_adaptative dit di on fait de l'adaptative (1) ou de la pseudo adaptative(0)
+        integer, save::frailt_base    !dit si l'on prend en compte l'heterogeneite sur le risque de base aussi bien dans la generation des donnes que dans l'estimation(1) ou non (0)
+        integer, save::indicej,comm2,nb_procs! utiliser dans la pseudo adaptative pour gerer la somme cumulee des sujet par essai
+        integer,save::param_weibull,Test! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation a l'aide de la fonction de weibull donnee dans le cous de Pierre
+        double precision, save::rho ! pour le calcul integrale par Laplace
+        integer, save::graine,aleatoire,nbre_sim ! Pour la gestion du seed lors de la generation des nombres aleatoires
+        integer,dimension(:),allocatable,save:: control_wij_chap,table_par_pro
+        integer, save::switch_adaptative ! variable qui prend la valeur 0 si on veut ommetre la pseudo adaptative (cas typique lorsqu'echou l'estimation des effets aleatoires a posteriori) ou 1 si tout se passe bien
+        integer, save::nbre_itter_PGH ! nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
+        integer,save::random_generator ! generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
+    end module var_surrogate
+    
+    !gestion de la double precision
+    module double_precision
+    implicit none
+        INTEGER, PARAMETER :: dp = SELECTED_REAL_KIND(15)
+    end module double_precision
