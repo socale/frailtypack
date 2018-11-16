@@ -1,7 +1,7 @@
-changes in Version 2.14 November 2018
+changes in Version 3.0.0 November 2018
 o New model add: Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints
 
-o Parsing all the Rd files under the man directory and updating the corresponding R source code by inserting roxygen documentation in to the R scripts
+o Parsing all the Rd files under the man directory and updating the corresponding R source code by inserting roxygen documentation into the R scripts
 
 
 Changes in Version 2.13.2 September 2018
