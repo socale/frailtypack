@@ -49,7 +49,14 @@
 		else {      
 			z<-abs(qnorm((1-level)/2))
 			co <- x$coef
-			se <- sqrt(diag(x$varH))[-c(1:4)]
+			
+			frail1 <- !is.null(x$theta)
+			frail2 <- !is.null(x$eta)
+			indic_alpha <- x$indic_alpha
+			indic_xi <- x$indic_ksi
+			sum_indic <- sum(frail1,frail2,indic_alpha,indic_xi)
+			
+			se <- sqrt(diag(x$varH))[-c(1:sum_indic)]
 			or <- exp(co)
 			li <- exp(co-z * se)
 			ls <- exp(co+z * se)

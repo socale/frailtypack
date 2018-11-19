@@ -9,7 +9,7 @@
     
     implicit none
     
-    integer::i,ii,iii,j,jj,k,typeof
+    integer::i,ii,iii,j,jj,k,kk,typeof,nsample2
     integer,intent(in)::np,nz,nva1,nva2,nst,typeof0,&
     icproba,nsujet,nsample, npred0, nrec0,indID,ntimeAll  
     integer,dimension(2)::indic
@@ -43,7 +43,7 @@
     double precision,dimension(npred0,nrec0)::survR,hazR,survRalea,hazRalea
     double precision,dimension(nrec0)::survRi,hazRi,survRialea!,hazRialea
     double precision,dimension(nsample,np)::balea
-    double precision,dimension(nsample)::predProbaalea
+    double precision,dimension(nsample)::predProbaalea, predProbaalea2
     double precision,dimension(1,nva1)::coefBetaalea
     double precision,dimension(1,nva2)::coefBetadcalea
     !double precision,dimension(npred0)::trunctime,lowertime,uppertime,lowertime2,uppertime2
@@ -60,7 +60,7 @@
 
     coefBeta(1,:) = b((np-nva1-nva2+1):(np-nva2))
     coefBetadc(1,:) = b((np-nva2+1):np)
-          
+	
     XbetapredRall = matmul(coefBeta,transpose(vaxpred0))
     XbetapredDC = matmul(coefBetadc,transpose(vaxdcpred0))
     
@@ -69,22 +69,24 @@
     
     XbetapredR = 0.d0
 
+!    k=0
+ !   do i=1, npred0
+ !       XbetapredR(i,1:nrec(i))=XbetapredRall(1,k+1:k+nrec(i))
+ !       k = k+nrec(i)
+ !   end do
+!write(*,*)npred0
+!write(*,*)nrec 
+!write(*,*)nsujet
     k=0
     do i=1, npred0
-        XbetapredR(i,1:nrec(i))=XbetapredRall(1,k+1:k+nrec(i))
-        k = k+nrec(i)
+        ii=0
+        do j=1,nsujet
+            if(k.lt.j.and.j.le.k+nrec(i)) then
+                ii=ii+1
+                XbetapredR(i,ii)=XbetapredRall(1,j)
+            end if
+        end do 
     end do
-
-!    k=0
-!    do i=1, npred0
-!        ii=0
-!        do j=1,nsujet
-!            if(k.lt.j.and.j.le.k+nrec(i)) then
-!                ii=ii+1
-!                XbetapredR(i,ii)=XbetapredRall(1,j)
-!            end if
-!        end do 
-!    end do
 
     if (icproba.eq.1) then ! generation des parametres
         do j=1,nsample
@@ -174,10 +176,15 @@
             !write(*,*) 'surv2/1', survDCi(2)/survDCi(1)
             !write(*,*) 'power', ((frailind0**alpha)*frailfam0)*dexp(XbetapredDC(1,indID))
             !write(*,*) 'predictfam, pred', window, pred
-             
+        !    if(iii.eq.1) then 
+		!	write(*,*)xbetapredR(1,:)
+        !   write(*,*)xbetapredR(2,:)
+        !!   write(*,*)xbetapredR(3,:)
+        !!    write(*,*)xbetapredR(4,:)
+		!	 end if
             call gaulagJpredfam(ss1,ss2, indID, theta,alpha,eta,xi, &
             XbetapredR, XbetapredDC,survR,survDC,survDCi, icdctime(1:npred0,iii), nrec0,nrecT(1:npred0,iii), npred0)
-                         
+           
             predProb = ss1/ss2
             predAll(1,iii) = predProb
         
@@ -196,7 +203,8 @@
             
             if (icproba.eq.1) then ! calcul de l'intervalle de confiance seulement si demande
                 predProbaalea = 0.d0
-        
+        predProbaalea2 = 0.d0
+        kk = 0
                 do j=1,nsample
                     ss1 = 0.d0
                     ss2 = 0.d0
@@ -218,22 +226,22 @@
         
                     ! change XbetapredRallalea(1,nsujet) to XbetapredRalea(ng, nrec0)                
                 
-                    k=0
-                    do i=1, npred0
-                        XbetapredRalea(i,1:nrec(i))=XbetapredRallalea(1,k+1:k+nrec(i))
-                        k = k+nrec(i)
-                    end do
+              !      k=0
+              !      do i=1, npred0
+              !          XbetapredRalea(i,1:nrec(i))=XbetapredRallalea(1,k+1:k+nrec(i))
+              !          k = k+nrec(i)
+              !      end do
                     
-            !        k=0
-            !        do i=1, npred0
-            !            ii=0
-            !            do jj=1,nsujet
-            !                if(k.lt.jj.and.jj.le.k+nrec(i)) then
-            !                    ii=ii+1
-            !                    XbetapredRalea(i,ii)=XbetapredRallalea(1,jj)
-            !                end if
-            !            end do 
-            !        end do
+                     k=0
+                    do i=1, npred0
+                        ii=0
+                        do jj=1,nsujet
+                            if(k.lt.jj.and.jj.le.k+nrec(i)) then
+                                ii=ii+1
+                                XbetapredRalea(i,ii)=XbetapredRallalea(1,jj)
+                            end if
+                        end do 
+                    end do
                                        
                     theRalea = balea(j,1:(nz+2))*balea(j,1:(nz+2))
                     theDCalea = balea(j,(nz+3):2*(nz+2))*balea(j,(nz+3):2*(nz+2))                
@@ -274,25 +282,29 @@
                         xialea = 1.d0
                     end if
                     if(indic(1).eq.1) then 
-                        alphaalea = balea(j,np-nva1-nva2-1)
+                        alphaalea = balea(j,np-nva1-nva2-indic(1))
                     else 
                         alphaalea = 1.d0
                     end if
-                    etaalea = balea(j,np-nva1-nva2-2)*balea(j,np-nva1-nva2-2)
-                    thetaalea = balea(j,np-nva1-nva2-3)*balea(j,np-nva1-nva2-3)
+                    etaalea = balea(j,np-nva1-nva2-indic(1)-indic(2))*balea(j,np-nva1-nva2-indic(1)-indic(2))
+                    thetaalea = balea(j,np-nva1-nva2-1-indic(1)-indic(2))*balea(j,np-nva1-nva2-1-indic(1)-indic(2))
                     
                     call gaulagJpredfam(ss1,ss2, indID, thetaalea,alphaalea,etaalea,xialea, &
                     XbetapredRalea, XbetapredDCalea,&
                     SurvRalea,survDCalea,survDCialea, icdctime(1:npred0,iii), nrec0,nrecT(1:npred0,iii), npred0)
                     
                     predProbaalea(j) = ss1/ss2
-        !write(*,*) 'predictfam: predprobaalea(j)',j, predProbaalea(j)  
+					if(predprobaalea(j).eq.predprobaalea(j)) then 
+					kk = kk + 1
+					predprobaalea2(kk) = predprobaalea(j)
+					end if
+     !   write(*,*) 'predprobaalea(j)', predProbaalea(j),j, kk, predprobaalea2(kk)
             end do
-        !write(*,*) 'predictfam: predprobaalea, nsample', predProbaalea, nsample
+ !       write(*,*) 'predictfam: predprobaalea, nsample', predProbaalea, nsample
         ! utilisation de la fonction percentile2 de aaUseFunction
             
-            call percentile2(predProbaalea,nsample,predAlllow,predAllhigh)
-! write(*,*) 'predict: predAlllow, high', predAlllow, predAllhigh 
+            call percentile2(predProbaalea2(1:k),k,predAlllow,predAllhigh)
+!write(*,*) 'predict: predAlllow, high', predAlllow, predAllhigh 
 
             predIClow(1,iii) = predAlllow
             predIChigh(1,iii)= predAllhigh
@@ -348,7 +360,12 @@
     do j=1,nrec0
         survRfam(indID) = survRfam(indID)*survR(indID,j)**(&
         (frail*frail2**pxi)*dexp(XbetapredR(indID,j)))
+!		if(frail.eq. 4.4489365071058273E-002.and.frail2.eq. 4.4489365071058273E-002) then 
+!write(*,*) j,indID,survR(indID,j),XbetapredR(indID,j) ,(frail*frail2**pxi),survRfam(indID)
+!end if
     end do
+
+!write(*,*)indID,frail,frail2,survRfam
 
     termi =    (frail*(frail2**pxi))**nrecT(indID)
     termi1 = survDCi(1)**(((frail**palpha)*frail2)*dexp(XbetapredDC(1,indID)) )
@@ -382,8 +399,11 @@
     gui = (frail**(1.d0/ptheta -1.d0)*exp(-frail/ptheta))/(ptheta**(1.d0/ptheta)*dexp(gammaJ(1.d0/ptheta)) ) 
     gw = (frail2**(1.d0/peta -1.d0)*exp(-frail2/peta))/(peta**(1.d0/peta)*dexp(gammaJ(1.d0/peta)))  
 
-    func1predfam = term*famHistALL*gui*gw    
-    
+    func1predfam = term*famHistALL*gui*gw   
+!if(frail.eq.4.4489365071058273E-002.and.frail2.eq.0.23452611267566681) then
+	
+!write(*,*)func1predfam,term,survRfam(indID),XbetapredR(indID,1:2),XbetapredDC(1,indID)
+!end if
     return
     
     end function func1predfam
