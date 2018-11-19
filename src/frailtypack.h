@@ -260,8 +260,8 @@ void F77_SUB(somme)(double *ab, double *s, int *nboot, int *nbr, double *vOut);
 void
 F77_SUB(jointsurrogate)(int *nsujet1, int *ng, int *ntrials1, int *maxiter, int *nst,
              int *nparamfrail, int *indice_a_estime, int *param_risque_base, int *nbrevar,
-             int *filtre0, double *donnees, double *death, int *n_sim1,
-             double *EPS2, double *kappa0, int *logNormal, int *nsim_node, int *Param_kendall_boot,
+             int *filtre0, double *donnees, double *death, double *p, double *prop_i, int *n_sim1,
+             double *EPS2, double *kappa0, double *vect_kappa, int *logNormal, int *nsim_node, int *Param_kendall_boot,
              int *vrai_val_init, double *param_init, double *revision_echelle,
              int *random_generator0, int *sujet_equi, double *prop_trait, double *paramSimul,
              int *autreParamSim, double *fichier_kendall, double *fichier_R2, double *param_estimes, int *sizeVect,
