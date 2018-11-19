@@ -767,7 +767,7 @@ contains
                 else 
                     !print*,"nous ne considErons que 20 ou 32 points de quadrature pour l'integration pas", &
                  !   "par quadrature guass Laguerre"
-                    stop
+                    ! stop
             end if
     
         ss=0.d0
@@ -1054,7 +1054,7 @@ recursive function gaussHermMultMC(frail1,frail,i,k,x,w,inc) result(herm)
    ! ici on complete avec le produit matrice de cholesky de 2^r/2 de l'adaptative
    if(adaptative .and. inc .eq.(npoint**n)) then
      !print*," sub routine gaussHermMultMC, je suis dans le if fichier integrant_scl.f90"
-     stop
+     ! stop
    end if
    !!print*,"ligne 191: herm=",herm
  end function gaussHermMultMC  
@@ -1174,11 +1174,11 @@ recursive function gaussHermMultMC(frail1,frail,i,k,x,w,inc) result(herm)
     double precision:: s1,C1,c2,c3,c4,c5,vs,vt
     double precision,intent(in),dimension(:)::frail
     double precision, dimension(1,2)::m1,m3
-	double precision, dimension(:,:), allocatable::m
+    double precision, dimension(:,:), allocatable::m
 
     ! fin declaration et debut de la fonction
     
-	allocate(m(1,1))
+    allocate(m(1,1))
     n=size(frail)
     s1=0
     !calcul de c1
