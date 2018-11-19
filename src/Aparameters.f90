@@ -38,7 +38,7 @@
     integer,dimension(:,:),allocatable,save::ssg
     integer,dimension(:),allocatable,save:: mid
     integer,dimension(:,:),allocatable,save::mij,mij2
-	integer,dimension(:),allocatable,save::mij_ind
+    integer,dimension(:),allocatable,save::mij_ind
     integer,save::nbpara
     double precision,dimension(:,:),allocatable,save::aux1,aux2
     end module commun
@@ -129,8 +129,8 @@
     double precision,dimension(:,:),allocatable,save::ve
     double precision,dimension(:,:),allocatable,save::vedc
     double precision,dimension(:,:),allocatable,save::vey
-	 !*** IJ: vector of weights
-	 double precision,dimension(:),allocatable,save::wtsvec
+     !*** IJ: vector of weights
+     double precision,dimension(:),allocatable,save::wtsvec
 
 !*** donnees longitudinales
     double precision,save::vet3
