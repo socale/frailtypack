@@ -56,7 +56,8 @@
 #'    theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
 #'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, 
-#'    random.generator = 1, equi.subject = 1, prop.rand = 0.5, 
+#'    random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, 
+#'    equi.subj.trt = 1, prop.subj.trt = NULL 
 #'    theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, 
 #'    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
 #'    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
@@ -147,16 +148,19 @@
 #' @param random.generator Random number generator to use by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 #' subroutine \code{uniran()}. The default is \code{1}. 
-#' @param equi.subject A binary, that indicates if the same proportion of subjects per trial
+#' @param equi.subj.trial A binary, that indicates if the same proportion of subjects per trial
 #' should be considered in the procces of data generation (1) or not (0). In case of 
-#' different trial sizes, fill in the text file \code{subject_per_trial.txt} the proportions
-#' of subjects to be considered by trial. Noticed that in this case, the number of rows in the last 
-#' file should be equal to the number of trials. The default is \code{1}.
-#' @param prop.rand Indicates if the same proportion of treated subjects per trial should be
-#' considered \code{(0.5)} or not \code{(0)}. If \code{0}, fill in the text file 
-#' \code{treat_subject_per_trial.txt} the proportions of treated subjects 
-#' to be considered by trial. Noticed that in this case, the number of rows in the last 
-#' file should be equal to the number of trials. The default is \code{0.5}.
+#' different trial sizes, fill in \code{prop.subj.trial} the proportions
+#' of subjects to be considered per trial. The default is \code{1}.
+#' @param prop.subj.trial Vector of the proportions of subjects to be considered per trial. 
+#' Requires if \code{equi.subj.trial} is different to \code{1}. The size of this vector is equal to the 
+#' number of trials.
+#' @param equi.subj.trt Indicates if the same proportion of treated subjects per trial should be
+#' considered \code{(1)} or not \code{(0)}. If \code{0}, fill in \code{prop.subj.trt} 
+#' the proportions of treated subjects to be considered per trial. The default is \code{1}.
+#' @param prop.subj.trt Vector of the proportions of treated subjects to be considered per trial. 
+#' Requires if \code{equi.subj.trt} is different to \code{0.5}. The size of this vector is equal to the 
+#' number of trials.
 #' @param theta2 True value for \eqn{\theta}. The default is \code{3.5}.
 #' @param zeta True value for \eqn{\zeta} in case of simulation. The default is \code{1}.
 #' @param gamma.ui True value for \eqn{\gamma} in case of simulation. The default is \code{2.5}.
@@ -275,7 +279,8 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
                       nb.iterPGH = 5, nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, 
                       theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, 
                       gamma.init = 0.5, alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5,
-                      random.generator = 1, equi.subject = 1, prop.rand = 0.5,theta2 = 3.5, zeta = 1, 
+                      random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, equi.subj.trt = 1,
+                      prop.subj.trt = NULL, theta2 = 3.5, zeta = 1, 
                       gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL,
@@ -298,12 +303,13 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
     stop("argument 'true.init.val' is a Numeric that requires as value: 0,1, 2. See the help ...")
   }
   
-  if(!(prop.rand %in% c(0,0.5))){
-    stop("The argument 'prop.rand' must be set to 0 or 0.5")
+  if(!(equi.subj.trt %in% c(0,1))){
+    stop("The argument 'equi.subj.trt' must be set to 0 or 1")
   }
   
-  if(!(equi.subject %in% c(0,1))){
-    stop("The argument 'equi.subject' must be set to 0 or 1")
+  
+  if(!(equi.subj.trial %in% c(0,1))){
+    stop("The argument 'equi.subj.trial' must be set to 0 or 1")
   }
   
   if(!(random.generator %in% c(1,2))){
@@ -384,7 +390,7 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
     # simuler les donnees et preparer le fichier des kappa pour la validation croisee
     # nom du fichier pour les kappas obtenues par validation croisee
     kapa <- "kappa_valid_crois.txt"
-    kapa0 <- matrix(0,nrow = n_sim1,ncol = 2)
+    vect_kappa <- matrix(0,nrow = n_sim1,ncol = 2)
     for(j in 1:n_sim1){
       data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
                       alpha = alpha.ui, theta = theta2, gamma = gamma.ui, zeta = zeta, sigma.s = sigma.s, 
@@ -403,13 +409,13 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
       }
       
       if(print.itter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
-      kapa0[j,] <- kappa_val_croisee(don_S = donnees, don_T = death, njeu = 1, n_obs = nsujet1,
+      vect_kappa[j,] <- kappa_val_croisee(don_S = donnees, don_T = death, njeu = 1, n_obs = nsujet1,
                                      n_node = n.knots, adjust_S = 1, adjust_T = 1, kapp_0 = 0,
                                      print.times = print.itter)
       # I deleate the created text file
       file.remove(dir(pattern="kappa_valid_crois.txt"))
     }
-    utils::write.table(kapa0,"kappa_valid_crois.txt",sep=" ",row.names = F,col.names = F)
+   # utils::write.table(vect_kappa,"kappa_valid_crois.txt",sep=" ",row.names = F,col.names = F)
 
   # critere de convergence du modele on donne en entree les critere a respecter et en sortie on recupere ceux obtenue du programme
   EPS2 <- c(LIMparam, LIMlogl, LIMderiv)
@@ -468,8 +474,11 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   
   revision_echelle <- scale # coefficient pour la division des temps de suivi. permet de reduire l'echelle des temps pour eviter les problemes numeriques en cas d'un nombre eleve de sujet pour certains cluster
   # random.generator <- # generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
-  sujet_equi <- equi.subject # dit si on considere la meme proportion de sujet par essai au moment de la generation des donnee (1) ou non (0). dans ce dernier cas remplir les proportion des sujets par essai dansle fichier dedie
-  prop_trait <- prop.rand # proportion des patients traites par esssai. si 0 alors on a des proportions variables suivant les essai, remplir le fichier dedie. si non on aura le meme proportion des traites par essai
+  sujet_equi <- equi.subj.trial # dit si on considere la meme proportion de sujet par essai au moment de la generation des donnee (1) ou non (0). dans ce dernier cas remplir les proportion des sujets par essai dansle fichier dedie
+  
+  # proportion des patients traites par esssai. si 0 alors on a des proportions variables suivant les essai, remplir le fichier dedie. si non on aura le meme proportion des traites par essai
+  if(equi.subj.trt == 1) prop_trait <- 0.5
+  else prop_trait <- 0
   
   # parametres de simultation, en cas de simultation
   # gamma1 <- # parametre de la loi gamma
@@ -563,6 +572,25 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   istop <- 0 # critere d'arret: 1= le modele a converge, 2= on a attent le nombre max d'itteration, 3= echec inversion de la hessienne, 4= erreur dans les calculs 
   ziOut <- rep(0,nz+6)  # knots for baseline hazard estimated with splines
   
+  # proportion de sujet par essai
+  if(sujet_equi==1){
+    prop_i <- 1/ntrials1
+  }
+  else{
+    if(is.null(prop.subj.trial) | length(prop.subj.trial)!=ntrials1) stop("The proportion of subjects per trial are required")
+    else prop_i <- prop.subj.trial
+  }
+  
+  #proportion de sujet traites par essai
+  if(equi.subj.trt==1){
+    p <- 0.5
+  }
+  else{
+    if(is.null(prop.subj.trt) | length(prop.subj.trt)!=ntrials1) stop("The proportions of treated subjects per trial are required")
+    else p <- prop.subj.trt
+  }
+  
+  
   if(print.itter) 
     affiche.itter <- 1
   else
@@ -583,9 +611,12 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
                   as.integer(filtre0),
                   as.matrix(donnees),
                   as.matrix(death),
+                  as.double(p),
+                  as.double(prop_i),
                   as.integer(n_sim1),
                   EPS2 = as.double(c(LIMparam, LIMlogl, LIMderiv)),
                   as.double(kappa0),
+                  as.double(vect_kappa),
                   as.integer(logNormal),
                   nsim_node = as.integer(nsim_node),
                   as.integer(Param_kendall_boot),
@@ -665,8 +696,9 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   #   #               "Taux_kendall_bootst.txt", "true.txt", "kappa_valid_crois.txt"))
   # }
   
-  file.remove(c("kappa_valid_crois.txt", "true.txt", "surrogate.txt", "outjoint"))
-  try(file.remove("OutJoint_Result_surrogate.txt"))
+  # file.remove(c("true.txt", "surrogate.txt", "outjoint"))
+  # try(file.remove("OutJoint_Result_surrogate.txt"))
+  # try(file.remove("kappa_valid_crois.txt"))
   
   class(result) <- "jointSurroPenalSimul"
   
