@@ -1146,7 +1146,7 @@ end function table_essai
       nbou2=0
       ficpar='joint2.inf'
       !open(2,file=ficpar)
-      open(4,file='outjoint')
+      !open(4,file='outjoint')
       
       !read(2,*)ng
       !read(2,*)nrecurr !nb de dobservations recurrentes max par sujet
@@ -1619,7 +1619,7 @@ end function table_essai
         endif
     deallocate(tempsD)
     !close(2)
-    close(4)
+    !close(4)
 endsubroutine generation_Gamma !FIN prog principal
 
 
@@ -1847,7 +1847,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
       nb_echecor=0
       nbou2=0
       ficpar='joint2.inf'
-      open(4,file='outjoint')
+      ! open(4,file='outjoint')
       
       nrecurr=1
       nbou=1
@@ -2350,7 +2350,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
         endif
     deallocate(tempsD,sigma,mu,x_)
     !close(2)
-    close(4)
+    !close(4)
 endsubroutine Generation_surrogate !FIN prog principal
 
 !==============================================================================================================================
@@ -3234,31 +3234,32 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     !!print*,vi
     if (ier.eq.-1) then
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
-        stop
-    end if
+        !stop
+    else ! ysim sera un vecteur de 0
      
-    VC=0.d0
-    do j=1,maxmes
-        do k=1,j
-            VC(j,k)=Vi(k+j*(j-1)/2)
-        end do
-    end do    
-    
-    ! --------------------- Generation des donnees ------------------------
-    ymarg=0.d0
-    !!print*,vc
-    !stop
-    l=1
-    do while(l.le.nsim)
-        usim=0.d0
-        do m=1,maxmes
-            SX=1.d0
-            call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
-        end do
-        ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
-        l=l+1
-    end do
-        
+		VC=0.d0
+		do j=1,maxmes
+			do k=1,j
+				VC(j,k)=Vi(k+j*(j-1)/2)
+			end do
+		end do    
+		
+		! --------------------- Generation des donnees ------------------------
+		ymarg=0.d0
+		!!print*,vc
+		!stop
+		l=1
+		do while(l.le.nsim)
+			usim=0.d0
+			do m=1,maxmes
+				SX=1.d0
+				call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
+			end do
+			ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
+			l=l+1
+		end do
+	endif
+			
     deallocate(vi,usim,vc)
     return
 end subroutine rmvnorm
@@ -3289,18 +3290,17 @@ subroutine Cholesky_Factorisation(vc)
          
     EPS=10.d-10
     CALL DMFSD(Vi,maxmes,eps,ier)! fonction qui fait la factorisation de cholesky
-
+    VC=0.d0
     if (ier.eq.-1) then
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
-        stop
-    end if
-     
-    VC=0.d0
-    do j=1,maxmes
-        do k=1,j
-            VC(j,k)=Vi(k+j*(j-1)/2)
-        end do
-    end do    
+        ! stop
+    else ! on retourne un vecteur de 0 car pas possible de transformer
+		do j=1,maxmes
+			do k=1,j
+				VC(j,k)=Vi(k+j*(j-1)/2)
+			end do
+		end do    
+	end if
     
 end subroutine Cholesky_Factorisation
 
