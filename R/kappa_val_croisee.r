@@ -2,31 +2,31 @@
 # fonction pour l'estimation des kappa pour le risque de base par validation croisee
 #==================================================================================
 
-#'Used to estimate smoothing parameters using cross-validation
-#'
-#'Function used to estimated smoothing parameters associated with the surrogate endpoint and the 
-#'true endpoint by cross-validation. Are used two separate cox proportional hazard models.
-#'This function created a file named \bold{kappa_val_croisee.txt} which contains the obtained
-#'smoothing parameters. This is particularly useful when doing simulations study
-#' 
-#' @aliases kappa_val_croisee
-#' @param don_S h
-#' @param don_T h
-#' @param njeu h
-#' @param n_obs h
-#' @param n_node h
-#' @param adjust_S h
-#' @param adjust_T h
-#' @param kapp_0 h
-#' @param kappa_1 h
-#' @param kappa_2 h
-#' @param print.times h
-#'
-#' @return Create a text file named \bold{kappa_val_croisee.txt} in the work directory containing 
-#' all estimated smoothing parameters. in addition, this function return an equivalent dataframe
-#' of two coluumns for kappa associated with the surrogate endpoint and the true endpoint.
-#'
-#' 
+#Used to estimate smoothing parameters using cross-validation
+#
+#Function used to estimated smoothing parameters associated with the surrogate endpoint and the 
+#true endpoint by cross-validation. Are used two separate cox proportional hazard models.
+#This function created a file named \bold{kappa_val_croisee.txt} which contains the obtained
+#smoothing parameters. This is particularly useful when doing simulations study
+# 
+# @aliases kappa_val_croisee
+# @param don_S h
+# @param don_T h
+# @param njeu h
+# @param n_obs h
+# @param n_node h
+# @param adjust_S h
+# @param adjust_T h
+# @param kapp_0 h
+# @param kappa_1 h
+# @param kappa_2 h
+# @param print.times h
+#
+# @return Create a text file named \bold{kappa_val_croisee.txt} in the work directory containing 
+# all estimated smoothing parameters. in addition, this function return an equivalent dataframe
+# of two coluumns for kappa associated with the surrogate endpoint and the true endpoint.
+#
+# 
 kappa_val_croisee=function(don_S, don_T, njeu, n_obs, n_node = 6, adjust_S = 1, adjust_T = 1,
                            kapp_0 = 100, kappa_1 = 955000, kappa_2 = 975000, print.times = T){
   # don_S et don_T: les "njeu" jeux de donnees pour lesquelles il faut estimer les kappa, toutes dans un seul jeu de donnees
