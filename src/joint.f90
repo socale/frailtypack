@@ -39,8 +39,8 @@
     integer,dimension(4),intent(in)::mtaille
     integer, dimension(2), intent(in)::noVar, nbinterv0, indices0 !IJ: removed ngrp; Myriam : noVar = [noVar1, noVar2] ; nbinterv0 = [nbintervR00, nbintervDC0] ; indices0 = [indic_alpha0, indic_xi0]
     integer, dimension(3), intent(in)::ngrp !IJ: modification to ML's earlier comment: ngrp = [nbsubclust,nbclust,nstrata];
-	integer,intent(in)::nsujet0, nz0,nva10,nva20,lignedc0, initialize !ag0
-	 double precision,dimension(nz0+6),intent(out)::ziOut
+    integer,intent(in)::nsujet0, nz0,nva10,nva20,lignedc0, initialize !ag0
+     double precision,dimension(nz0+6),intent(out)::ziOut
     integer::np,equidistant
     integer,dimension(nsujet0),intent(in)::groupe0,ic0,ordretmp
     integer,dimension(ngrp(1)),intent(in)::icdc0, fam0 
@@ -140,7 +140,7 @@
     ng0 = ngrp(1)
     nfam0 = ngrp(2)
     nstRecAux = ngrp(3) !IJ
-	noVar1 = noVar(1)
+    noVar1 = noVar(1)
     noVar2 = noVar(2)
     
     ier = IerIstop(1)
@@ -169,7 +169,7 @@
 
     allocate(filtretps(nva10),filtre2tps(nva20))
     allocate(betatps(nva10),betatps2(nva20))
-	allocate(wtsvec(ng0))
+    allocate(wtsvec(ng0))
     filtretps = filtretps0(1:nva10)
     filtre2tps = filtretps0(nva10+1:nva10+nva20)
 
@@ -231,7 +231,7 @@
     nb0recu = 0
     moyrecu =0.d0
 
-	wtsvec=wtsvec0 !IJ
+    wtsvec=wtsvec0 !IJ
     ngmax=ng0                !!!!!!!!!!!!! FB comment
     ng=ng0                   !!!!!!!!!!!!! FB comment
     ngtemp=ng0
@@ -262,7 +262,7 @@
 
       allocate(nig(ngtemp),nigdc(ng))
   if(typeJoint.eq.3)allocate(fsize(nfam),fam(ng))
-	shapeweib = 0.d0
+    shapeweib = 0.d0
     scaleweib = 0.d0
     allocate(etaT(nstRecAux),betaT(nstRecAux))
     etaT = 0.d0 !Myriam
@@ -2001,8 +2001,8 @@ end if
 !     endif
 
     deallocate(nig,cdc,t0dc,t1dc,aux1,aux2,res1,res4,res3,mi,t0,t1,tU,c,stra,g,resL,resU,res5)
-	if(typeJoint.eq.3)deallocate(fam, fsize)
-	deallocate(aux,vax,vaxdc,ve,vedc)
+    if(typeJoint.eq.3)deallocate(fam, fsize)
+    deallocate(aux,vax,vaxdc,ve,vedc)
     deallocate(hess,v,I1_hess,H1_hess,I2_hess,H2_hess,HI2,HIH,IH,HI,BIAIS,date,datedc)
     deallocate(ResidusRec,Residusdc,Rrec,Nrec,Rdc,Ndc,vuu,ve1,ve2)
     deallocate(the1,the2,nigdc,gsuj)
