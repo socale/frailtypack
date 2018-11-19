@@ -386,24 +386,31 @@ module InverseMatrix
 
     ! quantile d'ordre 2.5%
     a=(n-1)*0.025d0
-    b=mod(a,1.0d0)
+    ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
+	b = a - int(a)
     c=a-b
     ib=int(c)
     t25= (1-b)*t(ib+1)+b*t(ib+2)
 
     ! quantile d'ordre 97.5%
     a=(n-1)*0.975d0
-    b=mod(a,1.0d0)
+    ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
+	b = a - int(a)
     c=a-b
     ib=int(c)
     t975= (1-b)*t(ib+1)+b*t(ib+2)
     
     ! quantile d'ordre q%
     a=(n-1)*dble(q)
-    b=mod(a,1.0d0)
+    ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
+	b = a - int(a)
     c=a-b
-    ib=int(c)
-    tq= (1-b)*t(ib+1)+b*t(ib+2)
+	ib=int(c) ! pb: si q = 1, ib = n-1 et donc ib + 2 =n + 1 > n pour la dimension de t
+	if(ib <= n-2)then
+		tq = (1-b)*t(ib+1)+b*t(ib+2)
+	else
+		tq = t(n) ! l'on suppose ici qu'on cherche le 100th percentile de la serie, ce qui est normale car dans ce cas, q est tres proche de 1
+	endif
 
     end subroutine percentile_scl
    
