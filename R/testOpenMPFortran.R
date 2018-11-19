@@ -1,28 +1,28 @@
 
-#' Used to teste pactice use of OpenMP with Fortran code in an R package.
-#' 
-#' In this function we test a call of a fortran subroutine in a R package. we therefore compute a sum of two numbers 
-#' using a fortran subroutine. In addition, we test the use of OpenMP by compute an arithmetic Sequences with first term 1 
-#' and the commun difference 1. 
-#'
-#' @aliases testOpenMPFortran
-#' @usage testOpenMPFortran(a,b,nboot,nbThread,stat=T)
-#' @param a The first term of the sum
-#' @param b The second term of the sum
-#' @param nboot The maximum term of the sequence 
-#' @param nbThread The number of thread to used in the OpenMP procedure
-#' @param stat A logical specifying if you want to print the result of the sum on screen or not
-#'
-#' @keywords Fortran OpenMP R
-#' @author Casimir Ledoux SOFEU <scl.ledoux@gmail.com>
-#' 
-#' @seealso \code{\link{evalOpenMPFortran}}
-#' @examples 
-#' 
-#' \dontrun{
-#' frailtypack:::testOpenMPFortran(2,4,10000,10,stat=T)
-#' 
-#' }
+# Used to teste pactice use of OpenMP with Fortran code in an R package.
+# 
+# In this function we test a call of a fortran subroutine in a R package. we therefore compute a sum of two numbers 
+# using a fortran subroutine. In addition, we test the use of OpenMP by compute an arithmetic Sequences with first term 1 
+# and the commun difference 1. 
+#
+# @aliases testOpenMPFortran
+# @usage testOpenMPFortran(a,b,nboot,nbThread,stat=T)
+# @param a The first term of the sum
+# @param b The second term of the sum
+# @param nboot The maximum term of the sequence 
+# @param nbThread The number of thread to used in the OpenMP procedure
+# @param stat A logical specifying if you want to print the result of the sum on screen or not
+#
+# @keywords Fortran OpenMP R
+# @author Casimir Ledoux SOFEU <scl.ledoux@gmail.com>
+# 
+# @seealso \code{\link{evalOpenMPFortran}}
+# @examples 
+# 
+# \dontrun{
+# frailtypack:::testOpenMPFortran(2,4,10000,10,stat=T)
+# 
+# }
 testOpenMPFortran = function(a,b,nboot,nbThread,stat=T){
   if(stat) print(paste("voila ce que vous avez passe en parametre: a=", a, "b=", b,sep=""))
   vOut=c(0,0,0)
