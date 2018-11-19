@@ -1277,7 +1277,7 @@
         res01(effet+1)=res
 
 ! --------------  Lambda and survival estimates JRG January 05
-	nstRec = 1 ! scl 30/10/2018 
+    nstRec = 1 ! scl 30/10/2018 
     select case(typeof)
         case(0)
             call distanceJsplines(nz1,nz2,b,mt1,mt2,x1Out,lamOut,suOut,x2Out,lam2Out,su2Out)
@@ -1309,12 +1309,12 @@
             H_hessOut(ss,sss)= H_hess(ss,sss)
         end do
     end do
-	! call dblepr("H_hessOut(17,17):", -1, H_hessOut(17,17), 1)
+    ! call dblepr("H_hessOut(17,17):", -1, H_hessOut(17,17), 1)
 
 !!print*,"covar=======================3="    
 !Ouverture du fichiers resultat
 
-open(5,file='OutJoint_Result_surrogate.txt')
+! open(5,file='OutJoint_Result_surrogate.txt')
 if (istop.ne.1) then
     !write(*,*)"ERREUR : LE MODELE N'A PAS CONVERGE. Istop=",istop
     !write(5,*)"ERREUR : LE MODELE N'A PAS CONVERGE. Istop=",istop
@@ -1487,7 +1487,7 @@ endif
         !write(5,*)'======== AIC :',LCV(2)
     end if
 
-close(5)
+! close(5)
 goto 12345
 
 1000 continue
