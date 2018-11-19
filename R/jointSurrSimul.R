@@ -37,12 +37,12 @@
 #' with a shared individual frailty effect (Rondeau, 2007), 1 = joint surrogate model with shared frailty 
 #' effects \eqn{u_i} and \eqn{\omega_{ij}}, and two correlated random effects treatment-by-trial interaction 
 #' \eqn{(v_{S_i},v_{T_i})} as described in Sofeu et al. (2018).
-#' @param equi.subj.trial A binary variable that indicates if the same proportion of subjects should be included by trial (1) 
-#' or not (0). If 0, the proportions of subject by trial are required in parameter \code{prop.subj.trial}.
-#' @param equi.subj.trt A binary variable that indicates if the same proportion of subjects is randomized by trial (1) 
-#' or not (0). If 0, the proportions of subject by trial are required in parameter \code{prop.subj.trt}.
-#' @param prop.subj.trial The proportions of subjects by trial if \code{equi.subj.trial=0}.
-#' @param prop.subj.trt The proportions of randomized subject per trial if \code{equi.subj.trt=0}.
+#' @param equi.subj.trial A binary variable that indicates if the same proportion of subjects should be included per trial (1) 
+#' or not (0). If 0, the proportions of subject per trial are required in parameter \code{prop.subj.trial}.
+#' @param equi.subj.trt A binary variable that indicates if the same proportion of subjects is randomized per trial (1) 
+#' or not (0). If 0, the proportions of subject per trial are required in parameter \code{prop.subj.trt}.
+#' @param prop.subj.trial The proportions of subjects per trial. Requires if \code{equi.subj.trial=0}.
+#' @param prop.subj.trt The proportions of randomized subject per trial. Requires if \code{equi.subj.trt=0}.
 #' @param full.data Specified if you wan the function to return the full dataset (1), including the random effects, 
 #' or the restictive dataset (0) with \code{7} columns required for the function \code{\link{jointSurroPenal}}.
 #' @param random.generator Random number generator to use by the Fortran compiler, 
