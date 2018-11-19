@@ -42,7 +42,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     character(len=30),dimension(5)::NomFichier
     double precision, intent(in)::prop_trait,revision_echelle
     integer, dimension(5), intent(in)::sizeVect
-    double precision, dimension(ntrials1),allocatable::p,prop_i
+    double precision, dimension(ntrials1), intent(in)::p,prop_i
     double precision,dimension(ng,2), intent(in):: vect_kappa
     
     ! ! =====Parametres fournies en sortie par la subroutine=====
@@ -1307,11 +1307,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 2001 continue
     if(kapa_use.ne.0) then ! on usilise un nouveau kappa pour chaque jeu de donnees
         !if(une_donnee.ne.1 .or. donne_reel .ne.1)read(15,*)ax1,ax2 ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
-        if(une_donnee.ne.1 .or. donne_reel .ne.1){
+        if(une_donnee.ne.1 .or. donne_reel .ne.1)then
             ax1 = vect_kappa(indice_kapa,1)
             ax2 = vect_kappa(indice_kapa,2)
             indice_kapa = indice_kapa+1 ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
-        }
+        end if
         k0(1)=ax1
         k0(2)=ax2
         k0_save=k0
@@ -1334,11 +1334,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     else
         if((s_i.eq.1).or.((statut_kappa1==0).and.(ind_rech<=n_sim))) then !on considere le premier kappa qui marche pour toute les simul
             !if(une_donnee.ne.1 .or. donne_reel .ne.1) read(15,*)ax1,ax2  ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
-            if(une_donnee.ne.1 .or. donne_reel .ne.1){
+            if(une_donnee.ne.1 .or. donne_reel .ne.1)then
                 ax1 = vect_kappa(indice_kapa,1)
                 ax2 = vect_kappa(indice_kapa,2) 
                 indice_kapa = indice_kapa +1! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
-            }
+             end if
             k0(1)=ax1
             k0(2)=ax2
             k0_save=k0
@@ -2396,7 +2396,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     v_chap_kendall=0.d0
                     t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma)/) ! parametres necessaire: theta, gamma, zeta, alpha
                     v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,rangparam_gamma)/)
-                    v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)/)                    
+                    v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)/)
                 else ! on estime au moins un des deux
                     if(indice_alpha==1 .and. indice_eta == 1)then !on estime les deux
                         t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_eta),b(rangparam_alpha)/) ! parametres necessaire: theta, gamma, zeta, alpha
