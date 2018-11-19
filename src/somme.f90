@@ -16,7 +16,7 @@ subroutine somme(ab,s,nboot,nbr,vOut)
     a=ab(1)
     b=ab(2)
     s=a+b
-    open(2,file="testResult.txt")
+    !open(2,file="testResult.txt")
     !write(2,*)"resultat de la somme=", s
     
     num_thread=0
@@ -49,5 +49,5 @@ subroutine somme(ab,s,nboot,nbr,vOut)
     !$OMP end parallel DO
     !call dblepr("la somme totale vaut", -1, c, 1) ! pour afficher un reel double precision
     
-  close(2)
+  !close(2)
 endsubroutine somme
