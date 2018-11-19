@@ -35,7 +35,7 @@
     double precision,dimension(0:ndatemax,nstRec)::ut1T
     double precision,dimension(0:ndatemaxdc)::ut2
     double precision::int,gammaJ
-	
+    
     
     kkapa=k0
     choix=0
@@ -69,7 +69,7 @@
         end if
     end do
     
-	if(effet.eq.1) then
+    if(effet.eq.1) then
         theta = bh(np-nva-indic_ALPHA)*bh(np-nva-indic_ALPHA)
         if (indic_alpha.eq.1) then ! new : joint more flexible alpha = 1 
             alpha = bh(np-nva)
@@ -294,13 +294,13 @@
             res= res + wtsvec(index)*(res2(index) &
             + res2dc(index)  &
             - gammaJ(1./theta)-dlog(theta)/theta  &
-        	+ dlog(integrale3(index))) ! IJ: weighted each individual likelihood contribution
-       	endif
-    	if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+            + dlog(integrale3(index))) ! IJ: weighted each individual likelihood contribution
+           endif
+        if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
 !            print*,"here",k,res2(k),res2dc(k),gammaJ(1./theta),dlog(theta),dlog(integrale3(k))
-        	funcpajsplinesindiv=-1.d9
-        	goto 123
-    	end if
+            funcpajsplinesindiv=-1.d9
+            goto 123
+        end if
     endif
 
     resnonpen = res
