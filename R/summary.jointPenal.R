@@ -52,7 +52,7 @@
       
         z<-abs(qnorm((1-level)/2))
         co <- x$coef
-        se <- sqrt(diag(x$varH))[-c(1:2)]
+        se <- sqrt(diag(x$varH))[-c(1:(1+x$indic_alpha))]
         or <- exp(co)
         li <- exp(co-z * se)
         ls <- exp(co+z * se)
