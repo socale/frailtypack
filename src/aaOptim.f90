@@ -17,9 +17,9 @@
      double precision::fctnames
 
       end subroutine marq98j
-	  
-	  ! IJ 2018 NCC design
-	  subroutine marq98jAlt(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames,fctnamesindiv)
+      
+      ! IJ 2018 NCC design
+      subroutine marq98jAlt(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames,fctnamesindiv)
          integer,intent(in) :: m,effet
          integer,intent(inout)::ni,ier,istop
          double precision,dimension(m*(m+3)/2),intent(out)::v
@@ -40,8 +40,8 @@
     double precision,external::fctnames
       end subroutine derivaJ
 
-	  !IJ 2018 NCC design
-	  	subroutine derivaJindiv(b,m,vindiv,rl,k0,index,fctnamesindiv)
+      !IJ 2018 NCC design
+          subroutine derivaJindiv(b,m,vindiv,rl,k0,index,fctnamesindiv)
         integer,intent(in)::m,index
     double precision,dimension(2)::k0
         double precision,intent(inout)::rl
@@ -2010,9 +2010,9 @@
     
     ! IJ: initialize I_hess (for summing each element)
     do i=1,m
-    	do j=1,m
-    		I_hess(i,j)=0.d0
-    	end do
+        do j=1,m
+            I_hess(i,j)=0.d0
+        end do
     end do
     
     !write(*,*) "initialized I_hess"
@@ -2020,22 +2020,22 @@
     ! IJ: compute matrix summing the outer products of the score vectors
     ! for each individual (group)
     do sub=1,ng 
-    	!write(*,*) sub
-    	! compute ONLY first derivatives of the individual contribution to the likelihood for subject sub 
-    	call derivaJindiv(b,m,vindiv,rl,zero,sub,fctnamesindiv)
-    	!write(*,*) "indiv deriv computed"
-		! add each term of the outer product to the appropriate slot (upper triangular matrix)
-    	do i=1,m
-    		do j=i,m
-    			I_hess(i,j)=I_hess(i,j)+(vindiv(i)*vindiv(j))
-    		end do
-    	end do	
-    	!write(*,*) I_hess(1,1)
-    end do		
+        !write(*,*) sub
+        ! compute ONLY first derivatives of the individual contribution to the likelihood for subject sub 
+        call derivaJindiv(b,m,vindiv,rl,zero,sub,fctnamesindiv)
+        !write(*,*) "indiv deriv computed"
+        ! add each term of the outer product to the appropriate slot (upper triangular matrix)
+        do i=1,m
+            do j=i,m
+                I_hess(i,j)=I_hess(i,j)+(vindiv(i)*vindiv(j))
+            end do
+        end do    
+        !write(*,*) I_hess(1,1)
+    end do        
     
     !write(*,*) "finished upper triangle of matrix"
 
-	! fill in lower triangle of I_hess
+    ! fill in lower triangle of I_hess
     do i=2,m
         do j=1,i-1
             I_hess(i,j)=I_hess(j,i)
@@ -2078,7 +2078,7 @@
 !                          DERIVA INDIV - IJ
 !------------------------------------------------------------
 
-		! first derivatives only
+        ! first derivatives only
     subroutine derivaJindiv(b,m,vindiv,rl,k0,index,fctnamesindiv)
     !use comon,only:nst,k0T
     use comon,only:model,nstRec, indic_tronc
@@ -2136,9 +2136,9 @@
         end do
                 
         if (endDeriva.eqv..false.) then
-			!k=0
-			!m1=m*(m+1)/2
-			!ll=m1
+            !k=0
+            !m1=m*(m+1)/2
+            !ll=m1
             do i=1,m
                 !print*, "deuxieme boucle DERIVAj, tour",i," :"
                 !ll=ll+1
@@ -2169,8 +2169,8 @@
 
     
 
-	
-	
+    
+    
     end module optim
 
 
