@@ -865,7 +865,12 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
   # print(dim(H_hessOut))
   # print(sizeVect)
   # stop("pour test")
+  # proportion de sujet par essai
+  prop_i <- rep(1/ntrials1, ntrials1)
+  #proportion de sujet traites par essai
+  p <- rep(0.5, ntrials1)
   
+  vect_kappa <- matrix(0,nrow = n_sim1, ncol = 2)
   
   if(print.itter) 
     affiche.itter <- 1
@@ -887,9 +892,12 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
                   as.integer(filtre0),
                   as.matrix(donnees),
                   as.matrix(death),
+                  as.double(p),
+                  as.double(prop_i),
                   as.integer(n_sim1),
                   EPS2 = as.double(c(LIMparam, LIMlogl, LIMderiv)),
                   as.double(kappa0),
+                  as.double(vect_kappa),
                   as.integer(logNormal),
                   nsim_node = as.integer(nsim_node),
                   as.integer(Param_kendall_boot),
@@ -1020,9 +1028,9 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
   # SI L'ON N'EST PAS EN SIMULATION, PENSER A SUPPRIMER LES FICHIERS CREES+++
   # =====================++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  file.remove(c("true.txt", "surrogate.txt", "outjoint"))
-  try(file.remove("OutJoint_Result_surrogate.txt"))
-  try(file.remove("kappa_valid_crois.txt"))
+  # file.remove(c("true.txt", "surrogate.txt", "outjoint"))
+  # try(file.remove("OutJoint_Result_surrogate.txt"))
+  # try(file.remove("kappa_valid_crois.txt"))
   
   if(!is.na(result$n.iter)) class(result) <- "jointSurroPenal"
   
