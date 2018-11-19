@@ -3428,10 +3428,10 @@ end subroutine Cholesky_Factorisation
 !to convert the matrix into upper traingular form
 !2]The determinant of a triangular matrix is obtained by finding the product of the diagonal elements
 !
-double precision FUNCTION Determinant(matrix, n)
+double precision FUNCTION Determinant(matrix,n)
     IMPLICIT NONE
-    double precision, DIMENSION(n,n) :: matrix,matrix2
     INTEGER, INTENT(IN) :: n
+    double precision, DIMENSION(n,n) :: matrix,matrix2
     double precision :: m, temp
     INTEGER :: i, j, k, l
     LOGICAL :: DetExists = .TRUE.
@@ -3477,8 +3477,8 @@ END FUNCTION Determinant
 ! nouvelle definition avec un nouveau nombre
 double precision FUNCTION Determinant_2(matrix, n)
     IMPLICIT NONE
-    double precision, DIMENSION(n,n) :: matrix,matrix2
     INTEGER, INTENT(IN) :: n
+    double precision, DIMENSION(n,n) :: matrix,matrix2
     double precision :: m, temp
     INTEGER :: i, j, k, l
     LOGICAL :: DetExists = .TRUE.
