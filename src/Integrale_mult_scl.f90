@@ -1952,7 +1952,7 @@ recursive function gaussHermMult(func,frail1,frail,i,k,x,w,inc) result(herm)
    ! ici on complete avec le produit matrice de cholesky de 2^r/2 de l'adaptative
    if(adaptative .and. inc .eq.(npoint**n)) then
      !print*," sub routine gaussHermMult, je suis dans le if fichier integrale_mult_scl.f90"
-     stop
+     ! stop
    end if
  end function gaussHermMult  
 
@@ -2015,7 +2015,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
    ! ici on complete avec le produit matrice de cholesky de 2^r/2 de l'adaptative
    if(adaptative .and. inc .eq.(npoint**n)) then
      !print*," sub routine gaussHermMultGen, je suis dans le if fichier integrale_mult_scl.f90"
-     stop
+     ! stop
    end if
  end function gaussHermMultGen
  
@@ -2086,7 +2086,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
    ! ici on complete avec le produit matrice de cholesky de 2^r/2 de l'adaptative
    if(adaptative) then
           !print*," sub routine gaussHermMult, je suis dans le if fichier integrale_mult_scl.f90"
-     stop
+     ! stop
    end if
     gauss_HermMult=herm
     return
