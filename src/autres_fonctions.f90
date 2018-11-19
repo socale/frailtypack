@@ -1284,7 +1284,7 @@ end function table_essai
         
         if(Aretenir>nbou) then
             !print*,"l'indice du jeu de données à retenitr doit etre inferieure aunombre de simulation"
-            stop
+            !stop
         endif
 !c         !write(*,*),'lissage',k0(1)
 !c         !write(*,*),'lissage2',k0(2)
@@ -1944,7 +1944,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
         
     if(Aretenir>nbou) then
         !print*,"l'indice du jeu de données à retenitr doit etre inferieure au nombre de simulation"
-        stop
+        !stop
     endif
 
 
@@ -2161,7 +2161,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
     if (lognormal==0)then ! Gamma
         !print*,"generation gamma avec 2 effets aleatoires correles au niveau essai non encore", &
           !      "implementee suis au probleme de la loi gamma multivariee"
-        stop
+        !stop
     else ! lognormale
         !ui represente les w_ij dans cette expression
         if(frailt_base==1) then ! on tient en compte les u_i
@@ -3531,7 +3531,7 @@ END FUNCTION Determinant_2
     if (size(mat,2).ne.3) then
         !print*,"desole ce programme n'est utilisé que pour des matrices carrées d'ordre 3"
         resul=-1.d9
-        stop
+        !stop
     else
         resul=mat(1,1)*(mat(2,2)*mat(3,3)-mat(3,2)*mat(2,3))&
               -mat(2,1)*(mat(1,2)*mat(3,3)-mat(3,2)*mat(1,3))&
