@@ -10,8 +10,8 @@ double precision, dimension(nrow), intent(out)::som
 integer::i
 
 do i=1,nrow
-	! som(i)=tt0(i)+tt1(i)+delta(i)+trialref(i)+patientref(i)+trt(i)
-	som(i)=sum(donnee(i,:))
+    ! som(i)=tt0(i)+tt1(i)+delta(i)+trialref(i)+patientref(i)+trt(i)
+    som(i)=sum(donnee(i,:))
 enddo
 
 endsubroutine test
