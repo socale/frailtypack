@@ -1,18 +1,18 @@
 # contient les integrans
 
-#' Integrant pour le calcul du taux de kendall pour le modele conjoint de validation d'un 
-#' critere de substitution, en utilisant R
-#'
-#' @param w f
-#' @param wp f
-#' @param u f
-#' @param up f
-#' @param theta f
-#' @param gamma f
-#' @param alpha f
-#' @param eta f
-#' @param ui f
-#' 
+# Integrant pour le calcul du taux de kendall pour le modele conjoint de validation d'un 
+# critere de substitution, en utilisant R
+#
+# @param w f
+# @param wp f
+# @param u f
+# @param up f
+# @param theta f
+# @param gamma f
+# @param alpha f
+# @param eta f
+# @param ui f
+# 
 funcJointSurroKendall <- function(u, w, up, wp, theta, gamma, alpha, eta, ui = 1){
   if(ui==1){
     num <- (exp(w + u + eta * w + alpha * u) + exp(wp + up + eta * wp + alpha * up)) *
