@@ -6,7 +6,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           filtre0,donnees,death,n_sim1,EPS2,kappa0,logNormal,nsim_node,Param_kendall_boot,&
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
-						  LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter)
+                          LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter)
                           
     ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
@@ -26,7 +26,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer, dimension(3),intent(in)::nbrevar
     integer,dimension(10), intent(inout)::nsim_node
     integer,intent(in)::nsujet1,ng,ntrials1,nst,maxiter,nparamfrail,n_sim1,logNormal,vrai_val_init,random_generator0,sujet_equi,&
-	                    affiche_itter
+                        affiche_itter
                         
     integer,dimension(5),intent(in)::indice_a_estime
     integer,dimension(5),intent(in):: param_risque_base
@@ -47,7 +47,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer, intent(out):: ni, istop, ier
     double precision,dimension(n_sim1,3), intent(out):: fichier_kendall,fichier_R2
     double precision,dimension(n_sim1,24),intent(out):: param_estimes
-	double precision,dimension(sizeVect(1)), intent(out)::b
+    double precision,dimension(sizeVect(1)), intent(out)::b
     double precision,dimension(2), intent(out)::LCV
     double precision,dimension(sizeVect(2)), intent(out)::x1Out
     double precision,dimension(sizeVect(3)), intent(out)::x2Out
@@ -685,8 +685,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! read(5,*)nbre_sim    ! dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
     ! read(5,*)graine    ! dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
     ! close(5) ! fermeture du fichier des parametres
-    open(9,file="surrogate.txt")
-    open(16,file="true.txt")
+    ! open(9,file="surrogate.txt")
+    ! open(16,file="true.txt")
 
     sigmast_vrai=rsqrt*dsqrt(sigma_s)*dsqrt(sigma_t)
     thetast_vrai=rsqrt_theta*dsqrt(theta2)*dsqrt(theta2_t)
@@ -2617,7 +2617,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             
             997 continue
             !write(11,*,iostat=erreur_fichier)parametre_estimes(s_i-nbre_rejet,:)
-			param_estimes(s_i,:) = parametre_estimes(s_i-nbre_rejet,:)
+            param_estimes(s_i,:) = parametre_estimes(s_i-nbre_rejet,:)
             if(erreur_fichier .ne.0) then
                 ! if(rang_proc==0) !print*,"ATTENTION!! erreur d'ecriture des parametres estimes dans le fichier de sortie",&
                 ! "oninsiste jusqu'a l'ecriture"
@@ -3609,8 +3609,8 @@ end do
     !close(20)
     ! close(7)
     !close(8)
-    close(9)
-    close(16)
+    ! close(9)
+    ! close(16)
     ! close(12)
     !close(13)
     !!print*,"suis là=================1"
