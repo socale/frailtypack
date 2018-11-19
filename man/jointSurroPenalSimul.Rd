@@ -14,7 +14,8 @@ jointSurroPenalSimul(maxit=40, indice.zeta = 1,
    theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, 
-   random.generator = 1, equi.subject = 1, prop.rand = 0.5, 
+   random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, 
+   equi.subj.trt = 1, prop.subj.trt = NULL 
    theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, 
    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
@@ -136,17 +137,22 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 subroutine \code{uniran()}. The default is \code{1}.}
 
-\item{equi.subject}{A binary, that indicates if the same proportion of subjects per trial
+\item{equi.subj.trial}{A binary, that indicates if the same proportion of subjects per trial
 should be considered in the procces of data generation (1) or not (0). In case of 
-different trial sizes, fill in the text file \code{subject_per_trial.txt} the proportions
-of subjects to be considered by trial. Noticed that in this case, the number of rows in the last 
-file should be equal to the number of trials. The default is \code{1}.}
+different trial sizes, fill in \code{prop.subj.trial} the proportions
+of subjects to be considered per trial. The default is \code{1}.}
 
-\item{prop.rand}{Indicates if the same proportion of treated subjects per trial should be
-considered \code{(0.5)} or not \code{(0)}. If \code{0}, fill in the text file 
-\code{treat_subject_per_trial.txt} the proportions of treated subjects 
-to be considered by trial. Noticed that in this case, the number of rows in the last 
-file should be equal to the number of trials. The default is \code{0.5}.}
+\item{prop.subj.trial}{Vector of the proportions of subjects to be considered per trial. 
+Requires if \code{equi.subj.trial} is different to \code{1}. The size of this vector is equal to the 
+number of trials.}
+
+\item{equi.subj.trt}{Indicates if the same proportion of treated subjects per trial should be
+considered \code{(1)} or not \code{(0)}. If \code{0}, fill in \code{prop.subj.trt} 
+the proportions of treated subjects to be considered per trial. The default is \code{1}.}
+
+\item{prop.subj.trt}{Vector of the proportions of treated subjects to be considered per trial. 
+Requires if \code{equi.subj.trt} is different to \code{0.5}. The size of this vector is equal to the 
+number of trials.}
 
 \item{theta2}{True value for \eqn{\theta}. The default is \code{3.5}.}
 
