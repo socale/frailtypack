@@ -937,8 +937,8 @@
                     
                     ! sauvegarde des resultats dans les fichiers
                     
-                    open(20,file='Prediction_wij_chapeau.txt')
-                    open(21,file='Prediction_vsi_vti_chapeau.txt')
+                    ! open(20,file='Prediction_wij_chapeau.txt')
+                    ! open(21,file='Prediction_vsi_vti_chapeau.txt')
                     
                     !!print*,"impression des frailties au individuel dans le fichier Prediction_wij_chapeau"
                     !write(20,*)"sujet"," ","w_ij_chapeau"
@@ -952,8 +952,8 @@
                         !write(21,*)ss,ui_chap_Essai(ss,1),ui_chap_Essai(ss,2),ui_chap_Essai(ss,3)
                     enddo
                     
-                    close(20)
-                    close(21)
+                    ! close(20)
+                    ! close(21)
                     control_adaptative=0
                     !!print*,"suis la====="
                     !stop
@@ -1206,7 +1206,7 @@
                     ! sauvegarde des resultats dans les fichiers
                     
                     ! open(20,file='Prediction_wij_chapeau.txt')
-                    if(rang==0)    open(21,file='Prediction_vsi_vti_chapeau.txt')
+                    ! if(rang==0)    open(21,file='Prediction_vsi_vti_chapeau.txt')
                     
                     !!print*,"impression des frailties au individuel dans le fichier Prediction_wij_chapeau"
                     ! !write(20,*)"sujet"," ","w_ij_chapeau"
