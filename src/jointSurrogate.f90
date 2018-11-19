@@ -3,7 +3,7 @@
 ! a appeler dans R en usant des majuscules
 !================================================================
 subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_estime,param_risque_base,nbrevar,&
-                          filtre0,donnees,death,n_sim1,EPS2,kappa0,logNormal,nsim_node,Param_kendall_boot,&
+                          filtre0,donnees,death,p,prop_i,n_sim1,EPS2,kappa0,vect_kappa,logNormal,nsim_node,Param_kendall_boot,&
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter)
@@ -42,6 +42,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     character(len=30),dimension(5)::NomFichier
     double precision, intent(in)::prop_trait,revision_echelle
     integer, dimension(5), intent(in)::sizeVect
+    double precision, dimension(ntrials1),allocatable::p,prop_i
+    double precision,dimension(ng,2), intent(in):: vect_kappa
     
     ! ! =====Parametres fournies en sortie par la subroutine=====
     integer, intent(out):: ni, istop, ier
@@ -108,7 +110,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 indice_theta_st,indice_gamma_t,rangparam_thetat,rangparam_thetast,rangparam_gammat,&
                 rangparam_gammast,rangparam_alpha,decoup_simul,incre_decoup,method_int_kendal,N_MC_kendall,&
                 param_weibull,donne_reel,indice_seed,npoint1,npoint2,rangparam_eta,nboot_kendal,nparam_kendall,&
-                rangparam_theta,erreur_fichier,indicCP,controlgoto,remplnsim                
+                rangparam_theta,erreur_fichier,indicCP,controlgoto,remplnsim,indice_kapa                
                 
                 
     double precision::theta,eta,betas,alpha,betat,lambdas,nus,lambdat,nut,temps_cens,&
@@ -152,7 +154,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS,don_simulS1,parametre_empirique,&
                         parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,parametre_estimes_MPI_T,result_bootstrap
-    double precision, dimension(:),allocatable::p,prop_i,tab_var_theta,tampon,tampon_all
+    double precision, dimension(:),allocatable::tab_var_theta,tampon,tampon_all
     double precision, dimension(:,:),allocatable::tab_var_sigma
     integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
                       timeC1=8,statusS1=9,statusT1=10,initTime1=11,Patienref1=12,u_i1=13,& 
@@ -579,12 +581,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! read(2,*)revision_echelle ! coefficient pour la division des temps de suivi. permet de reduire l'echelle des temps pour evitr les problemes numeriques en cas d'un nombre eleve de sujet pour certains cluster
     ! read(2,*)random_generator ! generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
     ! read(2,*)sujet_equi ! dit si on considere la meme proportion de sujet par essai au moment de la generation des donnee (1) ou non (0). dans ce dernier cas remplir les proportion des sujets par essai dansle fichier dedie
-    allocate(p(ntrials))
-    p(1)=prop_trait ! proportion des patients traites par esssai. si 0 alors on a des proportions variables suivant les essai, remplir le fichier dedie. si non on aura le meme proportion des traites par essai
+    ! allocate(p(ntrials))
+    ! p(1)=prop_trait ! proportion des patients traites par esssai. si 0 alors on a des proportions variables suivant les essai, remplir le fichier dedie. si non on aura le meme proportion des traites par essai
     
-    do i=2,ntrials
-        p(i)=p(1)
-    enddo
+    ! do i=2,ntrials
+        ! p(i)=p(1)
+    ! enddo
     
     ! open(5,file='param_simul.txt') ! ouverture du fichier des parametres de simulation
     !open(11,file=param_estime) ! ouverture du fichier des parametres estimes
@@ -594,8 +596,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! open(8,file=tableau_rejet) ! pour contenir les rangs des donnees qui n'ont pas convergees
     ! open(13,file=donnees)
     ! open(14,file=death)
-    open(15,file=kapa) ! fichier qui contient les kappa issus de la validation croisee
-        
+    !open(15,file=kapa) ! fichier qui contient les kappa issus de la validation croisee
+    indice_kapa = 1    
     n_essai=ntrials
     n_obs=nsujet
     ! le jeu de donnee doit contenir 13 ou 17 colonnes
@@ -618,7 +620,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! read(5,*)rsqrt_gamma_ui ! niveau de correlation entre us_i et ut_i
     ! read(5,*)betas  ! exp=0.7788008
     ! read(5,*)betat  ! exp=0.7408182
-    allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col),prop_i(n_essai))
+    ! allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col),prop_i(n_essai))
+    allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col))
     
     if(nsim_node(8)==2)then
         allocate(donnee_essai(n_essai,5))
@@ -638,27 +641,27 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             ! 0.02949128d0,0.03268616d0/) ! proportion de sujets par essai
     
     ! definition de la proportion des sujets par essai
-    if(sujet_equi==1) then
-        prop_i=1.d0/n_essai
-    else
-        open(27,file='subject_per_trial.txt')
-        do i=1,n_essai
-            read(27,*)prop_i(i)
-        enddo
-        close(27)
-    endif
+    ! if(sujet_equi==1) then
+        ! prop_i=1.d0/n_essai
+    ! else
+        ! open(27,file='subject_per_trial.txt')
+        ! do i=1,n_essai
+            ! read(27,*)prop_i(i)
+        ! enddo
+        ! close(27)
+    ! endif
     
     ! definition de la proportion des sujets traites par essai
     !!print*,"suis la p(1)=",p(1)
-    if(p(1)==0.d0) then
-        ! !print*,"suis la p(1)=",p(1)
-        ! stop
-        open(28,file='treat_subject_per_trial.txt')
-        do i=1,n_essai
-            read(28,*)p(i)
-        enddo
-        close(28)
-    endif
+    ! if(p(1)==0.d0) then
+        ! ! !print*,"suis la p(1)=",p(1)
+        ! ! stop
+        ! open(28,file='treat_subject_per_trial.txt')
+        ! do i=1,n_essai
+            ! read(28,*)p(i)
+        ! enddo
+        ! close(28)
+    ! endif
 
     ! p=.05d0
     ! read(5,*)lambdas
@@ -897,7 +900,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             
             ! pour la gestion des paquets de simulation, avance dans le fichier des kappas pour se placer au bon endroit
             if(incre_decoup<decoup_simul) then !incre_decoup<decoup_simul c'est pour gerer le cas des simpulations par paquet
-                read(15,*)ax1,ax2 ! on incremente les kappa pour etre sur que pour les jeux donnees a utiliser on utilise le kappa correspondant
+                !read(15,*)ax1,ax2 ! on incremente les kappa pour etre sur que pour les jeux donnees a utiliser on utilise le kappa correspondant
+                ax1 = vect_kappa(indice_kapa,1)
+                ax2 = vect_kappa(indice_kapa,2)
+                indice_kapa = indice_kapa +1
                 incre_decoup=incre_decoup+1
                 goto 20041 ! pour etre sur qu'on n'utilise pas le jeu de donnee
             endif
@@ -994,7 +1000,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 2004    continue                
                 ! pour la gestion des paquets de simulation, on genere sans utiliser les decoup_simul premiers jeux de donnees
                 if(incre_decoup<decoup_simul) then !incre_decoup<decoup_simul c'est pour gerer le cas des simpulations par paquet
-                    read(15,*)ax1,ax2 ! on incremente les kappa pour etre sur que pour les jeux donnees a utiliser on utilise le kappa correspondant
+                    ! read(15,*)ax1,ax2 ! on incremente les kappa pour etre sur que pour les jeux donnees a utiliser on utilise le kappa correspondant
+                    ax1 = vect_kappa(indice_kapa,1)
+                    ax2 = vect_kappa(indice_kapa,2)
+                    indice_kapa = indice_kapa+1
                     incre_decoup=incre_decoup+1
                     goto 2004 ! pour etre sur qu'on n'utilise pas le jeu de donnee
                 endif
@@ -1297,7 +1306,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     control2=0! pour s'assurer qu'on ne boucle pas lorsque ni le changement de kappa ni le nbre de point ne permet pas la convergence (en fait on doit relancer le modele une seule fois en changeant simultanement les deux parametre)
 2001 continue
     if(kapa_use.ne.0) then ! on usilise un nouveau kappa pour chaque jeu de donnees
-        if(une_donnee.ne.1 .or. donne_reel .ne.1)read(15,*)ax1,ax2 ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
+        !if(une_donnee.ne.1 .or. donne_reel .ne.1)read(15,*)ax1,ax2 ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
+        if(une_donnee.ne.1 .or. donne_reel .ne.1){
+            ax1 = vect_kappa(indice_kapa,1)
+            ax2 = vect_kappa(indice_kapa,2)
+            indice_kapa = indice_kapa+1 ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
+        }
         k0(1)=ax1
         k0(2)=ax2
         k0_save=k0
@@ -1308,14 +1322,23 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             !k0(1)=ax1
             !k0(2)=ax2
             ! on revient au kappa courant
-            close(15)
-            open(15,file=kapa)
-            read(15,*)ax1,ax2
+            ! close(15)
+            ! open(15,file=kapa)
+            indice_kapa = 1
+            !read(15,*)ax1,ax2
+            ax1 = vect_kappa(indice_kapa,1)
+            ax2 = vect_kappa(indice_kapa,2)
+            indice_kapa = indice_kapa + 1
             statut_kappa1=0
         endif
     else
         if((s_i.eq.1).or.((statut_kappa1==0).and.(ind_rech<=n_sim))) then !on considere le premier kappa qui marche pour toute les simul
-            if(une_donnee.ne.1 .or. donne_reel .ne.1) read(15,*)ax1,ax2  ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
+            !if(une_donnee.ne.1 .or. donne_reel .ne.1) read(15,*)ax1,ax2  ! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
+            if(une_donnee.ne.1 .or. donne_reel .ne.1){
+                ax1 = vect_kappa(indice_kapa,1)
+                ax2 = vect_kappa(indice_kapa,2) 
+                indice_kapa = indice_kapa +1! si les deux vallent un alors on utilise les kappas dournis dans le fichiers des parametres: joint_scl_simul
+            }
             k0(1)=ax1
             k0(2)=ax2
             k0_save=k0
@@ -3534,7 +3557,7 @@ end do
             !write(17,*)"moyenne des ecart-types des beta_S estimés=",moy_betaS_se/n_sim_exact
             !write(17,*)"taux de couverture des beta_S=",taux_couvertureS*100.d0/n_sim_exact
 
-            !write(17,*)""
+                !write(17,*)""
             !write(17,*)"beta_T",betat
             !write(17,*)"moyenne des beta_T estimés=",moy_betaT/n_sim_exact
             ! if(n_sim_exact>1) !write(17,*)"ecart-types empirique (SD) des beta_T estimés=",se_beta_t
@@ -3616,7 +3639,7 @@ end do
     !!print*,"suis là=================1"
     !close(14)
     !!print*,"suis là=================2"
-    close(15)
+    ! close(15)
     !close(18)
     !!print*,"suis là=================3"
     !!print*,"suis là=================4"
