@@ -15,7 +15,7 @@ jointSurroPenalSimul(maxit=40, indice.zeta = 1,
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, 
    random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, 
-   equi.subj.trt = 1, prop.subj.trt = NULL 
+   equi.subj.trt = 1, prop.subj.trt = NULL, 
    theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, 
    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
