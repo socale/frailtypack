@@ -444,9 +444,9 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   nboot_kendal <- nboot.kendall# nombre d'echantillon bootstrap pour le calcul de l'IC du taux de ke,ndall
   Param_kendall_boot <- c(method_int_kendal,N_MC_kendall,nboot_kendal)
   
-  # vecteur contenant les taux de kendall issus du bootstrap
-  fichier_kendall <- matrix (0,nrow = n_sim1, ncol = 3)
-  fichier_R2 <- matrix (0,nrow = n_sim1, ncol = 3)
+  # vecteur contenant les taux de kendall et R2 issus du bootstrap
+  fichier_kendall <- NULL
+  fichier_R2 <- NULL
   
   # nom des fichiers de sortie
   param_estime <- "Parametre_estime.txt"
@@ -675,8 +675,8 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   result$n.knots <- n.knots
   result$int.method <- int.method
   result$n.iter <- ans$ni
-  result$dataTkendall <- data.frame(fichier_kendall)
-  result$dataR2boot <- data.frame(fichier_R2)
+  result$dataTkendall <- data.frame(ans$fichier_kendall)
+  result$dataR2boot <- data.frame(ans$fichier_R2)
   result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
   names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
                                     "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
