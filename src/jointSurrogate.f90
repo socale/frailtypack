@@ -175,7 +175,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     
 	! call dblepr("voile p", -1, p, ntrials1)
 	! call dblepr("voile prop_i", -1, prop_i, ntrials1)
-	! call dblepr("voile kappa", -1, vect_kappa, ng+1)
+	! call dblepr("voile kappa", -1, vect_kappa, n_sim1)
 	! goto 998
 	
     ! affectation de certains parametres
