@@ -3235,6 +3235,7 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     if (ier.eq.-1) then
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
         !stop
+		call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
     else ! ysim sera un vecteur de 0
      
 		VC=0.d0

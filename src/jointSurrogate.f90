@@ -43,7 +43,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision, intent(in)::prop_trait,revision_echelle
     integer, dimension(5), intent(in)::sizeVect
     double precision, dimension(ntrials1), intent(in)::p,prop_i
-    double precision,dimension(ng,2), intent(in):: vect_kappa
+    double precision,dimension(n_sim1,2), intent(in):: vect_kappa
     
     ! ! =====Parametres fournies en sortie par la subroutine=====
     integer, intent(out):: ni, istop, ier
@@ -173,6 +173,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     !*********fin declaration des variables et debut du programme principale**************
     !=====================================================================================
     
+	! call dblepr("voile p", -1, p, ntrials1)
+	! call dblepr("voile prop_i", -1, prop_i, ntrials1)
+	! call dblepr("voile kappa", -1, vect_kappa, n_sim1)
+	! goto 998
+	
     ! affectation de certains parametres
     nomvarl(1) = "trt"
     NomFichier(1) = "kappa_valid_crois.txt"
