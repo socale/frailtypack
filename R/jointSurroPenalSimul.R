@@ -574,7 +574,7 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   
   # proportion de sujet par essai
   if(sujet_equi==1){
-    prop_i <- 1/ntrials1
+    prop_i <- rep(1/ntrials1, ntrials1)
   }
   else{
     if(is.null(prop.subj.trial) | length(prop.subj.trial)!=ntrials1) stop("The proportion of subjects per trial are required")
@@ -583,7 +583,7 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   
   #proportion de sujet traites par essai
   if(equi.subj.trt==1){
-    p <- 0.5
+    p <- rep(0.5, ntrials1)
   }
   else{
     if(is.null(prop.subj.trt) | length(prop.subj.trt)!=ntrials1) stop("The proportions of treated subjects per trial are required")
