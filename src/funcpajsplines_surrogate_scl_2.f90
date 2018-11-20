@@ -1535,7 +1535,7 @@
         !stop
     !endif
     deallocate(mat_A)
-    if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+    if ((res.ne.res).or.(abs(res).ge. 1.d30).or.(res .ge. 0.d0)) then
         funcpajsplines_surrogate=-1.d9
         Rrec = 0.d0
         Nrec = 0.d0
