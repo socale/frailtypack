@@ -28,7 +28,8 @@
 #
 # 
 kappa_val_croisee=function(don_S, don_T, njeu, n_obs, n_node = 6, adjust_S = 1, adjust_T = 1,
-                           kapp_0 = 100, kappa_1 = 955000, kappa_2 = 975000, print.times = T){
+                           kapp_0 = 100, kappa_1 = 955000, kappa_2 = 975000, print.times = T,
+                           scale = 1){
   # don_S et don_T: les "njeu" jeux de donnees pour lesquelles il faut estimer les kappa, toutes dans un seul jeu de donnees
   # njeu: represente le nombre de data a considerer dans don
   # n_obs: nombre d'observation par fichier de donnees
@@ -37,14 +38,21 @@ kappa_val_croisee=function(don_S, don_T, njeu, n_obs, n_node = 6, adjust_S = 1, 
   # kapp_0: valeur attribuee a kappa s'il est inferieur a 0
   # kappa_1= valeur initiale de kappa 1
   # kappa_2= valeur initiale de kappa 2
+  
+  # gestion de lechelle
+  done_S <- don_S
+  done_T <- don_T
+  done_S$timeS <- done_S$timeS/scale
+  done_T$timeT <- done_T$timeT/scale
+  
   kapa=matrix(0.0,nrow=njeu,ncol=2)
   j=1
   k=1
   for(i in 1:njeu){
     j=i*n_obs
-    cox_surr=try(frailtyPenal(Surv(timeS,statusS)~1, data=don_S[k:j,],cross.validation = T,
+    cox_surr=try(frailtyPenal(Surv(timeS,statusS)~1, data=done_S[k:j,],cross.validation = T,
                               n.knots = n_node,kappa=kappa_1, print.times = print.times),silent=TRUE)
-    cox_true=try(frailtyPenal(Surv(timeT,statusT)~1, data=don_T[k:j,],cross.validation = T,
+    cox_true=try(frailtyPenal(Surv(timeT,statusT)~1, data=done_T[k:j,],cross.validation = T,
                               n.knots = n_node,kappa=kappa_2, print.times = print.times),silent=TRUE)
     
     if((class(cox_surr)=="try-error") | (class(cox_true)=="try-error")){
