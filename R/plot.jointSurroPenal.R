@@ -72,8 +72,8 @@
 ##' }
 ##' 
 ##' 
-"plot.jointSurroPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend="topright", 
-                                    cex.legend = 0.7, main, color = 2, Xlab = "Time", Ylab = "Hazard function", 
+"plot.jointSurroPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend = "topright", 
+                                    cex.legend = 0.7, main, color = 2, Xlab = "Time", Ylab = "Baseline hazard function", 
                                     xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, scale = 1, ...)
 {
   # gestion de l'echelle des temps
