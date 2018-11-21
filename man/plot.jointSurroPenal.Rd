@@ -8,15 +8,16 @@ canditate surrogate endpoint.}
 \usage{
 \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
 pos.legend = "topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab
-= "Hazard function", endpoint = 2, ...)
+= "Hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
+scale = 1, ...)
 }
 \arguments{
 \item{x}{An object inheriting from \code{jointSurroPenal} class
 (output from calling \code{jointSurroPenal} function).}
 
-\item{type.plot}{a character string specifying the type of curve. Possible
+\item{type.plot}{A character string specifying the type of curve. Possible
 value are "Hazard", or "Survival". The default is "Hazard". Only the first
-letters are required, e.g "Haz", "Su"}
+letters are required, e.g "Haz", "Su".}
 
 \item{conf.bands}{Logical value. Determines whether confidence bands will
 be plotted.  The default is to do so.}
@@ -24,24 +25,33 @@ be plotted.  The default is to do so.}
 \item{pos.legend}{The location of the legend can be specified by setting
 this argument to a single keyword from the list '"bottomright"',
 '"bottom"', '"bottomleft"', '"left"', '"topleft"', '"top"', '"topright"',
-'"right"' and '"center"'. The default is '"topright"'}
+'"right"' and '"center"'. The default is '"topright"'.}
 
-\item{cex.legend}{character expansion factor *relative* to current
-'par("cex")'. Default is 0.7}
+\item{cex.legend}{Character expansion factor *relative* to current
+'par("cex")'. Default is 0.7.}
 
-\item{main}{title of plot}
+\item{main}{Title of plot.}
 
-\item{color}{color of the curve (integer)}
+\item{color}{Color of the curve (integer).}
 
-\item{Xlab}{Label of x-axis. Default is '"Time"'}
+\item{Xlab}{Label of x-axis. Default is '"Time"'.}
 
-\item{Ylab}{Label of y-axis. Default is '"Hazard function"'}
+\item{Ylab}{Label of y-axis. Default is '"Hazard function"'.}
+
+\item{xmin}{Minimum value for x-axis, the default is \code{0}.}
+
+\item{xmax}{Maximum value for x-axis, the default is \code{NULL}.}
+
+\item{ylim}{Range of y-axis. Default is from 0 to 1.}
 
 \item{endpoint}{A binary that indicates the endpoint to represent. \code{0} for
 the surrogate endpoint, \code{1} for the true endpoint, and \code{2} for both
-surrogate endpoint and true endpoint. The default is \code{2}}
+surrogate endpoint and true endpoint. The default is \code{2}.}
 
-\item{...}{other unused arguments}
+\item{scale}{A numeric that allows to rescale the survival times. If no change is need the
+argument is set to 1, the default value. eg: 1/365 aims to convert days to years ".}
+
+\item{...}{other unused arguments.}
 }
 \value{
 Print a plot of the baseline survival or hazard functions for each

@@ -134,8 +134,8 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
 \item{scale}{A numeric that allows to rescale the survival times, to avoid numerical 
-problems in case of a high number of subject in some clusters.If no change is need the
-argument is set to 1, the default value. eg: 365 aims to convert days to years ".}
+problems in case of some convergence issues. If no change is need the argument is set to 1, the default value. 
+eg: 365 aims to convert days to years ".}
 
 \item{random.generator}{Random number generator to use by the Fortran compiler, 
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
@@ -220,6 +220,7 @@ This function return an object of class jointSurroPenal with elements :
    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
    values if \code{kappa.use} is set to \code{3} or \code{4};}
+   \item{scale}{The value used to rescale the survival times}
 }
 \description{
 {
