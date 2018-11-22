@@ -122,6 +122,11 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
   if(typeOf==1){ 
     # joint surrogate model with shared frailty u_i and omega_ij
     lognormal <- 1
+  }else{
+    # joint classical model with shared individual frailty effect omega_ij, to take into account heterogeneity at 
+    # the individual level
+    lognormal <- 2
+  }
     gamma1 <- 2 # paramertre de la loi gamma
     gamma2 <- 2 # paramertre de la loi gamma
     if(equi.subj.trt==1) p <- rep(0.5,n.trial)
@@ -184,7 +189,6 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
     data.sim <- merge(data.sim,ans$don_simul[,c(12, 7, 10)], by="Patienref1") # on ajoute les donnees sur le True
     
     names(data.sim) <- c("patienID", "trialID", "trt", "timeS", "statusS", "timeT", "statusT")
-  }
   
   if(full.data == 1) return(ans)
   if(full.data == 0) return(data.sim)
