@@ -71,6 +71,10 @@
 #'    \item{timeT}{The follow up time associated with the true endpoint;}
 #'    \item{statusT}{The event indicator associated with the true endpoint. Normally 
 #'    0 = no event, 1 = event;}
+#'If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
+#'\eqn{\omega_{ij}}, \eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned. Note that
+#'\eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned if \code{typeOf} is set to \code{1} 
+#'    
 #'
 #' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 #' Virginie Rondeau \email{virginie.rondeau@inserm.fr}
@@ -195,7 +199,8 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
                        ans$don_simul[,c(12, 7, 10)],
                        by="Patienref1")
     names(data.comp) <- c("patienID", "trialID", "trt","w_ij","u_i","v_Si","v_Ti", "timeS", "statusS", "timeT", "statusT")
-    data.comp <- data.comp[c(1:3,8:11,4:7)]
+    if(typeOf == 1) data.comp <- data.comp[c(1:3,8:11,4:7)]
+    if(typeOf == 0) data.comp <- data.comp[c(1:3,8:11,4)]
     return(data.comp)
   }
   if(full.data == 0) return(data.sim)
