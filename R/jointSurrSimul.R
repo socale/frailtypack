@@ -190,6 +190,13 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
     
     names(data.sim) <- c("patienID", "trialID", "trt", "timeS", "statusS", "timeT", "statusT")
   
-  if(full.data == 1) return(ans)
+  if(full.data == 1){
+    data.comp <- merge(ans$don_simulS1[,c(12, 4, 1, 5, 13, 2, 3, 6, 9)],
+                       ans$don_simul[,c(12, 7, 10)],
+                       by="Patienref1")
+    names(data.comp) <- c("patienID", "trialID", "trt","w_ij","u_i","v_Si","v_Ti", "timeS", "statusS", "timeT", "statusT")
+    data.comp <- data.comp[c(1:3,8:11,4:7)]
+    return(data.comp)
+  }
   if(full.data == 0) return(data.sim)
 }

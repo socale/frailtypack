@@ -103,6 +103,9 @@ This function return if the parameter \code{full.data} is set to 0, a \code{\lin
    \item{timeT}{The follow up time associated with the true endpoint;}
    \item{statusT}{The event indicator associated with the true endpoint. Normally 
    0 = no event, 1 = event;}
+If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
+\eqn{\omega_{ij}}, \eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned. Note that
+\eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned if \code{typeOf} is set to \code{1}
 }
 \description{
 Date are generated from the one-step joint surrogate model (see \code{\link{jointSurroPenal}} for more details)
