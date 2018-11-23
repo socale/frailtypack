@@ -3306,7 +3306,7 @@
 				xSuD = as.double(xSu2),
 				survD = as.double(matrix(0, nrow=mt12, ncol=3)),
 				
-				as.integer(c(typeof,equidistant)),
+				as.integer(typeof,equidistant),
 				as.integer(c(nbintervR,nbintervDC)),
 				#as.integer(nbintervDC),
 				as.integer(c(size1,size2, mt11, mt12)),

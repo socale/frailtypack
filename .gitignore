@@ -6,5 +6,5 @@ src/*.o
 src/*.so
 src/*.dll
 *.Rproj
-src/*.mod
+scr/*.mod
 R/frailtyPenal.html
