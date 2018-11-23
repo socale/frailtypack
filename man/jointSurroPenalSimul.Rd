@@ -166,16 +166,16 @@ number of trials.}
 
 \item{betat}{True value for \eqn{\beta_T} in case of simulation. The default is \code{-1.25}.}
 
-\item{lambdas}{Desired scale parameter for the \code{Weibull} distribution associated to the Surrogate
+\item{lambdas}{Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
 endpoint. The default is \code{1.8}.}
 
-\item{nus}{Desired shape parameter for the \code{Weibull} distribution associated to the Surrogate
+\item{nus}{Desired shape parameter for the \code{Weibull} distribution associated with the Surrogate
 endpoint. The default is \code{0.0045}.}
 
-\item{lambdat}{Desired scale parameter for the \code{Weibull} distribution associated to the True 
+\item{lambdat}{Desired scale parameter for the \code{Weibull} distribution associated with the True 
 endpoint.The default is \code{3}.}
 
-\item{nut}{Desired shape parameter for the \code{Weibull} distribution associated to the True endpoint.
+\item{nut}{Desired shape parameter for the \code{Weibull} distribution associated with the True endpoint.
 The default is \code{0.0025}.}
 
 \item{time.cens}{Censorship time. The default is \code{549}, for about \code{40\%} of censored 
@@ -201,13 +201,13 @@ by the changing of the number of nodes for the Gauss-Hermite quadrature. The def
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
 at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-as a seed. In the last case, it is not possible to reproduce the generated datasets". 
-The default is \code{0}.}
+as seed. In the last case, it is not possible to reproduce the generated datasets". 
+The default is \code{0}. Required if \code{random.generator} is set to 1.}
 
 \item{random.nb.sim}{If \code{random} is set to \code{1}, a binary that indicates the number 
 of generations that will be made, equal to \code{nb.dataset} in this case.}
 
-\item{seed}{The seed to use for data generation. required if \code{random} is set to \code{0}. 
+\item{seed}{The seed to use for data generation. Required if \code{random} is set to \code{0}. 
 The default is \code{0}.}
 
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
