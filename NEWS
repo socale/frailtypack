@@ -18,6 +18,8 @@ o Modification in longiPenal: Switch optimizer from nlminb to optim (BFGS) to ge
 
 o Modification of the writing of the p-value
 
+o Bug fixed in the Fortran subroutines percentile, percentile2 and percentile3: change in the subroutine to account for vector overflows + update of the percentile formula
+
 Changes in Version 2.13.2 September 2018
 
  o Bug fixed for predictions for prediction data with only one observation per individual
