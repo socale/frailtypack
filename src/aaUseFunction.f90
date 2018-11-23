@@ -104,10 +104,17 @@
 
     ! quantile d'ordre p%
     a=(n-1)*p
-    b=mod(a,1.0d0)
+    ! b=mod(a,1.0d0) ! scl: 23/11/2018
+	b = a - int(a) ! scl: 23/11/2018
     c=a-b
     ib=int(c)
-    out= (1-b)*t(ib+1)+b*t(ib+2)
+    
+	!out= (1-b)*t(ib+1)+b*t(ib+2) ! scl: 23/11/2018
+	if(ib <= n-2)then ! scl: 23/11/2018
+		out = (1-b)*t(ib+1)+b*t(ib+2)
+	else
+		out = t(n) ! l'on suppose ici qu'on cherche le 100th percentile de la serie, ce qui est normale car dans ce cas, q est tres proche de 1
+	endif
 
     end subroutine percentile3
 
@@ -140,14 +147,16 @@
 
     ! quantile d'ordre 2.5%
     a=(n-1)*0.025d0
-    b=mod(a,1.0d0)
+    ! b=mod(a,1.0d0) ! scl: 23/11/2018
+	b = a - int(a) ! scl: 23/11/2018
     c=a-b
     ib=int(c)
     t25= (1-b)*t(ib+1)+b*t(ib+2)
 
     ! quantile d'ordre 97.5%
     a=(n-1)*0.975d0
-    b=mod(a,1.0d0)
+    ! b=mod(a,1.0d0) ! scl: 23/11/2018
+	b = a - int(a) ! scl: 23/11/2018
     c=a-b
     ib=int(c)
     t975= (1-b)*t(ib+1)+b*t(ib+2)
@@ -173,8 +182,11 @@
             end if
         end do
     end do
-        t25=t(25)
-        t975=t(975)
+	
+        !t25=t(25) ! scl: 23/11/2018
+		t25 = 0.25d0*t(250)+0.75d0*t(251) ! scl: 23/11/2018
+        !t975=t(975) ! scl: 23/11/2018
+		t975 = 0.975d0*t(975)+0.025d0*t(976) ! scl: 23/11/2018
 
     end subroutine percentile
 
