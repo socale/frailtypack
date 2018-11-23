@@ -154,8 +154,8 @@ The default is \code{4}.}
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
 at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-as a seed. In the last case, it is not possible to reproduce the generated datasets". 
-The default is \code{0}.}
+as seed. In the last case, it is not possible to reproduce the generated datasets". 
+The default is \code{0}. Required if \code{random.generator} is set to 1.}
 
 \item{random.nb.sim}{If \code{random} is set to \code{1}, a binary that indicates the number 
 of generations that will be made.}

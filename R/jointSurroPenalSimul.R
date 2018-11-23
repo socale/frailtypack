@@ -167,13 +167,13 @@
 #' @param alpha.ui True value for \eqn{\alpha} in case of simulation. The default is \code{1}.
 #' @param betas True value for \eqn{\beta_S} in case of simulation. The default is \code{-1.25}.
 #' @param betat True value for \eqn{\beta_T} in case of simulation. The default is \code{-1.25}.
-#' @param lambdas Desired scale parameter for the \code{Weibull} distribution associated to the Surrogate
+#' @param lambdas Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
 #' endpoint. The default is \code{1.8}.
-#' @param nus Desired shape parameter for the \code{Weibull} distribution associated to the Surrogate
+#' @param nus Desired shape parameter for the \code{Weibull} distribution associated with the Surrogate
 #' endpoint. The default is \code{0.0045}.
-#' @param lambdat Desired scale parameter for the \code{Weibull} distribution associated to the True 
+#' @param lambdat Desired scale parameter for the \code{Weibull} distribution associated with the True 
 #' endpoint.The default is \code{3}.
-#' @param nut Desired shape parameter for the \code{Weibull} distribution associated to the True endpoint.
+#' @param nut Desired shape parameter for the \code{Weibull} distribution associated with the True endpoint.
 #' The default is \code{0.0025}.
 #' @param time.cens Censorship time. The default is \code{549}, for about \code{40\%} of censored 
 #' subjects.
@@ -196,11 +196,11 @@
 #' by the changing of the number of nodes for the Gauss-Hermite quadrature. The default is \code{4}.
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-#' as a seed. In the last case, it is not possible to reproduce the generated datasets". 
-#' The default is \code{0}.
+#' as seed. In the last case, it is not possible to reproduce the generated datasets". 
+#' The default is \code{0}. Required if \code{random.generator} is set to 1.
 #' @param random.nb.sim If \code{random} is set to \code{1}, a binary that indicates the number 
 #' of generations that will be made, equal to \code{nb.dataset} in this case.
-#' @param seed The seed to use for data generation. required if \code{random} is set to \code{0}. 
+#' @param seed The seed to use for data generation. Required if \code{random} is set to \code{0}. 
 #' The default is \code{0}.
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
