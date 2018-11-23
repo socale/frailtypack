@@ -1,4 +1,4 @@
-Changes in Version 3.0.0 November 2018
+Changes in Version 3.0.1 November 2018
 
 o New model added: Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints (vignettes file updated)
 
