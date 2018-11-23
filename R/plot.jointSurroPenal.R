@@ -11,7 +11,7 @@
 ##' 
 ##' \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
 ##' pos.legend = "topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab
-##' = "Hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
+##' = "Baseline hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
 ##' scale = 1, ...)
 ##' @param x An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).
@@ -29,7 +29,7 @@
 ##' @param main Title of plot.
 ##' @param color Color of the curve (integer).
 ##' @param Xlab Label of x-axis. Default is '"Time"'.
-##' @param Ylab Label of y-axis. Default is '"Hazard function"'.
+##' @param Ylab Label of y-axis. Default is '"Baseline hazard function"'.
 ##' @param xmin Minimum value for x-axis, the default is \code{0}. 
 ##' @param xmax Maximum value for x-axis, the default is \code{NULL}.
 ##' @param ylim Range of y-axis. Default is from 0 to 1.

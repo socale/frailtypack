@@ -8,7 +8,7 @@ canditate surrogate endpoint.}
 \usage{
 \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
 pos.legend = "topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab
-= "Hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
+= "Baseline hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
 scale = 1, ...)
 }
 \arguments{
@@ -36,7 +36,7 @@ this argument to a single keyword from the list '"bottomright"',
 
 \item{Xlab}{Label of x-axis. Default is '"Time"'.}
 
-\item{Ylab}{Label of y-axis. Default is '"Hazard function"'.}
+\item{Ylab}{Label of y-axis. Default is '"Baseline hazard function"'.}
 
 \item{xmin}{Minimum value for x-axis, the default is \code{0}.}
 
