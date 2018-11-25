@@ -1222,7 +1222,7 @@
                         enddo
                     endif
                     ! close(20)
-                   ! if(rang==0)close(21)
+                    if(rang==0)close(21)
                     control_adaptative=0
                     !!print*,"suis la====="
                     !stop
