@@ -241,8 +241,8 @@
 #' @param betat.init Initial values for \eqn{\beta_T}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param scale A numeric that allows to rescale the survival times, to avoid numerical 
-#' problems in case of a high number of subject in some clusters.If no change is need the
-#' argument is set to 1, the default value. eg: 365 aims to convert days to years ".
+#' problems in case of some convergence issues. If no change is need the argument is set to 1, the default value. 
+#' eg: 365 aims to convert days to years ".
 #' @param random.generator Random number generator to use by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 #' subroutine \code{uniran()}. The default is \code{1}. In case of convergence problem 
@@ -258,8 +258,8 @@
 #' The default is \code{4}.
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-#' as a seed. In the last case, it is not possible to reproduce the generated datasets". 
-#' The default is \code{0}.
+#' as seed. In the last case, it is not possible to reproduce the generated datasets". 
+#' The default is \code{0}. Required if \code{random.generator} is set to 1.
 #' @param random.nb.sim If \code{random} is set to \code{1}, a binary that indicates the number 
 #' of generations that will be made.
 #' @param seed The seed to use for data (or samples) generation. required if \code{random} is set to \code{0}. 
@@ -318,6 +318,7 @@
 #'    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
 #'    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
 #'    values if \code{kappa.use} is set to \code{3} or \code{4};}
+#'    \item{scale}{The value used to rescale the survival times}
 #'
 #' 
 #' @seealso \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}, \code{\link{jointSurroPenalSimul}}
@@ -612,7 +613,7 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
       if(print.itter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
       # kappas obtenus par validation croisee correspondant sur le jeu de donnees reelles
       #kappa0 <- frailtypack:::kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0)
-      kappa0 <- kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0, print.times = F)
+      kappa0 <- kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0, print.times = F, scale = scale)
       # I deleate the created text file
       file.remove(dir(pattern="kappa_valid_crois.txt"))
     } 
@@ -995,10 +996,10 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
   result$varHIH <- ans$HIHOut
   result$loglikPenal <- ans$resOut
   result$LCV <- ans$LCV[1]
-  result$xS <- ans$x1Out
+  result$xS <- ans$x1Out*scale
   result$lamS <- ans$lamOut
   result$survS <- ans$suOut
-  result$xT <- ans$x2Out
+  result$xT <- ans$x2Out*scale
   result$lamT <- ans$lam2Out
   result$survT <- ans$su2Out
   result$n.iter <- ans$ni
@@ -1016,6 +1017,7 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
   result$R2.boot <- ans$R2.boot
   result$Coefficients <- ans$Coefficients
   result$kappa  <- kappa0
+  result$scale <- scale
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
   

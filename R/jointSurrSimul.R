@@ -23,15 +23,14 @@
 #' @param betat Fixed value for \eqn{\beta_T}. The default is \code{-1.25}.
 #' @param frailt.base considered the heterogeneity on the baseline risk \code{(1)} or not \code{(0)}. 
 #' The default is \code{1}.
-#' @param lambda.S Desired scale parameter for the \code{Weibull} distribution associated to the Surrogate
+#' @param lambda.S Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
 #' endpoint. The default is 1.8. 
-#' @param nu.S Desired shape parameter for the \code{Weibull} distribution associated to the Surrogate
+#' @param nu.S Desired shape parameter for the \code{Weibull} distribution associated with the Surrogate
 #' endpoint. The default is 0.0045. 
-#' @param lambda.T Desired scale parameter for the \code{Weibull} distribution associated to the True endpoint.
+#' @param lambda.T Desired scale parameter for the \code{Weibull} distribution associated with the True endpoint.
 #' The default is 3.
-#' @param nu.T Desired shape parameter for the \code{Weibull} distribution associated to the True endpoint.
+#' @param nu.T Desired shape parameter for the \code{Weibull} distribution associated with the True endpoint.
 #' The default is 0.0025.
-#' @param n.col Number of columns of the simulated dataset. The required number is 13.
 #' @param ver Number of covariates. For surrogte evaluation, we just considered one covatiate, the treatment arm
 #' @param typeOf Type of joint model used for data generation: 0 = classical joint model 
 #' with a shared individual frailty effect (Rondeau, 2007), 1 = joint surrogate model with shared frailty 
@@ -48,13 +47,16 @@
 #' @param random.generator Random number generator to use by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 #' subroutine \code{uniran()}. The default is \code{1}. 
-#' @param random required if \code{random.generator} is set to 1.
+#' @param random A binary that says if we reset the random number generation with a different environment 
+#' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
+#' as seed. In the last case, it is not possible to reproduce the generated datasets". 
+#' The default is \code{0}. Required if \code{random.generator} is set to 1.
 #' @param random.nb.sim required if \code{random.generator} is set to 1, and if \code{random} is set to 1.
-#' @param seed Required if \code{random.generator} is set to 1. Must be a positive value. If negative,
-#'  the program do not account for seed. The default is \code{0}.
-#' @param nb.reject.data Number of generation to reject before the considererd dataset. this parameter is required
+#' @param seed The seed to use for data (or samples) generation. Required if \code{random.generator} is set to 1. 
+#' Must be a positive value. If negative, the program do not account for seed. The default is \code{0}.
+#' @param nb.reject.data Number of generation to reject before the considered dataset. this parameter is required
 #' when data generation is for simulation. With a fixed parameter and \code{random.generator} set to 1,
-#' all ganerated data are the same. By varying this parameter, differents dataset are obtain during data genarations. The default value is 0, 
+#' all ganerated data are the same. By varying this parameter, different datasets are obtained during data genarations. The default value is 0, 
 #' in case of one dataset.
 # @param param.weibull A binary for the Weibull parametrization used. The default is \code{0}, as in 
 # the frailtypack package. If \code{1} the function 
@@ -71,6 +73,10 @@
 #'    \item{timeT}{The follow up time associated with the true endpoint;}
 #'    \item{statusT}{The event indicator associated with the true endpoint. Normally 
 #'    0 = no event, 1 = event;}
+#'If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
+#'\eqn{\omega_{ij}}, \eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned. Note that
+#'\eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned if \code{typeOf} is set to \code{1} 
+#'    
 #'
 #' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 #' Virginie Rondeau \email{virginie.rondeau@inserm.fr}
@@ -98,11 +104,12 @@
 #' 
 jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, 
                            sigma.s = 0.7, sigma.t = 0.7,rsqrt = 0.8, betas = -1.25, betat = -1.25, frailt.base = 1,
-                           lambda.S = 1.8, nu.S = 0.0045,lambda.T = 3, nu.T = 0.0025, n.col = 13, ver = 1, typeOf = 1,
+                           lambda.S = 1.8, nu.S = 0.0045,lambda.T = 3, nu.T = 0.0025, ver = 1, typeOf = 1,
                            equi.subj.trial = 1 ,equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
                            full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, nb.reject.data = 0){
   
   param.weibull <- 0
+  n.col <- 13 #Number of columns of the simulated dataset. The required number is 13.
   
   # ==============parameters checking======================
   if(!(equi.subj.trt %in% c(0,1)) | !(equi.subj.trial %in% c(0,1))){
@@ -122,6 +129,11 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
   if(typeOf==1){ 
     # joint surrogate model with shared frailty u_i and omega_ij
     lognormal <- 1
+  }else{
+    # joint classical model with shared individual frailty effect omega_ij, to take into account heterogeneity at 
+    # the individual level
+    lognormal <- 2
+  }
     gamma1 <- 2 # paramertre de la loi gamma
     gamma2 <- 2 # paramertre de la loi gamma
     if(equi.subj.trt==1) p <- rep(0.5,n.trial)
@@ -184,8 +196,15 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
     data.sim <- merge(data.sim,ans$don_simul[,c(12, 7, 10)], by="Patienref1") # on ajoute les donnees sur le True
     
     names(data.sim) <- c("patienID", "trialID", "trt", "timeS", "statusS", "timeT", "statusT")
-  }
   
-  if(full.data == 1) return(ans)
+  if(full.data == 1){
+    data.comp <- merge(ans$don_simulS1[,c(12, 4, 1, 5, 13, 2, 3, 6, 9)],
+                       ans$don_simul[,c(12, 7, 10)],
+                       by="Patienref1")
+    names(data.comp) <- c("patienID", "trialID", "trt","w_ij","u_i","v_Si","v_Ti", "timeS", "statusS", "timeT", "statusT")
+    if(typeOf == 1) data.comp <- data.comp[c(1:3,8:11,4:7)]
+    if(typeOf == 0) data.comp <- data.comp[c(1:3,8:11,4)]
+    return(data.comp)
+  }
   if(full.data == 0) return(data.sim)
 }

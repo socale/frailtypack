@@ -100,7 +100,7 @@
     cat(" ", "\n")
     cat(" ","\n")
     
-    cat("hazard ratios (HR) and their confidence intervals for the fixed treatment effets", "\n")
+    cat("hazard ratios (HR) and confidence intervals for the fixed treatment effets", "\n")
     HR <- round(exp(coef[((nrow(coef) - 3) : (nrow(coef)-2)),-2]), len)
     names(HR)[1] <- c("exp(coef)")
     print(HR)

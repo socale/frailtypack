@@ -35,7 +35,6 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
          enddo
       endif
       
-      
       call Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
             ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
             betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)

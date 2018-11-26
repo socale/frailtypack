@@ -8,7 +8,7 @@ jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
   alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7,
   sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25,
   frailt.base = 1, lambda.S = 1.8, nu.S = 0.0045, lambda.T = 3,
-  nu.T = 0.0025, n.col = 13, ver = 1, typeOf = 1, equi.subj.trial = 1,
+  nu.T = 0.0025, ver = 1, typeOf = 1, equi.subj.trial = 1,
   equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
   full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
   seed = 0, nb.reject.data = 0)
@@ -42,19 +42,17 @@ The default is \code{0.8}.}
 \item{frailt.base}{considered the heterogeneity on the baseline risk \code{(1)} or not \code{(0)}. 
 The default is \code{1}.}
 
-\item{lambda.S}{Desired scale parameter for the \code{Weibull} distribution associated to the Surrogate
+\item{lambda.S}{Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
 endpoint. The default is 1.8.}
 
-\item{nu.S}{Desired shape parameter for the \code{Weibull} distribution associated to the Surrogate
+\item{nu.S}{Desired shape parameter for the \code{Weibull} distribution associated with the Surrogate
 endpoint. The default is 0.0045.}
 
-\item{lambda.T}{Desired scale parameter for the \code{Weibull} distribution associated to the True endpoint.
+\item{lambda.T}{Desired scale parameter for the \code{Weibull} distribution associated with the True endpoint.
 The default is 3.}
 
-\item{nu.T}{Desired shape parameter for the \code{Weibull} distribution associated to the True endpoint.
+\item{nu.T}{Desired shape parameter for the \code{Weibull} distribution associated with the True endpoint.
 The default is 0.0025.}
-
-\item{n.col}{Number of columns of the simulated dataset. The required number is 13.}
 
 \item{ver}{Number of covariates. For surrogte evaluation, we just considered one covatiate, the treatment arm}
 
@@ -80,16 +78,19 @@ or the restictive dataset (0) with \code{7} columns required for the function \c
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 subroutine \code{uniran()}. The default is \code{1}.}
 
-\item{random}{required if \code{random.generator} is set to 1.}
+\item{random}{A binary that says if we reset the random number generation with a different environment 
+at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
+as seed. In the last case, it is not possible to reproduce the generated datasets". 
+The default is \code{0}. Required if \code{random.generator} is set to 1.}
 
 \item{random.nb.sim}{required if \code{random.generator} is set to 1, and if \code{random} is set to 1.}
 
-\item{seed}{Required if \code{random.generator} is set to 1. Must be a positive value. If negative,
-the program do not account for seed. The default is \code{0}.}
+\item{seed}{The seed to use for data (or samples) generation. Required if \code{random.generator} is set to 1. 
+Must be a positive value. If negative, the program do not account for seed. The default is \code{0}.}
 
-\item{nb.reject.data}{Number of generation to reject before the considererd dataset. this parameter is required
+\item{nb.reject.data}{Number of generation to reject before the considered dataset. this parameter is required
 when data generation is for simulation. With a fixed parameter and \code{random.generator} set to 1,
-all ganerated data are the same. By varying this parameter, differents dataset are obtain during data genarations. The default value is 0, 
+all ganerated data are the same. By varying this parameter, different datasets are obtained during data genarations. The default value is 0, 
 in case of one dataset.}
 }
 \value{
@@ -103,6 +104,9 @@ This function return if the parameter \code{full.data} is set to 0, a \code{\lin
    \item{timeT}{The follow up time associated with the true endpoint;}
    \item{statusT}{The event indicator associated with the true endpoint. Normally 
    0 = no event, 1 = event;}
+If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
+\eqn{\omega_{ij}}, \eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned. Note that
+\eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned if \code{typeOf} is set to \code{1}
 }
 \description{
 Date are generated from the one-step joint surrogate model (see \code{\link{jointSurroPenal}} for more details)

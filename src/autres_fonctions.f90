@@ -1632,7 +1632,7 @@ endsubroutine generation_Gamma !FIN prog principal
 subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
             ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
             betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
-    ! lognormal: dit si la distribution des effets aleatoires est lognormal (1) ou gamma (0)
+    ! lognormal: dit si la distribution des effets aleatoires est lognormal pour le modele complet (1) ou lognormal pour le joint classique de 2007 (2) ou gamma pour le joint classique de 2007(0)
     ! use Autres_fonctions
     ! theta2: variance des frailties gaussiens associe a S
     ! gamma1,gamma2: parametres de la gamma
@@ -2164,13 +2164,19 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
         !stop
     else ! lognormale
         !ui represente les w_ij dans cette expression
-        if(frailt_base==1) then ! on tient en compte les u_i
-            auxbeta1=ui+don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
-            auxbeta2=truealpha*ui+alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-        else ! on ne tient pas compte des u_i dans la generation des temps de survie
-            auxbeta1=ui+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
-            auxbeta2=truealpha*ui+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-        endif
+		if (lognormal==1)then !joint surrogate
+			if(frailt_base==1) then ! on tient compte des u_i
+				auxbeta1=ui+don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+				auxbeta2=truealpha*ui+alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+			else ! on ne tient pas compte des u_i dans la generation des temps de survie
+				auxbeta1=ui+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+				auxbeta2=truealpha*ui+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+			endif
+		else !(2)joint classique, 2007
+			! on ne tient pas compte des u_i dans la generation des temps de survie
+			auxbeta1=ui+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+			auxbeta2=truealpha*ui+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+		endif
     endif
 
         call weigui2(bw1(1),bw1(2),auxbeta1,gapx)
