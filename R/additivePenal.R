@@ -13,7 +13,7 @@
 #' A stratified analysis is possible (maximum number of strata = 2). This
 #' approach is different from the shared frailty models.
 #' 
-#' In an additive model, the hazard function for the \eqn{j^{th}} subject in
+#' \if{latex}{In an additive model, the hazard function for the \eqn{j^{th}} subject in
 #' the \eqn{i^{th}} trial with random trial effect \eqn{u_i} as well as the
 #' random treatment-by-trial interaction \eqn{v_i} is:
 #' 
@@ -21,13 +21,29 @@
 #' \lambda_{ij}(t|u_i,v_i)=\lambda_0(t)exp(u_i+v_iX_{ij1}+\sum_{k=1}^{p}\beta_kX_{ijk})
 #' \\ \bold{cov}(u_i,v_i)=\bold{\rho\sigma\tau} \\
 #' u_i\sim\bold{\mathcal{N}}(0,\bold{\sigma^2}) \mbox{,}
-#' v_i\sim\bold{\mathcal{N}}(0,\bold{\tau^2}) \end{array} \right. }
+#' v_i\sim\bold{\mathcal{N}}(0,\bold{\tau^2}) \end{array} \right. }}
 #' 
 #' where \eqn{\lambda_0(t)} is the baseline hazard function, \eqn{\beta_k} the
 #' fixed effect associated to the covariate \eqn{X_{ijk}} (k=1,..,p),
 #' \eqn{\beta_1} is the treatment effect and \eqn{X_{ij1}} the treatment
 #' variable. \eqn{\rho} is the corresponding correlation coefficient for the
-#' two frailty terms.
+#' two frailty terms.}
+#' 
+#' \if{html}{In an additive model, the hazard function for the j<sup>th</sup>
+#' subject in the i</sup>th</sup> trial with random trial effect u<sub>i</sub> as
+#' well as the random treatment-by-trial interaction v<sub>i</sub> is:
+
+#'
+#' {\figure{additivemodel.png}{options: width="60\%" alt="Figure:
+#' mai.png"}}
+#' 
+#' where \eqn{\lambda}\out{<sub>0</sub>(0)} is the baseline hazard function, \eqn{\beta}\out{<sub>k</sub>} the
+#' fixed effect associated to the covariate X\out{<sub>ijk</sub>} (k=1,..,p),
+#' \eqn{\beta}\out{<sub>1</sub>} is the treatment effect and X\out{<sub>ij1</sub>} the treatment
+#' variable. \eqn{\rho} is the corresponding correlation coefficient for the
+#' two frailty terms.} 
+#' 
+#' }
 #' 
 #' }
 #' 
