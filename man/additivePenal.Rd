@@ -155,7 +155,7 @@ A stratified analysis is possible (maximum number of strata = 2). This
 approach is different from the shared frailty models.
 
 \ifelse{html}{In an additive model, the hazard function for the j\out{<sup>th</sup>}
-subject in the i\out{</sup>th</sup>} trial with random trial effect u\out{<sub>i</sub>} as
+subject in the i\out{<sup>th</sup>} trial with random trial effect u\out{<sub>i</sub>} as
 well as the random treatment-by-trial interaction v\out{<sub>i</sub>} is:
 
 {\figure{additivemodel.png}{options: width="60\%"}}
