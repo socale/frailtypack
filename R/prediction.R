@@ -190,9 +190,7 @@
 #' of prediction t. See Details for an example of how to construct time
 #' windows.
 #' 
-#' } FIN DU HTML
-#' 
-#' {\bold{For Cox proportional hazard model}
+#' }{\bold{For Cox proportional hazard model}
 #' 
 #' A predictive probability of event between t and horizon time t+w, with w the
 #' window of prediction.

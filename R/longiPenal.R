@@ -1,9 +1,7 @@
 #' Fit a Joint Model for Longitudinal Data and a Terminal Event
 #'
 #' @description{ 
-#' \if{html} 
-#' { 
-#' Fit a joint model for longitudinal data and a terminal event
+#' \if{html}{Fit a joint model for longitudinal data and a terminal event
 #' using a semiparametric penalized likelihood estimation or a parametric
 #' estimation on the hazard function.
 #'
@@ -40,8 +38,7 @@
 #' quantification limit, i.e. some observations, below a level of detection
 #' s cannot be quantified (left-censoring).
 #' }
-#' \if{latex}{
-#' Fit a joint model for longitudinal data and a terminal event using a
+#' \if{latex}{Fit a joint model for longitudinal data and a terminal event using a
 #' semiparametric penalized likelihood estimation or a parametric estimation on
 #' the hazard function.
 #' 

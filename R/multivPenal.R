@@ -48,7 +48,7 @@
 #' recurrent events of type 1 and the recurrent events of type 2 are
 #' significantly associated (the sign of the association is the sign of
 #' \eqn{\rho}).
-#' } Fin html
+#' }
 #' \if{latex}{Fit a multivariate frailty model for two types of recurrent events with a
 #' terminal event using a penalized likelihood estimation on the hazard
 #' function or a parametric estimation. Right-censored data are allowed.
@@ -1603,7 +1603,8 @@ if(length(vec.factor) > 0){
     fit$formula.Event2 <- formula(formula.Event2)
 
     fit$x1 <- ans$x1
-    fit$lam1 <- matrix(ans$lam, nrow = size1, ncol = 3)
+#    fit$lam1 <- matrix(ans$lam, nrow = size1, ncol = 3)
+    fit$lam1 <- if(typeof == 1 ){matrix(ans$lam[seq(1,length(ans$lam),3)], nrow = nb.int[1], ncol = 3)} else{matrix(ans$lam, nrow = size1, ncol = 3)}
     fit$xSu1 <- ans$xSu1
     fit$surv1 <- matrix(ans$surv, nrow = mt11, ncol = 3)
 
@@ -1613,7 +1614,9 @@ if(length(vec.factor) > 0){
     }else{
         fit$x2 <- ans$x3
     }
-    fit$lam2 <- matrix(ans$lam3, nrow = size2, ncol = 3)
+ #   fit$lam2 <- matrix(ans$lam3, nrow = size2, ncol = 3)
+    fit$lam2 <- if(typeof == 1 ){matrix(ans$lam3[seq(1,length(ans$lam3),3)], nrow = nb.int[2], ncol = 3)} else{matrix(ans$lam3, nrow = size2, ncol = 3)}
+    
     fit$xSu2 <- ans$xSu3
     fit$surv2 <- matrix(ans$surv3, nrow = mt12, ncol = 3)
 
@@ -1622,7 +1625,9 @@ if(length(vec.factor) > 0){
     }else{
         fit$xEnd <- ans$x2
     }
-    fit$lamEnd <- matrix(ans$lam2, nrow = size3, ncol = 3)
+#    fit$lamEnd <- matrix(ans$lam2, nrow = size3, ncol = 3)
+    fit$lamEnd <- if(typeof == 1 ){matrix(ans$lam2[seq(1,length(ans$lam2),3)], nrow = nb.int[3], ncol = 3)} else{matrix(ans$lam2, nrow = size3, ncol = 3)}
+    
     fit$xSuEnd <- ans$xSu2
     fit$survEnd <- matrix(ans$surv2, nrow = mt13, ncol = 3)
 
@@ -1771,7 +1776,7 @@ if(length(vec.factor) > 0){
 		cat("The program took", round(cost[3],2), "seconds \n")
 	}
  fit
-
+#ans
 }
 
 

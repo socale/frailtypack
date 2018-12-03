@@ -2,7 +2,82 @@
 #' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint
 #'
 #'@description{
-#'\bold{Joint Frailty Surrogate model definition} 
+#' \if{html}{\bold{Joint Frailty Surrogate model definition} 
+#'
+#' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint, 
+#' with different integration methods on the random effects, using a semiparametric penalized 
+#' likelihood estimation. This approach extends that of Burzykowski \code{et al.} (2001) by 
+#' including in the same joint frailty model the individual-level and the trial-level random effects.
+#'  
+#' For the j\out{<sup>th</sup>} subject (j=1,...,n\out{<sub>i</sub>}) of the i\out{<sup>th</sup>} 
+#' trial i (i=1,...,G), the joint surrogate model is defined as follows:
+#' 
+#' {\figure{surromodel1.png}{options: width="100\%"}}
+#' 
+#' where,
+#' \eqn{\omega}\out{<sub>ij</sub>} \out{&#126;} \eqn{N}(0,\eqn{\theta}), u\out{<sub>i</sub>} \out{&#126;} \eqn{N}(0,\eqn{\gamma}), \eqn{\omega}\out{<sub>i</sub>} \out{&#8869;} u\out{<sub>i</sub>},
+#' u\out{<sub>i</sub>} \out{&#8869;} v\out{<sub>S<sub>i</sub></sub>}, u\out{<sub>i</sub>} \out{&#8869;} v\out{<sub>T<sub>i</sub></sub>}
+#' 
+#' and 
+#' (v\out{<sub>S<sub>i</sub></sub>},v\out{<sub>T<sub>i</sub></sub>})\out{<sup>T</sup>} \out{&#126;} \eqn{N}(0,\eqn{\Sigma}\out{<sub>v</sub>})
+#' 
+#' with
+#' 
+#' {\figure{surromodel2.png}{options: width="100\%"}}
+#' 
+#' In this model, \eqn{\lambda}\out{<sub>0s</sub>}(t) is the baseline hazard function associated with the 
+#' surrogate endpoint and \eqn{\beta}\out{<sub>S</sub>} the fixed treatment effect (or log-hazard ratio); 
+#' \eqn{\lambda}\out{<sub>0T</sub>}(t) is the baseline hazard function associated with the true endpoint 
+#' and \eqn{\beta}\out{<sub>T</sub>} the fixed treatment effect. \eqn{\omega}\out{<sub>ij</sub>} is a shared individual-level frailty that serve to take into account the 
+#' heterogeneity in the data at the individual level; u\out{<sub>i</sub>} is a shared frailty effect associated 
+#' with the baseline hazard function that serve to take into account the heterogeneity between trials 
+#' of the baseline hazard function, associated with the fact that we have several trials in this 
+#' meta-analytical design. The power parameters \eqn{\zeta} and \eqn{\alpha} distinguish 
+#' both individual and trial-level heterogeneities between the surrogate and the true endpoint. 
+#' v\out{<sub>S<sub>i</sub></sub>} and v\out{<sub>T<sub>i</sub></sub>} are two correlated random effects treatment-by-trial interactions. 
+#' \eqn{Z}\out{<sub>ij1</sub>} represents the treatment arm to which the patient has been randomized.
+#' 
+#' \bold{Surrogacy evaluation}
+#'
+#' We proposed new definitions of Kendall's \eqn{\tau} and coefficient of determination as 
+#' individual-level and trial-level association measurements, to evaluate a candidate 
+#' surrogate endpoint (Sofeu \emph{et al.}, 2018). The formulations are given below.
+#' 
+#' \bold{Individual-level surrogacy}
+#' 
+#' To measure the strength of association between \eqn{S}\out{<sub>ij</sub>} and \eqn{T}\out{<sub>ij</sub>} after 
+#' adjusting the marginal distributions for the trial and the treatment effects, as show in 
+#' Sofeu \emph{et al.}(2018), we use the Kendall's \eqn{\tau} define by :
+#' 
+#' {\figure{surromodel3.png}{options: width="100\%"}}
+#'        
+#'  
+#'  where \eqn{\theta}, \eqn{\zeta}, \eqn{\alpha} and \eqn{\gamma} are estimated using the joint surrogate model
+#'  defined previously. Kendall's \eqn{\tau} is the difference between the probability of 
+#'  concordance and the probability of discordance of two realizations of \eqn{S}\out{<sub>ij</sub>} and \eqn{T}\out{<sub>ij</sub>}. 
+#'  It belongs to the interval [-1,1] and assumes a zero value when \eqn{S}\out{<sub>ij</sub>} and \eqn{T}\out{<sub>ij</sub>} are 
+#'  independent. We estimate Kendall's \eqn{\tau} using Monte-Carlo or Gaussian Hermite
+#'  quadrature integration methods. Its confidence interval is estimated using parametric 
+#'  bootstrap
+#'  
+#'  \bold{Trial-level surrogacy}
+#'  
+#'  The key motivation for validating a surrogate endpoint is to be able to predict the effect 
+#'  of treatment on the true endpoint, based on the observed effect of treatment on the 
+#'  surrogate endpoint. As shown by Buyse \emph{et al.} (2000), the coefficenient of 
+#'  determination obtains from the covariance matrix \eqn{\Sigma}\out{<sub>v</sub>} of the random effects 
+#'  treatment-by-trial interaction can be used to evaluate underlined prediction, and 
+#'  therefore as surrogacy evaluation measurement at trial-level. It is defined by: 
+#'  
+#'  {\figure{surromodel4.png}{options: width="100\%"}}
+#'  
+#'  The SEs of \eqn{R}\out{<sub>trial</sub>}\out{<sup>2</sup>} is calculated using the Delta-method. We also propose 
+#'  \eqn{R}\out{<sub>trial</sub>}\out{<sup>2</sup>} and 95\% CI computed using the parametric bootstrap. The use of delta-method 
+#'  can lead to confidence limits violating the [0,1], as noted by 
+#'  (Burzykowski \emph{et al.}, 2001). However, using other methods would not significantly alter
+#'  the findings of the surrogacy assessment 
+#'  }
+#'  \if{latex}{\bold{Joint Frailty Surrogate model definition} 
 #'
 #' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint, 
 #' with different integration methods on the random effects, using a semiparametric penalized 
@@ -23,7 +98,6 @@
 #'  u_i \perp v_{T_i} }
 #' 
 #' and 
-#' 
 #' \eqn{(v_{S_i},v_{T_i})^{T}\sim\mathcal{N}\left({{0}},\Sigma_{v}\right)}, with
 #' \deqn{\Sigma_{v}=\left(
 #'                       \begin{array}{cc} 
@@ -96,6 +170,7 @@
 #'  can lead to confidence limits violating the [0,1], as noted by 
 #'  (Burzykowski \emph{et al.}, 2001). However, using other methods would not significantly alter
 #'  the findings of the surrogacy assessment 
+#'  }
 #' 
 #' }
 #' 

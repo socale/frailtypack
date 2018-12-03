@@ -255,7 +255,7 @@ between the two random effects, is significantly different from 0, then the
 recurrent events of type 1 and the recurrent events of type 2 are
 significantly associated (the sign of the association is the sign of
 \eqn{\rho}).
-} Fin html
+}
 \if{latex}{Fit a multivariate frailty model for two types of recurrent events with a
 terminal event using a penalized likelihood estimation on the hazard
 function or a parametric estimation. Right-censored data are allowed.

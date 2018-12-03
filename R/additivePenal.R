@@ -784,7 +784,8 @@
     fit$correlation<-correlation
     
     fit$x <- cbind(ans$x1,ans$x2)
-    fit$lam <- array(c(ans$lam1,ans$lam2), dim=c(size1,3,2))
+ #   fit$lam <- array(c(ans$lam1,ans$lam2), dim=c(size1,3,2))
+    fit$lam <- if(typeof == 1 ){array(c(ans$lam1[seq(1,length(ans$lam1),3)],ans$lam2[seq(1,length(ans$lam2),3)]), dim=c(nb.int[1],3,2))} else{array(c(ans$lam1,ans$lam2), dim=c(size1,3,2))}
     fit$xSu <- cbind(ans$xSu1,ans$xSu2)
     fit$surv <- array(c(ans$surv1,ans$surv2), dim=c(size2,3,2))
     

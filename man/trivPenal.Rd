@@ -275,8 +275,7 @@ coefficients.}
 }
 \description{
 {
-\if{html}
-{Fit a trivariate joint model for longitudinal data, recurrent events and a
+\if{html}{Fit a trivariate joint model for longitudinal data, recurrent events and a
 terminal event using a semiparametric penalized likelihood estimation or a
 parametric estimation on the hazard functions.
 
@@ -312,8 +311,7 @@ v\out{<sub>i</sub>} is gaussian with mean 0 and variance \eqn{\sigma}\out{<sub>v
 We consider that the longitudinal outcome can be a subject to a
 quantification limit, i.e. some observations, below a level of detection
 \eqn{s} cannot be quantified (left-censoring).}
-\if{latex}
-{Fit a trivariate joint model for longitudinal data, recurrent events and a
+\if{latex}{Fit a trivariate joint model for longitudinal data, recurrent events and a
 terminal event using a semiparametric penalized likelihood estimation or a
 parametric estimation on the hazard functions.
 

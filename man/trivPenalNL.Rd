@@ -286,7 +286,67 @@ estimated regression coefficients.}
 }
 \description{
 {
-Fit a non-linear trivariate joint model for a longitudinal biomarker,
+\if{html}{Fit a non-linear trivariate joint model for a longitudinal biomarker,
+recurrent events and a terminal event using a semiparametric penalized
+likelihood estimation or a parametric estimation on the hazard functions.
+
+The values y\out{<sub>i</sub>}(t) (i=1,...,N) for N subjects represent
+the individual evolution of the biomarker e.g. tumor size expressed as the
+sum of the longest diameters (SLD) of target lesions. The dynamics of the
+biomarker are described by an ordinary differential equation (ODE) that
+includes the effect of the natural net growth and the treatment effect:
+
+{\figure{trivNLmodel1.png}{options: width="100\%"}}
+
+The model includes the following parameters (using the interpretation of
+tumor dynamics): exp(\eqn{K}\out{<sub>G,0</sub>}) the constant tumor growth rate,
+exp(\eqn{K}\out{<sub>D,0</sub>}) the drug-induced tumor decline rate, \eqn{\lambda}
+resistance effect to drug (exponential tumor decay change with time),
+exp(y\out{<sub>0</sub>}) the initial level of the biomarker and d\out{<sub>i</sub>} is the
+treatment concentration (e.g dose). The random effects \bold{b}\out{<sub>i</sub>}\out{<sup>T</sup>}
+= (b\out{<sub>y0,i</sub>},b\out{<sub>G,i</sub>},b\out{<sub>D,i</sub>},b\out{<sub>\lambda,i</sub>})\out{<sup>T</sup>} are gaussian variables
+with a diagonal covariance matrix \bold{B}\out{<sub>i</sub>}. In the trivariate model
+we use the analytical solution of the equation with the population-based
+approach of the non-linear mixed effects model. We can also assume a
+transformation for the observations of the biomarker (one parameter Box-Cox
+transformation) and we include a gaussian measurement error, for individual
+i and observation k (k=1,...,n\out{<sub>i</sub>}),
+\eqn{\epsilon}\out{<sub>ik</sub>} \out{&#126;} \bold{\eqn{N}}(0,\eqn{\sigma}\out{<sub>\epsilon</sub>}\out{<sup>2</sup>}).
+
+The risks of the recurrent (r\out{<sub>ij</sub>}(.) the risk of the j\out{<sup>th</sup>}
+event of the individual i) and terminal events (\eqn{\lambda}\out{<sub>i</sub>} the
+risk of the event of the individual i) are represented by proportional
+hazard risk models. The joint model is constructed assuming that the
+processes are linked via a latent structure and includes the non-linear
+mixed effects model for the longitudinal data:
+
+{\figure{trivNLmodel2.png}{options: width="100\%"}}
+
+where \bold{\eqn{X}}\out{<sub>G,i</sub>}(t), \bold{\eqn{X}}\out{<sub>D,i</sub>}(t),
+\bold{\eqn{X}}\out{<sub>R,ij</sub>}(t) and \bold{\eqn{X}}\out{<sub>T,i</sub>}(t) are vectors of possible
+time-varying fixed effects covariates and \bold{\eqn{\beta}}\out{<sub>G</sub>},
+\bold{\eqn{\beta}}\out{<sub>D</sub>}, \bold{\eqn{\beta}}\out{<sub>R</sub>} and \bold{\eqn{\beta}}\out{<sub>T</sub>} are the
+associated coefficients. The random effects \bold{b}\out{<sub>i</sub>} are independent
+from the measurement error. The relationship between the biomarker and
+recurrent events is explained via g(y\out{<sub>i</sub>}(t)) with coefficients
+\bold{\eqn{\eta}}\out{<sub>R</sub>} and between the biomarker and terminal event is
+explained via h(y\out{<sub>i</sub>}(t)) with coefficients \bold{\eqn{\eta}}\out{<sub>T</sub>}.
+Currently, only one form of the functions g(.) and h(.)
+is available: the random effects \bold{b}\out{<sub>i</sub>}. The frailty term
+v\out{<sub>i</sub>} is gaussian with mean 0 and variance \eqn{\sigma}\out{<sub>v</sub>}. Together with
+\bold{b}\out{<sub>i</sub>} constitutes the random effects of the model: 
+
+{\figure{trivNLmodel2.png}{options: width="100\%"}}
+
+Any combination of the random effects \bold{b}\out{<sub>i</sub>}, e.g.
+\bold{b}\out{<sub>i</sub>}=b\out{<sub>y0,i</sub>} or \bold{b}\out{<sub>i</sub>} =
+\{b\out{<sub>G,i</sub>},b\out{<sub>D,i</sub>},b\out{<sub>\lambda,i</sub>}\} can be chosen for the model.
+
+We consider that the longitudinal outcome can be a subject to a
+quantification limit, i.e. some observations, below a level of detection
+s cannot be quantified (left-censoring).
+}
+\if{latex}{Fit a non-linear trivariate joint model for a longitudinal biomarker,
 recurrent events and a terminal event using a semiparametric penalized
 likelihood estimation or a parametric estimation on the hazard functions.
 
@@ -356,7 +416,7 @@ Any combination of the random effects \eqn{\bold{b}_i}, e.g.
 
 We consider that the longitudinal outcome can be a subject to a
 quantification limit, i.e. some observations, below a level of detection
-\eqn{s} cannot be quantified (left-censoring).
+\eqn{s} cannot be quantified (left-censoring).}
 }
 }
 \details{
