@@ -64,7 +64,8 @@
     double precision,dimension(2)::shapeweib,scaleweib
     double precision,dimension(4),intent(out)::paraweib
     
-    integer,intent(in)::noVar1,noVar2,intcens0,param_weibull0 !param_weibull! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation a l'aide de la fonction de weibull donnee dans le cous de Pierre
+    integer,intent(in)::noVar1,noVar2,intcens0,param_weibull0 !param_weibull! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation 
+	!                                                         a l'aide de la fonction de weibull donnee dans le cours de Pierre
     integer,intent(out)::cpt,cpt_dc,ier,ni
     integer::groupe,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2,code   &
     ,i,ic,icdc,istop,cptni,cptni1,cptni2,nb_echec,nb_echecor,id,cptbiais &
@@ -118,11 +119,11 @@
     double precision,dimension(0:100,0:4*sum(filtretps0(nva10+1:nva10+nva20)))::BetaTpsMatDc
     double precision,dimension(paratps(2)+paratps(3))::basis
     double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : on recupere les valeurs obtenues lors de l'algorithme a la fin
-    integer, dimension(8),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
+	integer, dimension(8),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
                                                  !0=Monte carlo,1= MC+quadrature, 2=quadrature, le cinquieme le nombre de parametres associes a la fragilite
                                                  ! le septieme indique le nombre d'effet aleatoire dans le cas de la quadrature adaptative
                                                  ! et le huitieme le type de modele a estimer (0=joint surrogate classique,1=joint surrogate complet)
-    double precision,dimension(ng0,nsim_nodes(7)+1+nsim_nodes(7) + (nsim_nodes(7)*(nsim_nodes(7)-1))/2),intent(in):: paGH ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
+	double precision,dimension(ng0,nsim_nodes(7)+1+nsim_nodes(7) + (nsim_nodes(7)*(nsim_nodes(7)-1))/2),intent(in):: paGH ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
 
     integer, dimension(ntrials0,2),intent(in)::nigs0,cdcs0
     integer, dimension(nsujet0),intent(in)::pourtrial0
