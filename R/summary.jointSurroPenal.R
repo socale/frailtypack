@@ -85,6 +85,9 @@
     beta$P <- p
     
     cat("Estimates for variances parameters of the random effets", "\n")
+    rownames(beta)[(nrow(beta) - 4)] <- "sigma2_S"
+    rownames(beta)[(nrow(beta) - 3)] <- "sigma2_T"
+    rownames(beta)[(nrow(beta) - 2)] <- "sigma_ST"
     print(beta[1:(nrow(beta) - 2),])
     
     beta2 <- beta[((nrow(beta) - 1) : nrow(beta)),]
