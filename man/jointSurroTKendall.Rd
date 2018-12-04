@@ -31,7 +31,7 @@ The default is \code{1}.}
 
 \item{nb.MC.kendall}{Number of generated points used with the Monte-Carlo to estimate
 integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
-stable reseults. The default is \code{10000}.}
+stable results. The default is \code{10000}.}
 
 \item{nb.gh}{Number of nodes for the Gaussian-Hermite quadrature.  The default is \code{32}.}
 

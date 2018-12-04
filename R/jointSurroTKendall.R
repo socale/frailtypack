@@ -29,7 +29,7 @@
 #' \code{1} for Gaussian-Hermite quadrature. The default is \code{0}
 #' @param nb.MC.kendall Number of generated points used with the Monte-Carlo to estimate
 #' integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
-#' stable reseults. The default is \code{10000}.
+#' stable results. The default is \code{10000}.
 # @param method.int.kendall A numeric, indicates in case of the Monte-carlo integration, if only one 
 # kendall's \eqn{\tau} should be considered (\code{1}), or four kendall's \eqn{\tau}, according to the 
 # randomization group of considered two patiens used for kendall's \eqn{\tau} estimation (\code{0}).
@@ -50,12 +50,6 @@
 #' the baseline risk (\code{1}) or not (\code{0}). The default is \code{1}.
 #'
 #' @return This function return the estimated Kendall's \eqn{\tau} 
-# if just one value is required.
-# In case of 4 kendall's \eqn{\tau}, returned values are  :
-# \item{tau.kendal.00}{The kendall's \eqn{\tau} for two untreated patiens}
-# \item{tau.kendal.11}{The kendall's \eqn{\tau} for two treated patiens}
-# \item{tau.kendal.10}{The kendall's \eqn{\tau} for an untreated and a treated patiens}
-# \item{tau.kendal.01}{The kendall's \eqn{\tau} for a treated and an untreated patiens}
 #' 
 #' @seealso \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}
 #' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

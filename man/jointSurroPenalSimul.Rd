@@ -29,8 +29,7 @@ Default is \code{40}.}
 
 \item{indice.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
-The default is \code{1}. This parameter can be seted to \code{0} in case of convergence and 
-identification issues.}
+The default is \code{1}. This parameter can be seted to \code{0} in case of identification issues.}
 
 \item{indice.alpha}{A binary, indicates whether the power's parameter \eqn{\alpha} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
@@ -98,7 +97,7 @@ interval of the Kendall's \eqn{\tau}. The default is \code{1000}.}
 \code{(1)}, or the given initial values to parameters \code{(0)} should be considered. 
 If set to \code{2}, \eqn{\alpha} and \eqn{\gamma} are initialised using two separed shared frailty model 
 (see \code{\link{frailtyPenal}} for more details); \eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
-\eqn{\sigma_{v_{ST}}} are fixed by the user or the default values; \eqn{\zeta}, 
+\eqn{\sigma_{v_{ST}}} are fixed using the default initial values given by the user; \eqn{\zeta}, 
 \eqn{\theta}, \eqn{\beta_S} and \eqn{\beta_T} are initialized using a classical joint 
 frailty model, considering individual level random effects. If the joint frailty model is 
 faced to convergence issues, \eqn{\beta_S} and \eqn{\beta_T} are initialized using 
@@ -142,7 +141,7 @@ should be considered in the procces of data generation (1) or not (0). In case o
 different trial sizes, fill in \code{prop.subj.trial} the proportions
 of subjects to be considered per trial. The default is \code{1}.}
 
-\item{prop.subj.trial}{Vector of the proportions of subjects to be considered per trial. 
+\item{prop.subj.trial}{Vector of the proportions of subjects to consider per trial. 
 Requires if \code{equi.subj.trial} is different to \code{1}. The size of this vector is equal to the 
 number of trials.}
 
@@ -150,7 +149,7 @@ number of trials.}
 considered \code{(1)} or not \code{(0)}. If \code{0}, fill in \code{prop.subj.trt} 
 the proportions of treated subjects to be considered per trial. The default is \code{1}.}
 
-\item{prop.subj.trt}{Vector of the proportions of treated subjects to be considered per trial. 
+\item{prop.subj.trt}{Vector of the proportions of treated subjects to consider per trial. 
 Requires if \code{equi.subj.trt} is different to \code{0.5}. The size of this vector is equal to the 
 number of trials.}
 
@@ -196,7 +195,7 @@ for each dataset generated. If it is set to \code{2}, the same process for chosi
 convergence among the three previous that have worked is used. If it is set to \code{3}, the associated 
 smoothing parameters are successively divided by 10, in case of convergence issues until 5 times. 
 If it is set to \code{4}, the management of the smoothing 
-parameters is as in case \code{2}, precedes by the successive division described in case \code{3} and 
+parameters is as in case \code{2}, preceded by the successive division described in case \code{3} and 
 by the changing of the number of nodes for the Gauss-Hermite quadrature. The default is \code{4}.}
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
