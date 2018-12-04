@@ -10,7 +10,7 @@
 ##' @usage
 ##' 
 ##' \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
-##' pos.legend = "topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab
+##' pos.legend = "topright", cex.legend=0.7, main, Xlab = "Time", Ylab
 ##' = "Baseline hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
 ##' scale = 1, ...)
 ##' @param x An object inheriting from \code{jointSurroPenal} class
@@ -27,7 +27,6 @@
 ##' @param cex.legend Character expansion factor *relative* to current
 ##' 'par("cex")'. Default is 0.7.
 ##' @param main Title of plot.
-##' @param color Color of the curve (integer).
 ##' @param Xlab Label of x-axis. Default is '"Time"'.
 ##' @param Ylab Label of y-axis. Default is '"Baseline hazard function"'.
 ##' @param xmin Minimum value for x-axis, the default is \code{0}. 
@@ -37,7 +36,7 @@
 ##' the surrogate endpoint, \code{1} for the true endpoint, and \code{2} for both
 ##' surrogate endpoint and true endpoint. The default is \code{2}.
 ##' @param scale A numeric that allows to rescale the survival times. If no change is need the
-##' argument is set to 1, the default value. eg: 1/365 aims to convert days to years ".
+##' argument is set to 1, the default value. eg: 1/365 aims to convert days to years .
 ##' @param ... other unused arguments.
 ##' @return Print a plot of the baseline survival or hazard functions for each
 ##' type of event or both with the confidence bands or not (conf.bands
@@ -73,9 +72,10 @@
 ##' 
 ##' 
 "plot.jointSurroPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend = "topright", 
-                                    cex.legend = 0.7, main, color = 2, Xlab = "Time", Ylab = "Baseline hazard function", 
+                                    cex.legend = 0.7, main, Xlab = "Time", Ylab = "Baseline hazard function", 
                                     xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, scale = 1, ...)
 {
+  color = 2
   # gestion de l'echelle des temps
   x$xT <- x$xT*scale
   x$xS <- x$xS*scale

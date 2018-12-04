@@ -7,7 +7,7 @@
 canditate surrogate endpoint.}
 \usage{
 \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
-pos.legend = "topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab
+pos.legend = "topright", cex.legend=0.7, main, Xlab = "Time", Ylab
 = "Baseline hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
 scale = 1, ...)
 }
@@ -32,8 +32,6 @@ this argument to a single keyword from the list '"bottomright"',
 
 \item{main}{Title of plot.}
 
-\item{color}{Color of the curve (integer).}
-
 \item{Xlab}{Label of x-axis. Default is '"Time"'.}
 
 \item{Ylab}{Label of y-axis. Default is '"Baseline hazard function"'.}
@@ -49,7 +47,7 @@ the surrogate endpoint, \code{1} for the true endpoint, and \code{2} for both
 surrogate endpoint and true endpoint. The default is \code{2}.}
 
 \item{scale}{A numeric that allows to rescale the survival times. If no change is need the
-argument is set to 1, the default value. eg: 1/365 aims to convert days to years ".}
+argument is set to 1, the default value. eg: 1/365 aims to convert days to years .}
 
 \item{...}{other unused arguments.}
 }
