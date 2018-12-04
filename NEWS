@@ -1,3 +1,10 @@
+Changes in Version 3.0.2 December 2018
+o Bug fixed in the file aaOptim_New_scl.o, aaOptim_New_scl2.o and aaOptim_SCL_0.o: module type definition remove, already defined in the file aaOptim.o 
+
+o Bug fixed in function jointSurroPenal: an error occurs in case of convergence issue. it is corrected  now
+
+o Argument color remove in the function plot.jointSurroPenal
+
 Changes in Version 3.0.1 November 2018
 
 o New model added: Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints (vignettes file updated)
