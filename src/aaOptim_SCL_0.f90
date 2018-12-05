@@ -1,81 +1,82 @@
 
 !- Version fortran 90
 !
+!/ *** mise en commentaire du module type car pas utilise***/ scl 04-12-2018
 
-      module type
+      ! module type
 
-      interface verif1
-      subroutine marq98j_SCL_0(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames)
-         integer,intent(in) :: m,effet
-         integer,intent(inout)::ni,ier,istop
-         double precision,dimension(m*(m+3)/2),intent(out)::v
-     double precision,dimension(2)::k0
-         double precision,intent(out)::rl
-         double precision,dimension(m),intent(inout)::b    
-     double precision,intent(out)::ca,cb,dd
-     external::fctnames
-     double precision::fctnames
+      ! interface verif1
+      ! subroutine marq98j_SCL_0(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames)
+         ! integer,intent(in) :: m,effet
+         ! integer,intent(inout)::ni,ier,istop
+         ! double precision,dimension(m*(m+3)/2),intent(out)::v
+     ! double precision,dimension(2)::k0
+         ! double precision,intent(out)::rl
+         ! double precision,dimension(m),intent(inout)::b    
+     ! double precision,intent(out)::ca,cb,dd
+     ! external::fctnames
+     ! double precision::fctnames
 
-      end subroutine marq98j_SCL_0
+      ! end subroutine marq98j_SCL_0
 
-      subroutine derivaj(b,m,v,rl,k0,fctnames)
-        integer,intent(in)::m
-    double precision,dimension(2)::k0
-        double precision,intent(inout)::rl
-        double precision,dimension(m),intent(in)::b
-        double precision,dimension((m*(m+3)/2)),intent(out)::v
-    double precision,external::fctnames
-      end subroutine derivaj
+      ! subroutine derivaj(b,m,v,rl,k0,fctnames)
+        ! integer,intent(in)::m
+    ! double precision,dimension(2)::k0
+        ! double precision,intent(inout)::rl
+        ! double precision,dimension(m),intent(in)::b
+        ! double precision,dimension((m*(m+3)/2)),intent(out)::v
+    ! double precision,external::fctnames
+      ! end subroutine derivaj
 
-      subroutine searpasj(vw,step,b,bh,m,delta,fim,k0,fctnames)
-        integer,intent(in)::m
-    double precision,dimension(2)::k0
-        double precision,dimension(m),intent(in)::b
-        double precision,dimension(m),intent(inout)::bh,delta
-        double precision,intent(inout)::vw,fim,step
-    double precision,external::fctnames
-      end subroutine searpasj
+      ! subroutine searpasj(vw,step,b,bh,m,delta,fim,k0,fctnames)
+        ! integer,intent(in)::m
+    ! double precision,dimension(2)::k0
+        ! double precision,dimension(m),intent(in)::b
+        ! double precision,dimension(m),intent(inout)::bh,delta
+        ! double precision,intent(inout)::vw,fim,step
+    ! double precision,external::fctnames
+      ! end subroutine searpasj
 
-      subroutine dmfsdj(a,n,eps,ier)
-        integer,intent(in)::n
-        integer,intent(inout)::ier
-        double precision,intent(inout)::eps 
-        double precision,dimension(n*(n+1)/2),intent(inout)::A
-      end subroutine dmfsdj
+      ! subroutine dmfsdj(a,n,eps,ier)
+        ! integer,intent(in)::n
+        ! integer,intent(inout)::ier
+        ! double precision,intent(inout)::eps 
+        ! double precision,dimension(n*(n+1)/2),intent(inout)::A
+      ! end subroutine dmfsdj
 
-      subroutine valfpaj(vw,fi,b,bk,m,delta,k0,fctnames)
-        integer,intent(in)::m
-    double precision,dimension(2)::k0
-    double precision,intent(in)::vw
-        double precision,dimension(m),intent(in)::b,delta
-        double precision,dimension(m),intent(out)::bk
-        double precision,intent(out)::fi
-    double precision,external::fctnames
-      end subroutine valfpaj
+      ! subroutine valfpaj(vw,fi,b,bk,m,delta,k0,fctnames)
+        ! integer,intent(in)::m
+    ! double precision,dimension(2)::k0
+    ! double precision,intent(in)::vw
+        ! double precision,dimension(m),intent(in)::b,delta
+        ! double precision,dimension(m),intent(out)::bk
+        ! double precision,intent(out)::fi
+    ! double precision,external::fctnames
+      ! end subroutine valfpaj
 
-      subroutine dmaxt(maxt,delta,m)
-        integer,intent(in)::m
-        double precision,dimension(m),intent(in)::delta 
-        double precision,intent(out)::maxt
-      end subroutine dmaxt
-      end interface verif1
+      ! subroutine dmaxt(maxt,delta,m)
+        ! integer,intent(in)::m
+        ! double precision,dimension(m),intent(in)::delta 
+        ! double precision,intent(out)::maxt
+      ! end subroutine dmaxt
+      ! end interface verif1
 
-      interface verif2
-      subroutine dsinvj(A,N,EPS,IER)
-        integer,intent(in)::n
-        integer,intent(inout)::ier
-        double precision,intent(inout)::eps
-        double precision,dimension(n*(n+1)/2),intent(inout)::A
-      end subroutine dsinvj
+      ! interface verif2
+      ! subroutine dsinvj(A,N,EPS,IER)
+        ! integer,intent(in)::n
+        ! integer,intent(inout)::ier
+        ! double precision,intent(inout)::eps
+        ! double precision,dimension(n*(n+1)/2),intent(inout)::A
+      ! end subroutine dsinvj
 
-      subroutine dcholej(a,k,nq,idpos)
-      integer,intent(in)::k,nq
-      integer,intent(inout)::idpos
-      double precision,dimension(k*(k+3)/2),intent(inout)::a
-      end subroutine dcholej
-      end interface verif2
+      ! subroutine dcholej(a,k,nq,idpos)
+      ! integer,intent(in)::k,nq
+      ! integer,intent(inout)::idpos
+      ! double precision,dimension(k*(k+3)/2),intent(inout)::a
+      ! end subroutine dcholej
+      ! end interface verif2
 
-      end module type
+      ! end module type
 !-----------------------------------------------------------
 ! Derniere mis a jour : 09/02/2011
 !-----------------------------------------------------------

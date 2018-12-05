@@ -43,7 +43,9 @@ module InverseMatrix
         !sigma_v: matrice des covariances frailties niveau essai en interaction avec le traitement
         !z_11 : indicatrice de traitement individu 1
         !z_21 : indicatice de tritement individu 2
-        !method_int : methode d'integration: 0= montecarle, 1= quadrature quaussienne classique, 2= approximation de Laplace, 4=integration par monte-carlo, 1 seul taux de kendall, 5=integration par monte-carlo, 1 seul taux de kendall et pas de stratification sur les risques de base
+        !method_int : methode d'integration: 0= montecarle, 1= quadrature quaussienne classique, 2= approximation de Laplace, 
+		!             4=integration par monte-carlo, 1 seul taux de kendall, 5=integration par monte-carlo, 1 seul taux de kendall et 
+		!             pas de stratification sur les risques de base
         !N_MC: nombre de boucle MC ou nombre de points de quadrature si method_int=1
         !alpha: fragilite associe a w_ij
         !zeta: fragilite associe a u_i

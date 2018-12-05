@@ -254,7 +254,7 @@
 #' If it is set to \code{3}, the associated smoothing parameters are successively divided by 10, 
 #' in case of convergence issues until 5 times. If it is set to \code{4}, the management of the
 #' smoothing parameter is as in case \code{1}, follows by the successive division as described 
-#' in case \code{3} and precede by the changing of the number of nodes for the Gauss-Hermite quadrature. 
+#' in case \code{3} and preceded by the changing of the number of nodes for the Gauss-Hermite quadrature. 
 #' The default is \code{4}.
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
@@ -279,24 +279,23 @@
 #'     for the parameters, the log-likelihood and for the gradient;}
 #'    \item{b}{A vector containing estimates for the splines parameter's, 
 #'    the power's parameter \eqn{\zeta} (if \code{indice.zeta} is set to \code{1}),
-#'     the variance of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}), 
-#'     the variances of the random effects \eqn{v_{S_i}} and \eqn{v_{T_i}} 
-#'     (\eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}}), the covariance of the random effects 
-#'     \eqn{v_{S_i}} and \eqn{v_{T_i}} (\eqn{\sigma_{v_{ST}}}), the power s parameter \eqn{\alpha}
-#'      (if \code{indice.alpha} is set to \code{1}), the variance of the random effect \eqn{u_i}
-#'      and the regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
-#'    \item{varH}{The variance matrix of all parameters in \code{b} (before positivity constraint transformation 
+#'     the standard error of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}), elements of the
+#'     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma = LL^T}, with \eqn{\Sigma} 
+#'     the covariances of the random effects \eqn{(v_{S_i},v_{T_i})}, the coefficient \eqn{\alpha} 
+#'     (if \code{indice.alpha} is set to \code{1}), the satandard error of the random effect \eqn{u_i} and the 
+#'     regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
+#'     \item{varH}{The variance matrix of all parameters in \code{b} (before positivity constraint transformation 
 #'    for the variance of the measurement error, for which the delta method is used);}
 #'    \item{varHIH}{The robust estimation of the variance matrix of all parameters in \code{b};}
 #'    \item{loglikPenal}{The complete marginal penalized log-likelihood;}
 #'    \item{LCV}{the approximated likelihood cross-validation criterion in the semiparametric case (with \code{H}
 #'     minus the converged Hessian matrix, and \code{l(.)} the full log-likelihood).
 #'    \deqn{LCV = \frac{1}{n}(trace(H^{-1}_{pl}H) - l(.));}}
-#'    \item{xS}{matrix of times for surrogate endpoint where both survival and hazard function are estimated. 
+#'    \item{xS}{vector of times for surrogate endpoint where both survival and hazard function are estimated. 
 #'    By default seq(0,max(time),length=99), where time is the vector of survival times;}
 #'    \item{lamS}{array (dim = 3) of hazard estimates and confidence bands, for surrogate endpoint;}
 #'    \item{survS}{array (dim = 3) of baseline survival estimates and confidence bands, for surrogate endpoint;}
-#'    \item{xT}{matrix of times for true endpoint where both survival and hazard function are estimated. 
+#'    \item{xT}{vector of times for true endpoint where both survival and hazard function are estimated. 
 #'    By default seq(0, max(time), length = 99), where time is the vector of survival times;}
 #'    \item{lamT}{array (dim = 3) of hazard estimates and confidence bands, for true endpoint;}
 #'    \item{survT}{array (dim = 3) of baseline survival estimates and confidence bands, for true endpoint;}
@@ -1022,7 +1021,7 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
   #result$dataR2boot <- ans$fichier_R2
   
   if(is.na(result$n.iter)) {
-    result=NULL # model did not converged 
+    result <- NULL # model did not converged 
     print("===Model did not converged!!! please try to modified initial values or others parameters===:")
   } 
   
@@ -1034,7 +1033,7 @@ jointSurroPenal = function(data, maxit=40, indice.zeta = 1, indice.alpha = 1, fr
   # try(file.remove("OutJoint_Result_surrogate.txt"))
   # try(file.remove("kappa_valid_crois.txt"))
   
-  if(!is.na(result$n.iter)) class(result) <- "jointSurroPenal"
+  if(!is.null(result)) class(result) <- "jointSurroPenal"
   
   # impression du temps de calcul
   if (print.times){
