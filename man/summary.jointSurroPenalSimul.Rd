@@ -12,7 +12,7 @@
 
 \item{d}{The desired number of digits after the decimal point f. Default of 3}
 
-\item{R2boot}{A binary that specifies wether the confidence interval of \eqn{R^2_{trial}} 
+\item{R2boot}{A binary that specifies whether the confidence interval of \eqn{R^2_{trial}} 
 should be computed using parametric bootstrap (\code{1}) or Delta-method (\code{0}). 
 The default is \code{0}}
 
