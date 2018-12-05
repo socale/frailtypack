@@ -549,8 +549,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! read(2,*)N_MC_kendall ! nombre de boucle MC pour le calcul du taux de kendal en approximant l'integrale par montye carlo
     ! read(2,*)nboot_kendal ! nombre d'echantillon bootstrap pour le calcul de l'IC du taux de ke,ndall
     ! read(2,*)fichier_kendall ! fichier dans lequel saugarder les taux de kendall avec les IC par boostrap
-    if(method_int_kendal==4) then
-        nparam_kendall=4 ! on a 4 parametres qui rentrent dans le calcul du tau de kendall: theta, alpha, gamma, zeta
+    
+	nparam_kendall=4 ! on a 4 parametres qui rentrent dans le calcul du tau de kendall: theta, alpha, gamma, zeta
+	
+	if(method_int_kendal==4) then
         if(indice_alpha==0) nparam_kendall=nparam_kendall-1
         if(indice_eta==0) nparam_kendall=nparam_kendall-1        
     endif
@@ -703,9 +705,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     thetast_vrai=rsqrt_theta*dsqrt(theta2)*dsqrt(theta2_t)
     gammast_vrai=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
     
-    
+    allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6))   
     if(une_donnee==1) then
-        allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6))
         ! on recupere le jeu de donnees reelles
         ! do i=1,size(d_S,1)
             ! read(13,*)(d_S(i,j),j=1,6) 
@@ -714,7 +715,6 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         d_S=donnees
         d_T=death
     else
-        !allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6))
         ! on recupere le jeu de donnees reelles
         !do i=1,size(d_S,1)
         !    read(13,*)(d_S(i,j),j=1,6) 
@@ -3894,7 +3894,7 @@ end do
     ! deallocate(kappa,tab_var_theta,donnee_essai,tableNsim,parametre_estimes_MPI,parametre_estimes_MPI_T)
     ! deallocate(vect_kendall_tau,v_chap_kendall,theta_chap_kendall,t_chap_kendall,v_chap_R2,theta_chap_R2,t_chap_R2,result_bootstrap)
     ! !deallocate(Vect_sim_MC)
-    ! if(une_donnee==1) deallocate(d_S,d_T)
+    deallocate(d_S,d_T)
     endsubroutine jointsurrogate
     !complilation:
     !mpif90 -fopenmp -O3 -o exe_joint_surr_MPI_OMP  Adonnees.f90 Aparameters.f90 autres_fonctions.f90 Integrant_scl.f90 aaOptim_New_scl.f90 aaOptim_New_scl2.f90 funcpa_laplace.f90 aaOptim.f90 aaOptim_SCL_0.f90 aaOptimres.f90 funcpa_adaptative.f90 Integrale_mult_scl.f90 Pour_Adaptative.f90 aaUseFunction.f90 funcpajsplines_surrogate_scl_1.f90 funcpajsplines_surrogate_scl_2.f90 afuncpasres.f90 aresidusMartingale.f90 distance.f90 joint_surrogate.f90 main_Surr_simulation.f90

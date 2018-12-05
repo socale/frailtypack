@@ -24,7 +24,7 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
       param_weibull = param_weibull0
       
       if(random_generator==1) then
-          if(seed >= 0) call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
+          if(graine >= 0) call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environement de generation
       endif
       
       if(nbre_don_non_cons > 0) then
