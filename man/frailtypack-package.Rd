@@ -7,7 +7,7 @@
 \title{General Frailty models: shared, joint and nested frailty models with
 prediction; Evaluation of Failure-Time Surrogate Endpoints}
 \description{
-Frailtypa fits several classes of frailty models using a penalized
+Frailtypack fits several classes of frailty models using a penalized
 likelihood estimation on the hazard function but also a parametric
 estimation.  1) A shared frailty model and Cox proportional hazard model.
 Clustered and recurrent survival times can be studied.  2) Additive frailty
