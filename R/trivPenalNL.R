@@ -2,7 +2,67 @@
 #' Event with a Biomarker Described with an ODE Population Model
 #' 
 #' @description{
-#' Fit a non-linear trivariate joint model for a longitudinal biomarker,
+#' \if{html}{Fit a non-linear trivariate joint model for a longitudinal biomarker,
+#' recurrent events and a terminal event using a semiparametric penalized
+#' likelihood estimation or a parametric estimation on the hazard functions.
+#' 
+#' The values y\out{<sub>i</sub>}(t) (i=1,...,N) for N subjects represent
+#' the individual evolution of the biomarker e.g. tumor size expressed as the
+#' sum of the longest diameters (SLD) of target lesions. The dynamics of the
+#' biomarker are described by an ordinary differential equation (ODE) that
+#' includes the effect of the natural net growth and the treatment effect:
+#' 
+#' {\figure{trivNLmodel1.png}{options: width="100\%"}}
+#' 
+#' The model includes the following parameters (using the interpretation of
+#' tumor dynamics): exp(\eqn{K}\out{<sub>G,0</sub>}) the constant tumor growth rate,
+#' exp(\eqn{K}\out{<sub>D,0</sub>}) the drug-induced tumor decline rate, \eqn{\lambda}
+#' resistance effect to drug (exponential tumor decay change with time),
+#' exp(y\out{<sub>0</sub>}) the initial level of the biomarker and d\out{<sub>i</sub>} is the
+#' treatment concentration (e.g dose). The random effects \bold{b}\out{<sub>i</sub>}\out{<sup>T</sup>}
+#' = (b\out{<sub>y0,i</sub>},b\out{<sub>G,i</sub>},b\out{<sub>D,i</sub>},b\out{<sub>\lambda,i</sub>})\out{<sup>T</sup>} are gaussian variables
+#' with a diagonal covariance matrix \bold{B}\out{<sub>i</sub>}. In the trivariate model
+#' we use the analytical solution of the equation with the population-based
+#' approach of the non-linear mixed effects model. We can also assume a
+#' transformation for the observations of the biomarker (one parameter Box-Cox
+#' transformation) and we include a gaussian measurement error, for individual
+#' i and observation k (k=1,...,n\out{<sub>i</sub>}),
+#' \eqn{\epsilon}\out{<sub>ik</sub>} \out{&#126;} \bold{\eqn{N}}(0,\eqn{\sigma}\out{<sub>\epsilon</sub>}\out{<sup>2</sup>}).
+#' 
+#' The risks of the recurrent (r\out{<sub>ij</sub>}(.) the risk of the j\out{<sup>th</sup>}
+#' event of the individual i) and terminal events (\eqn{\lambda}\out{<sub>i</sub>} the
+#' risk of the event of the individual i) are represented by proportional
+#' hazard risk models. The joint model is constructed assuming that the
+#' processes are linked via a latent structure and includes the non-linear
+#' mixed effects model for the longitudinal data:
+#' 
+#' {\figure{trivNLmodel2.png}{options: width="100\%"}}
+#' 
+#' where \bold{\eqn{X}}\out{<sub>G,i</sub>}(t), \bold{\eqn{X}}\out{<sub>D,i</sub>}(t),
+#' \bold{\eqn{X}}\out{<sub>R,ij</sub>}(t) and \bold{\eqn{X}}\out{<sub>T,i</sub>}(t) are vectors of possible
+#' time-varying fixed effects covariates and \bold{\eqn{\beta}}\out{<sub>G</sub>},
+#' \bold{\eqn{\beta}}\out{<sub>D</sub>}, \bold{\eqn{\beta}}\out{<sub>R</sub>} and \bold{\eqn{\beta}}\out{<sub>T</sub>} are the
+#' associated coefficients. The random effects \bold{b}\out{<sub>i</sub>} are independent
+#' from the measurement error. The relationship between the biomarker and
+#' recurrent events is explained via g(y\out{<sub>i</sub>}(t)) with coefficients
+#' \bold{\eqn{\eta}}\out{<sub>R</sub>} and between the biomarker and terminal event is
+#' explained via h(y\out{<sub>i</sub>}(t)) with coefficients \bold{\eqn{\eta}}\out{<sub>T</sub>}.
+#' Currently, only one form of the functions g(.) and h(.)
+#' is available: the random effects \bold{b}\out{<sub>i</sub>}. The frailty term
+#' v\out{<sub>i</sub>} is gaussian with mean 0 and variance \eqn{\sigma}\out{<sub>v</sub>}. Together with
+#' \bold{b}\out{<sub>i</sub>} constitutes the random effects of the model: 
+#' 
+#' {\figure{trivNLmodel2.png}{options: width="100\%"}}
+#' 
+#' Any combination of the random effects \bold{b}\out{<sub>i</sub>}, e.g.
+#' \bold{b}\out{<sub>i</sub>}=b\out{<sub>y0,i</sub>} or \bold{b}\out{<sub>i</sub>} =
+#' \{b\out{<sub>G,i</sub>},b\out{<sub>D,i</sub>},b\out{<sub>\lambda,i</sub>}\} can be chosen for the model.
+#' 
+#' We consider that the longitudinal outcome can be a subject to a
+#' quantification limit, i.e. some observations, below a level of detection
+#' s cannot be quantified (left-censoring).
+#' }
+#' \if{latex}{Fit a non-linear trivariate joint model for a longitudinal biomarker,
 #' recurrent events and a terminal event using a semiparametric penalized
 #' likelihood estimation or a parametric estimation on the hazard functions.
 #' 
@@ -72,7 +132,7 @@
 #' 
 #' We consider that the longitudinal outcome can be a subject to a
 #' quantification limit, i.e. some observations, below a level of detection
-#' \eqn{s} cannot be quantified (left-censoring).
+#' \eqn{s} cannot be quantified (left-censoring).}
 #' }
 #' @details{
 #' 
@@ -446,7 +506,7 @@
     if (!(id %in% c(names(data.Longi))) || !(id %in% c(1,names(data)))) { stop("Identification for individuals can be only related to variables from both data set") }
     
     if(length(random) == 1){
-    random.which <- switch(random, "y0" = 1, "KG" = 2, "KD" = 3, "lambda" = 4)
+      random.which <- switch(random, "y0" = 1, "KG" = 2, "KD" = 3, "lambda" = 4)
     }else if(length(random) == 2){
       if(all(random%in%c("y0", "KG"))&all(c("y0", "KG")%in%random)){
         random.which <- 5;random <- c("y0", "KG")} #to maintain good order of random effects names
@@ -474,11 +534,11 @@
       
       
     }else{random.which <- 15; random <- c("y0", "KG", "KD", "lambda")}
-   
-
+    
+    
     #### Link function specification ####
-   # if(!(link %in% c("Random-effects","Current-level"))){
-  #    stop("Only 'Random-effects' or 'Current-level' link function can be specified in link argument.")}
+    # if(!(link %in% c("Random-effects","Current-level"))){
+    #    stop("Only 'Random-effects' or 'Current-level' link function can be specified in link argument.")}
     
     if(link=="Current-level"){
       stop("The link function 'Current-level' is not available yet.")}
@@ -509,7 +569,7 @@
     
     if(!missing(n.nodes) ){
       if(n.nodes>32 || n.nodes<5 ) stop("Number of points used in the numerical integration must be chosen from the interval [5, 32]")
-       }else{
+    }else{
       n.nodes <- 9
     }
     
@@ -788,7 +848,7 @@
     }
     
     
-  
+    
     #=========================================================>
     
     terminalEvent <- attr(Terms, "specials")$terminal #nbre de var qui sont en fonction de terminal()
@@ -940,56 +1000,259 @@
     }
     
     
- 
+    
     #========= Longitudinal Data preparation =========================
-  
+    
     Y <- data.Longi[,which(names(data.Longi)==biomarker)]
-
+    
     if(!is.null(formula.KG[3]) && formula.KG[3] != "1()"){
-     
-    TermsKG <- if (missing(data.Longi)){
-      terms(formula.KG, special)
-    }else{
-      terms(formula.KG, special, data = data.Longi)
-    }
-    
-    ord <- attr(TermsKG, "order") # longueur de ord=nbre de var.expli
-    
-    #si pas vide tous si il ya au moins un qui vaut 1 on arrete
-    
-    m3$formula.KG <- TermsKG
-    
-    
-    m3[[1]] <- as.name("model.frame") # m[[1]]=frailtypenal, il le remplace par model.frame en fait
-    
-    
-    if (NROW(m3) == 0)stop("No (non-missing) observations") #nombre ligne different de 0
-    
-    llKG <- attr(TermsKG, "term.labels")#liste des variables explicatives
-   
-    
-    #=========================================================>
-    data.Longi <- data.Longi[order(data.Longi[,id]),]
-    name.KG <- as.character(attr(TermsKG, "variables")[[2]])
-    KG <- data.Longi[,which(names(data.Longi)==name.KG)]
-    
-    
-    # on identifie les variables explicatives facteurs avec nombre de niveau plus que 2
-    
-   # print(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKG)]))
-   
-    
-    # which(llKG%in%names(which(lapply(data.Longi[,which(names(data.Longi)%in%llKG)],function(x) length(levels(x)))>2)))
-    ind.placeKG <- which(lapply(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKG)]),function(x) length(levels(x)))>2)
-   
-    defined.factor <- llKG[grep("factor",llKG)]
-    
-    vec.factorKG.tmp <- NULL
-    if(length(defined.factor)>0){
-      mat.factorKG.tmp <- matrix(defined.factor,ncol=1,nrow=length(defined.factor))
+      
+      TermsKG <- if (missing(data.Longi)){
+        terms(formula.KG, special)
+      }else{
+        terms(formula.KG, special, data = data.Longi)
+      }
+      
+      ord <- attr(TermsKG, "order") # longueur de ord=nbre de var.expli
+      
+      #si pas vide tous si il ya au moins un qui vaut 1 on arrete
+      
+      m3$formula.KG <- TermsKG
+      
+      
+      m3[[1]] <- as.name("model.frame") # m[[1]]=frailtypenal, il le remplace par model.frame en fait
+      
+      
+      if (NROW(m3) == 0)stop("No (non-missing) observations") #nombre ligne different de 0
+      
+      llKG <- attr(TermsKG, "term.labels")#liste des variables explicatives
+      
+      
+      #=========================================================>
+      data.Longi <- data.Longi[order(data.Longi[,id]),]
+      name.KG <- as.character(attr(TermsKG, "variables")[[2]])
+      KG <- data.Longi[,which(names(data.Longi)==name.KG)]
+      
+      
+      # on identifie les variables explicatives facteurs avec nombre de niveau plus que 2
+      
+      # print(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKG)]))
+      
+      
+      # which(llKG%in%names(which(lapply(data.Longi[,which(names(data.Longi)%in%llKG)],function(x) length(levels(x)))>2)))
+      ind.placeKG <- which(lapply(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKG)]),function(x) length(levels(x)))>2)
+      
+      defined.factor <- llKG[grep("factor",llKG)]
+      
+      vec.factorKG.tmp <- NULL
+      if(length(defined.factor)>0){
+        mat.factorKG.tmp <- matrix(defined.factor,ncol=1,nrow=length(defined.factor))
+        
+        # Fonction servant a prendre les termes entre "as.factor"
+        vec.factorKG.tmp <-apply(mat.factorKG.tmp,MARGIN=1,FUN=function(x){
+          if (length(grep("factor",x))>0){
+            if(length(grep(":",x))>0){
+              if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+                
+                pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+                pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+                pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
+                pos4 <- length(unlist(strsplit(x,split="")))
+                if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+                else return(NaN)
+              }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+                pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
+                pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
+                pos4 <- length(unlist(strsplit(x,split="")))-1
+                if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+                else return(NaN)
+              }else{#both factors
+                pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+                pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+                pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
+                pos4 <- length(unlist(strsplit(x,split="")))-1
+                if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2 || length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
+                else return(NaN)
+              }
+            }else{
+              pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+              pos2 <- length(unlist(strsplit(x,split="")))-1
+              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(substr(x,start=pos1,stop=pos2))
+              else return(NaN)
+            }
+          }else{
+            return(x)
+          }})
+        
+        vec.factorKG.tmp <- vec.factorKG.tmp[which(vec.factorKG.tmp!="NaN")]
+        
+        if(length(vec.factorKG.tmp)>0){
+          for(i in 1:length(vec.factorKG.tmp)){
+            if(length(grep(":",vec.factorKG.tmp[i]))==0){
+              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==vec.factorKG.tmp[i])])))>2)ind.placeKG <- c(ind.placeKG,which(llKG%in%paste("as.factor(",vec.factorKG.tmp[i],")",sep="")))
+            }
+            
+          }}
+        
+      }
+      
+      ind.placeKG <- sort(ind.placeKG)
+      
+      #=========================================================>
+      # On determine le nombre de categorie pour chaque var categorielle
+      stratsKG <- attr(TermsKG, "specials")$strata #nbre de var qui sont en fonction de strata()
+      clusterKG <- attr(TermsKG, "specials")$cluster #nbre de var qui sont en fonction de cluster()
+      num.idKG <- attr(TermsKG, "specials")$num.id #nbre de var qui sont en fonction de patkey()
+      vartimedepKG <- attr(TermsKG, "specials")$timedep #nbre de var en fonction de timedep()
+      
+      #booleen pour savoir si au moins une var depend du tps
+      if (!is.null(vartimedepKG)) stop("The option 'timedep' is not allowed in this  model.")
+      if (!is.null(stratsKG)) stop("Stratified analysis is not allowed in this model.")
+      if (!is.null(clusterKG)) stop("Only the argument 'id' can represent the clusters.")
+      if (!is.null(num.idKG))stop("'num.id' for the interval censoring is an allowed option")
+      
+      
+      
+      Names.clusterY <- id # nom du cluster
+      
+      
+      # which_n<-which(names(data.Longi)%in%random)
+      #  data.Longi[which(data.Longi[,which_n]==0),which_n]<- 0.01
+      
+      mat.factorKG2 <- matrix(llKG,ncol=1,nrow=length(llKG))
       
       # Fonction servant a prendre les termes entre "as.factor"
-      vec.factorKG.tmp <-apply(mat.factorKG.tmp,MARGIN=1,FUN=function(x){
+      llKG2 <-apply(mat.factorKG2,MARGIN=1,FUN=function(x){
+        if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
+          pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+          pos2 <- length(unlist(strsplit(x,split="")))-1
+          x<-substr(x,start=pos1,stop=pos2)
+          return(paste(x,levels(as.factor(data.Longi[,which(names(data.Longi)==x)]))[2],sep=""))
+        }else{
+          return(x)
+        }})
+      
+      # Fonction servant a prendre les termes entre "as.factor" - without the name of the level
+      llKG3 <-apply(mat.factorKG2,MARGIN=1,FUN=function(x){
+        if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
+          pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+          pos2 <- length(unlist(strsplit(x,split="")))-1
+          return(substr(x,start=pos1,stop=pos2))
+        }else{
+          return(x)
+        }})
+      
+      llKG.real.names <- llKG3  
+      llKG3 <- llKG3[!llKG2%in%llKG]
+      
+      
+      
+      if(is.factor(data.Longi[,names(data.Longi)==llKG.real.names[1]]))X_L<- as.numeric(data.Longi[,names(data.Longi)==llKG.real.names[1]])-1
+      else X_L<- data.Longi[,names(data.Longi)==llKG.real.names[1]]
+      
+      if(length(llKG) == 1)X_L <- as.data.frame(X_L)
+      
+      
+      if(length(llKG)>1){
+        
+        
+        for(i in 2:length(llKG.real.names)){
+          
+          if(is.factor(data.Longi[,names(data.Longi)==llKG.real.names[i]]))X_L<- cbind(X_L,as.numeric(data.Longi[,names(data.Longi)==llKG.real.names[i]])-1)
+          else X_L<- cbind(X_L,data.Longi[,names(data.Longi)==llKG.real.names[i]])
+        }
+      }
+      #X_L<- data.Longi[,names(data.Longi)%in%(llY)]
+      
+      llKG.fin <- llKG.real.names
+      llKG <- llKG.real.names
+      
+      if(sum(ord)>length(ord)){
+        
+        for(i in 1:length(ord)){
+          if(ord[i]>1){
+            
+            name_v1 <- strsplit(as.character(llKG[i]),":")[[1]][1]
+            name_v2 <- strsplit(as.character(llKG[i]),":")[[1]][2]
+            
+            if(length(grep("factor",name_v1))>0){name_v1<-substring(name_v1,11,nchar(name_v1)-1)
+            v1 <- as.factor(data.Longi[,names(data.Longi)==name_v1])}
+            else{v1 <- data.Longi[,names(data.Longi)==name_v1]}
+            if(length(grep("factor",name_v2))>0){name_v2<-substring(name_v2,11,nchar(name_v2)-1)
+            v2 <- as.factor(data.Longi[,names(data.Longi)==name_v2])}
+            else{v2 <- data.Longi[,names(data.Longi)==name_v2]}
+            
+            llKG[i] <- paste(name_v1,":",name_v2,sep="")
+            #   if(is.factor(v1) && length(levels(v1))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
+            #   if(is.factor(v2) && length(levels(v2))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
+            if(is.factor(v1) && !is.factor(v2)){
+              
+              dummy <- model.matrix( ~ v1 - 1)
+              # if(length(levels(v1)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
+              for(j in 2:length(levels(v1))){
+                X_L <- cbind(X_L,dummy[,j]*v2)
+                if(i>1 && i<length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKG.fin[(i+1+j-2):length(llKG.fin)])
+                else if(i==length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""))
+                else llKG.fin <- c(paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKG.fin[(2+j-2):length(llKG.fin)])
+              }
+              
+            }else if(!is.factor(v1) && is.factor(v2)){
+              
+              dummy <- model.matrix( ~ v2 - 1)
+              #  if(length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
+              for(j in 2:length(levels(v2))){
+                
+                X_L <- cbind(X_L,dummy[,j]*v1)
+                
+                if(i>1 && i<length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKG.fin[(i+1+j-2):length(llKG.fin)])
+                else if(i==length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""))
+                else llKG.fin <- c(paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKG.fin[(2+j-2):length(llKG.fin)])
+              }
+            }else if(is.factor(v1) && is.factor(v2)){
+              
+              
+              dummy1 <- model.matrix( ~ v1 - 1)
+              dummy2 <- model.matrix( ~ v2 - 1)
+              #   if(length(levels(v1)>2) || length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
+              for(j in 2:length(levels(v1))){
+                for(k in 2:length(levels(v2))){
+                  
+                  X_L <- cbind(X_L,dummy1[,j]*dummy2[,k])
+                  if(i>1 && i<length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKG.fin[(i+1+j-2+k-2):length(llKG.fin)])
+                  else if(i==length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""))
+                  else llKG.fin <- c(paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKG.fin[(2+j-2+k-2):length(llKG.fin)])
+                }
+              } 
+            }else{
+              
+              X_L <- cbind(X_L,v1*v2)
+            }
+            
+          }
+        }
+      }
+      
+      
+      if(length(grep(":",llKG))>0){
+        for(i in 1:length(grep(":",llKG))){
+          if(length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKG[grep(":",llKG)[i]],":")[[1]])[1]]))>2 || length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKG[grep(":",llKG)[i]],":")[[1]])[2]]))>2){
+            ind.placeKG <- c(ind.placeKG,grep(":",llKG)[i])
+            #     vec.factorY <- c(vec.factorY,llY[grep(":",llY)[i]])
+          }
+        }
+      }
+      vec.factorKG <- NULL
+      
+      if(length(vec.factorKG.tmp)>0)vec.factorKG <- c(llKG[ind.placeKG],vec.factorKG.tmp)
+      else vec.factorKG <- c(vec.factorKG,llKG[ind.placeKG])
+      
+      vec.factorKG <- unique(vec.factorKG)
+      
+      
+      
+      mat.factorKG <- matrix(vec.factorKG,ncol=1,nrow=length(vec.factorKG))
+      # Fonction servant a prendre les termes entre "as.factor" et (AK 04/11/2015) interactions
+      vec.factorKG <-apply(mat.factorKG,MARGIN=1,FUN=function(x){
         if (length(grep("factor",x))>0){
           if(length(grep(":",x))>0){
             if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
@@ -998,325 +1261,122 @@
               pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
               pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
               pos4 <- length(unlist(strsplit(x,split="")))
-              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-              else return(NaN)
+              return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
             }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
               pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
               pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
               pos4 <- length(unlist(strsplit(x,split="")))-1
-              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-              else return(NaN)
+              return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
             }else{#both factors
               pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
               pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
               pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
               pos4 <- length(unlist(strsplit(x,split="")))-1
-              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2 || length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
-              else return(NaN)
+              return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
             }
           }else{
             pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
             pos2 <- length(unlist(strsplit(x,split="")))-1
-            if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(substr(x,start=pos1,stop=pos2))
-            else return(NaN)
-          }
+            return(substr(x,start=pos1,stop=pos2))}
         }else{
           return(x)
         }})
       
-      vec.factorKG.tmp <- vec.factorKG.tmp[which(vec.factorKG.tmp!="NaN")]
       
-      if(length(vec.factorKG.tmp)>0){
-        for(i in 1:length(vec.factorKG.tmp)){
-          if(length(grep(":",vec.factorKG.tmp[i]))==0){
-            if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==vec.factorKG.tmp[i])])))>2)ind.placeKG <- c(ind.placeKG,which(llKG%in%paste("as.factor(",vec.factorKG.tmp[i],")",sep="")))
-          }
-          
-        }}
-      
-    }
-    
-    ind.placeKG <- sort(ind.placeKG)
-
-    #=========================================================>
-    # On determine le nombre de categorie pour chaque var categorielle
-    stratsKG <- attr(TermsKG, "specials")$strata #nbre de var qui sont en fonction de strata()
-    clusterKG <- attr(TermsKG, "specials")$cluster #nbre de var qui sont en fonction de cluster()
-    num.idKG <- attr(TermsKG, "specials")$num.id #nbre de var qui sont en fonction de patkey()
-    vartimedepKG <- attr(TermsKG, "specials")$timedep #nbre de var en fonction de timedep()
-    
-    #booleen pour savoir si au moins une var depend du tps
-    if (!is.null(vartimedepKG)) stop("The option 'timedep' is not allowed in this  model.")
-    if (!is.null(stratsKG)) stop("Stratified analysis is not allowed in this model.")
-    if (!is.null(clusterKG)) stop("Only the argument 'id' can represent the clusters.")
-    if (!is.null(num.idKG))stop("'num.id' for the interval censoring is an allowed option")
-    
-  
-   
-    Names.clusterY <- id # nom du cluster
-     
-   
-    # which_n<-which(names(data.Longi)%in%random)
-    #  data.Longi[which(data.Longi[,which_n]==0),which_n]<- 0.01
-    
-    mat.factorKG2 <- matrix(llKG,ncol=1,nrow=length(llKG))
-    
-    # Fonction servant a prendre les termes entre "as.factor"
-    llKG2 <-apply(mat.factorKG2,MARGIN=1,FUN=function(x){
-      if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
-        pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-        pos2 <- length(unlist(strsplit(x,split="")))-1
-        x<-substr(x,start=pos1,stop=pos2)
-        return(paste(x,levels(as.factor(data.Longi[,which(names(data.Longi)==x)]))[2],sep=""))
-      }else{
-        return(x)
-      }})
-    
-    # Fonction servant a prendre les termes entre "as.factor" - without the name of the level
-    llKG3 <-apply(mat.factorKG2,MARGIN=1,FUN=function(x){
-      if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
-        pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-        pos2 <- length(unlist(strsplit(x,split="")))-1
-        return(substr(x,start=pos1,stop=pos2))
-      }else{
-        return(x)
-      }})
-    
-    llKG.real.names <- llKG3  
-    llKG3 <- llKG3[!llKG2%in%llKG]
-   
-  
-    
-     if(is.factor(data.Longi[,names(data.Longi)==llKG.real.names[1]]))X_L<- as.numeric(data.Longi[,names(data.Longi)==llKG.real.names[1]])-1
-      else X_L<- data.Longi[,names(data.Longi)==llKG.real.names[1]]
-      
-   if(length(llKG) == 1)X_L <- as.data.frame(X_L)
-   
-  
-   if(length(llKG)>1){
-     
-     
-      for(i in 2:length(llKG.real.names)){
+      for(i in 1:length(llKG.fin)){
         
-        if(is.factor(data.Longi[,names(data.Longi)==llKG.real.names[i]]))X_L<- cbind(X_L,as.numeric(data.Longi[,names(data.Longi)==llKG.real.names[i]])-1)
-        else X_L<- cbind(X_L,data.Longi[,names(data.Longi)==llKG.real.names[i]])
+        if(sum(names(data.Longi)==llKG.fin[i])>0){
+          if(is.factor(data.Longi[,names(data.Longi)==llKG.fin[i]]) && length(levels(data.Longi[,names(data.Longi)==llKG.fin[i]]))==2){
+            llKG.fin[i] <- paste(llKG.fin[i],levels(data.Longi[,names(data.Longi)==llKG.fin[i]])[2],sep="")}
+        }
       }
-   }
-    #X_L<- data.Longi[,names(data.Longi)%in%(llY)]
-    
-    llKG.fin <- llKG.real.names
-    llKG <- llKG.real.names
-    
-    if(sum(ord)>length(ord)){
       
-      for(i in 1:length(ord)){
-        if(ord[i]>1){
+      #  llY <- llY.fin
+      X_L <- as.data.frame(X_L)
+      if(dim(X_L)[2]!=length(llKG.fin))stop("The variables in the longitudinal part must be in the data.Longi")
+      
+      names(X_L) <- llKG.fin
+      
+      
+      X_Lall<- X_L
+      "%+%"<- function(x,y) paste(x,y,sep="")
+      if(length(vec.factorKG) > 0){
+        for(i in 1:length(vec.factorKG)){
+          if(length(grep(":",vec.factorKG[i]))==0){
+            
+            factor.spot <- which(names(X_L)==vec.factorKG[i])
+            
+            if(factor.spot<ncol(X_L))  X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKG[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1],X_L[(factor.spot+1):ncol(X_L)])
+            else X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKG[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1])
+            
+          } }
+        
+        
+        
+        
+        
+        vect.factKG<-names(X_L)[which(!(names(X_L)%in%llKG))]
+        
+        
+        #               vect.fact <-apply(matrix(vect.fact,ncol=1,nrow=length(vect.fact)),MARGIN=1,FUN=function(x){
+        #               pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+        #               pos2 <- grep(")",unlist(strsplit(x,split="")))[1]-1
+        #               return(substr(x,start=pos1,stop=pos2))})
+        
+        occurKG <- rep(0,length(vec.factorKG))
+        
+        #         for(i in 1:length(vec.factorY)){
+        #                #occur[i] <- sum(vec.factor[i] == vect.fact)
+        #               occurY[i] <- length(grep(vec.factorY[i],vect.factY))
+        #      }
+        
+        
+        
+        interaction<-as.vector(apply(matrix(vect.factKG,nrow=length(vect.factKG)),MARGIN=1,FUN=function(x){length(grep(":",unlist(strsplit(x,split=""))))}))
+        which.interaction <- which(interaction==1)
+        
+        for(i in 1:length(vec.factorKG)){
           
-          name_v1 <- strsplit(as.character(llKG[i]),":")[[1]][1]
-          name_v2 <- strsplit(as.character(llKG[i]),":")[[1]][2]
-          
-          if(length(grep("factor",name_v1))>0){name_v1<-substring(name_v1,11,nchar(name_v1)-1)
-          v1 <- as.factor(data.Longi[,names(data.Longi)==name_v1])}
-          else{v1 <- data.Longi[,names(data.Longi)==name_v1]}
-          if(length(grep("factor",name_v2))>0){name_v2<-substring(name_v2,11,nchar(name_v2)-1)
-          v2 <- as.factor(data.Longi[,names(data.Longi)==name_v2])}
-          else{v2 <- data.Longi[,names(data.Longi)==name_v2]}
-          
-          llKG[i] <- paste(name_v1,":",name_v2,sep="")
-          #   if(is.factor(v1) && length(levels(v1))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
-          #   if(is.factor(v2) && length(levels(v2))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
-          if(is.factor(v1) && !is.factor(v2)){
-            
-            dummy <- model.matrix( ~ v1 - 1)
-            # if(length(levels(v1)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
-            for(j in 2:length(levels(v1))){
-              X_L <- cbind(X_L,dummy[,j]*v2)
-              if(i>1 && i<length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKG.fin[(i+1+j-2):length(llKG.fin)])
-              else if(i==length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""))
-              else llKG.fin <- c(paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKG.fin[(2+j-2):length(llKG.fin)])
-            }
-            
-          }else if(!is.factor(v1) && is.factor(v2)){
-            
-            dummy <- model.matrix( ~ v2 - 1)
-            #  if(length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
-            for(j in 2:length(levels(v2))){
-              
-              X_L <- cbind(X_L,dummy[,j]*v1)
-              
-              if(i>1 && i<length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKG.fin[(i+1+j-2):length(llKG.fin)])
-              else if(i==length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""))
-              else llKG.fin <- c(paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKG.fin[(2+j-2):length(llKG.fin)])
-            }
-          }else if(is.factor(v1) && is.factor(v2)){
+          if(length(grep(":",unlist(strsplit(vec.factorKG[i],split=""))))>0){
             
             
-            dummy1 <- model.matrix( ~ v1 - 1)
-            dummy2 <- model.matrix( ~ v2 - 1)
-            #   if(length(levels(v1)>2) || length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
-            for(j in 2:length(levels(v1))){
-              for(k in 2:length(levels(v2))){
+            pos <- grep(":",unlist(strsplit(vec.factorKG[i],split="")))
+            length.grep <- 0
+            for(j in 1:length(vect.factKG)){
+              if(j%in%which.interaction){
                 
-                X_L <- cbind(X_L,dummy1[,j]*dummy2[,k])
-                if(i>1 && i<length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKG.fin[(i+1+j-2+k-2):length(llKG.fin)])
-                else if(i==length(llKG.fin))llKG.fin <- c(llKG.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""))
-                else llKG.fin <- c(paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKG.fin[(2+j-2+k-2):length(llKG.fin)])
-              }
-            } 
+                if(length(grep(substr(vec.factorKG[i],start=1,stop=pos-1),vect.factKG[j]))>0 && length(grep(substr(vec.factorKG[i],start=pos+1,stop=length(unlist(strsplit(vec.factorKG[i],split="")))),vect.factKG[j]))>0){
+                  length.grep <- length.grep + 1
+                  which <- i}
+              }}
+            occurKG[i] <- length.grep
+            
           }else{
             
-            X_L <- cbind(X_L,v1*v2)
-          }
-          
-        }
-      }
-    }
- 
-    
-    if(length(grep(":",llKG))>0){
-      for(i in 1:length(grep(":",llKG))){
-        if(length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKG[grep(":",llKG)[i]],":")[[1]])[1]]))>2 || length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKG[grep(":",llKG)[i]],":")[[1]])[2]]))>2){
-          ind.placeKG <- c(ind.placeKG,grep(":",llKG)[i])
-          #     vec.factorY <- c(vec.factorY,llY[grep(":",llY)[i]])
-        }
-      }
-    }
-    vec.factorKG <- NULL
-    
-    if(length(vec.factorKG.tmp)>0)vec.factorKG <- c(llKG[ind.placeKG],vec.factorKG.tmp)
-    else vec.factorKG <- c(vec.factorKG,llKG[ind.placeKG])
-    
-    vec.factorKG <- unique(vec.factorKG)
-    
-    
-    
-    mat.factorKG <- matrix(vec.factorKG,ncol=1,nrow=length(vec.factorKG))
-    # Fonction servant a prendre les termes entre "as.factor" et (AK 04/11/2015) interactions
-    vec.factorKG <-apply(mat.factorKG,MARGIN=1,FUN=function(x){
-      if (length(grep("factor",x))>0){
-        if(length(grep(":",x))>0){
-          if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
             
-            pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
-            pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
-            pos4 <- length(unlist(strsplit(x,split="")))
-            return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-          }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
-            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
-            pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
-            pos4 <- length(unlist(strsplit(x,split="")))-1
-            return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-          }else{#both factors
-            pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
-            pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
-            pos4 <- length(unlist(strsplit(x,split="")))-1
-            return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
+            if(length(vect.factKG[-which.interaction])>0){occurKG[i] <- length(grep(vec.factorKG[i],vect.factKG[-which.interaction]))
+            }else{occurKG[i] <- length(grep(vec.factorKG[i],vect.factKG))}
           }
-        }else{
-          pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-          pos2 <- length(unlist(strsplit(x,split="")))-1
-          return(substr(x,start=pos1,stop=pos2))}
-      }else{
-        return(x)
-      }})
-    
-    
-    for(i in 1:length(llKG.fin)){
-      
-      if(sum(names(data.Longi)==llKG.fin[i])>0){
-        if(is.factor(data.Longi[,names(data.Longi)==llKG.fin[i]]) && length(levels(data.Longi[,names(data.Longi)==llKG.fin[i]]))==2){
-          llKG.fin[i] <- paste(llKG.fin[i],levels(data.Longi[,names(data.Longi)==llKG.fin[i]])[2],sep="")}
-      }
-    }
-    
-    #  llY <- llY.fin
-    X_L <- as.data.frame(X_L)
-    if(dim(X_L)[2]!=length(llKG.fin))stop("The variables in the longitudinal part must be in the data.Longi")
-    
-    names(X_L) <- llKG.fin
-    
-   
-   X_Lall<- X_L
-    "%+%"<- function(x,y) paste(x,y,sep="")
-    if(length(vec.factorKG) > 0){
-      for(i in 1:length(vec.factorKG)){
-        if(length(grep(":",vec.factorKG[i]))==0){
-          
-          factor.spot <- which(names(X_L)==vec.factorKG[i])
-          
-          if(factor.spot<ncol(X_L))  X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKG[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1],X_L[(factor.spot+1):ncol(X_L)])
-          else X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKG[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1])
-          
-        } }
-      
-      
-      
-      
-      
-      vect.factKG<-names(X_L)[which(!(names(X_L)%in%llKG))]
-      
-      
-      #               vect.fact <-apply(matrix(vect.fact,ncol=1,nrow=length(vect.fact)),MARGIN=1,FUN=function(x){
-      #               pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-      #               pos2 <- grep(")",unlist(strsplit(x,split="")))[1]-1
-      #               return(substr(x,start=pos1,stop=pos2))})
-      
-      occurKG <- rep(0,length(vec.factorKG))
-      
-      #         for(i in 1:length(vec.factorY)){
-      #                #occur[i] <- sum(vec.factor[i] == vect.fact)
-      #               occurY[i] <- length(grep(vec.factorY[i],vect.factY))
-      #      }
-      
-      
-      
-      interaction<-as.vector(apply(matrix(vect.factKG,nrow=length(vect.factKG)),MARGIN=1,FUN=function(x){length(grep(":",unlist(strsplit(x,split=""))))}))
-      which.interaction <- which(interaction==1)
-      
-      for(i in 1:length(vec.factorKG)){
-        
-        if(length(grep(":",unlist(strsplit(vec.factorKG[i],split=""))))>0){
-          
-          
-          pos <- grep(":",unlist(strsplit(vec.factorKG[i],split="")))
-          length.grep <- 0
-          for(j in 1:length(vect.factKG)){
-            if(j%in%which.interaction){
-              
-              if(length(grep(substr(vec.factorKG[i],start=1,stop=pos-1),vect.factKG[j]))>0 && length(grep(substr(vec.factorKG[i],start=pos+1,stop=length(unlist(strsplit(vec.factorKG[i],split="")))),vect.factKG[j]))>0){
-                length.grep <- length.grep + 1
-                which <- i}
-            }}
-          occurKG[i] <- length.grep
-          
-        }else{
-          
-          
-          if(length(vect.factKG[-which.interaction])>0){occurKG[i] <- length(grep(vec.factorKG[i],vect.factKG[-which.interaction]))
-          }else{occurKG[i] <- length(grep(vec.factorKG[i],vect.factKG))}
         }
       }
-    }
-    
-    if (ncol(X_L) == 0){
-      noVarKG <- 1
-    }else{
-      noVarKG <- 0
-    }
-    nvarKG<-ncol(X_L) #nvar==1 correspond a 2 situations:
-    varKG <- as.matrix(sapply(X_L, as.numeric))
-    
-    nsujety<-nrow(X_L)
-    
+      
+      if (ncol(X_L) == 0){
+        noVarKG <- 1
+      }else{
+        noVarKG <- 0
+      }
+      nvarKG<-ncol(X_L) #nvar==1 correspond a 2 situations:
+      varKG <- as.matrix(sapply(X_L, as.numeric))
+      
+      nsujety<-nrow(X_L)
+      
     }
     
     
     #=========================================================>
-   
+    
     clusterY <- data.Longi[,which(colnames(data.Longi)==id)]
-  
+    
     max_rep <- max(table(clusterY))
     uni.clusterY<-as.factor(unique(clusterY))
     
@@ -1369,22 +1429,22 @@
     
     
     
-  if(!is.null(formula.KG[3]) && formula.KG[3] != "1()"){
-    
-    
-    
-    #=======================================>
-    #======= Construction du vecteur des indicatrice
-    if(length(vec.factorKG) > 0){
-      #         ind.place <- ind.place -1
-      k <- 0
-      for(i in 1:length(vec.factorKG)){
-        ind.placeKG[i] <- ind.placeKG[i]+k
-        k <- k + occurKG[i]-1
+    if(!is.null(formula.KG[3]) && formula.KG[3] != "1()"){
+      
+      
+      
+      #=======================================>
+      #======= Construction du vecteur des indicatrice
+      if(length(vec.factorKG) > 0){
+        #         ind.place <- ind.place -1
+        k <- 0
+        for(i in 1:length(vec.factorKG)){
+          ind.placeKG[i] <- ind.placeKG[i]+k
+          k <- k + occurKG[i]-1
+        }
       }
-    }
-    
-    
+      
+      
     }else{
       noVarKG <- 1 
       nvarKG <- 0 
@@ -1395,51 +1455,250 @@
     
     #========= Longitudinal Data preparation - KD =========================
     
-  if(!is.null(formula.KD[3]) && formula.KD[3] != "1()"){
-  
-    TermsKD <- if (missing(data.Longi)){
-      terms(formula.KD, special)
-    }else{
-      terms(formula.KD, special, data = data.Longi)
-    }
-    
-    ord <- attr(TermsKD, "order") # longueur de ord=nbre de var.expli
-    
-    #si pas vide tous si il ya au moins un qui vaut 1 on arrete
-    
-    m4$formula.KD <- TermsKD
-    
-    
-    m4[[1]] <- as.name("model.frame") # m[[1]]=frailtypenal, il le remplace par model.frame en fait
-    
-    
-    if (NROW(m4) == 0)stop("No (non-missing) observations") #nombre ligne different de 0
-    
-    llKD <- attr(TermsKD, "term.labels")#liste des variables explicatives
-    
-    
-    #=========================================================>
-    
-    name.KD <- as.character(attr(TermsKD, "variables")[[2]])
-    KD <- data.Longi[,which(names(data.Longi)==name.KD)]
-    
-    
-    # on identifie les variables explicatives facteurs avec nombre de niveau plus que 2
-    
-    # print(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKG)]))
-    
-    
-    # which(llKG%in%names(which(lapply(data.Longi[,which(names(data.Longi)%in%llKG)],function(x) length(levels(x)))>2)))
-    ind.placeKD <- which(lapply(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKD)]),function(x) length(levels(x)))>2)
-    
-    defined.factor <- llKD[grep("factor",llKD)]
-    
-    vec.factorKD.tmp <- NULL
-    if(length(defined.factor)>0){
-      mat.factorKD.tmp <- matrix(defined.factor,ncol=1,nrow=length(defined.factor))
+    if(!is.null(formula.KD[3]) && formula.KD[3] != "1()"){
+      
+      TermsKD <- if (missing(data.Longi)){
+        terms(formula.KD, special)
+      }else{
+        terms(formula.KD, special, data = data.Longi)
+      }
+      
+      ord <- attr(TermsKD, "order") # longueur de ord=nbre de var.expli
+      
+      #si pas vide tous si il ya au moins un qui vaut 1 on arrete
+      
+      m4$formula.KD <- TermsKD
+      
+      
+      m4[[1]] <- as.name("model.frame") # m[[1]]=frailtypenal, il le remplace par model.frame en fait
+      
+      
+      if (NROW(m4) == 0)stop("No (non-missing) observations") #nombre ligne different de 0
+      
+      llKD <- attr(TermsKD, "term.labels")#liste des variables explicatives
+      
+      
+      #=========================================================>
+      
+      name.KD <- as.character(attr(TermsKD, "variables")[[2]])
+      KD <- data.Longi[,which(names(data.Longi)==name.KD)]
+      
+      
+      # on identifie les variables explicatives facteurs avec nombre de niveau plus que 2
+      
+      # print(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKG)]))
+      
+      
+      # which(llKG%in%names(which(lapply(data.Longi[,which(names(data.Longi)%in%llKG)],function(x) length(levels(x)))>2)))
+      ind.placeKD <- which(lapply(as.data.frame(data.Longi[,which(names(data.Longi)%in%llKD)]),function(x) length(levels(x)))>2)
+      
+      defined.factor <- llKD[grep("factor",llKD)]
+      
+      vec.factorKD.tmp <- NULL
+      if(length(defined.factor)>0){
+        mat.factorKD.tmp <- matrix(defined.factor,ncol=1,nrow=length(defined.factor))
+        
+        # Fonction servant a prendre les termes entre "as.factor"
+        vec.factorKD.tmp <-apply(mat.factorKG.tmp,MARGIN=1,FUN=function(x){
+          if (length(grep("factor",x))>0){
+            if(length(grep(":",x))>0){
+              if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+                
+                pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+                pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+                pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
+                pos4 <- length(unlist(strsplit(x,split="")))
+                if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+                else return(NaN)
+              }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+                pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
+                pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
+                pos4 <- length(unlist(strsplit(x,split="")))-1
+                if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+                else return(NaN)
+              }else{#both factors
+                pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+                pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+                pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
+                pos4 <- length(unlist(strsplit(x,split="")))-1
+                if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2 || length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
+                else return(NaN)
+              }
+            }else{
+              pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+              pos2 <- length(unlist(strsplit(x,split="")))-1
+              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(substr(x,start=pos1,stop=pos2))
+              else return(NaN)
+            }
+          }else{
+            return(x)
+          }})
+        
+        vec.factorKD.tmp <- vec.factorKD.tmp[which(vec.factorKD.tmp!="NaN")]
+        
+        if(length(vec.factorKD.tmp)>0){
+          for(i in 1:length(vec.factorKD.tmp)){
+            if(length(grep(":",vec.factorKD.tmp[i]))==0){
+              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==vec.factorKD.tmp[i])])))>2)ind.placeKD <- c(ind.placeKD,which(llKD%in%paste("as.factor(",vec.factorKD.tmp[i],")",sep="")))
+            }
+            
+          }}
+        
+      }
+      
+      ind.placeKD <- sort(ind.placeKD)
+      
+      #=========================================================>
+      # On determine le nombre de categorie pour chaque var categorielle
+      stratsKD <- attr(TermsKD, "specials")$strata #nbre de var qui sont en fonction de strata()
+      clusterKD <- attr(TermsKD, "specials")$cluster #nbre de var qui sont en fonction de cluster()
+      num.idKD <- attr(TermsKD, "specials")$num.id #nbre de var qui sont en fonction de patkey()
+      vartimedepKD <- attr(TermsKD, "specials")$timedep #nbre de var en fonction de timedep()
+      
+      #booleen pour savoir si au moins une var depend du tps
+      if (!is.null(vartimedepKD)) stop("The option 'timedep' is not allowed in this  model.")
+      if (!is.null(stratsKD)) stop("Stratified analysis is not allowed in this model.")
+      if (!is.null(clusterKD)) stop("Only the argument 'id' can represent the clusters.")
+      if (!is.null(num.idKD))stop("'num.id' for the interval censoring is an allowed option")
+      
+      
+      
+      # which_n<-which(names(data.Longi)%in%random)
+      #  data.Longi[which(data.Longi[,which_n]==0),which_n]<- 0.01
+      
+      mat.factorKD2 <- matrix(llKD,ncol=1,nrow=length(llKD))
       
       # Fonction servant a prendre les termes entre "as.factor"
-      vec.factorKD.tmp <-apply(mat.factorKG.tmp,MARGIN=1,FUN=function(x){
+      llKD2 <-apply(mat.factorKD2,MARGIN=1,FUN=function(x){
+        if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
+          pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+          pos2 <- length(unlist(strsplit(x,split="")))-1
+          x<-substr(x,start=pos1,stop=pos2)
+          return(paste(x,levels(as.factor(data.Longi[,which(names(data.Longi)==x)]))[2],sep=""))
+        }else{
+          return(x)
+        }})
+      
+      # Fonction servant a prendre les termes entre "as.factor" - without the name of the level
+      llKD3 <-apply(mat.factorKD2,MARGIN=1,FUN=function(x){
+        if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
+          pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+          pos2 <- length(unlist(strsplit(x,split="")))-1
+          return(substr(x,start=pos1,stop=pos2))
+        }else{
+          return(x)
+        }})
+      
+      llKD.real.names <- llKD3  
+      llKD3 <- llKD3[!llKD2%in%llKD]
+      
+      
+      if(is.factor(data.Longi[,names(data.Longi)==llKD.real.names[1]]))X_L<- as.numeric(data.Longi[,names(data.Longi)==llKD.real.names[1]])-1
+      else X_L<- data.Longi[,names(data.Longi)==llKD.real.names[1]]
+      
+      
+      
+      
+      if(length(llKD)>1){
+        for(i in 2:length(llKD.real.names)){
+          
+          if(is.factor(data.Longi[,names(data.Longi)==llKD.real.names[i]]))X_L<- cbind(X_L,as.numeric(data.Longi[,names(data.Longi)==llKD.real.names[i]])-1)
+          else X_L<- cbind(X_L,data.Longi[,names(data.Longi)==llKD.real.names[i]])
+        }}
+      
+      #X_L<- data.Longi[,names(data.Longi)%in%(llY)]
+      
+      llKD.fin <- llKD.real.names
+      llKD <- llKD.real.names
+      
+      if(sum(ord)>length(ord)){
+        
+        for(i in 1:length(ord)){
+          if(ord[i]>1){
+            
+            name_v1 <- strsplit(as.character(llKD[i]),":")[[1]][1]
+            name_v2 <- strsplit(as.character(llKD[i]),":")[[1]][2]
+            
+            if(length(grep("factor",name_v1))>0){name_v1<-substring(name_v1,11,nchar(name_v1)-1)
+            v1 <- as.factor(data.Longi[,names(data.Longi)==name_v1])}
+            else{v1 <- data.Longi[,names(data.Longi)==name_v1]}
+            if(length(grep("factor",name_v2))>0){name_v2<-substring(name_v2,11,nchar(name_v2)-1)
+            v2 <- as.factor(data.Longi[,names(data.Longi)==name_v2])}
+            else{v2 <- data.Longi[,names(data.Longi)==name_v2]}
+            
+            llKD[i] <- paste(name_v1,":",name_v2,sep="")
+            #   if(is.factor(v1) && length(levels(v1))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
+            #   if(is.factor(v2) && length(levels(v2))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
+            if(is.factor(v1) && !is.factor(v2)){
+              
+              dummy <- model.matrix( ~ v1 - 1)
+              # if(length(levels(v1)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
+              for(j in 2:length(levels(v1))){
+                X_L <- cbind(X_L,dummy[,j]*v2)
+                if(i>1 && i<length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKD.fin[(i+1+j-2):length(llKD.fin)])
+                else if(i==length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""))
+                else llKD.fin <- c(paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKD.fin[(2+j-2):length(llKD.fin)])
+              }
+              
+            }else if(!is.factor(v1) && is.factor(v2)){
+              
+              dummy <- model.matrix( ~ v2 - 1)
+              #  if(length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
+              for(j in 2:length(levels(v2))){
+                
+                X_L <- cbind(X_L,dummy[,j]*v1)
+                
+                if(i>1 && i<length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKD.fin[(i+1+j-2):length(llKD.fin)])
+                else if(i==length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""))
+                else llKD.fin <- c(paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKD.fin[(2+j-2):length(llKD.fin)])
+              }
+            }else if(is.factor(v1) && is.factor(v2)){
+              
+              
+              dummy1 <- model.matrix( ~ v1 - 1)
+              dummy2 <- model.matrix( ~ v2 - 1)
+              #   if(length(levels(v1)>2) || length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
+              for(j in 2:length(levels(v1))){
+                for(k in 2:length(levels(v2))){
+                  
+                  X_L <- cbind(X_L,dummy1[,j]*dummy2[,k])
+                  if(i>1 && i<length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKG.fin[(i+1+j-2+k-2):length(llKG.fin)])
+                  else if(i==length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""))
+                  else llKD.fin <- c(paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKD.fin[(2+j-2+k-2):length(llKD.fin)])
+                }
+              } 
+            }else{
+              
+              X_L <- cbind(X_L,v1*v2)
+            }
+            
+          }
+        }
+      }
+      
+      
+      
+      if(length(grep(":",llKD))>0){
+        for(i in 1:length(grep(":",llKD))){
+          if(length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKD[grep(":",llKD)[i]],":")[[1]])[1]]))>2 || length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKD[grep(":",llKD)[i]],":")[[1]])[2]]))>2){
+            ind.placeKD <- c(ind.placeKD,grep(":",llKD)[i])
+            #     vec.factorY <- c(vec.factorY,llY[grep(":",llY)[i]])
+          }
+        }
+      }
+      
+      vec.factorKD <- NULL
+      
+      if(length(vec.factorKD.tmp)>0)vec.factorKD <- c(llKD[ind.placeKD],vec.factorKD.tmp)
+      else vec.factorKD <- c(vec.factorKD,llKD[ind.placeKD])
+      
+      vec.factorKD <- unique(vec.factorKD)
+      
+      
+      
+      mat.factorKD <- matrix(vec.factorKD,ncol=1,nrow=length(vec.factorKD))
+      # Fonction servant a prendre les termes entre "as.factor" et (AK 04/11/2015) interactions
+      vec.factorKD <-apply(mat.factorKD,MARGIN=1,FUN=function(x){
         if (length(grep("factor",x))>0){
           if(length(grep(":",x))>0){
             if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
@@ -1448,356 +1707,157 @@
               pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
               pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
               pos4 <- length(unlist(strsplit(x,split="")))
-              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-              else return(NaN)
+              return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
             }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
               pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
               pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
               pos4 <- length(unlist(strsplit(x,split="")))-1
-              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-              else return(NaN)
+              return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
             }else{#both factors
               pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
               pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
               pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
               pos4 <- length(unlist(strsplit(x,split="")))-1
-              if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2 || length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
-              else return(NaN)
+              return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
             }
           }else{
             pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
             pos2 <- length(unlist(strsplit(x,split="")))-1
-            if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==substr(x,start=pos1,stop=pos2))])))>2)return(substr(x,start=pos1,stop=pos2))
-            else return(NaN)
-          }
+            return(substr(x,start=pos1,stop=pos2))}
         }else{
           return(x)
         }})
       
-      vec.factorKD.tmp <- vec.factorKD.tmp[which(vec.factorKD.tmp!="NaN")]
       
-      if(length(vec.factorKD.tmp)>0){
-        for(i in 1:length(vec.factorKD.tmp)){
-          if(length(grep(":",vec.factorKD.tmp[i]))==0){
-            if(length(levels(as.factor(data.Longi[,which(names(data.Longi)==vec.factorKD.tmp[i])])))>2)ind.placeKD <- c(ind.placeKD,which(llKD%in%paste("as.factor(",vec.factorKD.tmp[i],")",sep="")))
-          }
-          
-        }}
-      
-    }
-    
-    ind.placeKD <- sort(ind.placeKD)
-    
-    #=========================================================>
-    # On determine le nombre de categorie pour chaque var categorielle
-    stratsKD <- attr(TermsKD, "specials")$strata #nbre de var qui sont en fonction de strata()
-    clusterKD <- attr(TermsKD, "specials")$cluster #nbre de var qui sont en fonction de cluster()
-    num.idKD <- attr(TermsKD, "specials")$num.id #nbre de var qui sont en fonction de patkey()
-    vartimedepKD <- attr(TermsKD, "specials")$timedep #nbre de var en fonction de timedep()
-    
-    #booleen pour savoir si au moins une var depend du tps
-    if (!is.null(vartimedepKD)) stop("The option 'timedep' is not allowed in this  model.")
-    if (!is.null(stratsKD)) stop("Stratified analysis is not allowed in this model.")
-    if (!is.null(clusterKD)) stop("Only the argument 'id' can represent the clusters.")
-    if (!is.null(num.idKD))stop("'num.id' for the interval censoring is an allowed option")
-    
-    
-    
-    # which_n<-which(names(data.Longi)%in%random)
-    #  data.Longi[which(data.Longi[,which_n]==0),which_n]<- 0.01
-    
-    mat.factorKD2 <- matrix(llKD,ncol=1,nrow=length(llKD))
-    
-    # Fonction servant a prendre les termes entre "as.factor"
-    llKD2 <-apply(mat.factorKD2,MARGIN=1,FUN=function(x){
-      if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
-        pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-        pos2 <- length(unlist(strsplit(x,split="")))-1
-        x<-substr(x,start=pos1,stop=pos2)
-        return(paste(x,levels(as.factor(data.Longi[,which(names(data.Longi)==x)]))[2],sep=""))
-      }else{
-        return(x)
-      }})
-    
-    # Fonction servant a prendre les termes entre "as.factor" - without the name of the level
-    llKD3 <-apply(mat.factorKD2,MARGIN=1,FUN=function(x){
-      if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
-        pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-        pos2 <- length(unlist(strsplit(x,split="")))-1
-        return(substr(x,start=pos1,stop=pos2))
-      }else{
-        return(x)
-      }})
-    
-    llKD.real.names <- llKD3  
-    llKD3 <- llKD3[!llKD2%in%llKD]
-    
-    
-    if(is.factor(data.Longi[,names(data.Longi)==llKD.real.names[1]]))X_L<- as.numeric(data.Longi[,names(data.Longi)==llKD.real.names[1]])-1
-    else X_L<- data.Longi[,names(data.Longi)==llKD.real.names[1]]
-    
-    
-    
-    
-    if(length(llKD)>1){
-      for(i in 2:length(llKD.real.names)){
+      for(i in 1:length(llKD.fin)){
         
-        if(is.factor(data.Longi[,names(data.Longi)==llKD.real.names[i]]))X_L<- cbind(X_L,as.numeric(data.Longi[,names(data.Longi)==llKD.real.names[i]])-1)
-        else X_L<- cbind(X_L,data.Longi[,names(data.Longi)==llKD.real.names[i]])
-      }}
-    
-    #X_L<- data.Longi[,names(data.Longi)%in%(llY)]
-    
-    llKD.fin <- llKD.real.names
-    llKD <- llKD.real.names
-    
-    if(sum(ord)>length(ord)){
+        if(sum(names(data.Longi)==llKD.fin[i])>0){
+          if(is.factor(data.Longi[,names(data.Longi)==llKD.fin[i]]) && length(levels(data.Longi[,names(data.Longi)==llKD.fin[i]]))==2){
+            llKD.fin[i] <- paste(llKD.fin[i],levels(data.Longi[,names(data.Longi)==llKD.fin[i]])[2],sep="")}
+        }
+      }
       
-      for(i in 1:length(ord)){
-        if(ord[i]>1){
+      #  llY <- llY.fin
+      X_L <- as.data.frame(X_L)
+      if(dim(X_L)[2]!=length(llKD.fin))stop("The variables in the longitudinal part must be in the data.Longi")
+      
+      names(X_L) <- llKD.fin
+      
+      
+      X_Lall<- X_L
+      "%+%"<- function(x,y) paste(x,y,sep="")
+      if(length(vec.factorKD) > 0){
+        for(i in 1:length(vec.factorKD)){
+          if(length(grep(":",vec.factorKD[i]))==0){
+            
+            factor.spot <- which(names(X_L)==vec.factorKD[i])
+            
+            if(factor.spot<ncol(X_L))  X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKD[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1],X_L[(factor.spot+1):ncol(X_L)])
+            else X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKD[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1])
+            
+          } }
+        
+        
+        
+        
+        
+        vect.factKD<-names(X_L)[which(!(names(X_L)%in%llKD))]
+        
+        
+        #               vect.fact <-apply(matrix(vect.fact,ncol=1,nrow=length(vect.fact)),MARGIN=1,FUN=function(x){
+        #               pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+        #               pos2 <- grep(")",unlist(strsplit(x,split="")))[1]-1
+        #               return(substr(x,start=pos1,stop=pos2))})
+        
+        occurKD <- rep(0,length(vec.factorKD))
+        
+        #         for(i in 1:length(vec.factorY)){
+        #                #occur[i] <- sum(vec.factor[i] == vect.fact)
+        #               occurY[i] <- length(grep(vec.factorY[i],vect.factY))
+        #      }
+        
+        
+        
+        interaction<-as.vector(apply(matrix(vect.factKD,nrow=length(vect.factKD)),MARGIN=1,FUN=function(x){length(grep(":",unlist(strsplit(x,split=""))))}))
+        which.interaction <- which(interaction==1)
+        
+        for(i in 1:length(vec.factorKD)){
           
-          name_v1 <- strsplit(as.character(llKD[i]),":")[[1]][1]
-          name_v2 <- strsplit(as.character(llKD[i]),":")[[1]][2]
-          
-          if(length(grep("factor",name_v1))>0){name_v1<-substring(name_v1,11,nchar(name_v1)-1)
-          v1 <- as.factor(data.Longi[,names(data.Longi)==name_v1])}
-          else{v1 <- data.Longi[,names(data.Longi)==name_v1]}
-          if(length(grep("factor",name_v2))>0){name_v2<-substring(name_v2,11,nchar(name_v2)-1)
-          v2 <- as.factor(data.Longi[,names(data.Longi)==name_v2])}
-          else{v2 <- data.Longi[,names(data.Longi)==name_v2]}
-          
-          llKD[i] <- paste(name_v1,":",name_v2,sep="")
-          #   if(is.factor(v1) && length(levels(v1))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
-          #   if(is.factor(v2) && length(levels(v2))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
-          if(is.factor(v1) && !is.factor(v2)){
-            
-            dummy <- model.matrix( ~ v1 - 1)
-            # if(length(levels(v1)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
-            for(j in 2:length(levels(v1))){
-              X_L <- cbind(X_L,dummy[,j]*v2)
-              if(i>1 && i<length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKD.fin[(i+1+j-2):length(llKD.fin)])
-              else if(i==length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""))
-              else llKD.fin <- c(paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llKD.fin[(2+j-2):length(llKD.fin)])
-            }
-            
-          }else if(!is.factor(v1) && is.factor(v2)){
-            
-            dummy <- model.matrix( ~ v2 - 1)
-            #  if(length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
-            for(j in 2:length(levels(v2))){
-              
-              X_L <- cbind(X_L,dummy[,j]*v1)
-              
-              if(i>1 && i<length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKD.fin[(i+1+j-2):length(llKD.fin)])
-              else if(i==length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""))
-              else llKD.fin <- c(paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llKD.fin[(2+j-2):length(llKD.fin)])
-            }
-          }else if(is.factor(v1) && is.factor(v2)){
+          if(length(grep(":",unlist(strsplit(vec.factorKD[i],split=""))))>0){
             
             
-            dummy1 <- model.matrix( ~ v1 - 1)
-            dummy2 <- model.matrix( ~ v2 - 1)
-            #   if(length(levels(v1)>2) || length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
-            for(j in 2:length(levels(v1))){
-              for(k in 2:length(levels(v2))){
+            pos <- grep(":",unlist(strsplit(vec.factorKD[i],split="")))
+            length.grep <- 0
+            for(j in 1:length(vect.factKD)){
+              if(j%in%which.interaction){
                 
-                X_L <- cbind(X_L,dummy1[,j]*dummy2[,k])
-                if(i>1 && i<length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKG.fin[(i+1+j-2+k-2):length(llKG.fin)])
-                else if(i==length(llKD.fin))llKD.fin <- c(llKD.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""))
-                else llKD.fin <- c(paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llKD.fin[(2+j-2+k-2):length(llKD.fin)])
-              }
-            } 
+                if(length(grep(substr(vec.factorKD[i],start=1,stop=pos-1),vect.factKD[j]))>0 && length(grep(substr(vec.factorKD[i],start=pos+1,stop=length(unlist(strsplit(vec.factorKD[i],split="")))),vect.factKD[j]))>0){
+                  length.grep <- length.grep + 1
+                  which <- i}
+              }}
+            occurKD[i] <- length.grep
+            
           }else{
             
-            X_L <- cbind(X_L,v1*v2)
-          }
-          
-        }
-      }
-    }
-    
-    
-    
-    if(length(grep(":",llKD))>0){
-      for(i in 1:length(grep(":",llKD))){
-        if(length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKD[grep(":",llKD)[i]],":")[[1]])[1]]))>2 || length(levels(data.Longi[,which(names(data.Longi)%in%strsplit(llKD[grep(":",llKD)[i]],":")[[1]])[2]]))>2){
-          ind.placeKD <- c(ind.placeKD,grep(":",llKD)[i])
-          #     vec.factorY <- c(vec.factorY,llY[grep(":",llY)[i]])
-        }
-      }
-    }
-    
-    vec.factorKD <- NULL
-    
-    if(length(vec.factorKD.tmp)>0)vec.factorKD <- c(llKD[ind.placeKD],vec.factorKD.tmp)
-    else vec.factorKD <- c(vec.factorKD,llKD[ind.placeKD])
-    
-    vec.factorKD <- unique(vec.factorKD)
-    
-    
-    
-    mat.factorKD <- matrix(vec.factorKD,ncol=1,nrow=length(vec.factorKD))
-    # Fonction servant a prendre les termes entre "as.factor" et (AK 04/11/2015) interactions
-    vec.factorKD <-apply(mat.factorKD,MARGIN=1,FUN=function(x){
-      if (length(grep("factor",x))>0){
-        if(length(grep(":",x))>0){
-          if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
             
-            pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
-            pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
-            pos4 <- length(unlist(strsplit(x,split="")))
-            return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-          }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
-            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
-            pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
-            pos4 <- length(unlist(strsplit(x,split="")))-1
-            return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
-          }else{#both factors
-            pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
-            pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
-            pos4 <- length(unlist(strsplit(x,split="")))-1
-            return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
+            if(length(vect.factKD[-which.interaction])>0){occurKD[i] <- length(grep(vec.factorKD[i],vect.factKD[-which.interaction]))
+            }else{occurKD[i] <- length(grep(vec.factorKD[i],vect.factKD))}
           }
-        }else{
-          pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-          pos2 <- length(unlist(strsplit(x,split="")))-1
-          return(substr(x,start=pos1,stop=pos2))}
-      }else{
-        return(x)
-      }})
-    
-    
-    for(i in 1:length(llKD.fin)){
-      
-      if(sum(names(data.Longi)==llKD.fin[i])>0){
-        if(is.factor(data.Longi[,names(data.Longi)==llKD.fin[i]]) && length(levels(data.Longi[,names(data.Longi)==llKD.fin[i]]))==2){
-          llKD.fin[i] <- paste(llKD.fin[i],levels(data.Longi[,names(data.Longi)==llKD.fin[i]])[2],sep="")}
-      }
-    }
-    
-    #  llY <- llY.fin
-    X_L <- as.data.frame(X_L)
-    if(dim(X_L)[2]!=length(llKD.fin))stop("The variables in the longitudinal part must be in the data.Longi")
-    
-    names(X_L) <- llKD.fin
-    
-    
-    X_Lall<- X_L
-    "%+%"<- function(x,y) paste(x,y,sep="")
-    if(length(vec.factorKD) > 0){
-      for(i in 1:length(vec.factorKD)){
-        if(length(grep(":",vec.factorKD[i]))==0){
-          
-          factor.spot <- which(names(X_L)==vec.factorKD[i])
-          
-          if(factor.spot<ncol(X_L))  X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKD[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1],X_L[(factor.spot+1):ncol(X_L)])
-          else X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorKD[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1])
-          
-        } }
-      
-      
-      
-      
-      
-      vect.factKD<-names(X_L)[which(!(names(X_L)%in%llKD))]
-      
-      
-      #               vect.fact <-apply(matrix(vect.fact,ncol=1,nrow=length(vect.fact)),MARGIN=1,FUN=function(x){
-      #               pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
-      #               pos2 <- grep(")",unlist(strsplit(x,split="")))[1]-1
-      #               return(substr(x,start=pos1,stop=pos2))})
-      
-      occurKD <- rep(0,length(vec.factorKD))
-      
-      #         for(i in 1:length(vec.factorY)){
-      #                #occur[i] <- sum(vec.factor[i] == vect.fact)
-      #               occurY[i] <- length(grep(vec.factorY[i],vect.factY))
-      #      }
-      
-      
-      
-      interaction<-as.vector(apply(matrix(vect.factKD,nrow=length(vect.factKD)),MARGIN=1,FUN=function(x){length(grep(":",unlist(strsplit(x,split=""))))}))
-      which.interaction <- which(interaction==1)
-      
-      for(i in 1:length(vec.factorKD)){
-        
-        if(length(grep(":",unlist(strsplit(vec.factorKD[i],split=""))))>0){
-          
-          
-          pos <- grep(":",unlist(strsplit(vec.factorKD[i],split="")))
-          length.grep <- 0
-          for(j in 1:length(vect.factKD)){
-            if(j%in%which.interaction){
-              
-              if(length(grep(substr(vec.factorKD[i],start=1,stop=pos-1),vect.factKD[j]))>0 && length(grep(substr(vec.factorKD[i],start=pos+1,stop=length(unlist(strsplit(vec.factorKD[i],split="")))),vect.factKD[j]))>0){
-                length.grep <- length.grep + 1
-                which <- i}
-            }}
-          occurKD[i] <- length.grep
-          
-        }else{
-          
-          
-          if(length(vect.factKD[-which.interaction])>0){occurKD[i] <- length(grep(vec.factorKD[i],vect.factKD[-which.interaction]))
-          }else{occurKD[i] <- length(grep(vec.factorKD[i],vect.factKD))}
         }
       }
-    }
-    
-    
-    if (ncol(X_L) == 0){
-      noVarKD <- 1
-    }else{
-      noVarKD <- 0
-    }
-    
-    #========================================>
-    
-    
-    nvarKD<-ncol(X_L) #nvar==1 correspond a 2 situations:
-    
-    # au cas ou on a aucune var explicative dans la partie rec, mais X=0
-    # cas ou on a 1seul var explicative, ici X est en general different de 0
-    
-    #varnotdepY <- colnames(X_L)[-grep("timedep",colnames(X_L))]
-    #vardepY <- colnames(X_L)[grep("timedep",colnames(X_L))]
-    #vardepY <- apply(matrix(vardepY,ncol=1,nrow=length(vardepY)),1,timedep.names)
-    
-    #if (length(intersect(varnotdepY,vardepY)) != 0) {
-    #  stop("A variable is both used as a constant and time-varying effect covariate")
-    #}
-    
-    #nvartimedepY <- length(vardepY)
-    
-    #filtretpsY <- rep(0,nvarY)
-    #filtretpsY[grep("timedep",colnames(X_L))] <- 1
-    
-    varKD <- as.matrix(sapply(X_L, as.numeric))
-    
-    nsujety<-nrow(X_L)
-    
-    
-    
-    
-    #=======================================>
-    #======= Construction du vecteur des indicatrice
-    if(length(vec.factorKD) > 0){
-      #         ind.place <- ind.place -1
-      k <- 0
-      for(i in 1:length(vec.factorKD)){
-        ind.placeKD[i] <- ind.placeKD[i]+k
-        k <- k + occurKD[i]-1
+      
+      
+      if (ncol(X_L) == 0){
+        noVarKD <- 1
+      }else{
+        noVarKD <- 0
       }
+      
+      #========================================>
+      
+      
+      nvarKD<-ncol(X_L) #nvar==1 correspond a 2 situations:
+      
+      # au cas ou on a aucune var explicative dans la partie rec, mais X=0
+      # cas ou on a 1seul var explicative, ici X est en general different de 0
+      
+      #varnotdepY <- colnames(X_L)[-grep("timedep",colnames(X_L))]
+      #vardepY <- colnames(X_L)[grep("timedep",colnames(X_L))]
+      #vardepY <- apply(matrix(vardepY,ncol=1,nrow=length(vardepY)),1,timedep.names)
+      
+      #if (length(intersect(varnotdepY,vardepY)) != 0) {
+      #  stop("A variable is both used as a constant and time-varying effect covariate")
+      #}
+      
+      #nvartimedepY <- length(vardepY)
+      
+      #filtretpsY <- rep(0,nvarY)
+      #filtretpsY[grep("timedep",colnames(X_L))] <- 1
+      
+      varKD <- as.matrix(sapply(X_L, as.numeric))
+      
+      nsujety<-nrow(X_L)
+      
+      
+      
+      
+      #=======================================>
+      #======= Construction du vecteur des indicatrice
+      if(length(vec.factorKD) > 0){
+        #         ind.place <- ind.place -1
+        k <- 0
+        for(i in 1:length(vec.factorKD)){
+          ind.placeKD[i] <- ind.placeKD[i]+k
+          k <- k + occurKD[i]-1
+        }
+      }
+      
+    }else{
+      noVarKD <- 1 
+      nvarKD <- 0 
+      varKD <- c()#rep(0, dim(data.Longi)[1])
+      vec.factorKD <- NULL
     }
-    
-  }else{
-    noVarKD <- 1 
-    nvarKD <- 0 
-    varKD <- c()#rep(0, dim(data.Longi)[1])
-    vec.factorKD <- NULL
-  }
     
     
     
@@ -1812,11 +1872,11 @@
     
     ne_re <- nRE#*(nRE+1)/2
     
-   
+    
     matzy <- NULL       # here matzy is for time and dose
     matzy <- cbind(data.Longi[,which(colnames(data.Longi)==time.biomarker)],data.Longi[,which(colnames(data.Longi)==dose)])
-  
-  
+    
+    
     matzy <- as.matrix(matzy)
     
     if(link0==1){netadc <- nRE
@@ -1854,8 +1914,8 @@
     names(rand) <- id
     
     
-   
- 
+    
+    
     
     #==============================================
     #=== preparation survival data ===============
@@ -1898,10 +1958,10 @@
     if (!all(terminalEvent%in%c(1,0)))  stop("terminal must contain a variable coded 0-1 and a non-factor variable")
     
     m2$formula <- TermsT
-   
+    
     m2[[1]] <- as.name("model.frame")
     m2 <- eval(m2, sys.parent()) #ici il prend les colonne associe au var.exp, si rien il prend tout
-
+    
     
     match.noNA<-dimnames(m2)[[1]]%in%dimnames(m)[[1]]#masque logique pour ne pas avoir de NA
     
@@ -1951,7 +2011,7 @@
         }else{
           return(x)
         }})
-  
+      
       # On determine le nombre de categorie pour chaque var categorielle
       if(length(vec.factorT) > 0){
         vect.factT <- attr(X_T,"dimnames")[[2]]
@@ -2063,7 +2123,7 @@
     
     #    cluster <- aggregate(cluster,by=list(cluster),FUN=function(x) x[1])[,2]
     nvarR<-nvar
-   
+    
     if (!missing(formula.terminalEvent)){
       #=======================================>
       #======= Construction du vecteur des indicatrice
@@ -2121,7 +2181,7 @@
     
     effet <- 1
     indic.alpha <- 1
-     np <- switch(as.character(typeof),
+    np <- switch(as.character(typeof),
                  "0"=(2*(as.integer(n.knots) + 2) + as.integer(nvar) + 1 + ne_re + netadc  + netar +   indic.alpha + effet + 4),
                  "2"=(2*2 + nvar + 1  + ne_re + netadc  + netar + indic.alpha + effet + 4))
     
@@ -2155,7 +2215,7 @@
     
     if (!missing(init.Biomarker)) {
       if (length(init.Biomarker)!=4) stop("init.Biomarker must be a vector of length 4 for the parameters of the biomarker: y_0, K_G0, K_D0 and lambda")
-       Beta[np-nvar-ne_re-1-netadc - netar-effet-indic.alpha] <- init.Biomarker[1]   #y0
+      Beta[np-nvar-ne_re-1-netadc - netar-effet-indic.alpha] <- init.Biomarker[1]   #y0
       Beta[np-nvar-ne_re-1-netadc - netar-effet-indic.alpha-3]<- init.Biomarker[2]  #K_G0
       Beta[np-nvar-ne_re-1-netadc - netar-effet-indic.alpha-2]<- init.Biomarker[3]  #K_D0
       Beta[np-nvar-ne_re-1-netadc - netar-effet-indic.alpha-1]<- init.Biomarker[4]  #lambda
@@ -2171,9 +2231,9 @@
       mt2 <- 100
     }
     
-  RE_which_all <- c("y0", "KG", "KD", "lambda")
-  RE_which <- which(RE_which_all%in%random)
-  
+    RE_which_all <- c("y0", "KG", "KD", "lambda")
+    RE_which <- which(RE_which_all%in%random)
+    
     initialize <- 1
     
     npinit <- switch(as.character(typeof),
@@ -2201,159 +2261,159 @@
     
     nodes <- sapply(nodes, as.double)
     weights <- sapply(weights, as.double)
-  
+    
     paGH <- as.double(matrix(0,nrow = ng, ncol = 2*nRE + 3+((nRE+1)*(nRE+1)-1)/2))
     
-  flush.console()
-  if (print.times){
-    ptm<-proc.time()
-    cat("\n")
-    cat("Be patient. The program is computing ... \n")
-  }
-  
-  if(GH == 1){
-  tmp2 <- rep(list(nodes2), nRE)
-  
-  nodes2 <- as.data.frame(do.call(expand.grid,tmp2))
-  
-  tmp2 <- rep(list(weights2), nRE)
-  weights2 <- as.data.frame(do.call(expand.grid,tmp2))
-  
-  nodes2 <- sapply(nodes2, as.double)
-  weights2 <- sapply(weights2, as.double)
-   
-  nvar_uni <- nvarKG+nvarKD
-  np_uni <- nvarKG+nvarKD+  nRE +1+4
-  b_uni <- rep(0.5, np_uni)
-
-  if (!missing(init.B)) {
-   b_uni <- c(rep(0.5,np_uni-nvar_uni),init.B)
-  }
-  
-  if (!missing(init.Random)) {
-    b_uni[(np_uni -nvar_uni-nRE+1):(np_uni-nvar_uni)] <- init.Random[-length(init.Random)]
-  }
-  
- 
-  if (!missing(init.Biomarker)) {
-     b_uni[np_uni-nvar_uni-nRE-1] <- init.Biomarker[1]   #y0
-    b_uni[np_uni-nvar_uni-nRE-1-3]<- init.Biomarker[2]  #K_G0
-    b_uni[np_uni-nvar_uni-nRE-1-2]<- init.Biomarker[3]  #K_D0
-    b_uni[np_uni-nvar_uni-nRE-1-1]<- init.Biomarker[4]  #lambda
-  }
-
-#  b_uni[	1	]=	1.6778988440443428 
-#  b_uni[	2	]=	  0.77513711109230388   
-#  b_uni[	3	]= -3.4656893965811508 
-#  b_uni[	4	]=	4.2968974314271859 
-#  b_uni[	5	]=	3.1040023897610336 
-#  b_uni[	6	]=	0.54246286557317647  
-#  b_uni[	7	]=	 5.2583198545407918E-002
-  
-  
-  ans <- .Fortran(C_longiuninl,
-                  as.integer(nsujety),
-                  as.integer(ng),
-                  yy0 = as.double(Y),
-                  groupey0 = as.integer(clusterY),
-                  nb0 = as.integer(nRE),
-                  which_random0 = as.integer(random.which),
-                  box_cox = as.double(boxcox),
-                  matzy0 = as.double(matzy),
-                  cag0 = as.double(cag),
-                  nva30 = as.integer(nvarKG),
-                  nva40 = as.integer(nvarKD),
-                  vaxy0 = as.double(cbind(varKG,varKD)),
-                  noVar = as.integer(c(noVarKG,noVarKD)),
-                  as.integer(maxit),
-                  as.integer(np_uni),
-                  b_init = as.double(b_uni),
-                  H_uni = as.double(matrix(0,nrow=np_uni,ncol=np_uni)),
-                  HIH_uni = as.double(matrix(0,nrow=np_uni,ncol=np_uni)),
-                  loglik=as.double(0),
-                  LCV=as.double(rep(0,2)),
-                  counts=as.integer(c(0,0,0)),
-                  ier_istop=as.integer(c(0,0)),
-                  EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
-                  GH = as.double(c(0,as.integer(20))),
-                  paGH = as.double(matrix(0, nrow = ng,ncol = 2*nRE+1+ (nRE*(nRE-1))/2)),
-                  b_pred = as.double(matrix(0,nrow = ng, ncol = 2*nRE + 1+(nRE*(nRE-1))/2)),
-                  as.double(weights2),
-                  as.double(nodes2),
-                  as.integer(20**nRE),
-                  as.integer(1),
-                  k0_dummy = as.double(c(1,1)))
-  
-  b_init <- ans$b_init
-  paGH <- ans$b_pred
-  
-  
-  if(nvarKG >= 1)Beta[(np-nvar+nvarR+nvarT+1):(np-nvar+nvarR+nvarT+nvarKG)] <- b_init[(np_uni-nvar_uni+1):(np_uni-nvar_uni+nvarKG)]
-  if(nvarKD >= 1)Beta[(np-nvar+nvarR+nvarT+nvarKG+1):(np-nvar+nvarR+nvarT+nvarKG+nvarKD)] <- b_init[(np_uni-nvar_uni+nvarKG+1):(np_uni-nvar_uni+nvarKG+nvarKD)]
-  
-  Beta[np-nvar-nRE+1]=	b_init[np_uni-nvar_uni-nRE+1]
-  if(nRE >= 2)Beta[np-nvar-nRE+2]= b_init[np_uni-nvar_uni-nRE+2]
-  if(nRE >= 3)Beta[np-nvar-nRE+3] = b_init[np_uni-nvar_uni-nRE+3] 
-  if(nRE == 4)Beta[np-nvar-nRE+4] = b_init[np_uni-nvar_uni-nRE+4] 
-  
-  
-  Beta[np-nvar-nRE] =  b_init[np_uni-nvar_uni-nRE] 
-  
-  
-  Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet-3] <- b_init[np_uni-nvar_uni-nRE-1-3] 
-  Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet-2] <- b_init[np_uni-nvar_uni-nRE-1-2]
-  Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet-1] <- b_init[np_uni-nvar_uni-nRE-1-1] 
-  
-  Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet] <- b_init[np_uni-nvar_uni-nRE-1] 
-  
-  }
-   
-  
-  
- # Beta[	1	]=	1.3986762441228952E-006
-#  Beta[	2	]=	0.31435752761934954
-#  Beta[	3	]=	0.66012388096901187
-#  Beta[	4	]=	0.71494882353918476
-#  Beta[	5	]=	0.34403049282801590
-#  Beta[	6	]=	-1.1912358262614014E-007
-#  Beta[	7	]=	-2.0020239607002497E-007
-#  Beta[	8	]=	-2.4405370090343496E-007
-#  Beta[	9	]=	-2.8433835252408202E-007
-#  Beta[	10	]=	3.2679157165607868E-002
-#  Beta[	11	]=	7.6308858566558474E-002
-#  Beta[	12	]=	-6.1854248188961812E-002
-#  Beta[	13	]=	0.32769877353590859
-#  Beta[	14	]=	0.46956915783044240
-#  Beta[	15	]=	0.51900603759130093
-#  Beta[	16	]=	0.50250976492116095
-#  Beta[	17	]=	0.58767259928540427
-#  Beta[	18	]=	0.45802866349619437
-#  Beta[	19	]=	2.3064279917616868
-#  Beta[	20	]=	1.3642512556803417
-#  Beta[	21	]=	-2.0173192375688171
-#  Beta[	22	]=	4.3956529667888971
-#  Beta[	23	]=	0.60124734452968220
-#  Beta[	24	]=	2.5979475769369160
-#  Beta[	25	]=	0.60582309140509694
-#  Beta[	26	]=	2.0006355244382923
-#  Beta[	27	]=	2.6980089498184077
-#  Beta[	28	]=	0.40915576495719103
-#  Beta[	29	]=	5.4114966577766981E-002
-#  Beta[	30	]=	5.5210013441415365E-002
-#  Beta[	31	]=	0.12568287098239386
-#  Beta[	32	]=	-0.13494883501492397
-#  Beta[	33	]=	0.28953629364133054
-#  Beta[	34	]=	0.21542270156039972
-#  Beta[	35	]=	0.59088000837379462
-#  Beta[	36	]=	6.9624619528895287E-002
-#  Beta[	37	]=	0.47262297353089977
-#  Beta[	38	]=	0.43506116790964994
-#  Beta[	39	]=	0.11121143895792665
-#  Beta[	40	]=	1.2261826395676747
-#  Beta[	41	]=	2.4061945485868530
-#  Beta[	42	]=	1.1819960709755817
-#  Beta[	43	]=	0.11812709844303013
-
+    flush.console()
+    if (print.times){
+      ptm<-proc.time()
+      cat("\n")
+      cat("Be patient. The program is computing ... \n")
+    }
+    
+    if(GH == 1){
+      tmp2 <- rep(list(nodes2), nRE)
+      
+      nodes2 <- as.data.frame(do.call(expand.grid,tmp2))
+      
+      tmp2 <- rep(list(weights2), nRE)
+      weights2 <- as.data.frame(do.call(expand.grid,tmp2))
+      
+      nodes2 <- sapply(nodes2, as.double)
+      weights2 <- sapply(weights2, as.double)
+      
+      nvar_uni <- nvarKG+nvarKD
+      np_uni <- nvarKG+nvarKD+  nRE +1+4
+      b_uni <- rep(0.5, np_uni)
+      
+      if (!missing(init.B)) {
+        b_uni <- c(rep(0.5,np_uni-nvar_uni),init.B)
+      }
+      
+      if (!missing(init.Random)) {
+        b_uni[(np_uni -nvar_uni-nRE+1):(np_uni-nvar_uni)] <- init.Random[-length(init.Random)]
+      }
+      
+      
+      if (!missing(init.Biomarker)) {
+        b_uni[np_uni-nvar_uni-nRE-1] <- init.Biomarker[1]   #y0
+        b_uni[np_uni-nvar_uni-nRE-1-3]<- init.Biomarker[2]  #K_G0
+        b_uni[np_uni-nvar_uni-nRE-1-2]<- init.Biomarker[3]  #K_D0
+        b_uni[np_uni-nvar_uni-nRE-1-1]<- init.Biomarker[4]  #lambda
+      }
+      
+      #  b_uni[	1	]=	1.6778988440443428 
+      #  b_uni[	2	]=	  0.77513711109230388   
+      #  b_uni[	3	]= -3.4656893965811508 
+      #  b_uni[	4	]=	4.2968974314271859 
+      #  b_uni[	5	]=	3.1040023897610336 
+      #  b_uni[	6	]=	0.54246286557317647  
+      #  b_uni[	7	]=	 5.2583198545407918E-002
+      
+      
+      ans <- .Fortran(C_longiuninl,
+                      as.integer(nsujety),
+                      as.integer(ng),
+                      yy0 = as.double(Y),
+                      groupey0 = as.integer(clusterY),
+                      nb0 = as.integer(nRE),
+                      which_random0 = as.integer(random.which),
+                      box_cox = as.double(boxcox),
+                      matzy0 = as.double(matzy),
+                      cag0 = as.double(cag),
+                      nva30 = as.integer(nvarKG),
+                      nva40 = as.integer(nvarKD),
+                      vaxy0 = as.double(cbind(varKG,varKD)),
+                      noVar = as.integer(c(noVarKG,noVarKD)),
+                      as.integer(maxit),
+                      as.integer(np_uni),
+                      b_init = as.double(b_uni),
+                      H_uni = as.double(matrix(0,nrow=np_uni,ncol=np_uni)),
+                      HIH_uni = as.double(matrix(0,nrow=np_uni,ncol=np_uni)),
+                      loglik=as.double(0),
+                      LCV=as.double(rep(0,2)),
+                      counts=as.integer(c(0,0,0)),
+                      ier_istop=as.integer(c(0,0)),
+                      EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
+                      GH = as.double(c(0,as.integer(20))),
+                      paGH = as.double(matrix(0, nrow = ng,ncol = 2*nRE+1+ (nRE*(nRE-1))/2)),
+                      b_pred = as.double(matrix(0,nrow = ng, ncol = 2*nRE + 1+(nRE*(nRE-1))/2)),
+                      as.double(weights2),
+                      as.double(nodes2),
+                      as.integer(20**nRE),
+                      as.integer(1),
+                      k0_dummy = as.double(c(1,1)))
+      
+      b_init <- ans$b_init
+      paGH <- ans$b_pred
+      
+      
+      if(nvarKG >= 1)Beta[(np-nvar+nvarR+nvarT+1):(np-nvar+nvarR+nvarT+nvarKG)] <- b_init[(np_uni-nvar_uni+1):(np_uni-nvar_uni+nvarKG)]
+      if(nvarKD >= 1)Beta[(np-nvar+nvarR+nvarT+nvarKG+1):(np-nvar+nvarR+nvarT+nvarKG+nvarKD)] <- b_init[(np_uni-nvar_uni+nvarKG+1):(np_uni-nvar_uni+nvarKG+nvarKD)]
+      
+      Beta[np-nvar-nRE+1]=	b_init[np_uni-nvar_uni-nRE+1]
+      if(nRE >= 2)Beta[np-nvar-nRE+2]= b_init[np_uni-nvar_uni-nRE+2]
+      if(nRE >= 3)Beta[np-nvar-nRE+3] = b_init[np_uni-nvar_uni-nRE+3] 
+      if(nRE == 4)Beta[np-nvar-nRE+4] = b_init[np_uni-nvar_uni-nRE+4] 
+      
+      
+      Beta[np-nvar-nRE] =  b_init[np_uni-nvar_uni-nRE] 
+      
+      
+      Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet-3] <- b_init[np_uni-nvar_uni-nRE-1-3] 
+      Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet-2] <- b_init[np_uni-nvar_uni-nRE-1-2]
+      Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet-1] <- b_init[np_uni-nvar_uni-nRE-1-1] 
+      
+      Beta[np-nvar-nRE-1-netadc - netar-indic.alpha-effet] <- b_init[np_uni-nvar_uni-nRE-1] 
+      
+    }
+    
+    
+    
+    # Beta[	1	]=	1.3986762441228952E-006
+    #  Beta[	2	]=	0.31435752761934954
+    #  Beta[	3	]=	0.66012388096901187
+    #  Beta[	4	]=	0.71494882353918476
+    #  Beta[	5	]=	0.34403049282801590
+    #  Beta[	6	]=	-1.1912358262614014E-007
+    #  Beta[	7	]=	-2.0020239607002497E-007
+    #  Beta[	8	]=	-2.4405370090343496E-007
+    #  Beta[	9	]=	-2.8433835252408202E-007
+    #  Beta[	10	]=	3.2679157165607868E-002
+    #  Beta[	11	]=	7.6308858566558474E-002
+    #  Beta[	12	]=	-6.1854248188961812E-002
+    #  Beta[	13	]=	0.32769877353590859
+    #  Beta[	14	]=	0.46956915783044240
+    #  Beta[	15	]=	0.51900603759130093
+    #  Beta[	16	]=	0.50250976492116095
+    #  Beta[	17	]=	0.58767259928540427
+    #  Beta[	18	]=	0.45802866349619437
+    #  Beta[	19	]=	2.3064279917616868
+    #  Beta[	20	]=	1.3642512556803417
+    #  Beta[	21	]=	-2.0173192375688171
+    #  Beta[	22	]=	4.3956529667888971
+    #  Beta[	23	]=	0.60124734452968220
+    #  Beta[	24	]=	2.5979475769369160
+    #  Beta[	25	]=	0.60582309140509694
+    #  Beta[	26	]=	2.0006355244382923
+    #  Beta[	27	]=	2.6980089498184077
+    #  Beta[	28	]=	0.40915576495719103
+    #  Beta[	29	]=	5.4114966577766981E-002
+    #  Beta[	30	]=	5.5210013441415365E-002
+    #  Beta[	31	]=	0.12568287098239386
+    #  Beta[	32	]=	-0.13494883501492397
+    #  Beta[	33	]=	0.28953629364133054
+    #  Beta[	34	]=	0.21542270156039972
+    #  Beta[	35	]=	0.59088000837379462
+    #  Beta[	36	]=	6.9624619528895287E-002
+    #  Beta[	37	]=	0.47262297353089977
+    #  Beta[	38	]=	0.43506116790964994
+    #  Beta[	39	]=	0.11121143895792665
+    #  Beta[	40	]=	1.2261826395676747
+    #  Beta[	41	]=	2.4061945485868530
+    #  Beta[	42	]=	1.1819960709755817
+    #  Beta[	43	]=	0.11812709844303013
+    
     ans <- .Fortran(C_jointlonginl,
                     as.integer(nsujet),
                     as.integer(nsujety),
@@ -2407,9 +2467,9 @@
                     counts=as.integer(c(0,0,0)),
                     ier_istop=as.integer(c(0,0)),
                     paraweib=as.double(rep(0,4)),
-                  #  MartinGale=as.double(matrix(0,nrow=ng,ncol=5)),###
-                 #   ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
-                #    Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
+                    #  MartinGale=as.double(matrix(0,nrow=ng,ncol=5)),###
+                    #   ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
+                    #    Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
                     
                     zi=as.double(rep(0,(n.knots+6))),
                     
@@ -2425,8 +2485,8 @@
                     as.integer(n.nodes^nRE*20),
                     as.integer(RE_which))
     
-   
-   
+    
+    
     if (ans$ier_istop[2] == 4){
       warning("Problem in the loglikelihood computation. The program stopped abnormally. Please verify your dataset. \n")
     }
@@ -2479,13 +2539,13 @@
     for(j in 1:nRE){
       fit$B1[j,j] <- ans$b[np - nvar - nRE + j]^2
     }
-   
-   
+    
+    
     fit$ResidualSE <- ans$b[(np  - nvar - ne_re)]^2
     fit$etaR <- ans$b[(np  - nvar - 1 - ne_re - netadc - netar + 1):(np  - nvar - 1 -ne_re - netadc)]
     fit$etaT <- ans$b[(np - nvar - 1 - ne_re - netadc + 1):(np - nvar - 1 -ne_re)]
     
-     
+    
     
     
     fit$npar <- np
@@ -2604,7 +2664,7 @@
     fit$noVarEnd <- noVarT
     fit$noVarKG <- noVarKG
     fit$noVarKD <- noVarKD
-  
+    
     
     fit$nvarRec <- nvarR
     fit$nvarEnd <- nvarT
@@ -2681,7 +2741,7 @@
     
     #================================> For the longitudinal
     #========================= Test de Wald
-   if ((length(vec.factorKG) > 0) ){
+    if ((length(vec.factorKG) > 0) ){
       
       Beta <- ans$b[(np - nvar + 1):np]
       
@@ -2704,8 +2764,8 @@
       fit$global_chisq.testKG <- 0
       
     }
-  
-      if ((length(vec.factorKD) > 0) ){
+    
+    if ((length(vec.factorKD) > 0) ){
       
       Beta <- ans$b[(np - nvar + 1):np ]
       

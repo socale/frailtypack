@@ -98,7 +98,193 @@ trivariate model?}
 }
 \description{
 { 
-\bold{For Cox proportional hazard model}
+
+\ifelse{html}{\bold{For Cox proportional hazard model}
+
+A predictive probability of event between t and horizon time t+w, with w the
+window of prediction. 
+
+{\figure{prediction1.png}{options: width="100\%"}}
+
+\bold{For Gamma Shared Frailty model for clustered (not recurrent) events}
+
+Two kinds of predictive probabilities can be calculated:
+
+- a conditional predictive probability of event between t and horizon time
+t+w, i.e. given a specific group
+
+{\figure{prediction2.png}{options: width="100\%"}}
+
+- a marginal predictive probability of event between t and horizon time t+w,
+i.e. averaged over the population
+
+{\figure{prediction3.png}{options: width="100\%"}}
+
+\bold{For Gaussian Shared Frailty model for clustered (not recurrent)
+events}
+
+Two kinds of predictive probabilities can be calculated:
+
+- a conditional predictive probability of event between t and horizon time
+t+w, i.e. given a specific group and given a specific Gaussian random effect
+\eqn{\eta}
+
+{\figure{prediction4.png}{options: width="100\%"}}
+
+- a marginal predictive probability of event between t and horizon time t+w,
+i.e. averaged over the population
+
+{\figure{prediction5.png}{options: width="100\%"}}
+
+\bold{For Gamma Shared Frailty model for recurrent events}
+
+Two kinds of predictive probabilities can be calculated:
+
+- A marginal predictive probability of event between t and horizon time t+w,
+i.e. averaged over the population.
+
+{\figure{prediction6.png}{options: width="100\%"}}
+
+- a conditional predictive probability of event between t and horizon time
+t+w, i.e. given a specific individual.
+
+This prediction method is the same as the conditional gamma prediction
+method applied for clustered events (see formula \eqn{P}\out{<sup>cond</sup>} before).
+
+\bold{For Gaussian Shared Frailty model for recurrent events}
+
+Two kinds of predictive probabilities can be calculated:
+
+- A marginal predictive probability of event between t and horizon time t+w,
+i.e. averaged over the population.
+
+{\figure{prediction7.png}{options: width="100\%"}}
+
+- a conditional predictive probability of event between t and horizon time
+t+w, i.e. given a specific individual.
+
+This prediction method is the same as the conditional Gaussian prediction
+method applied for clustered events (see formula \eqn{P}\out{<sup>cond</sup>} before).
+
+It is possible to compute all these predictions in two ways on a scale of
+times : - either you want a cumulative probability of developing the event
+between t and t+w (with t fixed, but with a varying window of prediction w);
+- either you want at a specific time the probability to develop the event in
+the next w (ie, for a varying prediction time t, but for a fixed window of
+prediction). See Details.
+
+\bold{For Joint Frailty model}
+
+Prediction for two types of event can be calculated : for a terminal event
+or for a new recurrent event, knowing patient's characteristics.
+
+\bold{ - Prediction of death knowing patients' characteristics : }
+
+It is to predict the probability of death in a specific time window given
+the history of patient i before the time of prediction t. The history
+H\out{<sub>i</sub>}\out{<sup>J,l</sup>}, (l=1,2) is the information on covariates before time
+t, but also the number of recurrences and the time of occurences. Three
+types of marginal probabilities are computed:
+
+- a prediction of death between t and t+w given that the patient had exactly
+J recurrences (H\out{<sub>i</sub>}\out{<sup>J,1</sup>}) before t
+
+{\figure{prediction8.png}{options: width="100\%"}}
+
+- a prediction of death between t and t+w given that the patient had at
+least J recurrences (H\out{<sub>i</sub>}\out{<sup>J,2</sup>}) before t
+
+{\figure{prediction9.png}{options: width="100\%"}}
+
+- a prediction of death between t and t+w considering the recurrence history
+only in the parameters estimation. It corresponds to the average probability
+of death between t and t+w for a patient with these given characteristics.
+
+{\figure{prediction10.png}{options: width="100\%"}}
+
+\bold{ - Prediction of risk of a new recurrent event knowing patients'
+characteristics : }
+
+It is to predict the probability of a new recurrent event in a specific time
+window given the history of patient i before the time of prediction t. The
+history H\out{<sub>i</sub>}\out{<sup>J</sup>} is the information on covariates before time t, but also
+the number of recurrences and the time of occurences. The marginal
+probability computed is a prediction of a new recurrent event between t and
+t+w given that the patient had exactly J recurrences (\eqn{H}\out{<sub>i</sub>}\out{<sup>J</sup>}) before t:
+
+{\figure{prediction11.1.png}{options: width="100\%"}}
+{\figure{prediction11.2.png}{options: width="100\%"}}
+
+It is possible to compute all these predictions in two ways : - either you
+want a cumulative probability of developing the event between t and t+w
+(with t fixed, but with a varying window of prediction w); - either you want
+at a specific time the probability to develop the event in the next w (ie,
+for a varying prediction time t, but for a fixed window of prediction). See
+Details.
+
+With Gaussian frailties (\eqn{\eta}), the same expressions are used but with
+u\out{<sub>i</sub>}\out{<sup>J</sup>} replaced by \eqn{exp}(J\\eqn{eta}\out{<sub>i</sub>}) and \eqn{g(\eta)}
+corresponds to the Gaussian distribution.
+
+\bold{For Joint Nested Frailty models}
+
+Prediction of the probability of developing a terminal event between t and
+t+w for subject i who survived by time t based on the visiting and disease
+histories of their own and other family members observed by time t.
+
+Let (Y\out{<sub>fi</sub>}\out{<sup>R</sup>}(t)) be the history of subject i in family f,
+before time t, which includes all the recurrent events and covariate
+information. For disease history, let T\out{<sub>fi</sub>}\out{<sup>D</sup>}(t) = min(T\out{<sub>fi</sub>},t) be
+the observed time to an event before t ; \eqn{\delta}\out{<sub>fi</sub>}\out{<sup>D</sup>}(t) the disease
+indicator by time t and X\out{<sub>fi</sub>}\out{<sup>D</sup>}(t) the covariate information
+observed up to time t. We define the family history of subject i in
+family f by {\figure{prediction12.png}{options: width="100\%"}}
+
+which includes the visiting and disease history of all subjects except for
+subject i in family f as well as their covariate information by
+time t.
+
+The prediction probability can be written as :
+
+{\figure{prediction13.1.png}{options: width="100\%"}}
+{\figure{prediction13.2.png}{options: width="100\%"}}
+
+\bold{For Joint models for longitudinal data and a terminal event}
+
+The predicted probabilities are calculated in a specific time window given
+the history of biomarker measurements before the time of prediction t
+(\out{&#x1B4;}\out{<sub>i</sub>}(t)). The probabilities are conditional also on
+covariates before time t and that the subject was at risk at t.  The
+marginal predicted probability of the terminal event is
+
+{\figure{prediction14.png}{options: width="100\%"}}
+
+These probabilities can be calculated in several time points with fixed time
+of prediction t and varying window w or with fixed window w and varying time
+of prediction t. See Details for an example of how to construct time
+windows.
+
+\bold{For Trivariate joint models for longitudinal data, recurrent events
+and a terminal event}
+
+The predicted probabilities are calculated in a specific time window given
+the history of biomarker measurements \out{&#x1B4;}\out{<sub>i</sub>}(t) and recurrences
+H\out{<sub>i</sub>}\out{<sup>J,1</sup>} (complete history of recurrences with known J number
+of observed events) before the time of prediction t. The probabilities are
+conditional also on covariates before time t and that the subject was at
+risk at t.  The marginal predicted probability of the terminal event is
+
+{\figure{prediction15.png}{options: width="100\%"}}
+
+The biomarker history can be represented using a linear (\code{trivPenal})
+or non-linear mixed-effects model (\code{trivPenalNL}).
+
+These probabilities can be calculated in several time points with fixed time
+of prediction t and varying window w or with fixed window w and varying time
+of prediction t. See Details for an example of how to construct time
+windows.
+
+}{\bold{For Cox proportional hazard model}
 
 A predictive probability of event between t and horizon time t+w, with w the
 window of prediction.
@@ -312,6 +498,7 @@ These probabilities can be calculated in several time points with fixed time
 of prediction t and varying window w or with fixed window w and varying time
 of prediction t. See Details for an example of how to construct time
 windows.
+}
 }
 }
 \details{

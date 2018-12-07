@@ -298,7 +298,172 @@ coefficient \eqn{\xi}.}
 \description{
 {
 
-\bold{Shared Frailty model}
+\if{html}{\bold{Shared Frailty model}
+
+Fit a shared gamma or log-normal frailty model using a semiparametric
+Penalized Likelihood estimation or parametric estimation on the hazard
+function. Left-truncated, right-censored data, interval-censored data and
+strata (up to 6 levels) are allowed. It allows to obtain a non-parametric
+smooth hazard of survival function. This approach is different from the
+partial penalized likelihood approach of Therneau et al.
+
+The hazard function, conditional on the frailty term \eqn{\omega}\out{<sub>i</sub>}, of a
+shared gamma frailty model for the j\out{<sup>th</sup>} subject in the i\out{<sup>th</sup>}
+group: 
+
+{\figure{frailtymodel1.1.png}{options: width="70\%"}}
+{\figure{frailtymodel1.2.png}{options: width="70\%"}}
+
+where \eqn{\lambda}\out{<sub>0</sub>}(t) is the baseline hazard function, \bold{\eqn{\beta}}
+the vector of the regression coefficient associated to the covariate vector
+\bold{\eqn{Z}\out{<sub>ij</sub>}} for the j\out{<sup>th</sup>} individual in the i\out{<sup>th</sup>}
+group.
+
+Otherwise, in case of a shared log-normal frailty model, we have for the
+j\out{<sup>th</sup>} subject in the i\out{<sup>th</sup>} group:
+
+{\figure{frailtymodel2.1.png}{options: width="70\%"}}
+{\figure{frailtymodel2.2.png}{options: width="70\%"}}
+
+From now on, you can also consider time-varying effects covariates in your
+model, see \code{timedep} function for more details.
+
+\bold{Joint Frailty model}
+
+Fit a joint either with gamma or log-normal frailty model for recurrent and
+terminal events using a penalized likelihood estimation on the hazard
+function or a parametric estimation. Right-censored data and strata (up to 6
+levels) for the recurrent event part are allowed. Left-truncated data is not
+possible. Joint frailty models allow studying, jointly, survival processes
+of recurrent and terminal events, by considering the terminal event as an
+informative censoring.
+
+There is two kinds of joint frailty models that can be fitted with
+\code{frailtyPenal} :
+
+- The first one (Rondeau et al. 2007) includes a common frailty term to the
+individuals \eqn{\omega}\out{<sub>i</sub>} for the two rates which will take into account
+the heterogeneity in the data, associated with unobserved covariates. The
+frailty term acts differently for the two rates (\eqn{\omega}\out{<sub>i</sub>} for the
+recurrent rate and \eqn{\omega}\out{<sub>i</sub>}\out{<sup>\eqn{\alpha}</sup>} for the death rate). The
+covariates could be different for the recurrent rate and death rate.
+
+For the j\out{<sup>th</sup>} recurrence (j=1,...,n\out{<sub>i</sub>}) and the
+i\out{<sup>th</sup>} subject (i=1,...,G), the joint gamma frailty model
+for recurrent event hazard function \eqn{r}\out{<sub>ij</sub>}(.) and death rate
+\eqn{\lambda}\out{<sub>i</sub>} is :
+
+{\figure{frailtymodel3.png}{options: width="70\%"}}
+
+where \eqn{r}\out{<sub>0</sub>}(t) (resp. \eqn{\lambda}\out{<sub>0</sub>}(t)) is the recurrent (resp.
+terminal) event baseline hazard function, \bold{\eqn{\beta}\out{<sub>1</sub>}} (resp.
+\bold{\eqn{\beta}\out{<sub>2</sub>}}) the regression coefficient vector, \bold{\eqn{Z}\out{<sub>i</sub>}(t)}
+the covariate vector. The random effects of frailties \eqn{\omega}\out{<sub>i</sub>} \out{<span>&#126;</span>}  \bold{\eqn{\Gamma}(1/\eqn{\theta},1/\eqn{\theta})} and are
+iid.
+
+The joint log-normal frailty model will be :
+
+{\figure{frailtymodel4.png}{options: width="70\%"}}
+{\figure{frailtymodel5.png}{options: width="70\%"}}
+
+- The second one (Rondeau et al. 2011) is quite similar but the frailty term
+is common to the individuals from a same group. This model is useful for the
+joint modelling two clustered survival outcomes. This joint models have been
+developed for clustered semi-competing events. The follow-up of each of the
+two competing outcomes stops when the event occurs. In this case, j is for
+the subject and i for the cluster.
+
+{\figure{frailtymodel6.png}{options: width="80\%"}}
+
+It should be noted that in these models it is not recommended to include
+\eqn{\alpha} parameter as there is not enough information to estimate it and
+thus there might be convergence problems.
+
+In case of a log-normal distribution of the frailties, we will have :
+
+{\figure{frailtymodel7.png}{options: width="80\%"}}
+{\figure{frailtymodel8.png}{options: width="80\%"}}
+
+This joint frailty model can also be applied to clustered recurrent events
+and a terminal event (example on "readmission" data below).
+
+From now on, you can also consider time-varying effects covariates in your
+model, see \code{timedep} function for more details.
+
+There is a possibility to use a weighted penalized maximum likelihood
+approach for nested case-control design, in which risk set sampling is
+performed based on a single outcome (Jazic et al., \emph{Submitted}).
+
+General Joint Frailty model Fit a general joint frailty model for recurrent
+and terminal events considering two independent frailty terms. The frailty
+term \eqn{u}\out{<sub>i</sub>} represents the unobserved association between recurrences and
+death. The frailty term \eqn{v}\out{<sub>i</sub>} is specific to the recurrent event rate.
+Thus, the general joint frailty model is:
+
+{\figure{frailtymodel9.png}{options: width="90\%"}}
+
+where the \eqn{iid} random effects
+\bold{\eqn{u}\out{<sub>i</sub>}} \out{&#126;} \bold{\eqn{\Gamma}(1/\eqn{\theta},1/\eqn{\theta})} and the
+\eqn{iid} random effects
+\bold{\eqn{v}\out{<sub>i</sub>}} \out{&#126;} \bold{\eqn{\Gamma}(1/\eqn{\eta},1/\eqn{\eta})} are independent
+from each other.  The joint model is fitted using a penalized likelihood
+estimation on the hazard. Right-censored data and time-varying covariates
+\bold{\eqn{Z}\out{<sub>i</sub>}(t)} are allowed.
+
+\bold{Nested Frailty model}
+
+\bold{\emph{Data should be ordered according to cluster and subcluster}}
+
+Fit a nested frailty model using a Penalized Likelihood on the hazard
+function or using a parametric estimation. Nested frailty models allow
+survival studies for hierarchically clustered data by including two iid
+gamma random effects. Left-truncated and right-censored data are allowed.
+Stratification analysis is allowed (maximum of strata = 2).
+The hazard function conditional on the two frailties \eqn{v}\out{<sub>i</sub>} and
+\eqn{w}\out{<sub>ij</sub>} for the k\out{<sup>th</sup>} individual of the j\out{<sup>th</sup>} subgroup of
+the i\out{<sup>th</sup>} group is :
+
+{\figure{frailtymodel10.png}{options: width="80\%"}}
+
+where \eqn{\lambda}\out{<sub>0</sub>}(t) is the baseline hazard function, \eqn{X}\out{<sub>ijk</sub>}
+denotes the covariate vector and \eqn{\beta} the corresponding vector of
+regression parameters.
+
+\bold{Joint Nested Frailty Model}
+
+Fit a joint model for recurrent and terminal events using a penalized
+likelihood on the hazard functions or a parametric estimation.
+Right-censored data are allowed but left-truncated data and stratified
+analysis are not allowed.
+
+Joint nested frailty models allow studying, jointly, survival processes of
+recurrent and terminal events for hierarchically clustered data, by
+considering the terminal event as an informative censoring and by including
+two iid gamma random effects.
+
+The joint nested frailty model includes two shared frailty terms, one for
+the subgroup (\eqn{u}\out{<sub>fi</sub>}) and one for the group (\eqn{w}\out{<sub>f</sub>}) into the
+hazard functions. This random effects account the heterogeneity in the data,
+associated with unobserved covariates. The frailty terms act differently for
+the two rates (\eqn{u}\out{<sub>fi</sub>}, \eqn{w}\out{<sub>f</sub>}\out{<sup>\eqn{\xi}</sup>} for the recurrent rate and
+\eqn{u}\out{<sub>fi</sub>}\out{<sup>\eqn{\alpha}</sup>}, \eqn{w}\out{<sub>i</sub>} for the terminal event rate). The covariates
+could be different for the recurrent rate and death rate.
+
+For the j\out{<sup>th</sup>} recurrence (j = 1, ..., \eqn{n}\out{<sub>i</sub>}) of the i\out{<sup>th</sup>}
+individual (i = 1, ..., \eqn{m}\out{<sub>f</sub>}) of the \eqn{f}\out{<sup>th</sup>} group (f = 1,...,
+n), the joint nested gamma frailty model for recurrent event hazard function
+\eqn{r}\out{<sub>fij</sub>}(.) and for terminal event hazard function \eqn{\lambda}\out{<sub>fi</sub>}
+is :
+
+{\figure{frailtymodel11.png}{options: width="90\%"}}
+
+where \eqn{r}\out{<sub>0</sub>}(resp. \eqn{\lambda}\out{<sub>0</sub>}) is the recurrent (resp.
+terminal) event baseline hazard function, \eqn{\beta} (resp. \eqn{\gamma})
+the regression coefficient vector, \bold{\eqn{X}\out{<sub>fij</sub>}}(t) the covariates
+vector. The random effects are \eqn{\omega}\out{<sub>f</sub>} \out{<span>&#126;</span>}  \bold{\eqn{\Gamma}(1/\eqn{\eta},1/\eqn{\eta})}
+and \eqn{u}\out{<sub>fi</sub>} \out{<span>&#126;</span>}  \bold{\eqn{\Gamma}(1/\eqn{\theta},1/\eqn{\theta})}.
+}
+\if{latex}{\bold{Shared Frailty model}
 
 Fit a shared gamma or log-normal frailty model using a semiparametric
 Penalized Likelihood estimation or parametric estimation on the hazard
@@ -423,7 +588,7 @@ Thus, the general joint frailty model is:
 
 \eqn{\left\{ \begin{array}{ll}
 r_{ij}(t|u_i,v_i)=u_iv_ir_0(t)\exp(\bold{\beta_1^{'}Z_{ij}(t)})
-=u_iv_ir_{ij}(t) & \mbox{(Reccurent)} \\
+=u_iv_ir_{ij}(t) & \mbox{(Recurrent)} \\
 \lambda_{i}(t|u_i)=u_i\lambda_0(t)\exp(\bold{\beta_1^{'}Z_{i}(t)}) = u_i
 \lambda_{i}(t) & \mbox{(Death)} \\ \end{array} \right. }
 
@@ -500,6 +665,7 @@ the regression coefficient vector, \eqn{\bold{X_{fij}}(t)} the covariates
 vector. The random effects are \deqn{\omega_f \sim \Gamma \left(
 \frac{1}{\eta}, \frac{1}{\eta}\right)} and \deqn{ u_{fi} \sim \Gamma \left(
 \frac{1}{\theta}, \frac{1}{\theta} \right)}
+}
 }
 }
 \details{

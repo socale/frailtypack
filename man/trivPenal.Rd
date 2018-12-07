@@ -275,7 +275,43 @@ coefficients.}
 }
 \description{
 {
-Fit a trivariate joint model for longitudinal data, recurrent events and a
+\if{html}{Fit a trivariate joint model for longitudinal data, recurrent events and a
+terminal event using a semiparametric penalized likelihood estimation or a
+parametric estimation on the hazard functions.
+
+The longitudinal outcomes y\out{<sub>i</sub>}(t\out{<sub>ik</sub>}) (k=1,...,n\out{<sub>i</sub>},
+i=1,...,N) for N subjects are described by a linear mixed
+model and the risks of the recurrent and terminal events are represented by
+proportional hazard risk models. The joint model is constructed assuming
+that the processes are linked via a latent structure (Krol et al. 2015):
+
+{\figure{trivmodel1.png}{options: width="100\%"}}
+
+where \bold{\eqn{X}}\out{<sub>Li</sub>}(t), \bold{\eqn{X}}\out{<sub>Rij</sub>}(t) and
+\bold{\eqn{X}}\out{<sub>Ti</sub>}(t) are vectors of fixed effects covariates and
+\bold{\eqn{\beta}}\out{<sub>L</sub>}, \bold{\eqn{\beta}}\out{<sub>R</sub>} and \bold{\eqn{\beta}}\out{<sub>T</sub>} are the
+associated coefficients. Measurements errors \eqn{\epsilon}\out{<sub>i</sub>}(t\out{<sub>ik</sub>}) are
+iid normally distributed with mean 0 and variance \eqn{\sigma}\out{<sub>\epsilon</sub>}\out{<sup>2</sup>}.
+The random effects \bold{\eqn{b}}\out{<sub>i</sub>} = (\eqn{b}\out{<sub>0i</sub>},...,\eqn{b}\out{<sub>qi</sub>})\out{<sup>T</sup>}
+\out{&#126;} \bold{\eqn{N}}(0,\bold{\eqn{B}}\out{<sub>1</sub>}) are associated to covariates \bold{\eqn{Z}}\out{<sub>i</sub>}(t)
+and independent from the measurement error. The relationship between the
+biomarker and recurrent events is explained via
+g(\bold{\eqn{b}}\out{<sub>i</sub>},\bold{\eqn{\beta}}\out{<sub>L</sub>},\bold{\eqn{Z}}\out{<sub>i</sub>}(t),\bold{\eqn{X}}\out{<sub>Li</sub>}(t)) with
+coefficients \bold{\eqn{\eta}}\out{<sub>R</sub>} and between the biomarker and terminal
+event is explained via
+h(\bold{\eqn{b}}\out{<sub>i</sub>},\bold{\eqn{\beta}}\out{<sub>L</sub>},\bold{\eqn{Z}}\out{<sub>i</sub>}(t),\bold{\eqn{X}}\out{<sub>Li</sub>}(t)) with
+coefficients \bold{\eqn{\eta}}\out{<sub>T</sub>}. Two forms of the functions g(.)
+and h(.) are available: the random effects \eqn{b}\out{<sub>i</sub>} and
+the current biomarker level \eqn{m}\out{<sub>i</sub>}(t)=\bold{\eqn{X}}\out{<sub>Li</sub>}(t\out{<sub>ik</sub>})\out{<sup>T</sup>}\bold{\eqn{\beta}}\out{<sub>L</sub>} + \bold{\eqn{Z}}\out{<sub>i</sub>}(t\out{<sub>ik</sub>})\out{<sup>T</sup>}\bold{\eqn{b}}\out{<sub>i</sub>}. The frailty term
+v\out{<sub>i</sub>} is gaussian with mean 0 and variance \eqn{\sigma}\out{<sub>v</sub>}. Together with
+\eqn{b}\out{<sub>i</sub>} constitutes the random effects of the model: 
+
+{\figure{trivmodel2.png}{options: width="100\%"}}
+
+We consider that the longitudinal outcome can be a subject to a
+quantification limit, i.e. some observations, below a level of detection
+\eqn{s} cannot be quantified (left-censoring).}
+\if{latex}{Fit a trivariate joint model for longitudinal data, recurrent events and a
 terminal event using a semiparametric penalized likelihood estimation or a
 parametric estimation on the hazard functions.
 
@@ -319,7 +355,7 @@ the current biomarker level \eqn{m_i(t)=\bold{X}_{Li}(t_{ik})^\top
 
 We consider that the longitudinal outcome can be a subject to a
 quantification limit, i.e. some observations, below a level of detection
-\eqn{s} cannot be quantified (left-censoring).
+\eqn{s} cannot be quantified (left-censoring).}
 }
 }
 \details{

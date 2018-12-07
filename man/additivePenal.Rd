@@ -154,7 +154,16 @@ datasets.  Right-censored data are allowed, but not the left-truncated data.
 A stratified analysis is possible (maximum number of strata = 2). This
 approach is different from the shared frailty models.
 
-In an additive model, the hazard function for the \eqn{j^{th}} subject in
+\ifelse{html}{In an additive model, the hazard function for the j\out{<sup>th</sup>}
+subject in the i\out{<sup>th</sup>} trial with random trial effect u\out{<sub>i</sub>} as
+well as the random treatment-by-trial interaction v\out{<sub>i</sub>} is:
+
+{\figure{additivemodel.png}{options: width="60\%"}}
+
+where \eqn{\lambda}\out{<sub>0</sub>(0)} is the baseline hazard function, \eqn{\beta}\out{<sub>k</sub>} the
+fixed effect associated to the covariate X\out{<sub>ijk</sub>} (k=1,..,p),
+\eqn{\beta}\out{<sub>1</sub>} is the treatment effect and X\out{<sub>ij1</sub>} the treatment
+variable. \eqn{\rho} is the corresponding correlation coefficient for the two frailty terms.}{In an additive model, the hazard function for the \eqn{j^{th}} subject in
 the \eqn{i^{th}} trial with random trial effect \eqn{u_i} as well as the
 random treatment-by-trial interaction \eqn{v_i} is:
 
@@ -168,8 +177,7 @@ where \eqn{\lambda_0(t)} is the baseline hazard function, \eqn{\beta_k} the
 fixed effect associated to the covariate \eqn{X_{ijk}} (k=1,..,p),
 \eqn{\beta_1} is the treatment effect and \eqn{X_{ij1}} the treatment
 variable. \eqn{\rho} is the corresponding correlation coefficient for the
-two frailty terms.
-
+two frailty terms.}
 }
 }
 \details{

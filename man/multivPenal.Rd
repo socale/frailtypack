@@ -209,7 +209,54 @@ of the "as.factor" variables.}
 }
 \description{
 {
-Fit a multivariate frailty model for two types of recurrent events with a
+\if{html}{Fit a multivariate frailty model for two types of recurrent events with a
+terminal event using a penalized likelihood estimation on the hazard
+function or a parametric estimation. Right-censored data are allowed.
+Left-truncated data and stratified analysis are not possible. Multivariate
+frailty models allow studying, with a joint model, three survival dependent
+processes for two types of recurrent events and a terminal event.
+Multivariate joint frailty models are applicable in mainly two settings.
+First, when focus is on the terminal event and we wish to account for the
+effect of previous endogenous recurrent event. Second, when focus is on a
+recurrent event and we wish to correct for informative censoring.
+
+The multivariate frailty model for two types of recurrent events with a
+terminal event is (in the calendar or time-to-event timescale):
+
+{\figure{multivmodel1.png}{options: width="100\%"}}
+
+where \eqn{r}\out{<sub>0</sub>}\out{<sup>l</sup>}(t), (l\out{&isin;}{1,2}) and \eqn{r}\out{<sub>0</sub>}(t) are
+respectively the recurrent and terminal event baseline hazard functions, and
+\eqn{\beta}\out{<sub>1</sub>},\eqn{\beta}\out{<sub>2</sub>},\eqn{\beta}\out{<sub>3</sub>} the regression coefficient vectors associated
+with \eqn{Z}\out{<sub>i</sub>}(t) the covariate vector. The covariates could be different
+for the different event hazard functions and may be time-dependent. We
+consider that death stops new occurrences of recurrent events of any type,
+hence given \eqn{t>D}, \eqn{dN}\out{<sup>R(l)*</sup>}(t), (l\out{&isin;}{1,2}) takes the value 0.
+Thus, the terminal and the two recurrent event processes are not independent
+or even conditional upon frailties and covariates. We consider the hazard
+functions of recurrent events among individuals still alive.  % The three
+components in the above multivariate frailty model are linked together by
+two Gaussian and correlated random effects \eqn{u}\out{<sub>i</sub>},\eqn{v}\out{<sub>i</sub>}: %
+(\eqn{u}\out{<sub>i</sub>},\eqn{v}\out{<sub>i</sub>})\out{<sup>T</sup>} \out{<span>&#126;</span>} \bold{\eqn{N}}(0,\eqn{\Sigma}\out{<sub>uv</sub>}), with
+
+{\figure{multivmodel2.png}{options: width="100\%"}}
+
+Dependencies between these three types of event are taken into account by
+two correlated random effects and parameters \eqn{\theta}\out{<sub>1</sub>},\eqn{\theta}\out{<sub>2</sub>} the
+variance of the random effects and \eqn{\alpha}\out{<sub>1</sub>},\eqn{\alpha}\out{<sub>2</sub>} the coefficients
+for these random effects into the terminal event part. If \eqn{\alpha}\out{<sub>1</sub>} and
+\eqn{\theta}\out{<sub>1</sub>} are both significantly different from 0, then the recurrent
+events of type 1 and death are significantly associated (the sign of the
+association is the sign of \eqn{\alpha}\out{<sub>1</sub>}). If \eqn{\alpha}\out{<sub>2</sub>} and
+\eqn{\theta}\out{<sub>2</sub>} are both significantly different from 0, then the recurrent
+events of type 2 and death are significantly associated (the sign of the
+association is the sign of \eqn{\alpha}\out{<sub>2</sub>}). If \eqn{\rho}, the correlation
+between the two random effects, is significantly different from 0, then the
+recurrent events of type 1 and the recurrent events of type 2 are
+significantly associated (the sign of the association is the sign of
+\eqn{\rho}).
+}
+\if{latex}{Fit a multivariate frailty model for two types of recurrent events with a
 terminal event using a penalized likelihood estimation on the hazard
 function or a parametric estimation. Right-censored data are allowed.
 Left-truncated data and stratified analysis are not possible. Multivariate
@@ -263,6 +310,7 @@ between the two random effects, is significantly different from 0, then the
 recurrent events of type 1 and the recurrent events of type 2 are
 significantly associated (the sign of the association is the sign of
 \eqn{\rho}).
+}
 }
 }
 \note{
