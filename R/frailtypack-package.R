@@ -33,7 +33,7 @@
 #' effects-by-trial interaction.
 #' 
 #' \tabular{ll}{ Package: \tab frailtypack\cr Type: \tab Package\cr Version:
-#' \tab 3.0.2\cr Date: \tab 2018-12-04\cr License: \tab GPL (>= 2.0)\cr
+#' \tab 3.0.3\cr Date: \tab 2018-12-10\cr License: \tab GPL (>= 2.0)\cr
 #' LazyLoad: \tab no\cr }
 #' 
 #' @name frailtypack-package
