@@ -9,7 +9,3 @@ r:
  - devel
 os:
  - linux
- 
- branches: 
-  - master
-  - surrogacy_submetted_3-0-2
