@@ -15,7 +15,7 @@ jointSurroPenal(data, maxit=40, indice.zeta = 1,
    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
    random.generator = 1, kappa.use = 4, random = 0, 
    random.nb.sim = 0, seed = 0, init.kappa = NULL, nb.decimal = 4, 
-   print.times = TRUE, print.itter=FALSE)
+   print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
 \item{data}{A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
@@ -171,7 +171,7 @@ are obtain by cross-validation.}
 \item{print.times}{a logical parameter to print estimation time. Default
 is TRUE.}
 
-\item{print.itter}{a logical parameter to print iteration process. Default
+\item{print.iter}{a logical parameter to print iteration process. Default
 is FALSE.}
 }
 \value{

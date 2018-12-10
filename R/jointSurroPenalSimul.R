@@ -63,7 +63,7 @@
 #'    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, 
-#'    nb.decimal = 4, print.times = TRUE, print.itter=FALSE)
+#'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' Default is \code{40}. 
@@ -206,7 +206,7 @@
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
 #' is TRUE.
-#' @param print.itter a logical parameter to print iteration process. Default
+#' @param print.iter a logical parameter to print iteration process. Default
 #' is FALSE.
 #' 
 #' @return
@@ -264,7 +264,7 @@
 #' joint.simul <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul=600, 
 #'                    ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001, 
 #'                    LIMderiv = 0.001, nb.mc = 200, nb.gh = 20, 
-#'                    nb.gh2 = 32, true.init.val = 1, print.itter=F)
+#'                    nb.gh2 = 32, true.init.val = 1, print.iter=F)
 #'
 #' # results
 #' summary(joint.simul, d = 3, R2boot = 1) # bootstrap
@@ -283,7 +283,7 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
                       gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL,
-                      nb.decimal = 4, print.times = TRUE, print.itter = FALSE){
+                      nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL
   scale <- 1
@@ -407,10 +407,10 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
         death[,i] <- as.double(death[,i])
       }
       
-      if(print.itter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
+      if(print.iter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
       vect_kappa[j,] <- kappa_val_croisee(don_S = donnees, don_T = death, njeu = 1, n_obs = nsujet1,
                                      n_node = n.knots, adjust_S = 1, adjust_T = 1, kapp_0 = 0,
-                                     print.times = print.itter)
+                                     print.times = print.iter)
       # I deleate the created text file
       file.remove(dir(pattern="kappa_valid_crois.txt"))
     }
@@ -590,7 +590,7 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   }
   
   
-  if(print.itter) 
+  if(print.iter) 
     affiche.itter <- 1
   else
     affiche.itter <- 0
