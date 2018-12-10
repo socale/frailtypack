@@ -2,3 +2,11 @@
 ^\.Rproj\.user$
 ^appveyor\.yml$
 ^\.travis\.yml$
+^.*\.Rdd$
+^.*\.aux$
+^.*\.html$
+^.*\.md$
+^.*\.log$
+^.*\.out$
+^.*\.pdf$
+^.*\.tex$
