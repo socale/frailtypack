@@ -37,7 +37,7 @@ devtools::install_github("socale/frailtypack")
 Example
 -------
 
-This is a basic example which shows you how use frailtypack in the context of the validation of a candidate surrogate endpoint. We use genarated data.
+This is a basic example which shows you how to use frailtypack in the context of the validation of a candidate surrogate endpoint. We use genarated data.
 
 ``` r
 ## Data Generation
