@@ -9,7 +9,8 @@ r:
  - devel
 os:
  - linux
- 
+
+# specification des branches a tester a chanque commit
 branches: 
  - master
  - surrogacy_submetted_3-0-2
