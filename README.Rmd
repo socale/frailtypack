@@ -3,8 +3,10 @@ title: 'General Frailty Models: Shared, Joint and Nested Frailty Models with Pre
   Evaluation of Failure-Time Surrogate Endpoints'
 author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, Amadou
   Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and Casimir L. Sofeu
-date: "10 dÃ©cembre 2018"
-output: word_document
+date: "10 dec 2018"
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
