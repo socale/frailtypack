@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  Version: 3.0.0 de frailty pack - Ajout des modeles 'jointSurroPenal' et 'jointSurroPenalSimul'
  [![Travis-CI Build Status](https://travis-ci.org/socale/frailtypack.svg?branch=master)](https://travis-ci.org/socale/frailtypack)
  
@@ -6,3 +7,6 @@
   [![Travis-CI Build Status](https://travis-ci.org/socale/frailtypack.svg?branch=surrogacy_submetted_3-0-2)](https://travis-ci.org/socale/frailtypack)
  
  [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/socale/frailtypack?branch=surrogacy_submetted_3-0-2&svg=true)](https://ci.appveyor.com/project/socale/frailtypack)
+=======
+ Version: 3.0.0 de frailty pack - Ajout des modeles 'jointSurroPenal' et 'jointSurroPenalSimul'
+>>>>>>> parent of dd4e29d... update readme
