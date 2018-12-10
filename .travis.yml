@@ -3,3 +3,10 @@
 language: R
 sudo: false
 cache: packages
+
+r: 
+ - release
+ - devel
+os:
+ - linux
+ - osx
