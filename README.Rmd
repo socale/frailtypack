@@ -4,7 +4,6 @@ author: "Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
         Agnieszka Krol and Casimir L. Sofeu"
 date: "10 décembre 2018"
-output: html_document
 ---
 
 ```{r setup, include=FALSE}
