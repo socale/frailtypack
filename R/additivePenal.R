@@ -329,6 +329,7 @@
     if (length(classofY)>1) classofY <- classofY[2]
     
     typeofY <- attr(model.extract(m, "response"),"type")
+    if (typeofY != "right") stop ("Only right-censored data are allowed for additive model")
     
     #Al : tri du jeu de donnees par cluster croissant
     if (length(cluster)){
