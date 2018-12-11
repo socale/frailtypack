@@ -60,3 +60,17 @@ joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2,
 # Result
 summary(joint.surro.sim.MCGH)
 ```
+
+## Check resullt on branch Master
+  Travis
+[![Travis-CI Build Status](https://travis-ci.org/socale/frailtypack.svg?branch=master)](https://travis-ci.org/socale/frailtypack)
+
+  AppVeyor
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/socale/frailtypack?branch=master&svg=true)](https://ci.appveyor.com/project/socale/frailtypack)
+
+## Check resullt on branch surrogacy_submetted_3-0-3
+  Travis
+[![Travis-CI Build Status](https://travis-ci.org/socale/frailtypack.svg?branch=surrogacy_submetted_3-0-3)](https://travis-ci.org/socale/frailtypack)
+
+ AppVeyor
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/socale/frailtypack?branch=surrogacy_submetted_3-0-3&svg=true)](https://ci.appveyor.com/project/socale/frailtypack)
