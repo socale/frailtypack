@@ -10,3 +10,4 @@
 ^.*\.out$
 ^.*\.pdf$
 ^.*\.tex$
+^.README\.Rmd$
