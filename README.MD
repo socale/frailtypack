@@ -1,4 +1,4 @@
-General Frailty Models: Shared, Joint and Nested Frailty Models with Prediction; Evaluation of Failure-Time Surrogate Endpoints
+General Frailty Models: Shared, Joint and Nested Frailty Models with Prediction, Evaluation of Failure-Time Surrogate Endpoints
 ================
 Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and Casimir L. Sofeu
 10 dec 2018
@@ -31,7 +31,7 @@ You can install frailtypack from github with:
 
 ``` r
 # install.packages("frailtypack")
-devtools::install_github("socale/frailtypack")
+devtools::install_github("socale/frailtypack"", ref = "master"")
 ```
 
 Example

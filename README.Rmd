@@ -1,5 +1,5 @@
 ---
-title: 'General Frailty Models: Shared, Joint and Nested Frailty Models with Prediction;
+title: 'General Frailty Models: Shared, Joint and Nested Frailty Models with Prediction,
   Evaluation of Failure-Time Surrogate Endpoints'
 author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, Amadou
   Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and Casimir L. Sofeu
@@ -35,7 +35,7 @@ You can install frailtypack from github with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("frailtypack")
-devtools::install_github("socale/frailtypack")
+devtools::install_github("socale/frailtypack"", ref = "master"")
 ```
 
 ## Example
