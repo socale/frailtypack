@@ -32,7 +32,7 @@ joint.surro.sim <- jointSurroPenal(data = data.sim, n.knots = 6,
 # Estimation using real data
 data(dataOvarian)
 
-joint.surro.ovar <- jointSurroPenal(data = dataOvarian, indice.alpha = 0, 
+joint.surro.ovar <- jointSurroPenal(data = dataOvarian, indicator.alpha = 0, 
         n.knots = 8, int.method = 2, nb.mc = 200, nb.gh = 20, true.init.val = 0, 
            init.kappa = c(2000,1000), scale = 1/365)
 

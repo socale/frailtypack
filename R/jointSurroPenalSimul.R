@@ -47,8 +47,8 @@
 #' 
 #' @aliases jointSurroPenalSimul
 #' @usage 
-#' jointSurroPenalSimul(maxit=40, indice.zeta = 1, 
-#'    indice.alpha = 1, frail.base = 1, n.knots = 6, nb.dataset = 1, 
+#' jointSurroPenalSimul(maxit=40, indicator.zeta = 1, 
+#'    indicator.alpha = 1, frail.base = 1, n.knots = 6, nb.dataset = 1, 
 #'    nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, 
 #'    LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, 
 #'    nb.gh2 = 20, adaptatif = 0, int.method = 2, nb.iterPGH = 5, 
@@ -67,10 +67,10 @@
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' Default is \code{40}. 
-#' @param indice.zeta A binary, indicates whether the power's parameter \eqn{\zeta} should 
+#' @param indicator.zeta A binary, indicates whether the power's parameter \eqn{\zeta} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
 #' The default is \code{1}. This parameter can be seted to \code{0} in case of identification issues. 
-#' @param indice.alpha A binary, indicates whether the power's parameter \eqn{\alpha} should 
+#' @param indicator.alpha A binary, indicates whether the power's parameter \eqn{\alpha} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
 #' @param frail.base Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
@@ -272,7 +272,7 @@
 #' 
 #' }
 #' 
-jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, frail.base = 1, n.knots = 6,
+jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, n.knots = 6,
                       nb.dataset = 1, nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001,
                       LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, 
                       nb.iterPGH = 5, nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, 
@@ -293,8 +293,8 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   param.weibull <- 0
   
   # ==============parameters checking======================
-  if(!(indice.zeta %in% c(0,1)) | !(indice.alpha %in% c(0,1)) | !(frail.base %in% c(0,1))){
-    stop("model options indice.zeta, indice.alpha and frail.base must be set to 0 or 1")
+  if(!(indicator.zeta %in% c(0,1)) | !(indicator.alpha %in% c(0,1)) | !(frail.base %in% c(0,1))){
+    stop("model options indicator.zeta, indicator.alpha and frail.base must be set to 0 or 1")
   }
   
   
@@ -332,17 +332,17 @@ jointSurroPenalSimul = function(maxit=40, indice.zeta = 1, indice.alpha = 1, fra
   indice_covST <- 1
   indice_gamma_st <- 0 #  indice_gamma_st: dit si l'on estime gamma_st_ut (1) ou non(0), pour les effets aleatoires correlees sur le risque de base, pas traite ici 
   
-  if(frail.base==0) indice.alpha <- 0 
+  if(frail.base==0) indicator.alpha <- 0 
   
-  indice_a_estime <- c(indice.zeta, indice_covST, indice.alpha, indice_gamma_st,frail.base)
+  indice_a_estime <- c(indicator.zeta, indice_covST, indicator.alpha, indice_gamma_st,frail.base)
   
   if(indice_covST == 1){
     # we estimated at least 4 parameters correspondint to the covariance matrix \sigma and the variance of \omega_ij
     nb.frailty <- 4
-    nparamfrail <- nb.frailty + indice.zeta + indice.alpha + frail.base
+    nparamfrail <- nb.frailty + indicator.zeta + indicator.alpha + frail.base
   } else{
     nb.frailty <- 3
-    nparamfrail <- nb.frailty + indice.zeta + indice.alpha + frail.base
+    nparamfrail <- nb.frailty + indicator.zeta + indicator.alpha + frail.base
   }
   
   # parametre fonction de risque de base

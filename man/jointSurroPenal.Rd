@@ -4,8 +4,8 @@
 \alias{jointSurroPenal}
 \title{Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint}
 \usage{
-jointSurroPenal(data, maxit=40, indice.zeta = 1, 
-   indice.alpha = 1, frail.base = 1, n.knots = 6, 
+jointSurroPenal(data, maxit=40, indicator.zeta = 1, 
+   indicator.alpha = 1, frail.base = 1, n.knots = 6, 
    LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, 
    nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, 
    int.method = 2, nb.iterPGH = 5, nb.MC.kendall = 10000, 
@@ -34,12 +34,12 @@ jointSurroPenal(data, maxit=40, indice.zeta = 1,
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
 Default is \code{40}.}
 
-\item{indice.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
+\item{indicator.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
 The default is \code{1}. This parameter can be seted to \code{0} in case of convergence and 
 identification issues.}
 
-\item{indice.alpha}{A binary, indicates whether the power's parameter \eqn{\alpha} should 
+\item{indicator.alpha}{A binary, indicates whether the power's parameter \eqn{\alpha} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 The default is 1.}
 
@@ -180,11 +180,11 @@ This function return an object of class jointSurroPenal with elements :
    \item{EPS}{A vector containing the obtained convergence thresholds with the Marquardt algorithm,  
     for the parameters, the log-likelihood and for the gradient;}
    \item{b}{A vector containing estimates for the splines parameter's, 
-   the power's parameter \eqn{\zeta} (if \code{indice.zeta} is set to \code{1}),
+   the power's parameter \eqn{\zeta} (if \code{indicator.zeta} is set to \code{1}),
     the standard error of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}), elements of the
     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma = LL^T}, with \eqn{\Sigma} 
     the covariances of the random effects \eqn{(v_{S_i},v_{T_i})}, the coefficient \eqn{\alpha} 
-    (if \code{indice.alpha} is set to \code{1}), the satandard error of the random effect \eqn{u_i} and the 
+    (if \code{indicator.alpha} is set to \code{1}), the satandard error of the random effect \eqn{u_i} and the 
     regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
     \item{varH}{The variance matrix of all parameters in \code{b} (before positivity constraint transformation 
    for the variance of the measurement error, for which the delta method is used);}
@@ -469,7 +469,7 @@ data(dataOvarian)
 # (Computation takes around 13 minutes)
  
 joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8, 
-                init.kappa = c(2000,1000), indice.alpha = 0, nb.mc = 200, 
+                init.kappa = c(2000,1000), indicator.alpha = 0, nb.mc = 200, 
                 scale = 1/365)
 # results
 summary(joint.surro.ovar)
@@ -483,7 +483,7 @@ summary(joint.surro.ovar)
 
 data(gastadj)
 joint.surro.gast <- jointSurroPenal(data = gastadj, nb.mc = 100, nb.gh = 20, 
-                indice.zeta = 0, indice.alpha = 0, n.knots = 10, 
+                indicator.zeta = 0, indicator.alpha = 0, n.knots = 10, 
                 random.generator = 2, init.kappa = c(367700100,10025184521))
 
 # results

@@ -5,8 +5,8 @@
 \title{Simulation studies based on the one-step Joint surrogate model for the evaluation of a canditate 
 surrogate endpoint}
 \usage{
-jointSurroPenalSimul(maxit=40, indice.zeta = 1, 
-   indice.alpha = 1, frail.base = 1, n.knots = 6, nb.dataset = 1, 
+jointSurroPenalSimul(maxit=40, indicator.zeta = 1, 
+   indicator.alpha = 1, frail.base = 1, n.knots = 6, nb.dataset = 1, 
    nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, 
    LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, 
    nb.gh2 = 20, adaptatif = 0, int.method = 2, nb.iterPGH = 5, 
@@ -27,11 +27,11 @@ jointSurroPenalSimul(maxit=40, indice.zeta = 1,
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
 Default is \code{40}.}
 
-\item{indice.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
+\item{indicator.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
 The default is \code{1}. This parameter can be seted to \code{0} in case of identification issues.}
 
-\item{indice.alpha}{A binary, indicates whether the power's parameter \eqn{\alpha} should 
+\item{indicator.alpha}{A binary, indicates whether the power's parameter \eqn{\alpha} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 The default is 1.}
 

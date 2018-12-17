@@ -55,7 +55,7 @@
 ##' 
 ##' data(dataOvarian)
 ##' joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8, 
-##'                 init.kappa = c(2000,1000), indice.alpha = 0, nb.mc = 200, 
+##'                 init.kappa = c(2000,1000), indicator.alpha = 0, nb.mc = 200, 
 ##'                 scale = 1/365)
 ##' 
 ##' # Baseline Hazards fonctions for both the surrogate endpoint 

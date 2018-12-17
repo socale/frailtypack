@@ -79,7 +79,7 @@ data.sim <-jointSurrSimul(n.obs=400, n.trial = 20,cens.adm=549,
 \dontrun{
 ###---Estimation---###
 joint.surrogate <- jointSurroPenal(data = data.sim, nb.mc = 300, 
-                   nb.gh = 20, indice.alpha = 1, n.knots = 6)
+                   nb.gh = 20, indicator.alpha = 1, n.knots = 6)
                    
  Ktau3 <- jointSurroTKendall(joint.surrogate)
  Ktau4 <- jointSurroTKendall(joint.surrogate,nb.MC.kendall = 4000,seed = 1)
