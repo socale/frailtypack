@@ -29,16 +29,27 @@
 ##' intervals for each covariate. For the surrogacy evaluation criteria, its prints the estimated 
 ##' Kendall's \eqn{\tau} with its 95\% Confidence interval obtained by the parametric bootstrap, 
 ##' the estimated \eqn{R^2_{trial}}(R2trial) with standard error and the 95\% Confidence interval 
-##' obtained by Delta-method, \eqn{R^2_{trial}}(R2.boot) and its 95\% Confidence interval obtained by 
-##' the parametric bootstrap. We notice that, using the bootstrap, the standard error of the point 
-##' estimate is not available. The other parameters displayed are: the penalized marginal 
-##' log-likelihood, number of iterations, the LCV and the Convergence criteria.
+##' obtained by Delta-method (Dowd \emph{et al.}, 2014), \eqn{R^2_{trial}}(R2.boot) and its 95\% 
+##' Confidence interval obtained by the parametric bootstrap. 
+##' We notice that, using the bootstrap, 
+##' the standard error of the point estimate is not available. We propose a classification of \eqn{R^2_{trial}} according to a 
+##' modification to surrogate criteria proposed by the Institute of Quality and Efficiency in Health Care 
+##' (Prasad \emph{et al.}, 2015). The rest of parameters concerns the convergence characteristics and 
+##' included: the penalized marginal log-likelihood, number of iterations, the LCV and the Convergence criteria.
 ##' @seealso \code{\link{jointSurroPenal} \link{jointSurroTKendall}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 ##' Virginie Rondeau \email{virginie.rondeau@inserm.fr}
 ##' 
 ##' @keywords methods
+##' 
+##' @references 
+##' Dowd BE, Greene WH, Norton EC (2014). "Computation of Standard Errors." Health Services
+##' Research, 49(2), 731-750.
+##' 
+##' Prasad V, Kim C, Burotto M, Vandross A (2015). "The strength of association between
+##' surrogate end points and survival in oncology: A systematic review of trial-level meta-
+##' alyses." JAMA Internal Medicine, 175(8), 1389-1398.
 ##' @export
 ##' @importFrom stats sd
 ##' @examples
@@ -122,6 +133,7 @@
     validation[3,2] <- "--"
     validation[,1] <- round(validation[,1], len)
     validation[,3] <- round(validation[,3], len)
+    validation[,4] <- round(validation[,4], len)
     validation[2,2] <- as.character(round(as.numeric(validation[2,2]), len))
     if(int.method.kt == 1){
       validation[1,1] <- jointSurroTKendall(theta = object$Coefficients["Theta",1],
@@ -132,12 +144,27 @@
     }
     
     names(validation)[2] <- "Std Error"
+    
+    # More precision on the surrogacy evaluation
+    validation2 <- data.frame(matrix(rep(NA,18), nrow = 3, ncol = 6))
+    names(validation2) <- c("Level", names(validation), "Strength")
+    rownames(validation2) <- rownames(validation)
+    validation2[,1] <- c("Individual", "Trial", "Trial")
+    validation2[,2:5] <- validation
+    validation2[2,6] <- ifelse(validation2[2,5] <= 0.7,"Low",ifelse(validation2[2,5]<0.85,
+                               "Medium","High"))
+    validation2[3,6] <- ifelse(validation2[3,5] <= 0.7,"Low",ifelse(validation2[2,5]<0.85,
+                                "Medium","High"))
+    validation2[1,6] <- " "
       
     cat(" ", "\n")
     cat("Surrogacy evaluation criterion", "\n")
-    print(validation)
+    print(validation2)
+    cat("---","\n")
+    cat("Correlation strength:  <= 0.7 'Low' < 0.85  'Medium' >= 0.85 'Heigh' ","\n")
     
     cat(" ", "\n")
+    cat("Convergence parameters", "\n")
     cat(c("Penalized marginal log-likelihood = ", round(object$loglikPenal, len)), "\n")
     cat(c("Number of iterations = ", object$n.iter),"\n")
     cat("LCV = the approximate likelihood cross-validation criterion", "\n")

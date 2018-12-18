@@ -1,6 +1,8 @@
 Changes in Version 3.0.3 December 2018
 o Parameters "indice.zeta and "indice.alpha" in the R functions jointSurroPenal and jointSurroPenalSimul are renamed by "indicator.zeta" and "indicator.alpha"
 
+o Categorization of the Correlation strength at trial level, in the R function summary.jointSurropenal
+
 Changes in Version 3.0.2 December 2018
 o Bug fixed in the file aaOptim_New_scl.o, aaOptim_New_scl2.o and aaOptim_SCL_0.o: module type definition remove, already defined in the file aaOptim.o 
 

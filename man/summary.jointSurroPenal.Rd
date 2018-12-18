@@ -34,10 +34,13 @@ of the Wald test. For the fixed treatment effects, it also prints HR and its con
 intervals for each covariate. For the surrogacy evaluation criteria, its prints the estimated 
 Kendall's \eqn{\tau} with its 95\% Confidence interval obtained by the parametric bootstrap, 
 the estimated \eqn{R^2_{trial}}(R2trial) with standard error and the 95\% Confidence interval 
-obtained by Delta-method, \eqn{R^2_{trial}}(R2.boot) and its 95\% Confidence interval obtained by 
-the parametric bootstrap. We notice that, using the bootstrap, the standard error of the point 
-estimate is not available. The other parameters displayed are: the penalized marginal 
-log-likelihood, number of iterations, the LCV and the Convergence criteria.
+obtained by Delta-method (Dowd \emph{et al.}, 2014), \eqn{R^2_{trial}}(R2.boot) and its 95\% 
+Confidence interval obtained by the parametric bootstrap. 
+We notice that, using the bootstrap, 
+the standard error of the point estimate is not available. We propose a classification of \eqn{R^2_{trial}} according to a 
+modification to surrogate criteria proposed by the Institute of Quality and Efficiency in Health Care 
+(Prasad \emph{et al.}, 2015). The rest of parameters concerns the convergence characteristics and 
+included: the penalized marginal log-likelihood, number of iterations, the LCV and the Convergence criteria.
 }
 \description{
 This function returns the estimate of the coefficients and their standard error with p-values 
@@ -65,6 +68,14 @@ summary(joint.surrogate, d = 4, len = 3, int.method.kt = 1, nb.gh = 25)
 }
 
 
+}
+\references{
+Dowd BE, Greene WH, Norton EC (2014). "Computation of Standard Errors." Health Services
+Research, 49(2), 731-750.
+
+Prasad V, Kim C, Burotto M, Vandross A (2015). "The strength of association between
+surrogate end points and survival in oncology: A systematic review of trial-level meta-
+alyses." JAMA Internal Medicine, 175(8), 1389-1398.
 }
 \seealso{
 \code{\link{jointSurroPenal} \link{jointSurroTKendall}}
