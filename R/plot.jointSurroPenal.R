@@ -115,7 +115,7 @@
   			}
   	}
   	
-  	legend(pos.legend, c("True endpoint related event"), lty=1, col=color+(0), cex=cex.legend, ...)
+  	legend(pos.legend, c("For the true endpoint"), lty=1, col=color+(0), cex=cex.legend, ...)
 	}
 	
 	if(endpoint == 0){ # surrogate endpoint
@@ -139,7 +139,7 @@
 	    }
 	  }
 	  
-	  legend(pos.legend, c("Surrogate endpoint related event"), lty=1, col=color + 1, cex=cex.legend, ...)
+	  legend(pos.legend, c("For the surrogate endpoint"), lty=1, col=color + 1, cex=cex.legend, ...)
 	}
 	
 	if(endpoint == 2){ # both surrogate and true endpoint
@@ -173,7 +173,7 @@
 	    }
 	  }
 	  
-	  legend(pos.legend, c("True endpoint related event", "Surrogate endpoint related event"), lty=c(1,1), col=c(color,color+1), cex=cex.legend, ...)
+	  legend(pos.legend, c("For the true endpoint", "For the surrogate endpoint"), lty=c(1,1), col=c(color,color+1), cex=cex.legend, ...)
 	}
     return(invisible())
 }

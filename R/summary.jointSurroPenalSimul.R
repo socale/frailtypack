@@ -90,6 +90,7 @@
     resultSimul[-nrow(resultSimul),1] <- substr(resultSimul[-nrow(resultSimul),1],1,nchar(resultSimul[-nrow(resultSimul),1])-6)
     if(is.na(resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1] <- "-"
     cat("Simulation results", "\n")
-    print(resultSimul)
+    print(resultSimul[-nrow(resultSimul),])
+    cat(c("Rejected datasets : n(%) = ",resultSimul[nrow(resultSimul),3]), "\n")
     
   }
