@@ -517,9 +517,9 @@ module InverseMatrix
 !    permet de simuler un jeu de donnee a partir d'un modele conjoint.
 ! --------------------------------------------------------------------
    
-   SUBROUTINE simulation(donnee,donneeS,ind_temp,n_col,theta,ksi,betas,alpha,betat,p,prop_i,lambdas,nus,&
+   SUBROUTINE simulation(donnee,donneeS,ind_temp,n_col,theta,ksi,betas,betat,p,prop_i,lambdas,nus,& !alpha
                          lambdat,nut,mode_cens,temps_cens,cens0,n_essai,n_obs,&
-                         rsqrt,sigma_s,sigma_t,weib,frailty_cor,affiche_stat)
+                         weib,frailty_cor,affiche_stat) !rsqrt,sigma_s,sigma_t
   ! donnee: donnee simulee a retourner pour les deces
   ! donneeS: donnee simulee a retourner pour les surrogate
   ! ind_temp: donne la taille du tableau final complete pour les cas de progression sans deces 
@@ -549,7 +549,7 @@ module InverseMatrix
   Implicit none
   
   integer, intent(in)::mode_cens,n_essai,n_obs,weib,frailty_cor,n_col,affiche_stat
-  double precision,intent(in)::theta,ksi,betas,alpha,betat,lambdas,nus,lambdat,nut,temps_cens,cens0,rsqrt,sigma_s,sigma_t
+  double precision,intent(in)::theta,ksi,betas,betat,lambdas,nus,lambdat,nut,temps_cens,cens0 !alpha,rsqrt,sigma_s,sigma_t
   double precision,dimension(n_essai),intent(in)::prop_i,p
   double precision, dimension(n_obs,n_col),intent(out)::donnee
   double precision, dimension(n_obs,n_col),intent(out)::donneeS ! pour les donnees completees surrogate
@@ -949,14 +949,14 @@ end function table_essai
     ! subroutine pour la generation  des donnees pour une distribution gamma des effects aleatoires et weibull des risques de bases
     !==============================================================================================================================
     subroutine generation_Gamma(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
-            ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,betat)
+            ng,ver,truealpha,propC,cens_A,gamma1,theta2,lambda_S,nu_S,lambda_T,nu_T,betas)
       !lognormal: dit si la distribution des effets aleatoires est lognormal (1) ou gamma (0)
       !use Autres_fonctions
       use var_surrogate, only: random_generator
       
       integer, intent(in)::n_obs,n_col,lognormal,ng,ver
-      double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2 !theta2: variance des frailties gaussiens,gamma1,gamma2: parametres de la gamma,cens_A:censure administrative,propC:proportion de personnes censurees
-      double precision, intent(in)::lambda_S,nu_S,lambda_T,nu_T,betas,betat
+      double precision, intent(in)::truealpha,propC,cens_A,gamma1,theta2 !gamma2 !theta2: variance des frailties gaussiens,gamma1,gamma2: parametres de la gamma,cens_A:censure administrative,propC:proportion de personnes censurees
+      double precision, intent(in)::lambda_S,nu_S,lambda_T,nu_T,betas !betat
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
       integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000
       integer,parameter::nboumax=1000,NSIMAX=5000,ndatemax=30000
@@ -1633,8 +1633,8 @@ endsubroutine generation_Gamma !FIN prog principal
 !==============================================================================================================================
 
 subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
-            ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
-            betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
+            ng,ver,truealpha,propC,cens_A,gamma1,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
+            betat,n_essai,rsqrt,sigma_s,sigma_t,prop_i,gamma,alpha,frailt_base)
     ! lognormal: dit si la distribution des effets aleatoires est lognormal pour le modele complet (1) ou lognormal pour le joint classique de 2007 (2) ou gamma pour le joint classique de 2007(0)
     ! use Autres_fonctions
     ! theta2: variance des frailties gaussiens associe a S
@@ -1653,9 +1653,9 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
      use var_surrogate, only: random_generator
 
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver
-      double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
+      double precision, intent(in)::truealpha,propC,cens_A,gamma1,theta2,gamma,alpha,& !gamma2
                                     lambda_S,nu_S,lambda_T,nu_T,betas,betat,rsqrt,sigma_s,sigma_t
-      double precision,dimension(n_essai),intent(in)::prop_i,p      
+      double precision,dimension(n_essai),intent(in)::prop_i !p      
       double precision,intent(out)::vrai_theta
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
       

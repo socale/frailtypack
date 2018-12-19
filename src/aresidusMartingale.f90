@@ -1194,20 +1194,20 @@ indiv = indiv + fsize(indg)
     
     use residusM
     use optimres
-    use comon,only:ng,nsujety,yy,nmesy,nva3,nva4,&
-         nb1,vey,ut,utt,nva3,nva4,vey,nea,npp,res_ind,H_hess_GH,I_hess_GH,b_paGH
-    use donnees_indiv,only:X2cur,Z1cur,mu,b1
+    use comon,only:ng,nmesy,nva3,nva4,&
+         vey,nva3,nva4,vey,nea,npp,res_ind,H_hess_GH,b_paGH !nsujety,yy,nb1,I_hess_GH,ut,utt
+    use donnees_indiv,only:mu,b1 !X2cur,Z1cur
         use optim
     !  use ParametresPourParallelisation
     implicit none
     
-    integer::np,j,i,ij,ier,k,jj
+    integer::np,j,i,k !ij,ier,jj
     double precision,external::namesfuncres
     double precision,dimension(np),intent(in)::b
     double precision,dimension(np)::bint
-    double precision :: ep,eps,finddet
-        double precision,dimension(:),allocatable:: matv,matv2
-    double precision,dimension(nea,nea)::H_hess_GH_inv
+    double precision :: finddet !ep,eps
+       ! double precision,dimension(:),allocatable:: matv,matv2
+    !double precision,dimension(nea,nea)::H_hess_GH_inv
        ! double precision,dimension(1)::residus_sd
     
     res_ind=1
@@ -1360,13 +1360,13 @@ indiv = indiv + fsize(indg)
     use residusM
     use optimres
     use comon,only:ng,nmesy,nmesrec,nea,&
-         nb1,vey,nva3,H_hess_GH,I_hess_GH,nva4
+         vey,nva3,H_hess_GH,nva4 !I_hess_GH,nb1
     use donnees_indiv,only:mu
         use optim
 !    use ParametresPourParallelisation
     implicit none
     
-    integer::np,j,i,ij,ier,k,jj
+    integer::np,j,i,k !ij,ier,jj
     double precision,external::namesfuncres
     double precision,dimension(np),intent(in)::b
     double precision,dimension(ng,nea+1+nea + (nea*(nea-1))/2),intent(out)::re_pred

@@ -965,7 +965,7 @@
     
     #ad 15/02/12 :add Audrey
     m2 <- match.call()
-    m2$formula <- m2$formula.terminalEvent <- m2$recurrentAG <- m2$cross.validation <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+    m2$formula <- m2$formula.terminalEvent <- m2$recurrentAG <- m2$cross.validation <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- NULL
     Names.data <- m2$data
     
     #### Betaknots et betaorder ####
@@ -1085,7 +1085,7 @@
     
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur	
     
-    m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$jointGeneral <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <-  m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha <- m$init.Ksi <- m$Ksi <- m$init.Eta <- m$Eta <- m$initialize <- m$... <- NULL    
+    m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$jointGeneral <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <-  m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha <- m$init.Ksi <- m$Ksi <- m$init.Eta <- m$Eta <- m$initialize <- NULL    
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep", "wts") #wts for weights (ncc design) ncc - nested case-control
     
     Terms <- if (missing(data)){ 
@@ -2102,9 +2102,9 @@
       m2 <- match.call(expand.dots = FALSE)
       ## AD: modified 20 06 2011, for no covariates on terminal event part
       if (missing(formula.terminalEvent)){
-        m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+        m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- NULL
       }else{
-        m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+        m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- NULL
       }     
       
       m2$formula <- Terms2
@@ -3169,7 +3169,7 @@
       if(!all(terminalEvent %in% c(2,1,0))) stop("'terminal' must contain a variable coded 0-1 and a non-factor variable")
       m2 <- match.call(expand.dots = FALSE)
       
-      m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+      m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- NULL
       
       m2$formula <- Terms2
       m2[[1]] <- as.name("model.frame")

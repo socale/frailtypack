@@ -4,17 +4,17 @@ module func_laplace
     
     contains
    ! fonction a maximiser pour recherche les solution de k(w_ij) niveau individuel
-    double precision function funcpaw_ij_chapeau(b,np,id,thi,jd,thj,k0,individu_j)
+    double precision function funcpaw_ij_chapeau(b,np,id,thi,jd,thj,individu_j)
         
         use var_surrogate, only:vs_i,vt_i,u_i,theta2,const_res5,const_res4,&
-            deltastar,delta,pi,res2s_sujet,res2_dcs_sujet,alpha_ui,Test
+            deltastar,delta,pi,alpha_ui,Test !res2s_sujet,res2_dcs_sujet
         use comon, only: eta,ve
         
         implicit none
          
         integer,intent(in)::id,jd,np,individu_j
         double precision,dimension(np),intent(in)::b
-        double precision,dimension(2),intent(in)::k0
+        !double precision,dimension(2),intent(in)::k0
         double precision,intent(in)::thi,thj
         double precision::vsi,vti,res,ui
         double precision,dimension(np)::bh
@@ -89,15 +89,15 @@ module func_laplace
         !individu_essai: individu courant dans l'essai
         !vsi,vti,ui : effets aleatoires au niveau essai
         !wij_chap : contient des w_ij_chapeau
-        use var_surrogate, only:theta2,const_res5,const_res4,vs_i,vt_i,u_i,nsujeti,wij_chap,&
-            deltastar,delta,pi,alpha_ui,control_wij_chap,res2s_sujet,res2_dcs_sujet,Test!,individu_j
+        use var_surrogate, only:theta2,const_res5,const_res4,vs_i,vt_i,u_i,wij_chap,&
+            deltastar,delta,pi,alpha_ui,Test!,individu_j,nsujeti,control_wij_chap,res2s_sujet,res2_dcs_sujet
         use comon, only: eta,ve,model
         use optim_scl, only:marq98j_scl  ! pour faire appel a marquard 
         
         implicit none
          
         integer,intent(in)::position_i,individu_essai
-        integer::i,model_save,individu
+        integer::model_save,individu !i
 
         double precision,intent(in)::vsi,vti,ui
         double precision::res
@@ -149,7 +149,7 @@ module func_laplace
         non_conv=0
         10 continue
         ! call marq98o(b_2,np_2,ni,v,res,ier,istop,funcpaw_ij_chapeau)
-        call marq98J_scl(k0_2,b_2,np_2,ni,v,res,ier,istop,effet2,ca,cb,dd,funcpaw_ij_chapeau,I_hess_scl,H_hess_scl,&
+        call marq98J_scl(b_2,np_2,ni,v,res,ier,istop,effet2,ca,cb,dd,funcpaw_ij_chapeau,I_hess_scl,H_hess_scl,&
                          hess_scl,vvv_scl,individu)
         
         !=============juste pour test=================
@@ -254,10 +254,10 @@ module func_laplace
 
     ! fonction h(X_i) a maximiser pour le calcul integrale au niveau essai
     
-    double precision function funcpaXi_chapeau(b,np,id,thi,jd,thj,k0)
+    double precision function funcpaXi_chapeau(b,np,id,thi,jd,thj)
         !wij_chap: contient les valeur estimees de w_ij_chapeau
         use var_surrogate, only:pi,essai_courant,position_i,nsujeti,&
-            determinant,gamma_ui,varcov,rho,wij_chap,Test
+            gamma_ui,varcov,rho,Test !determinant,wij_chap
         !use comon, only: ve
         !use optim_scl, only:marq98j_scl  ! pour faire appel a marquard 
         !use fonction_A_integrer, only:Int_Laplace_ind
@@ -268,9 +268,9 @@ module func_laplace
         integer::i
         !double precision,dimension(:,:),intent(inout)::wij_chap
         double precision,dimension(np),intent(in)::b
-        double precision,dimension(2),intent(in)::k0
+        !double precision,dimension(2),intent(in)::k0
         double precision,intent(in)::thi,thj
-        double precision::res,vs_i,vt_i,u_i,h,h1,h2,B_Lap,control
+        double precision::res,vs_i,vt_i,u_i,h,h2,B_Lap,control !h1
         double precision,dimension(np)::bh
 
         
