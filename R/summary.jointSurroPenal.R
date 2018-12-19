@@ -151,9 +151,9 @@
     rownames(validation2) <- rownames(validation)
     validation2[,1] <- c("Individual", "Trial", "Trial")
     validation2[,2:5] <- validation
-    validation2[2,6] <- ifelse(validation2[2,5] <= 0.7,"Low",ifelse(validation2[2,5]<0.85,
+    validation2[2,6] <- ifelse(validation2[2,4] <= 0.7,"Low",ifelse(validation2[2,4]<0.85,
                                "Medium","High"))
-    validation2[3,6] <- ifelse(validation2[3,5] <= 0.7,"Low",ifelse(validation2[2,5]<0.85,
+    validation2[3,6] <- ifelse(validation2[3,4] <= 0.7,"Low",ifelse(validation2[2,4]<0.85,
                                 "Medium","High"))
     validation2[1,6] <- " "
       
@@ -161,7 +161,7 @@
     cat("Surrogacy evaluation criterion", "\n")
     print(validation2)
     cat("---","\n")
-    cat("Correlation strength:  <= 0.7 'Low' < 0.85  'Medium' >= 0.85 'Heigh' ","\n")
+    cat("Correlation strength:  <= 0.7 'Low' ; ]0.7 - 0.85[ 'Medium' ; >= 0.85 'High' ","\n")
     
     cat(" ", "\n")
     cat("Convergence parameters", "\n")
