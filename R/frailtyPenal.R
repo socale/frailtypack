@@ -478,7 +478,7 @@
 #' 
 #' frailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,
 #' cross.validation = FALSE, jointGeneral,n.knots, kappa, maxit = 300, hazard =
-#' "Splines", nb.int, RandDist = "Gamma", betaknots = 1, betaorder = 3,
+#' "Splines-per", nb.int, RandDist = "Gamma", betaknots = 1, betaorder = 3,
 #' initialize = TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi,
 #' init.Eta, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, print.times =
 #' TRUE)
@@ -534,9 +534,9 @@
 #' the penalized likelihood estimation, "Piecewise-per" for piecewise constant
 #' hazard function using percentile (not available for interval-censored data),
 #' "Piecewise-equi" for piecewise constant hazard function using equidistant
-#' intervals, "Weibull" for parametric Weibull functions. Default is "Splines".
-#' In case of \code{jointGeneral = TRUE} or if a joint nested frailty model is
-#' fitted, only \code{hazard = "Splines"} can be chosen.
+#' intervals, "Weibull" for parametric Weibull functions. Default is "Splines-per",
+#' except if \code{jointGeneral = TRUE} or if a joint nested frailty model is
+#' fitted. In this case, hazard default function is "Splines".
 #' @param nb.int Number of time intervals (between 1 and 20) for the parametric
 #' hazard functions ("Piecewise-per", "Piecewise-equi"). In a joint model, you
 #' need to specify a number of time interval for both recurrent hazard function
@@ -951,7 +951,7 @@
 #' 
 "frailtyPenal" <-
   function (formula, formula.terminalEvent, data, recurrentAG=FALSE, cross.validation=FALSE, jointGeneral, n.knots, kappa,maxit=300, 
-            hazard="Splines", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
+            hazard="Splines-per", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
             LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
     
     if (missing(jointGeneral)) jointGeneral<-FALSE
@@ -980,6 +980,7 @@
     if ((hazard=='Weibull') & jointGeneral== TRUE)    stop("No parametrical general joint frailty model allowed here!")
     
     ##### hazard specification ######
+    if (jointGeneral==TRUE) hazard <- "Splines"
     haztemp <- hazard
     hazard <- strsplit(hazard,split="-")
     hazard <- unlist(hazard)  
