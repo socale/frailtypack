@@ -393,6 +393,7 @@
 #'    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
 #'    values if \code{kappa.use} is set to \code{3} or \code{4};}
 #'    \item{scale}{The value used to rescale the survival times}
+#'    \item{data}{The dataset used in the model}
 #'
 #' 
 #' @seealso \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}, \code{\link{jointSurroPenalSimul}}
@@ -1092,6 +1093,7 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
   result$Coefficients <- ans$Coefficients
   result$kappa  <- kappa0
   result$scale <- scale
+  result$data <- dataUse
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
   
