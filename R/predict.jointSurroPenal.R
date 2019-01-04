@@ -73,7 +73,7 @@
     stop("Argument 'var.used' must be specified to 'error.meta' or 'No.error' ")
   
   if(is.null(datapred)){ # we used the dataset from the model
-    dataUse <- x$data
+    dataUse <- object$data
   }
   else{
     # ================ data checking=======================
