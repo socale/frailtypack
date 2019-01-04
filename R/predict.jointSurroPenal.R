@@ -115,8 +115,8 @@
     }
   }
   else{
-    matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 6))
-    names(matrixPred) <- c("trialID","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI" )
+    matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 7))
+    names(matrixPred) <- c("trialID","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
     matrixPred$trialID <- trial
     for(i in 1:length(trial)){
       subdata <- dataUse[dataUse$trialID == trial[i],]
@@ -155,8 +155,16 @@
     
     matrixPred$Inf.95.CI[i] <- matrixPred$beta.T.i[i] - qnorm(1-alpha./2) * sqrt(variance)
     matrixPred$Sup.95.CI[i] <- matrixPred$beta.T.i[i] + qnorm(1-alpha./2) * sqrt(variance)
+    
+    # je mets une "*" si la valeur observee est incluse dans l'intervalle de prediction
+    if(!(F %in% (c("timeT","statusT") %in% names(dataUse)))){
+      if((matrixPred$beta.T[i] >= matrixPred$Inf.95.CI[i]) & (matrixPred$beta.T[i] <= matrixPred$Sup.95.CI[i]))
+        matrixPred[i,ncol(matrixPred)] <- "*"
+    }
   }
+  
   
   print(matrixPred)
   return(matrixPred)
+
 }
