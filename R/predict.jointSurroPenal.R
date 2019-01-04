@@ -145,7 +145,7 @@
     R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1] 
     matrixPred$beta.T.i[i] <- beta + (dab/daa) * (alpha0 - alpha)
     variance.inf <- dbb * (1 - R2trial) 
-    variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) %*% VD) %*% x
+    variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) * VD) %*% x
     + variance.inf
     
     if(var.used == "error.meta") 
