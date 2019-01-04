@@ -11,7 +11,8 @@
 ##' @aliases predict.jointSurroPenal 
 ##' @usage
 ##' 
-##' \method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.meta", ...)
+##' \method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.meta", 
+##' alpha. = 0.05, ...)
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).
 ##' @param datapred Dataset to used for the prediction. If this argument is specified,
@@ -22,8 +23,9 @@
 ##' and indicates if the prediction error take into account
 ##' the estimation error of the estimates of the parameters. If the estimates 
 ##' are suppose knew or if the dataset includes a high number of trials with 
-##' a high number of subject per trial, value \code{"No.error} can be used. 
-##' The default is \code{"error.meta"}.
+##' a high number of subject per trial, value \code{No.error} can be used. 
+##' The default is \code{error.meta}.
+##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param ... other unused arguments.
 ##' @return Return and display a dataframe including for each trial the observed 
 ##' treatment effect on the surrogate endpoint, the observed treatment effect on
@@ -62,7 +64,7 @@
 ##' }
 ##' 
 ##' 
-"predict.jointSurroPenal" <- function (object, datapred = NULL, var.used = "error.meta", ...)
+"predict.jointSurroPenal" <- function (object, datapred = NULL, var.used = "error.meta", alpha. = 0.05, ...)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
@@ -131,8 +133,15 @@
     alpha <- object$beta.s
     alpha0 <- matrixPred$beta.S[i]
     x     <- t(matrix(c(1, -dab/daa),1,2))
-    Vmu   <- matrix(c(),2,2)
-    VD    <- matrix(c(),2,2)
+    
+    # Vmu (sigma_ST, sigma_SS). on utilise la matrice obtenu par delta methode a partir de la hessienne
+    Vmu   <- matrix(c(object$varcov.Sigma[2,2], object$varcov.Sigma[2,1], 
+                      object$varcov.Sigma[2,1], object$varcov.Sigma[1,1]),2,2)
+    nparam <- nrow(object$varH)
+    
+    # VD (bete_T, beta_S). on utilise la hesienne directement car pas de changement de variable
+    VD     <- matrix(c(object$varH[nparam,nparam], object$varH[nparam,nparam-1],
+                       object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
     R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1] 
     matrixPred$beta.T.i[i] <- beta + (dab/daa) * (alpha0 - alpha)
     variance.inf <- dbb * (1 - R2trial) 
