@@ -2334,15 +2334,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             
         if(nsim_node(8).ne.0)then !model conjoint surrogate (se calcule par la delta methode)    
             parametre_estimes(s_i-nbre_rejet,9)= varS_es!siqma_s
-            parametre_estimes(s_i-nbre_rejet,10)=dsqrt(((2.d0*b(rangparam_sigs))**2.d0)*H_hessOut(rangparam_sigs,rangparam_sigs))! se sigma_s
+            parametre_estimes(s_i-nbre_rejet,10)=dsqrt(varcov(1,1))! se sigma_s
             parametre_estimes(s_i-nbre_rejet,11)= varT_es!siqma_t
-            parametre_estimes(s_i-nbre_rejet,12)=2.d0*dsqrt(covST1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst)+&
-                        2.d0*varT1*covST1*H_hessOut(rangparam_sigst,rangparam_sigt)+&
-                        varT1**2.d0*H_hessOut(rangparam_sigt,rangparam_sigt))! se sigma_t
+            parametre_estimes(s_i-nbre_rejet,12)=dsqrt(varcov(3,3))! se sigma_t
             parametre_estimes(s_i-nbre_rejet,13)= covST_es !siqma_st
-            parametre_estimes(s_i-nbre_rejet,14)=dsqrt(covST1**2.d0*H_hessOut(rangparam_sigs,rangparam_sigs)+&
-                        2.d0*varS1*covST1*H_hessOut(rangparam_sigs,rangparam_sigst)+&
-                        varS1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst))! se sigma_st
+            parametre_estimes(s_i-nbre_rejet,14)=dsqrt(varcov(2,2))! se sigma_st
             if(frailt_base==1)then
                 parametre_estimes(s_i-nbre_rejet,15)=(b(rangparam_gamma)**2.d0) !gamma
                 parametre_estimes(s_i-nbre_rejet,16)=(dsqrt(((2.d0*b(rangparam_gamma))**2.d0)*H_hessOut(rangparam_gamma,&
