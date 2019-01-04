@@ -116,7 +116,7 @@
   }
   else{
     matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 6))
-    names(matrixPred) <- c("trialID","bata.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI" )
+    names(matrixPred) <- c("trialID","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI" )
     matrixPred$trialID <- trial
     for(i in 1:length(trial)){
       subdata <- dataUse[dataUse$trialID == trial[i],]
@@ -145,7 +145,7 @@
     R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1] 
     matrixPred$beta.T.i[i] <- beta + (dab/daa) * (alpha0 - alpha)
     variance.inf <- dbb * (1 - R2trial) 
-    variance.N <- t(x) %*% (Vmu %+% (((alpha0 - alpha)/daa)**2) %*% VD) %*% x
+    variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) %*% VD) %*% x
     + variance.inf
     
     if(var.used == "error.meta") 
