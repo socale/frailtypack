@@ -1,4 +1,6 @@
 Changes in Version 3.0.3 December 2018
+o Bug fixed in function R function jointSurroPenal and  Fortran function jointsurrogate: error in the computation of the standards errors of (sigma_S,sigma_ST,sigmaT) using delta-method. The formulas used have been corrected. 
+
 o Parameters "indice.zeta and "indice.alpha" in the R functions jointSurroPenal and jointSurroPenalSimul are renamed by "indicator.zeta" and "indicator.alpha"
 
 o Categorization of the Correlation strength at trial level, in the R function summary.jointSurropenal

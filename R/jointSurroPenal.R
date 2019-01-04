@@ -394,6 +394,8 @@
 #'    values if \code{kappa.use} is set to \code{3} or \code{4};}
 #'    \item{scale}{The value used to rescale the survival times}
 #'    \item{data}{The dataset used in the model}
+#'    \item{varcov.Sigma}{covariance matrix of (\eqn{\hat{\Sigma_S}},\eqn{\hat{\Sigma_{ST}}}, \eqn{\hat{\Sigma_T}})
+#'    obtained from the delta-method}
 #'
 #' 
 #' @seealso \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}, \code{\link{jointSurroPenalSimul}}
@@ -936,6 +938,7 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
   ier <- 0 # informe sur le comportement du modele(-1 = erreur, k = perte de significativite le modele continu, 0 = pas d'erreur)
   istop <- 0 # critere d'arret: 1= le modele a converge, 2= on a attent le nombre max d'itteration, 3= echec inversion de la hessienne, 4= erreur dans les calculs 
   ziOut <- rep(0,nz+6)  # knots for baseline hazard estimated with splines
+  Varcov = matrix(0, nrow = 3, ncol = 3) # matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) obtenue par delta methode à partir de la hesienne, en raison du changement de variable au moment de l'estimation
   
   # print("quelques parametre")
   # print(dim(H_hessOut))
@@ -1007,6 +1010,7 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
                   istop = 0,
                   ziOut = rep(0,nz+6),
                   as.integer(affiche.itter),
+                  Varcov = matrix(0, nrow = 3, ncol = 3),
                   PACKAGE="frailtypack"
   )
   
@@ -1094,6 +1098,7 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
   result$kappa  <- kappa0
   result$scale <- scale
   result$data <- dataUse
+  result$varcov.Sigma <- ans$Varcov
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
   

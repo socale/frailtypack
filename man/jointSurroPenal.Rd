@@ -220,6 +220,9 @@ This function return an object of class jointSurroPenal with elements :
    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
    values if \code{kappa.use} is set to \code{3} or \code{4};}
    \item{scale}{The value used to rescale the survival times}
+   \item{data}{The dataset used in the model}
+   \item{varcov.Sigma}{covariance matrix of (\eqn{\hat{\Sigma_S}},\eqn{\hat{\Sigma_{ST}}}, \eqn{\hat{\Sigma_T}})
+   obtained from the delta-method}
 }
 \description{
 {
