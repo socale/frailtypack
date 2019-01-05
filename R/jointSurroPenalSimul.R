@@ -570,6 +570,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   ier <- 0 # informe sur le comportement du modele(-1 = erreur, k = perte de significativite le modele continu, 0 = pas d'erreur)
   istop <- 0 # critere d'arret: 1= le modele a converge, 2= on a attent le nombre max d'itteration, 3= echec inversion de la hessienne, 4= erreur dans les calculs 
   ziOut <- rep(0,nz+6)  # knots for baseline hazard estimated with splines
+  Varcov = matrix(0, nrow = 3, ncol = 3) # matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) obtenue par delta methode à partir de la hesienne, en raison du changement de variable au moment de l'estimation
   
   # proportion de sujet par essai
   if(sujet_equi==1){
@@ -649,6 +650,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                   istop = 0,
                   ziOut = rep(0,nz+6),
                   as.integer(affiche.itter),
+                  Varcov = matrix(0, nrow = 3, ncol = 3),
                   PACKAGE="frailtypack"
   )
   
