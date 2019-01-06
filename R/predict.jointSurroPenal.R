@@ -136,8 +136,8 @@
     x     <- t(matrix(c(1, -dab/daa),1,2))
     
     # Vmu (sigma_ST, sigma_SS). on utilise la matrice obtenu par delta methode a partir de la hessienne
-    Vmu   <- matrix(c(object$varcov.Sigma[2,2], object$varcov.Sigma[2,1], 
-                      object$varcov.Sigma[2,1], object$varcov.Sigma[1,1]),2,2)
+    Vmu   <- matrix(c(object$varcov.Sigma[3,3], object$varcov.Sigma[3,1], 
+                      object$varcov.Sigma[3,1], object$varcov.Sigma[1,1]),2,2)
     nparam <- nrow(object$varH)
     
     # VD (bete_T, beta_S). on utilise la hesienne directement car pas de changement de variable
