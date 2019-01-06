@@ -2158,7 +2158,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigst), &
 				                H_hessOut(rangparam_sigs,rangparam_sigt)/)
 				sigmac(2,:) = (/H_hessOut(rangparam_sigst,rangparam_sigs), H_hessOut(rangparam_sigst,rangparam_sigst), &
-				                H_hessOut(rangparam_sigst,rangparam_sigt)/)
+				                H_hessOut(rangparam_sigst,rangparam_sigst)/)
 				sigmac(3,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigst), &
 				                H_hessOut(rangparam_sigt,rangparam_sigt)/)
 				varcov = MATMUL(TRANSPOSE(hb), sigmac)
