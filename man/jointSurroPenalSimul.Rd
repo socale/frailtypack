@@ -249,6 +249,8 @@ This function return an object of class jointSurroPenalSimul with elements :
    and theirs confidence intervals using the parametric bootstrap. All non-convergence cases are represented by a line of 0.}
    \item{dataParamEstim}{a dataframe including all estimates with the associated standard errors, for all simulation. 
    All non-convergence cases  are represented by a line of 0;}
+   \item{dataHessian}{Dataframe of the variance-Covariance matrices  of the estimates for all simulations}
+   \item{datab}{Dataframe of the estimates for all simulations which rich convergence}
 }
 \description{
 {

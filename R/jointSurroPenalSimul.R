@@ -238,6 +238,8 @@
 #'    and theirs confidence intervals using the parametric bootstrap. All non-convergence cases are represented by a line of 0.}
 #'    \item{dataParamEstim}{a dataframe including all estimates with the associated standard errors, for all simulation. 
 #'    All non-convergence cases  are represented by a line of 0;}
+#'    \item{dataHessian}{Dataframe of the variance-Covariance matrices  of the estimates for all simulations}
+#'    \item{datab}{Dataframe of the estimates for all simulations which rich convergence}
 #'
 #' 
 #' @seealso \code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}
@@ -570,7 +572,9 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   ier <- 0 # informe sur le comportement du modele(-1 = erreur, k = perte de significativite le modele continu, 0 = pas d'erreur)
   istop <- 0 # critere d'arret: 1= le modele a converge, 2= on a attent le nombre max d'itteration, 3= echec inversion de la hessienne, 4= erreur dans les calculs 
   ziOut <- rep(0,nz+6)  # knots for baseline hazard estimated with splines
-  Varcov = matrix(0, nrow = 3, ncol = 3) # matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) obtenue par delta methode à partir de la hesienne, en raison du changement de variable au moment de l'estimation
+  Varcov <- matrix(0, nrow = 3, ncol = 3) # matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) obtenue par delta methode à partir de la hesienne, en raison du changement de variable au moment de l'estimation
+  dataHessian <- matrix(0, nrow = np*n_sim1, ncol = np) # sauvegarde des matrices hessiennes des differentes simulations 
+  datab <- matrix(0, nrow = n_sim1, ncol = np) # sauvegarde des vecteurs de parametres des simulation 
   
   # proportion de sujet par essai
   if(sujet_equi==1){
@@ -651,6 +655,8 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                   ziOut = rep(0,nz+6),
                   as.integer(affiche.itter),
                   Varcov = matrix(0, nrow = 3, ncol = 3),
+                  dataHessian = matrix(0, nrow = np*n_sim1, ncol = np),
+                  datab = matrix(0, nrow = n_sim1, ncol = np),
                   PACKAGE="frailtypack"
   )
   
@@ -684,6 +690,8 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                                     "R2trial","SE.R2trial","tau")
   names(result$dataTkendall) <- c("Ktau","inf.95%CI","sup.95%CI")
   names(result$dataR2boot) <- c("R2.boot","inf.95%CI","sup.95%CI")
+  result$dataHessian <- data.frame(ans$dataHessian)
+  result$datab <- data.frame(ans$datab)
   
   #if(is.na(result$n.iter)) result=NULL # model did not converged 
   

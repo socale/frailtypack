@@ -6,7 +6,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           filtre0,donnees,death,p,prop_i,n_sim1,EPS2,kappa0,vect_kappa,logNormal,nsim_node,Param_kendall_boot,&
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
-                          LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov)
+                          LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
+						  dataHessian,datab)
                           
     ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
@@ -54,7 +55,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(sizeVect(2)), intent(out)::x1Out
     double precision,dimension(sizeVect(3)), intent(out)::x2Out
     double precision,dimension(sizeVect(1),sizeVect(1)), intent(out)::H_hessOut,HIHOut ! H_hessOut = matrice hesienne (des variance-covariance), HIHOut= matrice hessienne corrigee
-    double precision,dimension(sizeVect(2),3), intent(out)::lamOut
+    double precision,dimension(sizeVect(1)*n_sim1,sizeVect(1)), intent(out)::dataHessian ! sauvegarde des matrices hessiennes des differentes simulations 
+	double precision,dimension(n_sim1,sizeVect(1)), intent(out)::datab ! sauvegarde des vecteurs de parametres de toutes les simulations 
+	double precision,dimension(sizeVect(2),3), intent(out)::lamOut
     double precision,dimension(sizeVect(3),3), intent(out)::lam2Out
     double precision,dimension(sizeVect(4),3), intent(out)::suOut
     double precision,dimension(sizeVect(5),3), intent(out)::su2Out
@@ -2163,8 +2166,26 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				                H_hessOut(rangparam_sigst,rangparam_sigst)/)
 				varcov = MATMUL(TRANSPOSE(hb), sigmac)
 				varcov = MATMUL(varcov, hb)
+				
+				
 				! ========== Fin delta methode ==================
-                
+				
+				! ====sauvegarde de la hessienne et du vecteur b des parametres====
+				
+				do i=1,np
+					dataHessian(np*(s_i-nbre_rejet-1) + i,:) = H_hessOut(i,:)
+				enddo
+				
+				datab(s_i-nbre_rejet,:) = b
+				
+				! Write(aaa,'(i3)') s_i ! instruction pour convertir un entier en chaine de caractere (3 caracteres)
+				! aaa="H_hessOut"//aaa ! instruction pour concatener deux chaines de caracteres
+				! aaa=aaa//".txt"
+                ! open(270,file=aaa)				
+				! write(270,*) dataHessian				
+				! close(270)
+				
+				!====Fin sauvegarde hessienne et b======
                 !calcul du R2(trial) reduit, c'est a dire sans prise en compte des effets aleatoires sur le risque de base
                 R2_trial=(covST1**2)/(covST1**2+varT1**2)
                 se_R2_trial=2.d0*dsqrt((covST1**2 * varT1**4 * H_hessOut(rangparam_sigst,rangparam_sigst)-2.d0*covST1**3 &
