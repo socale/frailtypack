@@ -2163,6 +2163,26 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				                H_hessOut(rangparam_sigt,rangparam_sigt)/)
 				varcov = MATMUL(TRANSPOSE(hb), sigmac)
 				varcov = MATMUL(varcov, hb)
+				  
+				  ! call intpr("rangparam_sigs", -1, rangparam_sigs, 1)
+				  ! call intpr("rangparam_sigt", -1, rangparam_sigt, 1)
+				  ! call intpr("rangparam_sigst", -1, rangparam_sigst, 1)
+				  
+				  ! call dblepr("Chol(1,:)", -1, Chol(1,:), 2)
+				  ! call dblepr("Chol(2,:)", -1, Chol(2,:), 2)
+				  
+				  ! call dblepr("hb(1,:)", -1, hb(1,:), 3)
+				  ! call dblepr("hb(2,:)", -1, hb(2,:), 3)
+				  ! call dblepr("hb(3,:)", -1, hb(3,:), 3)
+				
+				  ! call dblepr("sigmac(1,:)", -1, sigmac(1,:), 3)
+				  ! call dblepr("sigmac(2,:)", -1, sigmac(2,:), 3)
+				  ! call dblepr("sigmac(3,:)", -1, sigmac(3,:), 3)
+				
+				  ! call dblepr("varcov(1,:)", -1, varcov(1,:), 3)
+				  ! call dblepr("varcov(2,:)", -1, varcov(2,:), 3)
+				  ! call dblepr("varcov(3,:)", -1, varcov(3,:), 3)
+				
 				! ========== Fin delta methode ==================
                 
                 !calcul du R2(trial) reduit, c'est a dire sans prise en compte des effets aleatoires sur le risque de base
