@@ -32,7 +32,8 @@ The default is \code{error.meta}.}
 Return and display a dataframe including for each trial the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint (if available) and the predicted treatment effect on the 
-true enpoint with the associated prediction intervalls.
+true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
+endpoint(if available) is included into the prediction interval, the last columns contains "*".
 }
 \description{
 Predict the treatment effect on the true endpoint (\eqn{beta_T}), basing on the 

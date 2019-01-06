@@ -2153,14 +2153,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				! recherche de la matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) par la delta methode:
 				! à partir de la hessienne. voir le raisonnement dans le cahier à la date du 04/01/2019
 				hb(1,:) = (/ 2.d0*Chol(1,1), 0.d0, 0.d0 /)
-				hb(2,:) = (/ Chol(2,1), Chol(1,1), 0.d0 /)
-				hb(3,:) = (/ 0.d0, 2.d0*Chol(2,1), 2.d0*Chol(2,2) /)
-				sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigst), &
-				                H_hessOut(rangparam_sigs,rangparam_sigt)/)
-				sigmac(2,:) = (/H_hessOut(rangparam_sigst,rangparam_sigs), H_hessOut(rangparam_sigst,rangparam_sigst), &
-				                H_hessOut(rangparam_sigst,rangparam_sigt)/)
-				sigmac(3,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigst), &
-				                H_hessOut(rangparam_sigt,rangparam_sigt)/)
+				hb(2,:) = (/ Chol(2,1), 0.d0, Chol(1,1) /)
+				hb(3,:) = (/ 0.d0, 2.d0*Chol(2,2), 2.d0*Chol(2,1) /)
+				sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigt), &
+				                H_hessOut(rangparam_sigs,rangparam_sigst)/)
+				sigmac(2,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigt), &
+				                H_hessOut(rangparam_sigt,rangparam_sigst)/)
+				sigmac(3,:) = (/H_hessOut(rangparam_sigst,rangparam_sigs), H_hessOut(rangparam_sigst,rangparam_sigst), &
+				                H_hessOut(rangparam_sigst,rangparam_sigst)/)
 				varcov = MATMUL(TRANSPOSE(hb), sigmac)
 				varcov = MATMUL(varcov, hb)
 				  
@@ -2228,9 +2228,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             ! bs_sigmat = varT_es + 1.96d0*2.d0*dsqrt(covST1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst)+&
                         ! 2.d0*varT1*covST1*H_hessOut(rangparam_sigst,rangparam_sigt)+&
                         ! varT1**2.d0*H_hessOut(rangparam_sigt,rangparam_sigt))
-		    moy_se_sigmat=moy_se_sigmat+dsqrt(varcov(3,3))
-            bi_sigmat = varT_es - 1.96d0*dsqrt(varcov(3,3))
-            bs_sigmat = varT_es + 1.96d0*dsqrt(varcov(3,3))
+		    moy_se_sigmat=moy_se_sigmat+dsqrt(varcov(2,2))
+            bi_sigmat = varT_es - 1.96d0*dsqrt(varcov(2,2))
+            bs_sigmat = varT_es + 1.96d0*dsqrt(varcov(2,2))
             !taux de couverture
             
             if(sigma_t>=bi_sigmat .and. sigma_t<=bs_sigmat)then ! taux de couverture
@@ -2248,9 +2248,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             ! bs_sigmast = covST_es + 1.96d0*dsqrt(covST1**2.d0*H_hessOut(rangparam_sigs,rangparam_sigs)+&
                         ! 2.d0*varS1*covST1*H_hessOut(rangparam_sigs,rangparam_sigst)+&
                         ! varS1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst))
-			moy_se_sigmast=moy_se_sigmast+dsqrt(varcov(2,2))
-            bi_sigmast = covST_es - 1.96d0*dsqrt(varcov(2,2))
-            bs_sigmast = covST_es + 1.96d0*dsqrt(varcov(2,2))
+			moy_se_sigmast=moy_se_sigmast+dsqrt(varcov(3,3))
+            bi_sigmast = covST_es - 1.96d0*dsqrt(varcov(3,3))
+            bs_sigmast = covST_es + 1.96d0*dsqrt(varcov(3,3))
             !taux de couverture
             !sigmast_vrai=rsqrt*dsqrt(sigma_s)*dsqrt(sigma_t)
             if(sigmast_vrai>=bi_sigmast .and. sigmast_vrai<=bs_sigmast)then ! taux de couverture
@@ -2356,9 +2356,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             parametre_estimes(s_i-nbre_rejet,9)= varS_es!siqma_s
             parametre_estimes(s_i-nbre_rejet,10)=dsqrt(varcov(1,1))! se sigma_s
             parametre_estimes(s_i-nbre_rejet,11)= varT_es!siqma_t
-            parametre_estimes(s_i-nbre_rejet,12)=dsqrt(varcov(3,3))! se sigma_t
+            parametre_estimes(s_i-nbre_rejet,12)=dsqrt(varcov(2,2))! se sigma_t
             parametre_estimes(s_i-nbre_rejet,13)= covST_es !siqma_st
-            parametre_estimes(s_i-nbre_rejet,14)=dsqrt(varcov(2,2))! se sigma_st
+            parametre_estimes(s_i-nbre_rejet,14)=dsqrt(varcov(3,3))! se sigma_st
             if(frailt_base==1)then
                 parametre_estimes(s_i-nbre_rejet,15)=(b(rangparam_gamma)**2.d0) !gamma
                 parametre_estimes(s_i-nbre_rejet,16)=(dsqrt(((2.d0*b(rangparam_gamma))**2.d0)*H_hessOut(rangparam_gamma,&
