@@ -2156,8 +2156,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				! recherche de la matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) par la delta methode:
 				! à partir de la hessienne. voir le raisonnement dans le cahier à la date du 04/01/2019
 				hb(1,:) = (/ 2.d0*Chol(1,1), 0.d0, 0.d0 /)
-				hb(2,:) = (/ Chol(2,1), 0.d0, Chol(1,1) /)
-				hb(3,:) = (/ 0.d0, 2.d0*Chol(2,2), 2.d0*Chol(2,1) /)
+				hb(2,:) = (/ 0.d0, 2.d0*Chol(2,2), 2.d0*Chol(2,1) /)
+				hb(3,:) = (/ Chol(2,1), 0.d0, Chol(1,1) /)
 				sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigt), &
 				                H_hessOut(rangparam_sigs,rangparam_sigst)/)
 				sigmac(2,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigt), &
