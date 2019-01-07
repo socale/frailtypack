@@ -161,6 +161,8 @@
     if(!(F %in% (c("timeT","statusT") %in% names(dataUse)))){
       if((matrixPred$beta.T[i] >= matrixPred$Inf.95.CI[i]) & (matrixPred$beta.T[i] <= matrixPred$Sup.95.CI[i]))
         matrixPred[i,ncol(matrixPred)] <- "*"
+      else
+        matrixPred[i,ncol(matrixPred)] <- " "
     }
   }
   
