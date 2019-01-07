@@ -1,11 +1,15 @@
-Changes in Version 3.0.3 December 2018
-o Bug fixed in function R function jointSurroPenal and  Fortran function jointsurrogate: error in the computation of the standards errors of (sigma_S,sigma_ST,sigmaT) using delta-method. The formulas used have been corrected. 
+Changes in Version 3.0.3 January 2019
+o Add of the function to use to predict the treatment effect on the true endpoint basing on the treatment effect observed on te surrogate endpoint
 
-o Parameters "indice.zeta and "indice.alpha" in the R functions jointSurroPenal and jointSurroPenalSimul are renamed by "indicator.zeta" and "indicator.alpha"
+o Add of the function to use to compute the surrogate threshold effect (STE)
 
-o Categorization of the Correlation strength at trial level, in the R function summary.jointSurropenal
+o Upadate of the values of the function jointSurroPenal() and jointSurroPenalSimul(). Several other values are returned to these function.
 
-o Implementation of the function to use to predict the treatment effect on the true endpoint basing on the treatment effect observed on te surrogate endpoint
+o Update of the subroutine Fortran jointsurrogate(). Computation of the variance-covariance matrix for the estimates of the variance-covariance parameters of the random effect treatment-by-trial interaction using the delta-method. we also return in this function the dataframes for the estimates and their variance-covariance matrices. 
+
+o Update of the output of the R function summary.jointSurroPenal(). Categorization of the Correlation strength at trial level. We also compute and display the STE in this function.
+
+o Parameters "indice.zeta and "indice.alpha" in the R functions jointSurroPenal and jointSurrPenalSimul are renamed by "indicator.zeta" and "indicator.alpha"
 
 Changes in Version 3.0.2 December 2018
 o Bug fixed in the file aaOptim_New_scl.o, aaOptim_New_scl2.o and aaOptim_SCL_0.o: module type definition remove, already defined in the file aaOptim.o 

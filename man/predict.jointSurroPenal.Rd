@@ -29,20 +29,24 @@ The default is \code{error.meta}.}
 \item{...}{other unused arguments.}
 }
 \value{
-Return and display a dataframe including for each trial the observed 
+Returns and display a dataframe including for each trial the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint (if available) and the predicted treatment effect on the 
 true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
 endpoint(if available) is included into the prediction interval, the last columns contains "*".
 }
 \description{
+{
 Predict the treatment effect on the true endpoint (\eqn{beta_T}), basing on the 
 treatment effect observed on the the surrogate endpoint (\eqn{beta_S}).
 }
+}
 \details{
+{
 Prediction is based on the formulas described in (Burzikwosky \emph{et al.}, 2006).
 We do not consider the case of prediction which suppose estimation error on 
 the estimate of the treatment effect on the surrogate endpoint in the new trial.
+}
 }
 \examples{
 
@@ -67,9 +71,9 @@ the dataOvarian dataset
 
 }
 \references{
-Burzykowski T, Buyse M (2006). “Surrogate threshold effect: an alternative 
-measure for meta-analytic surrogate endpoint validation.” Pharmaceutical 
-Statistics, 5(3), 173–186.ISSN 1539-1612.
+Burzykowski T, Buyse M (2006). "Surrogate threshold effect: an alternative 
+measure for meta-analytic surrogate endpoint validation." Pharmaceutical 
+Statistics, 5(3), 173-186.ISSN 1539-1612.
 }
 \seealso{
 \code{\link{jointSurroPenal}}

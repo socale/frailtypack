@@ -34,7 +34,9 @@
 ##' We notice that, using the bootstrap, 
 ##' the standard error of the point estimate is not available. We propose a classification of \eqn{R^2_{trial}} according to a 
 ##' modification to surrogate criteria proposed by the Institute of Quality and Efficiency in Health Care 
-##' (Prasad \emph{et al.}, 2015). The rest of parameters concerns the convergence characteristics and 
+##' (Prasad \emph{et al.}, 2015). 
+##' We also display the surrogate threshold effect (\code{\link[=ste]{STE}}) with the associated hazard risk.
+##' The rest of parameters concerns the convergence characteristics and 
 ##' included: the penalized marginal log-likelihood, number of iterations, the LCV and the Convergence criteria.
 ##' @seealso \code{\link{jointSurroPenal} \link{jointSurroTKendall}}
 ##' 
@@ -162,6 +164,9 @@
     print(validation2)
     cat("---","\n")
     cat("Correlation strength:  <= 0.7 'Low' ; ]0.7 - 0.85[ 'Medium' ; >= 0.85 'High' ","\n")
+    cat("---","\n")
+    
+    cat(c("Surrogate threshold effect (STE) :",round(ste(object),len),"(HR =",round(exp(ste(object)),len),")"),"\n")
     
     cat(" ", "\n")
     cat("Convergence parameters", "\n")

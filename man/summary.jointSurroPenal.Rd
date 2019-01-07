@@ -39,7 +39,9 @@ Confidence interval obtained by the parametric bootstrap.
 We notice that, using the bootstrap, 
 the standard error of the point estimate is not available. We propose a classification of \eqn{R^2_{trial}} according to a 
 modification to surrogate criteria proposed by the Institute of Quality and Efficiency in Health Care 
-(Prasad \emph{et al.}, 2015). The rest of parameters concerns the convergence characteristics and 
+(Prasad \emph{et al.}, 2015). 
+We also display the surrogate threshold effect (\code{\link[=ste]{STE}}) with the associated hazard risk.
+The rest of parameters concerns the convergence characteristics and 
 included: the penalized marginal log-likelihood, number of iterations, the LCV and the Convergence criteria.
 }
 \description{
