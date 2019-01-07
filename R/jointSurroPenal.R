@@ -940,6 +940,7 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
   ziOut <- rep(0,nz+6)  # knots for baseline hazard estimated with splines
   Varcov = matrix(0, nrow = 3, ncol = 3) # matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) obtenue par delta methode à partir de la hesienne, en raison du changement de variable au moment de l'estimation
   dataHessian <- matrix(0, nrow = np, ncol = np) # sauvegarde des matrices hessiennes des differentes simulations 
+  dataHessianIH <- matrix(0, nrow = np*n_sim1, ncol = np)
   datab <- matrix(0, nrow = 1, ncol = np) # sauvegarde des vecteurs de parametres des simulation 
   
   
@@ -1015,6 +1016,7 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
                   as.integer(affiche.itter),
                   Varcov = matrix(0, nrow = 3, ncol = 3),
                   dataHessian = matrix(0, nrow = np, ncol = np),
+                  dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
                   datab = matrix(0, nrow = 1, ncol = np),
                   PACKAGE="frailtypack"
   )
