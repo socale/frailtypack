@@ -7,7 +7,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
-						  dataHessian,datab)
+						  dataHessian,dataHessianIH,datab)
                           
     ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
@@ -55,7 +55,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(sizeVect(2)), intent(out)::x1Out
     double precision,dimension(sizeVect(3)), intent(out)::x2Out
     double precision,dimension(sizeVect(1),sizeVect(1)), intent(out)::H_hessOut,HIHOut ! H_hessOut = matrice hesienne (des variance-covariance), HIHOut= matrice hessienne corrigee
-    double precision,dimension(sizeVect(1)*n_sim1,sizeVect(1)), intent(out)::dataHessian ! sauvegarde des matrices hessiennes des differentes simulations 
+    double precision,dimension(sizeVect(1)*n_sim1,sizeVect(1)), intent(out)::dataHessian, dataHessianIH ! sauvegarde des matrices hessiennes des differentes simulations 
 	double precision,dimension(n_sim1,sizeVect(1)), intent(out)::datab ! sauvegarde des vecteurs de parametres de toutes les simulations 
 	double precision,dimension(sizeVect(2),3), intent(out)::lamOut
     double precision,dimension(sizeVect(3),3), intent(out)::lam2Out
@@ -2174,6 +2174,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				
 				do i=1,np
 					dataHessian(np*(s_i-nbre_rejet-1) + i,:) = H_hessOut(i,:)
+					dataHessianIH(np*(s_i-nbre_rejet-1) + i,:) = HIHOut(i,:)
 				enddo
 				
 				datab(s_i-nbre_rejet,:) = b

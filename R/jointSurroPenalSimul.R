@@ -239,9 +239,10 @@
 #'    \item{dataParamEstim}{a dataframe including all estimates with the associated standard errors, for all simulation. 
 #'    All non-convergence cases  are represented by a line of 0;}
 #'    \item{dataHessian}{Dataframe of the variance-Covariance matrices  of the estimates for all simulations}
+#'    \item{dataHessianIH}{Dataframe of the robust estimation of the variance matrices  of the estimates for all simulations}
 #'    \item{datab}{Dataframe of the estimates for all simulations which rich convergence}
-#'
-#' 
+#'    
+#'   
 #' @seealso \code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}
 #' 
 #' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -574,6 +575,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   ziOut <- rep(0,nz+6)  # knots for baseline hazard estimated with splines
   Varcov <- matrix(0, nrow = 3, ncol = 3) # matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) obtenue par delta methode à partir de la hesienne, en raison du changement de variable au moment de l'estimation
   dataHessian <- matrix(0, nrow = np*n_sim1, ncol = np) # sauvegarde des matrices hessiennes des differentes simulations 
+  dataHessianIH <- matrix(0, nrow = np*n_sim1, ncol = np) # pour la matrice hessienne corrigee (HIH)
   datab <- matrix(0, nrow = n_sim1, ncol = np) # sauvegarde des vecteurs de parametres des simulation 
   
   # proportion de sujet par essai
@@ -656,6 +658,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                   as.integer(affiche.itter),
                   Varcov = matrix(0, nrow = 3, ncol = 3),
                   dataHessian = matrix(0, nrow = np*n_sim1, ncol = np),
+                  dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
                   datab = matrix(0, nrow = n_sim1, ncol = np),
                   PACKAGE="frailtypack"
   )
