@@ -53,6 +53,7 @@ funcpajweib_fam.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajsplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajsplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajsplines_logIndiv.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajcpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpaj_tps.o: aaOptim.o aaOptimres.o Aparameters.o
