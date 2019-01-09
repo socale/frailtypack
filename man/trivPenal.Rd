@@ -82,7 +82,7 @@ Default is 300}
 \item{hazard}{Type of hazard functions: \code{"Splines"} for semiparametric
 hazard functions using equidistant intervals or \code{"Splines-per"} using
 percentile with the penalized likelihood estimation, \code{"Weibull"} for
-the parametric Weibull functions. The default is \code{"Splines"}.}
+the parametric Weibull functions. The default is \code{"Splines-per"}.}
 
 \item{init.B}{Vector of initial values for regression coefficients. This
 vector should be of the same size as the whole vector of covariates with the
