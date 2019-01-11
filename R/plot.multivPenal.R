@@ -8,7 +8,7 @@
 #' 
 #' @usage \method{plot}{multivPenal}(x, event = "Both", type.plot = "Hazard",
 #' conf.bands = FALSE, pos.legend = "topright", cex.legend = 0.7, ylim, main,
-#' color1="red", color2="blue", colorEnd="green", Xlab = "Time", Ylab = "Hazard function",
+#' color1="red", color2="blue", colorEnd="green", median=TRUE, Xlab = "Time", Ylab = "Hazard function",
 #'  ...)
 #' @param x A joint multivariate model, i.e. an object of class
 #' \code{multivPenal} (output from calling \code{multivPenal} function).
@@ -34,6 +34,7 @@
 #' name in quotation marks)
 #' @param colorEnd curve color for terminal event (integer or color name in
 #' quotation marks)
+#' @param median Logical value. Determines whether survival median will be plotted. Default is TRUE.
 #' @param Xlab Label of x-axis. Default is '"Time"'
 #' @param Ylab Label of y-axis. Default is '"Hazard function"'
 #' @param \dots Other graphical parameters
@@ -44,7 +45,7 @@
 ##' @export
 #' @keywords methods
 "plot.multivPenal" <-
-function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim, main, color1="red", color2="blue", colorEnd="green", Xlab = "Time", Ylab = "Hazard function",...) 
+function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim, main, color1="red", color2="blue", colorEnd="green", median=TRUE, Xlab = "Time", Ylab = "Hazard function",...) 
 {
   
    event.type <- charmatch(event, c("Both", "Recurrent1", "Recurrent2", "Terminal"), nomatch = 0)
@@ -97,20 +98,24 @@ function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="top
 				matplot(x$x1, x$surv1, col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main,...)
 				matlines(x$x2, x$surv2, col=color2, type="l", lty=c(1,2,2), ...)
 				matlines(x$xEnd, x$survEnd, col=colorEnd, type="l", lty=c(1,2,2), ...)
+				if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{        
 				plot(x$x1, x$surv1[,1], col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main,...)
 				lines(x$x2, x$surv2[,1], col=color2, type="l", lty=c(1,2,2), ...)
 				lines(x$xEnd, x$survEnd[,1], col=colorEnd, type="l", lty=c(1,2,2), ...)
+				if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}else{
 			if (conf.bands){
 				matplot(x$xSu1, x$surv1, col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main,...)
 				matlines(x$xSu2, x$surv2, col=color2, type="l", lty=c(1,2,2), ...)
 				matlines(x$xSuEnd, x$survEnd, col=colorEnd, type="l", lty=c(1,2,2), ...)
+				if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{        
 				plot(x$xSu1, x$surv1[,1], col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main,...)
 				lines(x$xSu2, x$surv2[,1], col=color2, type="l", lty=c(1,2,2), ...)
 				lines(x$xSuEnd, x$survEnd[,1], col=colorEnd, type="l", lty=c(1,2,2), ...)
+				if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}
 	}        
@@ -135,14 +140,18 @@ function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="top
 		if (x$typeof == 0){
 			if (conf.bands){
 				matplot(x$x1, x$surv1, col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$x1, x$surv1[,1], col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}else{
 			if (conf.bands){
 				matplot(x$xSu1, x$surv1, col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{        
 				plot(x$xSu1, x$surv1[,1], col=color1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}
 	}        
@@ -166,14 +175,18 @@ function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="top
 		if (x$typeof == 0){
 			if (conf.bands){
 				matplot(x$x1, x$surv2, col=color2, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{        
 				plot(x$x1, x$surv2[,1], col=color2, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}else{
 			if (conf.bands){
 				matplot(x$xSu2, x$surv2, col=color2, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{        
 				plot(x$xSu2, x$surv2[,1], col=color2, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}
 	}        
@@ -197,14 +210,18 @@ function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="top
 		if (x$typeof == 0){
 			if (conf.bands){
 				matplot(x$xEnd, x$survEnd, col=colorEnd, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$xEnd, x$survEnd[,1], col=colorEnd, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}else{
 			if (conf.bands){
 				matplot(x$xSuEnd, x$survEnd, col=colorEnd, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{        
 				plot(x$xSuEnd, x$survEnd[,1], col=colorEnd, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=ylim, main=main,...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}
 	}        

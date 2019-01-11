@@ -8,7 +8,7 @@ Terminal Event}
 trivPenal(formula, formula.terminalEvent, formula.LongitudinalData, data,
 data.Longi, random, id, intercept = TRUE, link = "Random-effects",
 left.censoring = FALSE, recurrentAG = FALSE, n.knots, kappa, maxit = 300,
-hazard = "Splines", init.B, init.Random, init.Eta, init.Alpha, method.GH =
+hazard = "Splines-per", init.B, init.Random, init.Eta, init.Alpha, method.GH =
 "Standard", n.nodes, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3,
 print.times = TRUE)
 }
