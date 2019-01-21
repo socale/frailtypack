@@ -223,6 +223,7 @@ This function return an object of class jointSurroPenal with elements :
    \item{data}{The dataset used in the model}
    \item{varcov.Sigma}{covariance matrix of (\eqn{\hat{\sigma_S}},\eqn{\hat{\sigma_{T}}}, \eqn{\hat{\sigma_{ST}}})
    obtained from the delta-method}
+   \item{parameter}{list of all arguments used in the model}
 }
 \description{
 {

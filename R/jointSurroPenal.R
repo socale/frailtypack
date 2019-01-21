@@ -396,6 +396,7 @@
 #'    \item{data}{The dataset used in the model}
 #'    \item{varcov.Sigma}{covariance matrix of (\eqn{\hat{\sigma_S}},\eqn{\hat{\sigma_{T}}}, \eqn{\hat{\sigma_{ST}}})
 #'    obtained from the delta-method}
+#'    \item{parameter}{list of all arguments used in the model}
 #'
 #' 
 #' @seealso \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}, \code{\link{jointSurroPenalSimul}}
@@ -475,7 +476,7 @@
 #' 
 #' }
 #' 
-jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, 
+jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, 
                       n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, 
                       nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, nb.iterPGH = 5, 
                       nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, theta.init = 1, 
@@ -486,6 +487,18 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
   
  # The initial followup time. The default value is 0
   data$initTime <- 0 
+  
+ # list of models parameters:
+  parameter <- c(maxit = maxit,indicator.zeta = indicator.zeta, indicator.alpha = indicator.alpha,
+                 frail.base = frail.base, n.knots = n.knots, LIMparam = LIMparam, LIMlogl = LIMlogl, 
+                 LIMderiv = LIMderiv, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif, 
+                 int.method = int.method, nb.iterPGH = nb.iterPGH, nb.MC.kendall = nb.MC.kendall, 
+                 nboot.kendall = nboot.kendall, true.init.val = true.init.val, theta.init = theta.init, 
+                 sigma.ss.init = sigma.ss.init, sigma.tt.init = sigma.tt.init, sigma.st.init = sigma.st.init, 
+                 gamma.init = gamma.init, alpha.init = alpha.init, zeta.init = zeta.init, betas.init = betas.init, 
+                 betat.init = betat.init, scale = scale, random.generator = random.generator, kappa.use = kappa.use, 
+                 random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, 
+                 nb.decimal = nb.decimal, print.times = print.times, print.iter = print.iter)
   
  # some initializations: for all these parameters, refers to the function jointSurroPenalSimul for help (or descriptions)
   nb.dataset <- 1
@@ -1106,6 +1119,7 @@ jointSurroPenal = function(data, maxit=40, indicator.zeta = 1, indicator.alpha =
   result$scale <- scale
   result$data <- dataUse
   result$varcov.Sigma <- ans$Varcov
+  result$parameter <- parameter
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
   
