@@ -1,4 +1,6 @@
 Changes in Version 3.0.3 January 2019
+o Add of the R function loocv() for the leave-one-out crossvalidation to evaluate the joint surrogate model
+
 o Add of the function to use to predict the treatment effect on the true endpoint basing on the treatment effect observed on te surrogate endpoint
 
 o Add of the function to use to compute the surrogate threshold effect (STE)
