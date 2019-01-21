@@ -497,7 +497,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                  sigma.ss.init = sigma.ss.init, sigma.tt.init = sigma.tt.init, sigma.st.init = sigma.st.init, 
                  gamma.init = gamma.init, alpha.init = alpha.init, zeta.init = zeta.init, betas.init = betas.init, 
                  betat.init = betat.init, scale = scale, random.generator = random.generator, kappa.use = kappa.use, 
-                 random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = c(init.kappa[1],init.kappa[2]), 
+                 random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, 
                  nb.decimal = nb.decimal, print.times = print.times, print.iter = print.iter)
   
  # some initializations: for all these parameters, refers to the function jointSurroPenalSimul for help (or descriptions)
