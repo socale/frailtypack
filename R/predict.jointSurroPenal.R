@@ -78,15 +78,15 @@
     stop("Argument 'var.used' must be specified to 'error.meta' or 'No.error' ")
   
   if(is.null(datapred)){ # we used the dataset from the model
-    dataUse <- object$data
+    data <- object$data
   }
   else{
     # ================ data checking=======================
-      dataUse <- datapred
+      data <- datapred
       # The initial followup time. The default value is 0
-      dataUse$initTime <- 0 
+      data$initTime <- 0 
       # dataset's names control
-      varStatus=(c("initTime","timeS","statusS","trialID","patienID","trt") %in% names(dataUse))
+      varStatus=(c("initTime","timeS","statusS","trialID","patienID","trt") %in% names(data))
       if(F %in% varStatus){
         stop("Control the names of your variables. They must contain at leat 5 variables named: timeS, statusS, trialID, patienID and trt. seed the help on this function")
       }
@@ -109,13 +109,13 @@
     # ====================== end data checking ==============================
   }
   
-  trial <- unique(dataUse$trialID)
-  if(F %in% (c("timeT","statusT") %in% names(dataUse))){
+  trial <- unique(data$trialID)
+  if(F %in% (c("timeT","statusT") %in% names(data))){
     matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 5))
     names(matrixPred) <- c("trialID","bata.S", "beta.T.i", "Inf.95.CI", "Sup.95.CI" )
     matrixPred$trialID <- trial
     for(i in 1:length(trial)){
-      subdata <- dataUse[dataUse$trialID == trial[i],]
+      subdata <- data[data$trialID == trial[i],]
       matrixPred$beta.S[i] <- coxph(Surv(timeS, statusS) ~ trt, subdata)$coefficients
     }
   }
@@ -124,7 +124,7 @@
     names(matrixPred) <- c("trialID","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
     matrixPred$trialID <- trial
     for(i in 1:length(trial)){
-      subdata <- dataUse[dataUse$trialID == trial[i],]
+      subdata <- data[data$trialID == trial[i],]
       matrixPred$beta.S[i] <- coxph(Surv(timeS, statusS) ~ trt, subdata)$coefficients
       matrixPred$beta.T[i] <- coxph(Surv(timeT, statusT) ~ trt, subdata)$coefficients
     }
@@ -162,7 +162,7 @@
     matrixPred$Sup.95.CI[i] <- matrixPred$beta.T.i[i] + qnorm(1-alpha./2) * sqrt(variance)
     
     # je mets une "*" si la valeur observee est incluse dans l'intervalle de prediction
-    if(!(F %in% (c("timeT","statusT") %in% names(dataUse)))){
+    if(!(F %in% (c("timeT","statusT") %in% names(data)))){
       if((matrixPred$beta.T[i] >= matrixPred$Inf.95.CI[i]) & (matrixPred$beta.T[i] <= matrixPred$Sup.95.CI[i]))
         matrixPred[i,ncol(matrixPred)] <- "*"
       else
