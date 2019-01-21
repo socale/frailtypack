@@ -56,7 +56,7 @@ Leave-one-out crossvalidation for the evaluation of the joint surrogate model
 joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
                    nb.mc = 300, nb.gh = 20)
                 
-d <- loocv(joint.surro.sim.MCGH)
+dloocv <- loocv(joint.surro.sim.MCGH)
 
 }
 
