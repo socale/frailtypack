@@ -86,7 +86,7 @@
       # The initial followup time. The default value is 0
       dataUse$initTime <- 0 
       # dataset's names control
-      varStatus=(c("initTime","timeS","statusS","trialID","patienID","trt") %in% names(data))
+      varStatus=(c("initTime","timeS","statusS","trialID","patienID","trt") %in% names(dataUse))
       if(F %in% varStatus){
         stop("Control the names of your variables. They must contain at leat 5 variables named: timeS, statusS, trialID, patienID and trt. seed the help on this function")
       }

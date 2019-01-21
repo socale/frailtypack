@@ -11,7 +11,7 @@
 ##' @aliases loocv 
 ##' @usage
 ##' 
-##' loocv(object, var.used = "error.meta", alpha. = 0.05, print.times = T)
+##' loocv(object, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).
@@ -63,7 +63,7 @@
 ##' }
 ##' 
 ##' 
-loocv <- function (object, var.used = "error.meta", alpha. = 0.05, print.times = T)
+loocv <- function (object, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
@@ -105,7 +105,7 @@ loocv <- function (object, var.used = "error.meta", alpha. = 0.05, print.times =
                     random.nb.sim = object$parameter["random.nb.sim"], seed = object$parameter["seed"], 
                     init.kappa = c(object$parameter["init.kappa1"],object$parameter["init.kappa2"]), 
                     nb.decimal = object$parameter["nb.decimal"], print.times = object$parameter["print.times"], 
-                    print.iter = object$parameter["print.iter"])
+                    print.iter = object$parameter["print.iter"],print.times = F, print.iter = F)
     }
     
     if(is.na(object$parameter["init.kappa1"])){

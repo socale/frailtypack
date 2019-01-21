@@ -570,7 +570,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
     # dataset's names control
     varStatus=(c("initTime","timeS","statusS","timeT","statusT","trialID","patienID","trt") %in% names(data))
     if(F %in% varStatus){
-      stop("Control the names of your variables. They must contain at leat 7 variables named: timeS, statusS, timeT, statusT, trialID, patienID and trt. seed the help on this function")
+      stop("Control the names of your variables. They must contain at leat 7 variables named: timeS, statusS, timeT, statusT, trialID, patienID and trt. see the help on this function")
     }
     
     # traitement des donnees
