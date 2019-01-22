@@ -11,10 +11,11 @@
 ##' @aliases loocv 
 ##' @usage
 ##' 
-##' loocv(object, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
+##' loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).
+##' @param unusedtrial A list of trial not to be taken into account in the cross-validation
 ##' @param var.used This argument takes two values. The first one is \code{"error.meta"}
 ##' and indicates if the prediction error take into account
 ##' the estimation error of the estimates of the parameters. If the estimates 
@@ -58,12 +59,12 @@
 ##' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
 ##'                    nb.mc = 300, nb.gh = 20)
 ##'                 
-##' dloocv <- loocv(joint.surro.sim.MCGH)
+##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 25)
 ##' 
 ##' }
 ##' 
 ##' 
-loocv <- function (object, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
+loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
@@ -85,49 +86,54 @@ loocv <- function (object, var.used = "error.meta", alpha. = 0.05, print.times =
   trial <- unique(dataUse$trialID)
   d <- NULL
   for(i in 1:length(trial)){
-    dataUseloo <- dataUse[!(dataUse$trialID %in% trial[i]),]
-    # Estimation
-    if(!is.na(object$parameter["init.kappa1"])){
-      joint.surro <- jointSurroPenal(dataUseloo, maxit = object$parameter["maxit"],indicator.zeta = object$parameter["indicator.zeta"], 
-                    indicator.alpha = object$parameter["indicator.alpha"], frail.base = object$parameter["frail.base"], 
-                    n.knots = object$parameter["n.knots"], LIMparam = object$parameter["LIMparam"], LIMlogl = object$parameter["LIMlogl"], 
-                    LIMderiv = object$parameter["LIMderiv"], nb.mc = object$parameter["nb.mc"], nb.gh = object$parameter["nb.gh"], 
-                    nb.gh2 = object$parameter["nb.gh2"], adaptatif = object$parameter["adaptatif"], 
-                    int.method = object$parameter["int.method"], nb.iterPGH = object$parameter["nb.iterPGH"], 
-                    nb.MC.kendall = object$parameter["nb.MC.kendall"], nboot.kendall = object$parameter["nboot.kendall"], 
-                    true.init.val = object$parameter["true.init.val"], theta.init = object$parameter["theta.init"], 
-                    sigma.ss.init = object$parameter["sigma.ss.init"], sigma.tt.init = object$parameter["sigma.tt.init"], 
-                    sigma.st.init = object$parameter["sigma.st.init"], gamma.init = object$parameter["gamma.init"], 
-                    alpha.init = object$parameter["alpha.init"], zeta.init = object$parameter["zeta.init"], 
-                    betas.init = object$parameter["betas.init"], betat.init = object$parameter["betat.init"], 
-                    scale = object$parameter["scale"], random.generator = object$parameter["random.generator"], 
-                    kappa.use = object$parameter["kappa.use"], random = object$parameter["random"], 
-                    random.nb.sim = object$parameter["random.nb.sim"], seed = object$parameter["seed"], 
-                    init.kappa = c(object$parameter["init.kappa1"],object$parameter["init.kappa2"]), 
-                    nb.decimal = object$parameter["nb.decimal"], print.times = object$parameter["print.times"], 
-                    print.iter = object$parameter["print.iter"],print.times = F, print.iter = F)
+    if(!(i %in% unusedtrial)){ # one can identifie trials that pose problem when they are removed, and then ignore them
+      dataUseloo <- dataUse[!(dataUse$trialID %in% trial[i]),]
+      # Estimation
+      if(!is.na(object$parameter["init.kappa1"])){
+        joint.surro <- jointSurroPenal(dataUseloo, maxit = object$parameter["maxit"],indicator.zeta = object$parameter["indicator.zeta"], 
+                      indicator.alpha = object$parameter["indicator.alpha"], frail.base = object$parameter["frail.base"], 
+                      n.knots = object$parameter["n.knots"], LIMparam = object$parameter["LIMparam"], LIMlogl = object$parameter["LIMlogl"], 
+                      LIMderiv = object$parameter["LIMderiv"], nb.mc = object$parameter["nb.mc"], nb.gh = object$parameter["nb.gh"], 
+                      nb.gh2 = object$parameter["nb.gh2"], adaptatif = object$parameter["adaptatif"], 
+                      int.method = object$parameter["int.method"], nb.iterPGH = object$parameter["nb.iterPGH"], 
+                      nb.MC.kendall = object$parameter["nb.MC.kendall"], nboot.kendall = object$parameter["nboot.kendall"], 
+                      true.init.val = object$parameter["true.init.val"], theta.init = object$parameter["theta.init"], 
+                      sigma.ss.init = object$parameter["sigma.ss.init"], sigma.tt.init = object$parameter["sigma.tt.init"], 
+                      sigma.st.init = object$parameter["sigma.st.init"], gamma.init = object$parameter["gamma.init"], 
+                      alpha.init = object$parameter["alpha.init"], zeta.init = object$parameter["zeta.init"], 
+                      betas.init = object$parameter["betas.init"], betat.init = object$parameter["betat.init"], 
+                      scale = object$parameter["scale"], random.generator = object$parameter["random.generator"], 
+                      kappa.use = object$parameter["kappa.use"], random = object$parameter["random"], 
+                      random.nb.sim = object$parameter["random.nb.sim"], seed = object$parameter["seed"], 
+                      init.kappa = c(object$parameter["init.kappa1"],object$parameter["init.kappa2"]), 
+                      nb.decimal = object$parameter["nb.decimal"], print.times = object$parameter["print.times"], 
+                      print.iter = object$parameter["print.iter"],print.times = F, print.iter = F)
+      }
+      
+      if(is.na(object$parameter["init.kappa1"])){
+        joint.surro <- jointSurroPenal(dataUseloo, maxit = object$parameter["maxit"],indicator.zeta = object$parameter["indicator.zeta"], 
+                       indicator.alpha = object$parameter["indicator.alpha"], frail.base = object$parameter["frail.base"], 
+                       n.knots = object$parameter["n.knots"], LIMparam = object$parameter["LIMparam"], LIMlogl = object$parameter["LIMlogl"], 
+                       LIMderiv = object$parameter["LIMderiv"], nb.mc = object$parameter["nb.mc"], nb.gh = object$parameter["nb.gh"], 
+                       nb.gh2 = object$parameter["nb.gh2"], adaptatif = object$parameter["adaptatif"], 
+                       int.method = object$parameter["int.method"], nb.iterPGH = object$parameter["nb.iterPGH"], 
+                       nb.MC.kendall = object$parameter["nb.MC.kendall"], nboot.kendall = object$parameter["nboot.kendall"], 
+                       true.init.val = object$parameter["true.init.val"], theta.init = object$parameter["theta.init"], 
+                       sigma.ss.init = object$parameter["sigma.ss.init"], sigma.tt.init = object$parameter["sigma.tt.init"], 
+                       sigma.st.init = object$parameter["sigma.st.init"], gamma.init = object$parameter["gamma.init"], 
+                       alpha.init = object$parameter["alpha.init"], zeta.init = object$parameter["zeta.init"], 
+                       betas.init = object$parameter["betas.init"], betat.init = object$parameter["betat.init"], 
+                       scale = object$parameter["scale"], random.generator = object$parameter["random.generator"], 
+                       kappa.use = object$parameter["kappa.use"], random = object$parameter["random"], 
+                       random.nb.sim = object$parameter["random.nb.sim"], seed = object$parameter["seed"], 
+                       init.kappa = NULL, 
+                       nb.decimal = object$parameter["nb.decimal"], print.times = object$parameter["print.times"], 
+                       print.iter = object$parameter["print.iter"])
+      }
+    }else{
+      joint.surro =NULL
     }
-    
-    if(is.na(object$parameter["init.kappa1"])){
-      joint.surro <- jointSurroPenal(dataUseloo, maxit = object$parameter["maxit"],indicator.zeta = object$parameter["indicator.zeta"], 
-                     indicator.alpha = object$parameter["indicator.alpha"], frail.base = object$parameter["frail.base"], 
-                     n.knots = object$parameter["n.knots"], LIMparam = object$parameter["LIMparam"], LIMlogl = object$parameter["LIMlogl"], 
-                     LIMderiv = object$parameter["LIMderiv"], nb.mc = object$parameter["nb.mc"], nb.gh = object$parameter["nb.gh"], 
-                     nb.gh2 = object$parameter["nb.gh2"], adaptatif = object$parameter["adaptatif"], 
-                     int.method = object$parameter["int.method"], nb.iterPGH = object$parameter["nb.iterPGH"], 
-                     nb.MC.kendall = object$parameter["nb.MC.kendall"], nboot.kendall = object$parameter["nboot.kendall"], 
-                     true.init.val = object$parameter["true.init.val"], theta.init = object$parameter["theta.init"], 
-                     sigma.ss.init = object$parameter["sigma.ss.init"], sigma.tt.init = object$parameter["sigma.tt.init"], 
-                     sigma.st.init = object$parameter["sigma.st.init"], gamma.init = object$parameter["gamma.init"], 
-                     alpha.init = object$parameter["alpha.init"], zeta.init = object$parameter["zeta.init"], 
-                     betas.init = object$parameter["betas.init"], betat.init = object$parameter["betat.init"], 
-                     scale = object$parameter["scale"], random.generator = object$parameter["random.generator"], 
-                     kappa.use = object$parameter["kappa.use"], random = object$parameter["random"], 
-                     random.nb.sim = object$parameter["random.nb.sim"], seed = object$parameter["seed"], 
-                     init.kappa = NULL, 
-                     nb.decimal = object$parameter["nb.decimal"], print.times = object$parameter["print.times"], 
-                     print.iter = object$parameter["print.iter"])
-    }
+      
     # Prediction
     if(is.null(joint.surro)) 
       cat(c("===Model without trial", i, "did not converged!!! please try to modified initial values or others parameters===: \n"))
@@ -136,6 +142,7 @@ loocv <- function (object, var.used = "error.meta", alpha. = 0.05, print.times =
       # Merger of the results
       d <- rbind(d,d1)
     }
+      
   }
   
   # impression du temps de calcul

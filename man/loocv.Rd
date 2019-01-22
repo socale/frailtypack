@@ -5,11 +5,13 @@
 \title{Leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-loocv(object, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
+loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
 (output from calling \code{jointSurroPenal} function).}
+
+\item{unusedtrial}{A list of trial not to be taken into account in the cross-validation}
 
 \item{var.used}{This argument takes two values. The first one is \code{"error.meta"}
 and indicates if the prediction error take into account
@@ -56,7 +58,7 @@ Leave-one-out crossvalidation for the evaluation of the joint surrogate model
 joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
                    nb.mc = 300, nb.gh = 20)
                 
-dloocv <- loocv(joint.surro.sim.MCGH)
+dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 25)
 
 }
 
