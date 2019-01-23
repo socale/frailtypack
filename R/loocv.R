@@ -144,15 +144,15 @@ loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
       d1 <- predict(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],])
       # Merger of the results
       d <- rbind(d,d1)
+      # impression du temps de calcul
+      if (print.times){
+        cost<-(proc.time()-ptm)/60
+        cat("The program took", round(cost[3],2), "minutes \n")
+      }
     }
       
   }
   
-  # impression du temps de calcul
-  if (print.times){
-    cost<-(proc.time()-ptm)/60
-    cat("The program took", round(cost[3],2), "minutes \n")
-  }
   
   if(!is.null(d)){
     result <- NULL
