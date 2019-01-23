@@ -110,7 +110,7 @@ loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
                       random.nb.sim = object$parameter["random.nb.sim"], seed = object$parameter["seed"], 
                       init.kappa = c(object$parameter["init.kappa1"],object$parameter["init.kappa2"]), 
                       nb.decimal = object$parameter["nb.decimal"], print.times = object$parameter["print.times"], 
-                      print.iter = object$parameter["print.iter"],print.times = F, print.iter = F)
+                      print.iter = object$parameter["print.iter"])
       }
       
       if(is.na(object$parameter["init.kappa1"])){
