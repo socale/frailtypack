@@ -25,7 +25,7 @@ The default is \code{error.meta}.}
 \item{print.times}{a logical parameter to print estimation time. Default is TRUE.}
 }
 \value{
-Returns an object of class \code{jointSurroPenalloocv} containing a dataframe 
+Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
 including for each trial the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint and the predicted treatment effect on the 

@@ -25,7 +25,7 @@
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param print.times a logical parameter to print estimation time. Default is TRUE.
 ##' 
-##' @return Returns an object of class \code{jointSurroPenalloocv} containing a dataframe 
+##' @return Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
 ##' including for each trial the observed 
 ##' treatment effect on the surrogate endpoint, the observed treatment effect on
 ##' the true endpoint and the predicted treatment effect on the 
@@ -154,7 +154,11 @@ loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
     cat("The program took", round(cost[3],2), "minutes \n")
   }
   
-  if(!is.null(d)) class(d) <- "jointSurroPenalloocv"
+  if(!is.null(d)){
+    result <- NULL
+    result$result <- d
+    class(result) <- "jointSurroPenalloocv"
+  }
   
-  return(d)
+  return(result)
 }
