@@ -84,7 +84,10 @@ loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
   dataUse <- object$data
   
   trial <- unique(dataUse$trialID)
-  d <- NULL
+  # init of the result
+  d <- data.frame(matrix(rep(NA,7), nrow = 1, ncol = 7))[-1,]
+  names(d) <- c("trialID","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
+  
   for(i in 1:length(trial)){
     if(!(i %in% unusedtrial)){ # one can identifie trials that pose problem when they are removed, and then ignore them
       dataUseloo <- dataUse[!(dataUse$trialID %in% trial[i]),]
