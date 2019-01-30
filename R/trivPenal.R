@@ -406,7 +406,7 @@
 #' 
 #' initial.longi <- longiPenal(Surv(time1, state) ~ age + treatment + who.PS 
 #' + prev.resection, tumor.size ~  year * treatment + age + who.PS ,
-#' data=colorectalSurv,	data.Longi = colorectalLongi, random = c("1", "year"),
+#' colorectalSurv,	data.Longi = colorectalLongi, random = c("1", "year"),
 #' id = "id", link = "Random-effects", left.censoring = -3.33, 
 #' n.knots = 6, kappa = 2, method.GH="Pseudo-adaptive",
 #'  maxit=40, n.nodes=7)
@@ -451,7 +451,7 @@
 #' 
 #' 
 "trivPenal" <- function (formula, formula.terminalEvent, formula.LongitudinalData, data,  data.Longi, random, id, intercept = TRUE, link="Random-effects",
-                         left.censoring=FALSE, recurrentAG=FALSE, n.knots, kappa, maxit=300, hazard="Splines", init.B,init.Random, init.Eta, init.Alpha, 
+                         left.censoring=FALSE, recurrentAG=FALSE, n.knots, kappa, maxit=300, hazard="Splines-per", init.B,init.Random, init.Eta, init.Alpha, 
                          method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
   
   m3 <- match.call() # longitudinal
@@ -461,8 +461,6 @@
   m2 <- match.call() #terminal
   m2$formula <- m2$formula.terminalEvent <- m2$formula.LongitudinalData <- m2$data.Longi <- m2$recurrentAG <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <-  m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$init.Alpha <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
   Names.data.Terminal <- m2$data
-  
-  TwoPart <- FALSE# two-part not programmed yet
   
   #### Frailty distribution specification ####
   if (!(all(random %in% c("1",names(data.Longi))))) { stop("Random effects can be only related to variables from the longitudinal data or the intercept (1)") }
@@ -1749,19 +1747,10 @@
     cat("Be patient. The program is computing ... \n")
   }
   
-    if(!TwoPart){ # initialize TwoPart variables if not activated
-    Binary <- rep(0, length(nsujety))
-    nsujetB=0
-    clusterB <- 0
-    matzB <- matrix(as.double(0),nrow=1,ncol=1)
-    nvarB <- 0
-    varB <- matrix(as.double(0),nrow=1,ncol=1)
-    nREB <- 0
-    noVarB <- 1
-  }
-
+  
   ans <- .Fortran(C_joint_longi,
-                  VectNsujet = as.integer(c(nsujet,nsujety, nsujetB)),
+                  as.integer(nsujet),
+                  as.integer(nsujety),
                   as.integer(ng),
                   as.integer(n.knots),
                   k0=as.double(kappa), # joint avec generalisation de strate
@@ -1774,19 +1763,17 @@
                   as.integer(terminalEvent),
                   link0 = as.integer(c(link0,link0)),
                   yy0 = as.double(Y),
-                  bb0 = as.double(Binary),
                   groupey0 = as.integer(clusterY),
-                  groupeB0 = as.integer(clusterB),
-                  Vectnb0 = as.integer(c(nRE, nREB)),
+                  nb0 = as.integer(nRE),
                   matzy0 =as.double(matzy),
-                  matzB0 =as.double(matzB),
                   cag0 = as.double(cag),
-                  VectNvar=as.integer(c(nvarR, nvarT, nvarY, nvarB)),
+                  as.integer(nvarR),
                   as.double(var),
+                  as.integer(nvarT),
                   as.double(varT),
+                  nva30 = as.integer(nvarY),
                   vaxy0 = as.double(varY),
-                  vaxB0 = as.double(varB),
-                  noVar = as.integer(c(noVarR,noVarT,noVarY, noVarB)),
+                  noVar = as.integer(c(noVarR,noVarT,noVarY)),
                   ag0 = as.integer(AG),
                   as.integer(maxit),
                   np=as.integer(np),

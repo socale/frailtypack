@@ -77,6 +77,7 @@
   #AD
 
 
+
   if (x$istop == 1){
     if (!is.null(coef)){
       if(nvar != 1){
@@ -87,20 +88,17 @@
         seHIH <- sqrt(x$varHIH)
       }
       if (x$typeof == 0){
-        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, 0, signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
         if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
         if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
-        if(x$TwoPart==1)if(x$global_chisq.test_B==1) tmpwaldB <- cbind(x$global_chisq_B,x$dof_chisq_B,x$p.global_chisq_B)#add TwoPart
       }else{
-        tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, 0, signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
         if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq, x$dof_chisq, ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
         if(x$global_chisq.test_d==1) tmpwalddc <- cbind(x$global_chisq_d, x$dof_chisq_d, ifelse(x$p.global_chisq_d == 0, "< 1e-16", x$p.global_chisq_d))
-        if(x$TwoPart==1)if(x$global_chisq.test_B==1) tmpwaldB <- cbind(x$global_chisq_B,x$dof_chisq_B,x$p.global_chisq_B)#add TwoPart
       }
 
       cat("\n")
 
-      if(x$TwoPart==0){
           cat("  Joint Model for Longitudinal Data and a Terminal Event","\n")
 
         if (x$typeof == 0){
@@ -110,15 +108,6 @@
         }
         
       if(x$leftCensoring==TRUE)cat("  and assuming left-censored longitudinal outcome \n")
-      }else if(x$TwoPart==1){
-      if(x$TwoPart==1)cat("Joint Model for Semi-continuous Data and a Terminal Event\n")
-        if (x$typeof == 0){
-          cat("  Parameter estimates using a Penalized Likelihood on the hazard function","\n")
-        }else{
-          cat("  Parameter estimates using a Parametrical approach for the hazard function","\n")
-        }
-        cat("Conditional Two-Part model with correlated random-effects for Semi-continuous outcome\n")
-      }
 
       if(x$link=='Random-effects') cat("  Association function: random effects","\n")
       if(x$link=='current-level') cat("  Association function: current level of the longitudinal outcome","\n")
@@ -129,10 +118,11 @@
       if(x$typeof==0){ind <- 6}
       else {ind <- 5}
 
+
       if(sum(tmp[,ind]<1e-16)>=1){
       d1 <- dim(tmp)[1]
       d2 <- dim(tmp)[2]
-      which <- which(tmp[,ind]<1e-16 & tmp[, ind]!="< 1e-16")
+      which <- which(tmp[,ind]<1e-16)
 
       sprint<-paste("%.",digits-2,"e",sep="")
       tmp2 <- matrix(c(sprintf(sprint,tmp[,ind])),d1,1)
@@ -154,12 +144,6 @@
           dimnames(tmpwalddc) <- list(x$names.factordc,c("chisq", "df", "global p"))
 
         }
-        if(x$TwoPart==1){ #add TwoPart
-            if(x$global_chisq.test_B==1){
-              dimnames(tmpwaldB) <- list(x$names.factorB,c("chisq", "df", "global p"))
-
-            }
-        }
         dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
                                              "SE coef (H)", "SE coef (HIH)", "z", "p"))
       }else{
@@ -171,38 +155,10 @@
           dimnames(tmpwalddc) <- list(x$names.factordc,c("chisq", "df", "global p"))
 
         }
-        if(x$TwoPart==1){ #add TwoPart
-            if(x$global_chisq.test_B==1){
-          dimnames(tmpwaldB) <- list(x$names.factorB,c("chisq", "df", "global p"))
-
-            }
-        }
         dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
                                              "SE coef (H)", "z", "p"))
       }
-      
-    if(x$TwoPart==1){
-        if (x$noVarB == 0){
-          cat("Binary outcome:\n")
-          cat("---------------- \n")
-          prmatrix(tmp[-c(1:(x$nvarY+x$nvarEnd)),-2 ,drop=FALSE],quote=FALSE,right=TRUE)
-          if(x$global_chisq.test_B==1){
-            cat("\n")
-            prmatrix(tmpwaldB)
-          }
-        }
-      cat("\n")
-        if (x$noVarY == 0){
-          cat("Semi-continuous outcome:\n")
-          cat("---------------- \n")
-          prmatrix(tmp[c((x$nvarEnd+1):(x$nvarY+x$nvarEnd)),-2 ,drop=FALSE],quote=FALSE,right=TRUE)
-          if(x$global_chisq.test==1){
-            cat("\n")
-            prmatrix(tmpwald)
-          }
-        }
-    }else if(x$TwoPart==0){
-      
+
         if (x$noVarY == 0){
           cat("Longitudinal outcome:\n")
           cat("---------------- \n")
@@ -212,7 +168,7 @@
             prmatrix(tmpwald)
           }
         }
-    }
+
       cat("\n")
       #for further developments
 #      if (x$nvarnotdep[1] == 0){
@@ -287,8 +243,7 @@
     #  tab.Asso[which,4]<-"<1e-16"
      # tab.Asso <- round(tab.Asso,digits)
      # tab.Asso[which(tab.Asso[,4]==0),4]<-noquote("<1e-16")
-      if(x$TwoPart==0) dimnames(tab.Asso) <- list(x$names.re,c("coef",  "SE", "z", "p"))
-      if(x$TwoPart==1) dimnames(tab.Asso) <- list(x$names.re,c("coef",  "SE", "z", "p"))
+      dimnames(tab.Asso) <- list(x$names.re,c("coef",  "SE", "z", "p"))
       prmatrix(tab.Asso,quote=FALSE,right=TRUE)
     }else{
       tab.Asso <- cbind(x$eta, x$se.eta, x$eta/x$se.eta, ifelse(signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1)))
@@ -360,9 +315,7 @@
     cat("\n")
     cat("      n=", x$groups)
     cat("\n")
-    if(x$TwoPart==0) cat("      n repeated measurements=", x$n.measurements)
-    if(x$TwoPart==1) cat("\n      n repeated measurements (Semi-continuous)=", x$n.measurements)
-    if(x$TwoPart==1) cat("\n      n repeated measurements (Binary)=", x$n.measurementsB)
+    cat("      n repeated measurements=", x$n.measurements)
     if(x$leftCensoring)cat("\n      Percentage of left-censored measurements=",round(x$prop.censored,4)*100,"%\n      Censoring threshold s=",x$leftCensoring.threshold)
     if (length(x$na.action)){
       cat("  (", length(x$na.action), " observation deleted due to missing) \n")

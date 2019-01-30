@@ -285,13 +285,7 @@
 !         cb=1.d-5
 !         dd=1.d-5
 !     endif
-call dblepr('ca',-1,ca,1)
-call dblepr('cb',-1,cb,1)
-call dblepr('dd',-1,dd,1)
-        do i=1,m
-call dblepr('b',-1,b(i),1)
-        end do
-        
+
     if(ca.lt.epsa.and.cb.lt.epsb.and.dd.lt.epsd) exit main
 
         tr=0.d0
