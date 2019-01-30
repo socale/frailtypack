@@ -332,7 +332,7 @@
 #'
 #' model.spli.RE <- longiPenal(Surv(time1, state) ~ age + treatment + who.PS
 #' + prev.resection, tumor.size ~  year * treatment + age + who.PS ,
-#' colorectalSurv,	data.Longi = colorectalLongi, random = c("1", "year"),
+#' data=colorectalSurv,    data.Longi = colorectalLongi, random = c("1", "year"),
 #' id = "id", link = "Random-effects", left.censoring = -3.33,
 #' n.knots = 7, kappa = 2)
 #'
@@ -341,31 +341,46 @@
 #'
 #' model.weib.CL <- longiPenal(Surv(time1, state) ~ age + treatment + who.PS
 #' + prev.resection, tumor.size ~  year * treatment + age + who.PS ,
-#' colorectalSurv, data.Longi = colorectalLongi, random = c("1", "year"),
+#' data=colorectalSurv, data.Longi = colorectalLongi, random = c("1", "year"),
 #' id = "id", link = "Current-level", left.censoring = -3.33, hazard = "Weibull")
 #' }
 #'
 #' 
 "longiPenal" <-
-  function (formula, formula.LongitudinalData, data,  data.Longi, random, id, intercept = TRUE, link="Random-effects",left.censoring=FALSE, n.knots, kappa,
-            maxit=350, hazard="Splines-per",   init.B,
-            init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
+  function (formula, formula.LongitudinalData, formula.Binary=FALSE, data,  data.Longi, random, random.Binary=FALSE, 
+  id, intercept = TRUE, link="Random-effects",left.censoring=FALSE, n.knots, kappa, maxit=350, hazard="Splines",
+  init.B, init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, 
+  print.times=TRUE)
   {
     
     OrderLong <- data.Longi[,id]
     OrderDat <- data[,id]
     
     m2 <- match.call()
-    m2$formula <-  m2$data <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
+    m2$formula <-  m2$data <- m2$random <- m2$random.Binary  <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
     Names.data.Longi <- m2$data.Longi
     
+    
+    # TWO-PART indicator
+    TwoPart <- ifelse(formula.Binary==FALSE, FALSE, TRUE) # true if two-part activated
+    
     #### Frailty distribution specification ####
-    if (!(all(random %in% c(1,names(data.Longi))))) { stop("Random effects can be only related to variables from the longitudinal data or the intercept (1)") }
-    if (!(id %in% c(names(data.Longi))) || !(id %in% c(1,names(data)))) { stop("Identification for individuals can be only related to variables from both data set") }
+    if (!(all(random %in% c(1,names(data.Longi))))){
+    stop("Random effects can be only related to variables from the longitudinal data or the intercept (1)")
+    }
+    if (!(id %in% c(names(data.Longi))) || !(id %in% c(1,names(data)))){
+    stop("Identification for individuals can be only related to variables from both data set")
+    }
+    if(TwoPart){
+    #### Frailty distribution specification (binary part) ####
+    if (!(all(random.Binary %in% c(1,names(data.Longi))))) { 
+    stop("Random effects (binary part) can be only related to variables from the longitudinal data or the intercept (1)") }
+}
     
     #### Link function specification ####
     if(!(link %in% c("Random-effects","Current-level"))){
-      stop("Only 'Random-effects' or 'Current-level' link function can be specified in link argument.")}
+    stop("Only 'Random-effects' or 'Current-level' link function can be specified in link argument.")
+    }
     
     ### Left-censoring
     if(!is.null(left.censoring) && left.censoring!=FALSE){
@@ -454,12 +469,13 @@
       }
     }
     
-    
+
     if (missing(formula))stop("The argument formula must be specified in every model")
     if (missing(formula.LongitudinalData))stop("The argument formula.LongitudinalData must be specified in every model") #AK
     
     if(class(formula)!="formula")stop("The argument formula must be a formula")
-    
+    if(TwoPart) if(formula.Binary!=FALSE) if(class(formula.Binary)!="formula")stop("The argument formula.Binary must be a formula")
+
     if(typeof == 0){
       if (missing(n.knots))stop("number of knots are required")
       n.knots.temp <- n.knots
@@ -479,12 +495,15 @@
     
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur
     
-    m$formula.LongitudinalData <- m$data.Longi <- m$n.knots <- m$random <- m$link  <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- NULL
+    m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link  <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- NULL
     
     
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")
     
     #========= Longitudinal Data preparation =========================
+    if(TwoPart){
+    data.Binary=data.Longi # all data for binary part / add TwoPart
+    }
     
     TermsY <- if (missing(data.Longi)){
       terms(formula.LongitudinalData, special)
@@ -496,6 +515,17 @@
     
     #       if (length(ord) & any(ord != 1))stop("Interaction terms are not valid for this function")
     #si pas vide tous si il ya au moins un qui vaut 1 on arrete
+    
+    
+    # create a table with all measuremnts for binary outcome, and a zero-free table for positive continuous outcome
+    if(TwoPart){
+    biom <- which(names(data.Longi)==as.character(attr(TermsY, "variables")[[2]])) # identifying biomarker
+    data.Longi=data.Longi[data.Longi[,biom]>min(data.Longi[,biom]),]  # only positive biomarker values for semi-continuous part
+    OrderLong <- data.Longi[, id]
+    OrderBinary <- data.Binary[, id]
+    }
+    
+    
     
     m2$formula <- TermsY
     
@@ -872,22 +902,406 @@
       }
     }
     
-    if (ncol(X_L) == 0){
-      noVarY <- 1
-    }else{
-      noVarY <- 0
+  if (ncol(X_L) == 0){
+   noVarY <- 1
+  }else{
+   noVarY <- 0
+  }
+  # X_L contains all covariates in longi part with dummys for multi-level
+
+
+################
+################
+  ### ADD TWO-PART
+#========= (longitudinal) Binary Data preparation =========================
+        
+    if(TwoPart){
+        TermsB <- if (missing(data.Binary)){
+                terms(formula.Binary, special)
+        }else{
+                terms(formula.Binary, special, data = data.Binary)
+        }
+        
+        ordB <- attr(TermsB, "order") # ord identifies interaction as "2"
+
+        clusterB <- attr(TermsB, "specials")$cluster # (indice) nbre de var qui sont en fonction de cluster()
+
+#Al : tri du jeu de donnees par cluster croissant
+        if (length(clusterB)){
+                tempc <- untangle.specials(TermsB, "cluster", 1:10)
+                ord <- attr(TermsB, "order")[tempc$terms]
+                if (any(ord > 1))stop("Cluster can not be used in an interaction")
+                m2 <- m2[order(m2[,tempc$vars]),] # soit que des nombres, soit des caracteres
+                ordre <- as.integer(row.names(m2)) # recupere l'ordre du data set
+                clusterB <- strata(m2[, tempc$vars], shortlabel = TRUE)
+          uni.clusterB <- unique(clusterB)
+        }
+
+        llB <- attr(TermsB, "term.labels")#liste des variables explicatives
+
+
+#=========================================================>
+  name.B <- as.character(attr(TermsB, "variables")[[2]]) # biomarker name
+  Binary <- ifelse(data.Binary[,which(names(data.Binary)==name.B)]>min(data.Binary[,which(names(data.Binary)==name.B)]), 1, 0)  # BINARY values (1=positive value)
+  #left.censoring=FALSE # used for threshold, now deactivate
+  # We model the probability to observe a positive value
+  # We assume the binary covariates are the same as those in the semi-continuous formula
+  #if(setdiff(llB, llY)!=0) stop("Covariates in the binary part must be included in the semi-continuous part.")
+  
+ # on identifie les variables explicatives facteurs avec nombre de niveau plus que 2
+ # identifying 'factor' covariates with more than 2 levels
+    ind.placeB <- which(llB%in%names(which(lapply(data.Binary[,which(names(data.Binary)%in%llB)],function(x) length(levels(x)))>2)))
+
+  defined.factor <- llB[grep("factor",llB)]
+
+  vec.factorB.tmp <- NULL
+  if(length(defined.factor)>0){
+    mat.factorB.tmp <- matrix(defined.factor,ncol=1,nrow=length(defined.factor))
+    
+    # Fonction servant a prendre les termes entre "as.factor"
+    vec.factorB.tmp <-apply(mat.factorB.tmp,MARGIN=1,FUN=function(x){
+      if (length(grep("factor",x))>0){
+        if(length(grep(":",x))>0){
+          if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+            
+            pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+            pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
+            pos4 <- length(unlist(strsplit(x,split="")))
+            if(length(levels(as.factor(data.Binary[,which(names(data.Binary)==substr(x,start=pos1,stop=pos2))])))>2)return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+            else return(NaN)
+          }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
+            pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
+            pos4 <- length(unlist(strsplit(x,split="")))-1
+            if(length(levels(as.factor(data.Binary[,which(names(data.Binary)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+            else return(NaN)
+          }else{#both factors
+            pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+            pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+            pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
+            pos4 <- length(unlist(strsplit(x,split="")))-1
+            if(length(levels(as.factor(data.Binary[,which(names(data.Binary)==substr(x,start=pos1,stop=pos2))])))>2 || length(levels(as.factor(data.Binary[,which(names(data.Binary)==substr(x,start=pos3,stop=pos4))])))>2)return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
+            else return(NaN)
+          }
+        }else{
+          pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+          pos2 <- length(unlist(strsplit(x,split="")))-1
+          if(length(levels(as.factor(data.Binary[,which(names(data.Binary)==substr(x,start=pos1,stop=pos2))])))>2)return(substr(x,start=pos1,stop=pos2))
+          else return(NaN)
+        }
+      }else{
+        return(x)
+      }})
+ 
+  vec.factorB.tmp <- vec.factorB.tmp[which(vec.factorB.tmp!="NaN")]
+
+  if(length(vec.factorB.tmp)>0){
+    for(i in 1:length(vec.factorB.tmp)){
+        if(length(grep(":",vec.factorB.tmp[i]))==0){
+          if(length(levels(as.factor(data.Binary[,which(names(data.Binary)==vec.factorB.tmp[i])])))>2)ind.placeB <- c(ind.placeB,which(llB%in%paste("as.factor(",vec.factorB.tmp[i],")",sep="")))
     }
+    
+    }}
+ 
+}
+
+ind.placeB <- sort(ind.placeB)
+
+
+
+#=========================================================>
+# On determine le nombre de categorie pour chaque var categorielle
+        strats <- attr(TermsB, "specials")$strata #nbre de var qui sont en fonction de strata()
+        cluster <- attr(TermsB, "specials")$cluster #nbre de var qui sont en fonction de cluster()
+        num.id <- attr(TermsB, "specials")$num.id #nbre de var qui sont en fonction de patkey()
+        vartimedep <- attr(TermsB, "specials")$timedep #nbre de var en fonction de timedep()
+
+        #booleen pour savoir si au moins une var depend du tps
+        if (is.null(vartimedep)) timedepB <- 0
+        else timedepB <- 1
+
+
+        if (timedepB==1) stop("The option 'timedep' is not allowed in this model.")
+        subcluster <- attr(TermsB, "specials")$subcluster #nbre de var qui sont en fonction de subcluster()
+
+  if (length(subcluster))stop("'subcluster' is not an allowed option")
+        if (length(cluster))stop("Only the argument 'id' can represent the clusters")
+
+                Names.cluster <- id # nom du cluster
+
+  if (length(num.id))stop("'num.id' is not an allowed option")
+
+        if (length(strats))stop("Stratified analysis is not an allowed option yet")
+
+
+    
+
+
+mat.factorB2 <- matrix(llB,ncol=1,nrow=length(llB))
+llB2 <-apply(mat.factorB2,MARGIN=1,FUN=function(x){
+    if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
+    pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+    pos2 <- length(unlist(strsplit(x,split="")))-1
+    x<-substr(x,start=pos1,stop=pos2)
+    return(paste(x,levels(as.factor(data.Binary[,which(names(data.Binary)==x)]))[2],sep=""))
+    }else{
+    return(x)
+}})
+
+llB3 <-apply(mat.factorB2,MARGIN=1,FUN=function(x){
+    if (length(grep("factor",x))>0  && length(grep(":",x))==0 && unlist(strsplit(x,split=""))[length(unlist(strsplit(x,split="")))]==")"){
+    pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+    pos2 <- length(unlist(strsplit(x,split="")))-1
+    return(substr(x,start=pos1,stop=pos2))
+    }else{
+    return(x)
+}})
+llB.real.names <- llB3  
+llB3 <- llB3[!llB2%in%llB]
+
+data.Binary <- data.Binary[order(OrderBinary),]
+
+if(is.factor(data.Binary[,names(data.Binary)==llB.real.names[1]])){
+    X_B<- as.numeric(data.Binary[,names(data.Binary)==llB.real.names[1]])-1
+}
+else X_B <- data.Binary[,names(data.Binary)==llB.real.names[1]]
+
+if(length(llB)>1){ # number of covariates in binary formula (not including outcome)
+  for(i in 2:length(llB.real.names)){
+    if(is.factor(data.Binary[,names(data.Binary)==llB.real.names[i]])){
+        X_B <- cbind(X_B,as.numeric(data.Binary[,names(data.Binary)==llB.real.names[i]])-1)
+    }
+    else X_B <- cbind(X_B,data.Binary[,names(data.Binary)==llB.real.names[i]])
+}}
+llB.fin <- llB.real.names
+llB <- llB.real.names
+  
+
+if(sum(ordB)>length(ordB)){ # checking for interactions
+
+for(i in 1:length(ordB)){
+if(ordB[i]>1){
+ 
+  name_v1 <- strsplit(as.character(llB[i]),":")[[1]][1] # first term of interaction
+  name_v2 <- strsplit(as.character(llB[i]),":")[[1]][2] # second term
+
+  if(length(grep("factor",name_v1))>0){name_v1<-substring(name_v1,11,nchar(name_v1)-1)
+                                     v1 <- as.factor(data.Binary[,names(data.Binary)==name_v1])}
+  else{v1 <- data.Binary[,names(data.Binary)==name_v1]} # vector of values for first term of interaction
+  if(length(grep("factor",name_v2))>0){name_v2<-substring(name_v2,11,nchar(name_v2)-1)
+                                     v2 <- as.factor(data.Binary[,names(data.Binary)==name_v2])}
+  else{v2 <- data.Binary[,names(data.Binary)==name_v2]} # vector of values for second term
+
+  llB[i] <- paste(name_v1,":",name_v2,sep="")
+#   if(is.factor(v1) && length(levels(v1))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
+#   if(is.factor(v2) && length(levels(v2))>2)stop("Interactions not allowed for factors with 3 or more levels (yet)")
+if(is.factor(v1) && !is.factor(v2)){
+ 
+ dummy <- model.matrix( ~ v1 - 1)
+# if(length(levels(v1)>2))vec.factorB <- c(vec.factorB,paste(name_v1,":",name_v2,sep=""))
+ for(j in 2:length(levels(v1))){
+   X_B <- cbind(X_B,dummy[,j]*v2)
+   if(i>1 && i<length(llB.fin))llB.fin <- c(llB.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llB.fin[(i+1+j-2):length(llB.fin)])
+   else if(i==length(llB.fin))llB.fin <- c(llB.fin[1:(i-1+j-2)],paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""))
+   else llB.fin <- c(paste(name_v1,".",levels(v1)[j],":",name_v2,sep=""),llB.fin[(2+j-2):length(llB.fin)])
+ }
+
+}else if(!is.factor(v1) && is.factor(v2)){
+ 
+  dummy <- model.matrix( ~ v2 - 1)
+  for(j in 2:length(levels(v2))){
+  
+    X_B <- cbind(X_B,dummy[,j]*v1)
+   
+    if(i>1 && i<length(llB.fin))llB.fin <- c(llB.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llB.fin[(i+1+j-2):length(llB.fin)])
+    else if(i==length(llB.fin))llB.fin <- c(llB.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""))
+    else llB.fin <- c(paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llB.fin[(2+j-2):length(llB.fin)])
+    }
+ }else if(is.factor(v1) && is.factor(v2)){
+  
+   dummy1 <- model.matrix( ~ v1 - 1)
+   dummy2 <- model.matrix( ~ v2 - 1)
+   for(j in 2:length(levels(v1))){
+     for(k in 2:length(levels(v2))){
+     
+       X_B <- cbind(X_B,dummy1[,j]*dummy2[,k])
+       if(i>1 && i<length(llB.fin))llB.fin <- c(llB.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llB.fin[(i+1+j-2+k-2):length(llB.fin)])
+       else if(i==length(llB.fin))llB.fin <- c(llB.fin[1:(i-1+j-2+k-2)],paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""))
+       else llB.fin <- c(paste(name_v1,levels(v1)[j],":",name_v2,levels(v2)[k],sep=""),llB.fin[(2+j-2+k-2):length(llB.fin)])
+       }
+   } 
+ }else{
+   
+ X_B <- cbind(X_B,v1*v2)
+}
+
+} # X_B => dataset with all binary covariates (starting with intercept) / +interaction terms (still need to create dummys for multilevels)
+}
+}
+  
+  
+  
+if(length(grep(":",llB))>0){
+  for(i in 1:length(grep(":",llB))){
+    if(length(levels(data.Binary[,which(names(data.Binary)%in%strsplit(llB[grep(":",llB)[i]],":")[[1]])[1]]))>2 || length(levels(data.Binary[,which(names(data.Binary)%in%strsplit(llB[grep(":",llB)[i]],":")[[1]])[2]]))>2){
+      ind.placeB <- c(ind.placeB,grep(":",llB)[i])
+ #     vec.factorB <- c(vec.factorB,llB[grep(":",llB)[i]])
+    }
+  }
+}
+
+  # Creating dummys for multi-level covariates
+vec.factorB <- NULL
+
+if(length(vec.factorB.tmp)>0)vec.factorB <- c(llB[ind.placeB],vec.factorB.tmp)
+else vec.factorB <- c(vec.factorB,llB[ind.placeB])
+
+vec.factorB <- unique(vec.factorB)
+
+mat.factorB <- matrix(vec.factorB,ncol=1,nrow=length(vec.factorB))
+# Fonction servant a prendre les termes entre "as.factor" et (AK 04/11/2015) interactions
+vec.factorB <-apply(mat.factorB,MARGIN=1,FUN=function(x){
+  if (length(grep("factor",x))>0){
+    if(length(grep(":",x))>0){
+      if(grep('\\(',unlist(strsplit(x,split="")))[1]<grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+        
+        pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+        pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+        pos3 <- grep(":",unlist(strsplit(x,split="")))[1]
+        pos4 <- length(unlist(strsplit(x,split="")))
+        return(paste(substr(x,start=pos1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+      }else if(grep("\\(",unlist(strsplit(x,split="")))[1]>grep(":",unlist(strsplit(x,split="")))[1] && length(grep('\\(',unlist(strsplit(x,split=""))))==1){
+        pos2 <- grep(":",unlist(strsplit(x,split="")))[1]
+        pos3 <- grep("\\(",unlist(strsplit(x,split="")))[1]+1
+        pos4 <- length(unlist(strsplit(x,split="")))-1
+        return(paste(substr(x,start=1,stop=pos2),substr(x,start=pos3,stop=pos4),sep=""))
+      }else{#both factors
+        pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+        pos2 <- grep(":",unlist(strsplit(x,split="")))[1]-2
+        pos3 <- grep("\\(",unlist(strsplit(x,split="")))[2]+1
+        pos4 <- length(unlist(strsplit(x,split="")))-1
+        return(paste(substr(x,start=pos1,stop=pos2),":",substr(x,start=pos3,stop=pos4),sep=""))
+      }
+    }else{
+      pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+      pos2 <- length(unlist(strsplit(x,split="")))-1
+      return(substr(x,start=pos1,stop=pos2))}
+  }else{
+    return(x)
+  }})
+
+for(i in 1:length(llB.fin)){
+  
+  if(sum(names(data.Binary)==llB.fin[i])>0){
+  if(is.factor(data.Binary[,names(data.Binary)==llB.fin[i]]) && length(levels(data.Binary[,names(data.Binary)==llB.fin[i]]))==2){
+    llB.fin[i] <- paste(llB.fin[i],levels(data.Binary[,names(data.Binary)==llB.fin[i]])[2],sep="")}
+     }
+}
+
+#  llB <- llB.fin
+ # if(dim(X_B)[2]!=length(llB.fin))stop("The variables in the longitudinal part must be in the data.Binary")
+   X_B <- as.data.frame(X_B)
+   names(X_B) <- llB.fin
+   
+Intercept.Binary <- rep(1,dim(X_B)[1])
+
+  if(intercept){
+    X_B <- cbind(Intercept.Binary,X_B)
+    ind.placeB <- ind.placeB+1
+  }
+
+  X_Ball<- X_B
+  "%+%"<- function(x,y) paste(x,y,sep="")
+        if(length(vec.factorB) > 0){
+          for(i in 1:length(vec.factorB)){
+          if(length(grep(":",vec.factorB[i]))==0){
+        
+          factor.spot <- which(names(X_B)==vec.factorB[i])
+         
+              if(factor.spot<ncol(X_B))  X_B <- cbind(X_B[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorB[i], collapse= "+")), model.frame(~.,data.Binary,na.action=na.pass))[,-1],X_B[(factor.spot+1):ncol(X_B)])
+     else X_B <- cbind(X_B[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorB[i], collapse= "+")), model.frame(~.,data.Binary,na.action=na.pass))[,-1])
+
+         } }
+
+    
+   
+  vect.factB<-names(X_B)[which(!(names(X_B)%in%llB))]
+  if(intercept) vect.factB <- vect.factB[-1]
+
+    
+    
+ 
+#               vect.fact <-apply(matrix(vect.fact,ncol=1,nrow=length(vect.fact)),MARGIN=1,FUN=function(x){
+#               pos1 <- grep("r",unlist(strsplit(x,split="")))[1]+2
+#               pos2 <- grep(")",unlist(strsplit(x,split="")))[1]-1
+#               return(substr(x,start=pos1,stop=pos2))})
+
+                occurB <- rep(0,length(vec.factorB))
+
+       #         for(i in 1:length(vec.factorB)){
+        #                #occur[i] <- sum(vec.factor[i] == vect.fact)
+         #               occurB[i] <- length(grep(vec.factorB[i],vect.factB))
+          #      }
+
+
+
+
+  interaction<-as.vector(apply(matrix(vect.factB,nrow=length(vect.factB)),MARGIN=1,FUN=function(x){length(grep(":",unlist(strsplit(x,split=""))))}))
+  which.interaction <- which(interaction==1)
+
+  for(i in 1:length(vec.factorB)){
+  
+  if(length(grep(":",unlist(strsplit(vec.factorB[i],split=""))))>0){
+    
+    
+    pos <- grep(":",unlist(strsplit(vec.factorB[i],split="")))
+    length.grep <- 0
+    for(j in 1:length(vect.factB)){
+      if(j%in%which.interaction){
+        
+        if(length(grep(substr(vec.factorB[i],start=1,stop=pos-1),vect.factB[j]))>0 && length(grep(substr(vec.factorB[i],start=pos+1,stop=length(unlist(strsplit(vec.factorB[i],split="")))),vect.factB[j]))>0){
+          length.grep <- length.grep + 1
+          which <- i}
+      }}
+    occurB[i] <- length.grep
+    
+  }else{
+    
+    
+    if(length(vect.factB[-which.interaction])>0){occurB[i] <- length(grep(vec.factorB[i],vect.factB[-which.interaction]))
+    }else{occurB[i] <- length(grep(vec.factorB[i],vect.factB))}
+  }
+}
+}
+
+  if (ncol(X_B) == 0){
+   noVarB <- 1
+  }else{
+   noVarB <- 0
+  }
+  }
+  
+  if(!exists("noVarB")) noVarB <- 1
+  # X_B contains all covariates in longi part with dummys for multi-level
+################
+################  
+  
     
     #=========================================================>
     
     clusterY <- data.Longi[,which(colnames(data.Longi)==id)]
-    
+if(TwoPart) clusterB <- data.Binary[,which(colnames(data.Binary)==id)]
+if(TwoPart) max_repB <- max(table(clusterB))
+
     max_rep <- max(table(clusterY))
     uni.cluster<-as.factor(unique(clusterY))
     
     if(is.null(id)) stop("grouping variable is needed")
     
     if(is.null(random))     stop("variable for random effects is needed")
+    
+    if(TwoPart) if(is.null(random.Binary)) stop("variable for binary part random effects is needed")
     
     if(length(uni.cluster)==1){
       stop("grouping variable must have more than 1 level")
@@ -925,7 +1339,9 @@
     
     nsujety<-nrow(X_L)
     
-    
+    if(TwoPart) nvarB<-ncol(X_B) 
+    if(TwoPart) varB <- as.matrix(sapply(X_B, as.numeric))
+    if(TwoPart) nsujetB <- nrow(X_B)
     
     #=======================================>
     #======= Construction du vecteur des indicatrice
@@ -938,14 +1354,29 @@
       }
     }
     
+    if(TwoPart){
+        if(length(vec.factorB) > 0){
+        kB <- 0
+        for(i in 1:length(vec.factorB)){
+            ind.placeB[i] <- ind.placeB[i]+kB
+            kB <- kB + occurB[i]-1
+        }
+    }}
+    
     # Random effects
     
     if(link=="Random-effects") link0 <- 1
     if(link=="Current-level") link0 <- 2
     
-    nRE <- length(random)
-    
+    if(TwoPart){
+      nREY <- length(random)
+      nREB <- length(random.Binary)
+      nRE <- nREY+nREB
+    }else{
+      nRE <- length(random)
+    }
     ne_re <- nRE*(nRE+1)/2
+
     
     matzy <- NULL
     names.matzy <- NULL
@@ -955,11 +1386,29 @@
       names.matzy<-random
     }
     
+    if(TwoPart){ # vector of random effects names for binary part     
+    matzB <- NULL
+    names.matzB <- NULL
+      
+
+      if(1%in%random.Binary){
+        names.matzB<-c("Intercept.Binary",random.Binary[-which(random.Binary==1)])
+      }else{
+        names.matzB<-random.Binary
+      }
+    }
+
     matzy <- data.matrix(X_L[,which(names(X_L)%in%names.matzy)])
+    
+    if(TwoPart){
+        matzB <- data.matrix(X_B[,which(names(X_B)%in%names.matzB)])
+    }
+    
     if(!intercept && 1%in%random) matzy <- as.matrix(cbind(rep(1,nsujety),matzy))
     if(dim(matzy)[2]>=3 && link0 == 2)stop("The current-level link can be chosen only if the biomarker random effects are associated with the intercept and time.")
     
     if(link0==1)netadc <- ncol(matzy)
+    if(link0==1)if(TwoPart) netadc <- netadc+ncol(matzB) #add TwoPart
     if(link0==2)netadc <- 1
     
     
@@ -967,7 +1416,7 @@
     cag <- c(0,0)
     
     if(!is.null(left.censoring) && is.numeric(left.censoring)){
-      
+      if(TwoPart) stop("No left-censoring if Two-Part model is activated.")
       if(left.censoring<min(Y))stop("The threshold for the left censoring cannot be smaller than the minimal value of the longitudinal outcome")
       cag[1] <- 1
       cag[2] <- left.censoring
@@ -977,6 +1426,7 @@
     #============= pseudo-adaptive Gauss Hermite ==============
     #m <- lme(measuret ~ time+interact+treatment, data = data, random = ~ 1| idd)
     if(method.GH=="Pseudo-adaptive"){
+    if(TwoPart) stop("Pseudo-adaptive not defined yet for Two-Part models.")
       if(length(random)>2){
         random_lme <- random[2]
         for(i in 3:length(random)){
@@ -1291,16 +1741,22 @@
     #
     
     # Preparing data ...
-    nvar = nvarY + nvarT
-    Y <- Y[order(OrderLong)]
-    
-    if ((typeof == 0) | (typeof == 2)) indic.nb.int <- 0
-    
-    if (sum(as.double(varT))==0) nvarT <- 0
-    if (sum(as.double(varY))==0) nvarY <- 0
-    
-    
-    
+    if(TwoPart){
+      nvar = nvarB + nvarY + nvarT
+    }else{
+      nvar = nvarY + nvarT # total number of fixed parameters
+    }
+      Y <- Y[order(OrderLong)] # id ordering
+      if(TwoPart) Binary <- Binary[order(OrderBinary)] # id ordering binary outcome
+      
+      if ((typeof == 0) | (typeof == 2)) indic.nb.int <- 0 # 0 is splines ; 2 is weibull
+
+      if (sum(as.double(varT))==0) nvarT <- 0
+      if (sum(as.double(varY))==0) nvarY <- 0
+    if(TwoPart) if (sum(as.double(varB))==0) nvarB <- 0
+     
+# np is total number of parameters (including knots locations for splines baseline hazard (or weibull parameters);
+# fixed parameters asociated to covariates; error term; variance and covariance of random effects and association parameter(s))
     np <- switch(as.character(typeof),
                  "0"=((as.integer(n.knots) + 2) + as.integer(nvar) + 1 + ne_re + netadc  ),
                  "2"=(2 + nvar + 1  + ne_re + netadc ))
@@ -1338,75 +1794,124 @@
       cat("Be patient. The program is computing ... \n")
     }
     
+    # call joint_longi.f90
+  
+  # nsujet0=1 (used for recurrent events models)
+  # nsujety0=nsujety = number of longi observations
+  # ng0=ng = number of individuals
+  # nz0=n.knots = number of knots for splines baseline hazard
+  # k0=c(0,kappa) = smoothing parameter (= 0 for Rec ; kappa for survival)
+  # tt00=0 (recurrent)
+  # tt10=0 (recurrent)
+  # ic0=0 (recurrent)
+  # groupe0=0 (recurrent)
+  # tt0dc0=tt0dc = always 0 for survival
+  # tt1dc0=tt1dc = time-to-death
+  # icdc0=cens = censoring indicator
+  # link0=c(link0,0) = number of link parameters (death and recurrent)
+  # yy0=Y = biomarker values
+  # groupey0=clusterY = id for longi dataset
+  # nb0=nRE = number of random effects
+  # matzy0=matzy = random effects covariates matrix
+  # cag0=cag = censoring indicator and threshold
+  # nva10=1 = (recurrent)
+  # vax0=matrix(0) = (recurrent)
+  # nva20=nvarT = number of fixed effects for survival
+  # vaxdc0=varT = matrix of covariates for survival
+  # nva30=nvarY = number of fixed effects in longi
+  # vaxy0=varY = matrix of covariates for longi
+  # noVar=c(0,noVarT,noVarY) = indicator of no covariates for each part
+  # maxit0=maxit
+  # np=np = total numnber of parameters (including knots,etc)
+  # neta0=c(netadc,0) = number of association parameters (survival, recurrent)
+  # b=Beta = initial vector of parameters (knots, Eta, error, R.E., F.E.)
+  # H_hessOut=matrix(0,nrow=np,ncol=np) = empty hessian matrix 
+  # HIHOut=matrix(0,nrow=np,ncol=np) = empty HIH matrix
+  # EPS=c(LIMparam,LIMlogl,LIMderiv) = convergence threshold for Marquardt
+  # GH=c(as.integer(GH),as.integer(n.nodes)) = indicator of gauss-hermite (0=standard,1=PA,2=hrmsym) and nodes number
+  # paGH=cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)) = matrix of pseudo-adaptive gauss-hermite initialization from LME
+  
+
+  if(!TwoPart){ # initialize TwoPart variables if not activated
+    Binary <- rep(0, length(nsujety))
+    nsujetB=0
+    clusterB <- 0
+    matzB <- matrix(as.double(0),nrow=1,ncol=1)
+    nvarB <- 0
+    varB <- matrix(as.double(0),nrow=1,ncol=1)
+    nREB <- 0
+    noVarB <- 1
+  }
+
     
-    
-    ans <- .Fortran(C_joint_longi,
-                    as.integer(1),
-                    as.integer(nsujety),
-                    as.integer(ng),
-                    as.integer(n.knots),
-                    k0=as.double(c(0,kappa)), # joint avec generalisation de strate
-                    as.double(0),
-                    as.double(0),
-                    as.integer(0),
-                    as.integer(0),
-                    as.double(tt0dc),
-                    as.double(tt1dc),
-                    as.integer(cens),
-                    link0 = as.integer(c(link0,0)),
-                    yy0 = as.double(Y),
-                    groupey0 = as.integer(clusterY),
-                    nb0 = as.integer(nRE),
-                    matzy0 =as.double(matzy),
-                    cag0 = as.double(cag),
-                    as.integer(1),
-                    matrix(as.double(0),nrow=1,ncol=1),
-                    as.integer(nvarT),
-                    as.double(varT),
-                    nva30 = as.integer(nvarY),
-                    vaxy0 = as.double(varY),
-                    noVar = as.integer(c(0,noVarT,noVarY)),
-                    ag0 = as.integer(1),
-                    as.integer(maxit),
-                    np=as.integer(np),
-                    neta0 = as.integer(c(netadc,0)),
-                    b=as.double(Beta),
-                    H=as.double(matrix(0,nrow=np,ncol=np)),
-                    HIH=as.double(matrix(0,nrow=np,ncol=np)),
-                    
-                    loglik=as.double(0),
-                    LCV=as.double(rep(0,2)),
-                    xR=as.double(matrix(0,nrow=1,ncol=1)),
-                    lamR=as.double(matrix(0,nrow=1,ncol=3)),
-                    xSuR=as.double(array(0,dim=100)),
-                    survR=as.double(array(0,dim=1)),
-                    xD=as.double(rep(0,100)),
-                    lamD=as.double(matrix(0,nrow=size1,ncol=3)),
-                    xSuD=as.double(xSuT),
-                    survD=as.double(matrix(0,nrow=size2,ncol=3)),
-                    as.integer(typeof),
-                    as.integer(equidistant),
-                    as.integer(c(1,size1,1,mt1)),###
-                    counts=as.integer(c(0,0,0)),
-                    ier_istop=as.integer(c(0,0)),
-                    paraweib=as.double(rep(0,4)),
-                    MartinGale=as.double(matrix(0,nrow=ng,ncol=3+nRE)),###
-                    ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
-                    Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
-                    
-                    linear.pred=as.double(rep(0,ng)),
-                    lineardc.pred=as.double(rep(0,as.integer(ng))),
-                    zi=as.double(rep(0,(n.knots+6))),
-                    
-                    paratps=as.integer(c(0,0,0)),#for future developments
-                    as.integer(c(0,0,0)),#for future developments
-                    BetaTpsMat=as.double(matrix(0,nrow=101,ncol=1+4*0)), #for future developments
-                    BetaTpsMatDc=as.double(matrix(0,nrow=101,ncol=1+4*0)),#for future developments
-                    BetaTpsMatY = as.double(matrix(0,nrow=101,ncol=1+4*0)),#for future developments
-                    EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
-                    GH = c(as.integer(GH),as.integer(n.nodes)),
-                    paGH = data.matrix(cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)))
-    )#,
+        ans <- .Fortran(C_joint_longi,
+			VectNsujet = as.integer(c(1,nsujety, nsujetB)),
+			ng0 = as.integer(ng),
+			nz0 = as.integer(n.knots),
+			k0 = as.double(c(0,kappa)), # joint avec generalisation de strate
+			tt00 = as.double(0),
+			tt10 = as.double(0),
+		    ic0 = as.integer(0),
+		    groupe0 = as.integer(0),
+			tt0dc0 = as.double(tt0dc),
+			tt1dc0 = as.double(tt1dc),
+			icdc0 = as.integer(cens),
+		    link0 = as.integer(c(link0,0)),
+		    yy0 = as.double(Y),
+            bb0 = as.double(Binary),
+		    groupey0 = as.integer(clusterY),
+            groupeB0 = as.integer(clusterB),
+		    Vectnb0 = as.integer(c(nRE, nREB)),
+		    matzy0 =as.double(matzy),
+            matzB0 =as.double(matzB),
+		    cag0 = as.double(cag),
+            VectNvar=as.integer(c(1, nvarT, nvarY, nvarB)),
+            vax0 = matrix(as.double(0),nrow=1,ncol=1),
+			vaxdc0 = as.double(varT),
+			vaxy0 = as.double(varY),
+            vaxB0 = as.double(varB),
+			noVar = as.integer(c(0,noVarT,noVarY, noVarB)),
+			ag0 = as.integer(1),
+			maxit0 = as.integer(maxit),
+			np=as.integer(np),
+			neta0 = as.integer(c(netadc,0)),
+			b=as.double(Beta),
+			H=as.double(matrix(0,nrow=np,ncol=np)),
+			HIH=as.double(matrix(0,nrow=np,ncol=np)),
+
+			loglik=as.double(0),
+			LCV=as.double(rep(0,2)),
+			xR=as.double(matrix(0,nrow=1,ncol=1)),
+			lamR=as.double(matrix(0,nrow=1,ncol=3)),
+			xSuR=as.double(array(0,dim=100)),
+			survR=as.double(array(0,dim=1)),
+			xD=as.double(rep(0,100)),
+			lamD=as.double(matrix(0,nrow=size1,ncol=3)),
+			xSuD=as.double(xSuT),
+			survD=as.double(matrix(0,nrow=size2,ncol=3)),
+			as.integer(typeof),
+			as.integer(equidistant),
+			as.integer(c(1,size1,1,mt1)),###
+			counts=as.integer(c(0,0,0)),
+			ier_istop=as.integer(c(0,0)),
+			paraweib=as.double(rep(0,4)),
+			MartinGale=as.double(matrix(0,nrow=ng,ncol=3+nRE)),###
+			ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
+			Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
+
+			linear.pred=as.double(rep(0,ng)),
+			lineardc.pred=as.double(rep(0,as.integer(ng))),
+			zi=as.double(rep(0,(n.knots+6))),
+
+			paratps=as.integer(c(0,0,0)),#for future developments
+			as.integer(c(0,0,0)),#for future developments
+			BetaTpsMat=as.double(matrix(0,nrow=101,ncol=1+4*0)), #for future developments
+			BetaTpsMatDc=as.double(matrix(0,nrow=101,ncol=1+4*0)),#for future developments
+			BetaTpsMatY = as.double(matrix(0,nrow=101,ncol=1+4*0)),#for future developments
+			EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
+			GH = c(as.integer(GH),as.integer(n.nodes)),
+			paGH = data.matrix(cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)))
+			)#,
     #PACKAGE = "frailtypack") #62 arguments
     
     MartinGale <- matrix(ans$MartinGale,nrow=ng,ncol=3+nRE)
@@ -1439,7 +1944,8 @@
     
     fit$n.deaths <- ans$counts[3]
     fit$n.measurements <- nsujety
-    
+    fit$n.measurementsB <- nsujetB # add TwoPart    
+
     if(as.character(typeof)=="0"){
       fit$logLikPenal <- ans$loglik
     }else{
@@ -1472,6 +1978,7 @@
     {
       fit$coef <- ans$b[(np - nvar + 1):np]
       noms <- c(factor.names(colnames(X_T)),factor.names(colnames(X_L)))
+      if(TwoPart) noms <-  c(factor.names(colnames(X_T)),factor.names(colnames(X_L)),factor.names(colnames(X_B))) # add TwoPart
       #  if (timedep == 1){
       #          while (length(grep("timedep",noms))!=0){
       #                  pos <- grep("timedep",noms)[1]
@@ -1484,7 +1991,11 @@
       
     }
     
-    fit$names.re <- names.matzy
+  if(TwoPart==1){
+  fit$names.re <- c(names.matzy, names.matzB) # add TwoPart
+  }else{
+  fit$names.re <- names.matzy
+  }
     
     
     temp1 <- matrix(ans$H, nrow = np, ncol = np)
@@ -1506,7 +2017,11 @@
     fit$varH <- temp1[(np  - nvar +1):np, (np  - nvar +1 ):np]
     fit$varHIH <- temp2[(np - nvar +1):np, (np - nvar +1):np]
     
-    noms <- c("MeasurementError","B1",factor.names(colnames(X_T)),factor.names(colnames(X_L)))
+    if(TwoPart==1){
+  noms <- c("MeasurementError","B1",factor.names(colnames(X_T)),factor.names(colnames(X_L)),factor.names(colnames(X_B))) # add TwoPart
+  }else{
+  noms <- c("MeasurementError","B1",factor.names(colnames(X_T)),factor.names(colnames(X_L)))
+  }
     
     #     if (timedep == 1){ # on enleve les variances des parametres des B-splines
     #              while (length(grep("timedep",noms))!=0){
@@ -1516,10 +2031,11 @@
     #                      fit$varHIH <- fit$varHIH[-(pos:(pos-1)),-(pos:(pos-1))]
     #              }
     #      }
-    fit$nvar<-c(nvarT,nvarY)
+    fit$nvar<-c(nvarT,nvarY, nvarB) # modif TwoPart
     fit$formula <- formula #formula(Terms)
     fit$formula.LongitudinalData <- formula.LongitudinalData #formula(TermsY)
-    
+    fit$formula.Binary <- formula.Binary # add TwoPart
+
     fit$xD <- matrix(ans$xD, nrow = size1, ncol = 1)
     
     fit$lamD <- array(ans$lamD, dim = c(size1,3,1))
@@ -1542,10 +2058,11 @@
     
     fit$noVarEnd <- noVarT
     fit$noVarY <- noVarY
-    
+    fit$noVarB <- noVarB # add TwoPart
     
     fit$nvarEnd <- nvarT
     fit$nvarY <- nvarY
+    fit$nvarB <- nvarB # add TwoPart
     fit$istop <- ans$ier_istop[2]
     
     fit$shape.weib <- ans$paraweib[2]#ans$shape.weib
@@ -1604,6 +2121,37 @@
     fit$ne_re <- nRE
     fit$netadc<-netadc
     
+    
+    
+    
+#================================> For the Binary
+#========================= Test de Wald
+if(TwoPart){
+        if ((length(vec.factorB) > 0)){
+                Beta <- ans$b[(np-nvar + 1):np]
+                VarBeta <- fit$varH
+                nfactorB <- length(vec.factorB)
+                p.waldB <- rep(0,nfactorB)
+                
+                if(fit$istop == 1) fit$global_chisq_B <- waldtest(N=nvarB,nfact=nfactorB,place=ind.placeB,
+                modality=occurB,b=Beta,Varb=VarBeta,Lfirts=(nvarT+nvarY),Ntot=nvar)# modif TwoPart
+                else fit$global_chisq_B <- 0
+                
+                fit$dof_chisq_B <- occurB
+                fit$global_chisq.test_B <- 1
+# Calcul de pvalue globale
+                for(i in 1:length(vec.factorB)){
+                        p.waldB[i] <- signif(1 - pchisq(fit$global_chisq_B[i], occurB[i]), 3)
+                }
+                fit$p.global_chisq_B <- p.waldB
+                fit$names.factor_B <- vec.factorB
+        }else{
+                fit$global_chisq.test_B <- 0
+
+        }
+}
+
+  
     #================================> For the longitudinal
     #========================= Test de Wald
     
@@ -1613,8 +2161,9 @@
       nfactor <- length(vec.factorY)
       p.wald <- rep(0,nfactor)
       
-      if(fit$istop == 1) fit$global_chisq <- waldtest(N=nvarY,nfact=nfactor,place=ind.placeY,modality=occurY,b=Beta,Varb=VarBeta,Lfirts=nvarT,Ntot=nvar)
-      else fit$global_chisq <- 0
+    if(fit$istop == 1) fit$global_chisq <- waldtest(N=nvarY,nfact=nfactor,place=ind.placeY,
+    modality=occurY,b=Beta,Varb=VarBeta,Lfirts=nvarT, Llast=nvarB,Ntot=nvar)# modif TwoPart
+    else fit$global_chisq <- 0
       
       fit$dof_chisq <- occurY
       fit$global_chisq.test <- 1
@@ -1642,7 +2191,8 @@
       #}
       nfactor <- length(vec.factorT)
       p.waldT <- rep(0,nfactor)
-      fit$global_chisq_d <- waldtest(N=nvarT,nfact=nfactor,place=ind.placeT,modality=occurT,b=Beta,Varb=VarBeta,Llast=nvarY,Ntot=nvar)
+      fit$global_chisq_d <- waldtest(N=nvarT,nfact=nfactor,place=ind.placeT,
+      modality=occurT,b=Beta,Varb=VarBeta,Llast=(nvarY+nvarB),Ntot=nvar) # modif TwoPart
       fit$dof_chisq_d <- occurT
       fit$global_chisq.test_d <- 1
       # Calcul de pvalue globale
@@ -1671,6 +2221,7 @@
     fit$joint.clust <- 1
     fit$methodGH <- method.GH
     fit$n.nodes <- n.nodes
+    fit$TwoPart <- TwoPart # add TwoPart
     class(fit) <- "longiPenal"
     
     if (print.times){

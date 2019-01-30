@@ -49,8 +49,11 @@
             double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
             double precision,dimension(:),allocatable :: matv
             double precision,dimension(nva3,nva3) :: element
-    
-    
+        double precision,dimension(:,:),allocatable :: mat_sigmaB, varcov_marg_invB ! add TwoPart
+        double precision,dimension(:),allocatable :: matvB ! add TwoPart
+        double precision,dimension(nvaB,nvaB) :: elementB ! add TwoPart
+        
+        
             npp = np
         eps_s = 1.d-7
     !    print*,'debut funcpa'
@@ -91,9 +94,6 @@
         end do
         end if
     
-    
-    
-
         if(typeJoint.eq.3) then
             sigmav = bh(np-nva-nb_re-1-netadc - netar-1)
             alpha = bh(np-nva-nb_re-1-netadc - netar)
@@ -210,8 +210,8 @@
     
     
     !-------------fin strate2
-    
-    
+        
+
     !    print*,ndatemaxdc
     !    print*,'ut2',ut2
     
@@ -289,7 +289,7 @@
                 vet2 = 0.d0
                 do j=1,nva2
     
-                    vet2 =vet2 + bh(np-nva3-nva2+j)*dble(vedc(k,j))
+                    vet2 =vet2 + bh(np-nva3-nva2-nvaB+j)*dble(vedc(k,j))
     
                 end do
                 vet2 = dexp(vet2)
@@ -313,21 +313,30 @@
                 Rdc_res(k) = ut2(nt1dc(k))!*vet2
     
         end do
-    
-    
+
+        
     
     !**************INTEGRALES ****************************
     
         if(nea.ge.1) then
             it = 0
+            if(TwoPart.eq.1) then
+            itB=0
+            end if
             it_rec = 1
             epsabs = 1.d-100
             epsrel = 1.d-100
             restar = 0
             nf2 = nf
             nmes_o=0
+            if(TwoPart.eq.1) then
+            nmes_oB=0
+            end if
             integrale4 = 0.d0
-                            sum_mat= 0.d0
+            sum_mat= 0.d0
+            if(TwoPart.eq.1) then
+            sum_matB=0.d0
+            end if
     
             do ig=1,ng
     
@@ -339,7 +348,13 @@
                 nmescurr = nmesrec(ig)
                 nmescurr1 = nmesrec1(ig)
                 it_cur = it
-    
+                if(TwoPart.eq.1)then
+                it_curB = itB !add TwoPart
+
+                Bcurrent  = 0.d0 
+                nmescurB =nmesB(ig)
+                allocate(mat_sigmaB(nmescurB,nmescurB))
+                end if
                     allocate(mat_sigma(nmescur,nmescur))
     
                 x2 = 0.d0
@@ -360,6 +375,16 @@
                             nmes_o(ig) = nmescur
                         end if
                     end do
+    
+    ! add TwoPart
+    if(TwoPart.eq.1) then
+        if(nmescurB.gt.0) then
+            do i= 1,nmescurB
+                Bcurrent(i) = bb(itB+i)
+                nmes_oB(ig) = nmescurB
+            end do
+        end if
+    end if
     
                 res1cur = 0.d0
                 res2cur = 0.d0
@@ -402,13 +427,47 @@
                     end do
                 end do
     
+    
+       ! add TwoPart  
+    if(TwoPart.eq.1) then
+        Z1B=0.d0
+        l=0    
+        if(nmescurB.gt.0) then
+            do k=1,nbB
+                l=l+1
+                do i=1,nmescurB
+                    Z1B(i,l)=dble(ziB(itB+i,k)) ! random effects covariates
+                end do
+            end do
+        else
+            do i=1,nmescurB
+                Z1B(i,1)=0.d0
+            end do
+        end if
+        XB=0.d0
+        l=0    
+        do k=1,nvaB
+            l = l + 1
+            do j=1,nmescurB
+                XB(j,l) = dble(veB(itB+j,k)) ! fixed effects covariates
+            end do
+        end do
+    end if          
+
+    
             varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nb1), &
                     MATMUL(Ut(1:nb1,1:nb1),Utt(1:nb1,1:nb1))),transpose(ziy((it+1):(it+nmescur),1:nb1)))+ &
                     mat_sigma
     
+                !add TwoPart
+            if(TwoPart.eq.1)then
+                varcov_margB((itB+1):(itB+nmescurB),1:nmescurB) =Matmul( MATMUL(ziB((itB+1):(itB+nmescurB),1:nbB), &
+                MATMUL(Ut(nby+1:nb1,nby+1:nb1),Utt(nby+1:nb1,nby+1:nb1))),transpose(ziB((itB+1):(itB+nmescurB),1:nbB)))
+            end if
+    
             allocate(matv(nmescur*(nmescur+1)/2),varcov_marg_inv(nmescur,nmescur))
             matv = 0.d0
-                            do j=1,nmescur
+        do j=1,nmescur
         do k=j,nmescur
         jj=j+k*(k-1)/2
         matv(jj)=varcov_marg(it+j,k)
@@ -417,8 +476,7 @@
         end do
         ier = 0
         eps = 1.d-10
-    
-    
+
     
             call dsinvj(matv,nmescur,eps,ier)
     
@@ -445,13 +503,67 @@
     
     
                             deallocate(matv,varcov_marg_inv)
-    
-    
-    
+       
             mu = 0.d0
-            mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3+1):np))
+            if(TwoPart.eq.0) then
+                mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3+1):np))
+            else if(TwoPart.eq.1) then
+                mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3-nvaB+1):(np-nvaB)))
+            end if
             xea = 0.d0
-    
+            
+    !       open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+    !    write(2,*)'nb1',nb1
+    !    write(2,*)'typeJoint',typeJoint
+    !    write(2,*)'element',element
+    !    write(2,*)'varcov_marg',varcov_marg
+    !    write(2,*)'X2',X2
+    !    write(2,*)'bh',bh
+    !    write(2,*)'mu',mu
+    !    write(2,*)' ut1', ut1
+    !    write(2,*)'dut1',dut1
+    !    write(2,*)'ut2',ut2
+    !    write(2,*)'dut2',dut2
+    !   close(2)
+       
+    if(TwoPart.eq.1) then
+        allocate(matvB(nmescurB*(nmescurB+1)/2),varcov_marg_invB(nmescurB,nmescurB))
+        do j=1,nmescurB
+            do k=j,nmescurB
+                jj=j+k*(k-1)/2
+                matvB(jj)=varcov_margB(itB+j,k)
+            end do
+        end do   
+        call dsinvj(matvB,nmescurB,eps,ier)
+        varcov_marg_invB=0.d0
+        do j=1,nmescurB
+            do k=1,nmescurB
+                if (k.ge.j) then
+                    varcov_marg_invB(j,k)=matvB(j+k*(k-1)/2)
+                else
+                    varcov_marg_invB(j,k)=matvB(k+j*(j-1)/2)
+                end if
+            end do
+        end do    
+
+
+        
+        elementB =  Matmul(Matmul(Transpose(veB((itB+1):(itB+nmescurB),1:nvaB)), &
+            varcov_marg_invB(1:nmescurB,1:nmescurB)), veB((itB+1):(itB+nmescurB),1:nvaB))
+            
+        do j=1,nvaB
+            do k=1,nvaB
+                sum_matB(j,k) = sum_matB(j,k) +  elementB(j,k)
+            end do
+        end do
+
+        
+        muB = 0.d0
+        muB(1:nmescurB,1) = matmul(XB(1:nmescurB,1:(nvaB)),bh((np-nvaB+1):np))
+        deallocate(matvB,varcov_marg_invB)
+    end if    
+
+
             ut2cur = ut2(nt1dc(ig))
     
                     choix = 3
@@ -462,6 +574,8 @@
                     call gauherJ22(int,choix,nodes_number)
                 else if(typeJoint.eq.2.and.nb1.eq.3) then 
                     call gauherJ23(int, choix, nodes_number)
+                else if(typeJoint.eq.2.and.nb1.eq.4) then
+                    call gauherJ24(int, choix, nodes_number)
                 else if(typeJoint.eq.3.and.nb1.eq.1) then
                     call gauherJ31(int,choix,nodes_number)
                 else if(typeJoint.eq.3.and.nb1.eq.2) then
@@ -478,6 +592,9 @@
 
             it_rec = it_rec + nmescurr
             it = it + nmescur
+            if(TwoPart.eq.1) then
+                itB = itB + nmescurB
+            end if
     
             if(integrale4(ig).gt.1.E+30) then
                 integrale4(ig) = 1.E+30
@@ -491,6 +608,9 @@
     
     
         mu = 0.d0
+    if(TwoPart.eq.1) then
+        muB = 0.d0
+    end if
         !call gauherJ(int,choix)
             call  hrmsym( nea, nf2, genz(1), genz(2) ,vraistot_splines, epsabs, &
             epsrel, restar, result, abserr2, neval, ifail, work)
@@ -502,7 +622,9 @@
     
     
             it = it + nmescur
-    
+        if(TwoPart.eq.1) then
+            itB = itB + nmescurB
+        end if
         if(integrale4(ig).gt.1.E+30) then
         integrale4(ig) = 1.E+30
         end if
@@ -510,6 +632,10 @@
         !    end if
     
         deallocate(mat_sigma)
+        if(TwoPart.eq.1) then
+            deallocate(mat_sigmaB)
+        end if
+
         end do
     
     !************* FIN INTEGRALES **************************
@@ -520,10 +646,24 @@
         res = 0.d0
         do k=1,ng
             sum=0.d0
-            if(nb1.ge.1) then
-                nmescur = nmesy(k)
-            else
-                nmescur = 0
+            if(TwoPart.eq.0) then
+                if(nb1.ge.1) then
+                    nmescur = nmesy(k)
+                else
+                    nmescur = 0
+                end if
+            else if(TwoPart.eq.1) then
+                if(nby.ge.1) then ! modif TwoPart
+                    nmescur = nmesy(k)
+                else
+                    nmescur = 0
+                end if
+                
+                if(nbB.ge.1) then ! modif TwoPart
+                    nmescurB = nmesB(k)
+                else
+                    nmescurB = 0
+                end if
             end if
     !*************************************************************************
     !     vraisemblnce

@@ -4,6 +4,7 @@
     integer :: ndatemax,ndatemaxdc,nzmax
     integer :: nssgbyg,nssgmax
     integer :: nboumax,NSIMAX,NOBSMAX
+    integer :: nsujetBmax ! add TwoPart
     save
     end module tailles
 
@@ -74,6 +75,9 @@
                 integer,save:: it_rec
                 double precision:: ut2cur,frailpol,frailpol2,frailpol3,frailpol4
                 double precision,dimension(:),allocatable,save :: res1cur,res3cur,res2cur
+    double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,x2Bcur,mu1B,z1Bcur,z1Ycur ! add TwoPart
+    double precision,dimension(:),allocatable,save :: Bcurrent, current_meanRaw ! add TwoPart
+    integer,save::nmescurB, it_curB !add TwoPart
     end module donnees_indiv
 
 
@@ -227,6 +231,14 @@
         double precision,dimension(:),allocatable,save::v_jf,varv_jf
         integer :: methodGH,nodes_number,initGH
         integer :: res_ind,it,n_wezly
+        
+    ! add TwoPart
+        integer,save :: TwoPart, nsujetB, nbB,nby, maxmesB, nvaB, compteur !(remove!)
+        double precision,dimension(:),allocatable,save::bb ! add TwoPart
+        double precision,dimension(:,:),allocatable,save :: ziB,varcov_margB, sum_matB
+    double precision,dimension(:,:),allocatable,save::veB
+        integer,dimension(:),allocatable,save:: nmesB,nmes_oB,groupeeB !add TwoPart
+        integer :: itB
     end module comon
 !=====================================================================================
 
@@ -244,6 +256,7 @@
     double precision,dimension(:,:),allocatable,save::variable
     double precision,dimension(:),allocatable,save::Binit
     double precision,dimension(:,:),allocatable,save::ve1,ve2,ve3
+    double precision,dimension(:,:),allocatable,save::ve4 ! add TwoPart
     end module comongroup
 
     module jointmods
@@ -302,8 +315,7 @@
            integer,save :: nig_mc,np_mc
     double precision,save :: sig2_mc,res1_mc
       double precision,dimension(:),allocatable,save::mu1_res
-              
-
+     double precision,dimension(:,:),allocatable,save::ZetB ! add TwoPart
     end module residusM
 
     module splines
@@ -315,7 +327,9 @@
     double precision,dimension(:,:),allocatable,save::HIH,IH,HI
     double precision,dimension(:,:),allocatable,save::BIAIS
     double precision,dimension(:),allocatable,save:: vax,vaxdc,vaxmeta,vaxy
+    double precision,dimension(:),allocatable,save:: vaxB ! add TwoPart
     integer,dimension(:),allocatable,save::filtre,filtre2,filtre3, filtre4
+    integer,dimension(:),allocatable,save::filtreB ! add TwoPart
     integer,save::ver
 
     end module splines
