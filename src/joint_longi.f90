@@ -9,9 +9,9 @@
     
     
     !--entC*te pour fortran
-        subroutine joint_longi(nsujet0,nsujety0,ng0,nz0,k0,tt00,tt10,ic0,groupe0      &
-        ,tt0dc0,tt1dc0,icdc0,link0,yy0,groupey0,nb0,matzy0,cag0&
-        ,nva10,vax0,nva20,vaxdc0,nva30,vaxy0,noVar,ag0,maxit0   &
+        subroutine joint_longi(VectNsujet,ng0,nz0,k0,tt00,tt10,ic0,groupe0      &
+        ,tt0dc0,tt1dc0,icdc0,link0,yy0,bb0,groupey0,groupeB0,Vectnb0,matzy0,matzB0 &
+        ,cag0,VectNvar,vax0,vaxdc0,vaxy0,vaxB0,noVar,ag0,maxit0   &
         ,np,neta0,b,H_hessOut,HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out &
         ,typeof0,equidistant,mtaille &
         ,counts,ier_istop,paraweib &
@@ -36,26 +36,34 @@
     !AD:
         implicit none
     
+    integer,dimension(3), intent(in)::VectNsujet
+    integer,dimension(4), intent(in)::VectNvar
+
         integer::maxit0,npinit,nvatmp,indic_alphatmp,mt1,mt2,mt11,mt12 !nn
         integer,dimension(4),intent(in)::mtaille
-        integer,intent(in)::nsujet0,nsujety0,ng0,nz0,nva10,nva20,nva30,ag0,nb0
+        integer,intent(in)::ng0,nz0,ag0
+        integer,dimension(2),intent(in)::Vectnb0
         integer,dimension(2),intent(in)::link0
     double precision,dimension(nz0+6),intent(out)::ziOut
-        integer::np,equidistant
+        integer::np,equidistant,nva10,nva20,nva30
         integer,dimension(2),intent(in) :: neta0
-        integer,dimension(nsujet0),intent(in)::groupe0,ic0
-        integer,dimension(nsujety0),intent(in) :: groupey0
+        integer,dimension(VectNsujet(1)),intent(in)::groupe0,ic0
+        integer,dimension(VectNsujet(2)),intent(in) :: groupey0
+        integer,dimension(VectNsujet(3)),intent(in) :: groupeB0 ! add TwoPaart
         integer,dimension(ng0),intent(in)::icdc0
         double precision,dimension(2),intent(in) :: cag0
     
         double precision,dimension(ng0)::tt0dc0,tt1dc0
-        double precision,dimension(nsujet0)::tt00,tt10 !! rajout
+        double precision,dimension(VectNsujet(1))::tt00,tt10 !! rajout
         double precision,dimension(2)::k0
-        double precision,dimension(nsujet0,nva10),intent(in):: vax0
-        double precision,dimension(ng0,nva20),intent(in):: vaxdc0
-        double precision,dimension(nsujety0,nva30),intent(in):: vaxy0
-        double precision,dimension(nsujety0,nb0) :: matzy0
-        double precision,dimension(nsujety0) :: yy0
+        double precision,dimension(VectNsujet(1),VectNvar(1)),intent(in):: vax0
+        double precision,dimension(ng0,VectNvar(2)),intent(in):: vaxdc0
+        double precision,dimension(VectNsujet(2),VectNvar(3)),intent(in):: vaxy0
+        double precision,dimension(VectNsujet(3),VectNvar(4)),intent(in):: vaxB0 ! add TwoPart
+        double precision,dimension(VectNsujet(2),(Vectnb0(1)-Vectnb0(2))) :: matzy0
+        double precision,dimension(VectNsujet(3),Vectnb0(2)) :: matzB0
+        double precision,dimension(VectNsujet(2)) :: yy0
+        double precision,dimension(VectNsujet(3)) :: bb0 !add TwoPart
         double precision,dimension(np,np)::H_hessOut,HIHOut
         double precision::resOut
         double precision,dimension(mtaille(1))::x1Out
@@ -64,13 +72,13 @@
         double precision,dimension(mtaille(3),3)::suOut
         double precision,dimension(mtaille(2),3)::lam2Out
         double precision,dimension(mtaille(4),3)::su2Out
-        integer::ss,sss
+        integer::ss,sss,nsujet0,nsujety0
         double precision,dimension(np):: b
         double precision,dimension(2),intent(out)::LCV
         double precision,dimension(2)::shapeweib,scaleweib
         double precision,dimension(4),intent(out)::paraweib
     
-        integer,dimension(3),intent(in)::noVar
+        integer,dimension(4),intent(in)::noVar ! modif TwoPart
         integer::noVar1,noVar2,noVar3!! rajout
         integer::cpt,cpt_dc,ni
         integer,dimension(2),intent(out)::ier_istop
@@ -84,7 +92,7 @@
     !AD: add for new marq
         double precision::ca,cb,dd
         double precision,external::funcpajLongisplines,funcpajLongiweib
-    
+
         double precision,external::funcpaj_tps,funcpaG_tps
         double precision,dimension(100)::xSu1,xSu2
     
@@ -92,38 +100,63 @@
     !predictor
         double precision,dimension(ng0)::Resmartingale,Resmartingaledc!,frailtypred!,frailtyvar
     
-        double precision,dimension(ng0,(nb0+1))::re_pred
-       double precision,dimension(ng0,(2+nb0+1)),intent(out)::MartinGales
-        double precision,dimension(nsujety0,2),intent(out):: Pred_y0
-       double precision,dimension(nsujety0,4),intent(out):: ResLongi
-        double precision,dimension(nsujety0) :: ResLongi_cond0,ResLongi_marg0,&
+        double precision,dimension(ng0,(Vectnb0(1)+1))::re_pred
+       double precision,dimension(ng0,(2+Vectnb0(1)+1)),intent(out)::MartinGales
+        double precision,dimension(VectNsujet(2),2),intent(out):: Pred_y0
+       double precision,dimension(VectNsujet(2),4),intent(out):: ResLongi
+        double precision,dimension(VectNsujet(2)) :: ResLongi_cond0,ResLongi_marg0,&
                             ResLongi_chol0,ResLongi_cond_st0
     
         double precision,external::funcpajres,funcpajres_log,funcpajres_biv,funcpajres_tri
-        double precision,dimension(nsujet0),intent(out)::linearpred
+        double precision,dimension(VectNsujet(1)),intent(out)::linearpred
         double precision,dimension(ng0),intent(out)::linearpreddc
-        double precision,dimension(1,nva10)::coefBeta
-        double precision,dimension(1,nva20)::coefBetadc
-        double precision,dimension(1,nva30)::coefBetaY
+        double precision,dimension(1,VectNvar(1))::coefBeta
+        double precision,dimension(1,VectNvar(2))::coefBetadc
+        double precision,dimension(1,VectNvar(3))::coefBetaY
+        double precision,dimension(1,VectNvar(4))::coefBetaB ! add TwoPart
         double precision::coefBeta2
-        double precision,dimension(1,nsujet0)::XBeta
-        double precision,dimension(1,nsujety0)::XBetaY
+        double precision,dimension(1,VectNsujet(1))::XBeta
+        double precision,dimension(1,VectNsujet(2))::XBetaY
+        double precision,dimension(1,VectNsujet(3))::XBetaB ! add TwoPart
         double precision,dimension(1,ng0)::XBetadc    
     
         integer::ngtemp
     
         integer,dimension(3),intent(in)::paratps
-        integer,dimension(nva10+nva20+nva30),intent(in)::filtretps0
-        double precision,dimension(0:100,0:4*sum(filtretps0(1:nva10)))::BetaTpsMat !!! a refaire
-        double precision,dimension(0:100,0:4*sum(filtretps0(nva10+1:nva10+nva20)))::BetaTpsMatDc
-        double precision,dimension(0:100,0:4*sum(filtretps0(nva10+nva20+1:nva10+nva20+nva30)))::BetaTpsMatY
+        integer,dimension(VectNvar(1)+VectNvar(2)+VectNvar(3)),intent(in)::filtretps0
+        double precision,dimension(0:100,0:4*sum(filtretps0(1:VectNvar(1))))::BetaTpsMat !!! a refaire
+        double precision,dimension(0:100,0:4*sum(filtretps0(VectNvar(1)+1:VectNvar(1)+VectNvar(2))))::BetaTpsMatDc
+        double precision,dimension(0:100,0:4*sum( &
+        filtretps0(VectNvar(1)+VectNvar(2)+1:VectNvar(1)+VectNvar(2)+VectNvar(3))))::BetaTpsMatY
         double precision,dimension(paratps(2)+paratps(3))::basis
-        double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : on recupere les valeurs obtenues lors de l'algorithme a la fin
+        double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : 
+        ! on recupere les valeurs obtenues lors de l'algorithme a la fin
         integer,dimension(2),intent(in):: GH
-        double precision,dimension(ng0,nb0+1+nb0 + (nb0*(nb0-1))/2),intent(in):: paGH
+        double precision,dimension(ng0,Vectnb0(1)+1+Vectnb0(1) + (Vectnb0(1)*(Vectnb0(1)-1))/2),intent(in):: paGH
             
         character(len=100)::bar
     
+    
+   !add TwoPart
+   integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
+   
+
+    nsujet0=VectNsujet(1)
+    nsujety0=VectNsujet(2)
+    nsujetB0=VectNsujet(3)
+            
+    nb0=Vectnb0(1)
+    nbB0=Vectnb0(2)
+        
+        
+    nva10=VectNvar(1)        
+    nva20=VectNvar(2)
+    nva30=VectNvar(3)
+    nvaB0=VectNvar(4)
+    
+    TwoPart=0
+    if(nsujetB0.ne.0) TwoPart=1
+
     
         mt1=mtaille(1)
         mt2=mtaille(2)
@@ -140,6 +173,8 @@
             istop = ier_istop(2)
     
         allocate(vaxdc(nva20),vaxy(nva30))
+        if(TwoPart.eq.1) allocate(vaxB(nvaB0)) ! add TwoPart
+        
             if(nsujet0.gt.1)allocate(vax(nva10))
         timedep = paratps(1)
         nbinnerknots = paratps(2)
@@ -242,6 +277,8 @@
         nsujet=nsujet0
         nsujetymax = nsujety0
         nsujety = nsujety0
+        if(TwoPart.eq.1) nsujetB = nsujetB0 ! ADD TwoPart
+        if(TwoPart.eq.1) nsujetBmax = nsujetB0 ! ADD TwoPart
     
     !Al
         if(typeJoint.ne.2) allocate(t0(nsujetmax),t1(nsujetmax),c(nsujetmax),stra(nsujetmax),g(nsujetmax))
@@ -258,10 +295,13 @@
         linkidyd = link0(1)
         if(typeJoint.eq.3)linkidyr = link0(2)
         yy = yy0
+        if(TwoPart.eq.1) allocate(bb(nsujetBmax))!TwoPart
+        if(TwoPart.eq.1) bb = bb0 ! binary values for TwoPart
         nb_re = nb0 + INT((nb0*(nb0-1))/2.d0)
         netadc = neta0(1)
         netar = neta0(2)
-    
+        nby = nb0-nbB !add TwoPart
+
             ! Parametres pour GH pseudo-adaptative
             allocate(etaydc(netadc),etayr(netar),b_lme(ng,nb1),invBi_cholDet(ng),invBi_chol(ng,nb_re))
                     do i=1,ng
@@ -284,7 +324,10 @@
                             indic_ALPHA = 0
             end if
     
-        allocate (Ut(nea,nea),Utt(nea,nea),ziy(nsujety0,nb1),sum_mat(nva30,nva30))
+        if(TwoPart.eq.0) allocate (Ut(nea,nea),Utt(nea,nea),ziy(nsujety0,nb1),sum_mat(nva30,nva30))
+        if(TwoPart.eq.1) allocate (Ut(nea,nea),Utt(nea,nea),sum_mat(nva30,nva30),ziy(nsujety0,nby))!modif TwoPart
+        if(TwoPart.eq.1) allocate (ziB(nsujetB0, nbB),sum_matB(nvaB0,nvaB0)) ! add TwoPart (+modif ziy)
+        if(TwoPart.eq.1) ziB = matzB0 ! binary random effects covariates ! add TwoPart 
     
         ziy = matzy0
     
@@ -298,7 +341,8 @@
         nmes_o = 0
         groupeey = groupey0
         groupee = groupe0
-    
+        if(TwoPart.eq.1) allocate(groupeeB(nsujetB),nmesB(ng),nmes_oB(ng)) !add TwoPart
+        if(TwoPart.eq.1) groupeeB = groupeB0 !add TwoPart
     
     
         if(typeJoint.ne.2) then
@@ -344,7 +388,26 @@
             end if
         end do
     
+    if(TwoPart.eq.1)then
+        nmesB = 1
+        i = 1
+        do j=2,nsujetB
+            if(groupeeB(j).eq.groupeeB(j-1))then
+                nmesB(i)=nmesB(i)+1 ! number of observations per individual (length=ng)
+            else
+                i = i+1
+            end if
+        end do
+        maxmesB=0
+        do i=1,ng
+            if (nmesB(i).gt.maxmesB) then
+                maxmesB=nmesB(i) ! looking for the maximum numnber of repeated measurement
+            end if
+        end do
+    end if
     
+        if(TwoPart.eq.1) allocate(varcov_margB(nsujetB,maxmesB))
+
     
         allocate(mu1_res(maxmesy))
         allocate(varcov_marg(nsujety,maxmesy))
@@ -386,18 +449,21 @@
             if(typeJoint.eq.2) nva1 = 0
         nva2=nva20
         nva3=nva30
+        nvaB=nvaB0 ! number of fixed effects in binary part (TwoPart)
     
         noVar1 = noVar(1)
         noVar2 = novar(2)
         noVar3 = noVar(3)
-    
-        nva = nva1 +  nva2 + nva3
+        noVarB = noVar(4)
+
+        nva = nva1 +  nva2 + nva3 + nvaB
         nvarmax=nva
         allocate(ve(nsujetmax,nvarmax),vedc(ngtemp,nvarmax),vey(nsujetymax,nvarmax))
         allocate(ve1(nsujetmax,nva10),ve2(ngtemp,nva2),ve3(nsujetymax,nva3))
         allocate(filtre(nva10),filtre2(nva20),filtre3(nva30))
-
-    
+        if(TwoPart.eq.1) allocate(ve4(nsujetBmax,nvaB), filtreB(nvaB0),veB(nsujetBmax,nvarmax))
+        if(TwoPart.eq.0) allocate(filtreB(nvaB0+1))
+ 
     ! AD: recurrent
         if (noVar1.eq.1) then
     !        write(*,*)'filtre 1 desactive'
@@ -425,8 +491,15 @@
             filtre3=1
         end if
     
+        if (noVarB.eq.1) then ! ADD TwoPart
+            filtreB=0
+            nvaB=0
+        else
+            filtreB=1   
+        end if
     
-            nva = nva1+nva2+nva3
+            nva = nva1+nva2+nva3+nvaB ! add TwoPart
+
     
     !AD:end
     
@@ -618,7 +691,7 @@
     
             end if
     
-        !cccccccccccccccccccccccccccccccccc
+    !cccccccccccccccccccccccccccccccccc
     ! pour les donnees longitudinales
     !cccccccccccccccccccccccccccccccccc
         vaxy = 0
@@ -636,8 +709,31 @@
             end do
         end do
     
+    !cccccccccccccccccccccccccccccccccc
+    ! binary data ! add TwoPart
+    !cccccccccccccccccccccccccccccccccc
+    if(TwoPart.eq.1) then
+    vaxB = 0
+        do i = 1,nsujetB     !for each longi observation
+            groupeB=groupeB0(i) ! id (useful ?)
+            do j=1,nvaB ! for each fixed covariate
+                vaxB(j)=vaxB0(i,j) ! set values of covariate j for observation i
+            end do
+            iii = 0
+            do ii = 1,nvaB
+                if(filtreB(ii).eq.1)then
+                    iii = iii + 1
+                    veB(i,iii) = dble(vaxB(ii)) !ici sur les observations
+                endif
+            end do
+        end do
+    end if
+    
+    
         deallocate(filtre,filtre2,filtre3)
-    ! nsujet=i-1
+
+
+        ! nsujet=i-1
     
         if (typeof == 0) then
             nz=nz0
@@ -1060,7 +1156,6 @@
     
     RisqCumul = 0.d0
     
-    
         allocate(Z1(maxmesy,nb0),Zet(nsujetymax,nb0))
         allocate(mu(maxmesy,1),ycurrent(maxmesy),b1(np))
         if(typeof == 0) then
@@ -1068,7 +1163,7 @@
         else
             allocate(res1cur(1),res2cur(1),res3cur(1))
         end if
-        allocate(x2(maxmesy,nva3),x2cur(1,nva3),z1cur(1,nb1),current_mean(1))
+        allocate(x2(maxmesy,nva3),x2cur(1,nva3),z1cur(1,nb1),current_mean(1), current_meanRaw(1))!add TwoPart
         allocate(part(ngtemp))
     
         allocate(I_hess(np,np),H_hess(np,np),v((np*(np+3)/2)))
@@ -1076,6 +1171,13 @@
         if (typeof .ne. 0)allocate(vvv((np*(np+1)/2)))
     
         !if (istop .ne. 1)goto 1000 ! si l'initialisation ne marche pas, ne pas faire le modele
+    
+    ! add TwoPart
+    if(TwoPart.eq.1) allocate(Z1B(maxmesB,nbB),ZetB(nsujetBmax,nbB))
+    if(TwoPart.eq.1) allocate(muB(maxmesB,1),Bcurrent(maxmesB))
+    if(TwoPart.eq.1) allocate(XB(maxmesB,nvaB),x2Bcur(1,nvaB))!,z1Bcur(1,nbB))    
+    if(TwoPart.eq.1) allocate(z1Bcur(1,nb1), z1Ycur(1,nb1))  
+        
     
         if(typeJoint.ge.2) then
             select case(typeof)
@@ -1227,7 +1329,11 @@
                 if(typeJoint.eq.1) then
                     LCV(1) = (LCV(1) - resnonpen) / nsujet
                 else if(typeJoint.eq.2) then
-                    LCV(1) = (LCV(1) - resnonpen) /(ng+nsujety)
+                    if(TwoPart.ne.1) then
+                        LCV(1) = (LCV(1) - resnonpen) /(ng+nsujety)
+                    else if(TwoPart.eq.1) then
+                        LCV(1) = (LCV(1) - resnonpen) /(ng+nsujetB) ! add TwoPart
+                    end if
                 else
                     LCV(1) = (LCV(1) - resnonpen) /(nsujet+nsujety)
                 end if
@@ -1236,7 +1342,11 @@
             if(typeJoint.eq.1) then
                 LCV(2) = (1.d0 / nsujet) *(np - resOut)
             else if(typeJoint.eq.2) then
-                LCV(2) = (1.d0 /( nsujety+ng)) *(np - resOut)
+                    if(TwoPart.ne.1) then
+                        LCV(2) = (1.d0 /( nsujety+ng)) *(np - resOut)
+                    else if(TwoPart.eq.1) then
+                        LCV(2) = (1.d0 /( nsujetB+ng)) *(np - resOut)
+                    end if
             else
                 LCV(2) = (1.d0 / (nsujet+nsujety)) *(np - resOut)
             !        write(*,*)'======== AIC :',LCV(2)
@@ -1275,6 +1385,7 @@
         coefBeta = 0.d0
         coefBetadc = 0.d0
         coefBetaY = 0.d0
+        coefBetaB = 0.d0 ! add TwoPart
         Xbeta = 0.d0
         Xbetadc = 0.d0
         Zet = 0.d0
@@ -1296,7 +1407,7 @@
                 do j=1,nva3
                     ve3(i,j) = vey(i,j)
                 end do
-                do j=1,nb1
+                do j=1,nby ! modif TwoPart
                     Zet(i,j) = ziy(i,j)
                 end do
             end do
@@ -1305,8 +1416,19 @@
                 do j=1,nva3
                     ve3(i,j) = vey(i,j)
                 end do
-                do j=1,nb1
+                do j=1,nby ! modif TwoPart
                     Zet(i,j) = ziy(i,j)
+                end do
+            end do
+        end if
+        
+        if(TwoPart.eq.1) then ! add TwoPart
+            do i=1,nsujetB
+                do j=1,nvaB
+                    ve4(i,j) = veB(i,j)
+                end do
+                do j=1,nbB
+                    ZetB(i,j) = ziB(i,j)
                 end do
             end do
         end if
@@ -1315,9 +1437,11 @@
     
                     if(typeJoint.eq.2) then
                             coefBetadc(1,:) = b((np-nva+1):(np-nva+nva2))
-                            coefBetaY(1,:) = b((np-nva+nva2+1):np)
+                            coefBetaY(1,:) = b((np-nva+nva2+1):(np-nva+nva2+nva3))
+                            if(TwoPart.eq.1) coefBetaB(1,:) = b((np-nva+nva2+nva3+1):np) ! add TwoPart
                             Xbetadc = matmul(coefBetadc,transpose(ve2))
                             XbetaY = matmul(coefBetaY,transpose(ve3))
+                            if(TwoPart.eq.1) XbetaB = matmul(coefBetaB,transpose(ve4)) ! add TwoPart
                     else
                             coefBeta(1,:) = b((np-nva+1):(np-nva+nva1))
                             coefBetadc(1,:) = b((np-nva+nva1+1):(np-nva+nva1+nva2))
@@ -1487,6 +1611,13 @@
     
         deallocate( vey,vedc,vaxy,vaxdc,aux)
     
+        if(TwoPart.eq.1) deallocate(vaxB, bb, ziB, groupeeB, nmesB, nmes_oB, veB, ve4) ! add TwoPart
+        if(TwoPart.eq.1) deallocate(filtreB,Z1B, ZetB, muB, Bcurrent, XB, x2Bcur)!, z1Bcur)
+        if(TwoPart.eq.1) deallocate(sum_matB, varcov_margB, z1Bcur, z1Ycur)
+        if(TwoPart.eq.0) deallocate(filtreB)
+
+    
+    
             deallocate(ve)
         deallocate(hess,v,I1_hess,H1_hess,I2_hess,H2_hess,HI2,HIH,IH,HI,BIAIS,date,datedc)
     
@@ -1508,7 +1639,7 @@
     
         deallocate(Z1,mu,ycurrent,part)
         deallocate(res1cur,res2cur,res3cur)
-    deallocate(x2,x2cur,z1cur,current_mean)
+    deallocate(x2,x2cur,z1cur,current_mean, current_meanRaw) !add TwoPart
     
         deallocate(aux2)!,res1,res4,res3)
     !     deallocate(knotsTPS,knotsdcTPS,innerknots,innerknotsdc)
@@ -1713,8 +1844,8 @@
     
         double precision,intent(out)::ss
         integer,intent(in)::choix,nnodes
-        double precision::auxfunca,func6JL,func7J,func8J,func9J,func10J,func11J
-        external::func6JL,func7J,func8J,func9J,func10J,func11J
+        double precision::auxfunca,func6JL,func7J,func8J,func9J,func10J,func11J, funcTP4J ! add TwoPart
+        external::func6JL,func7J,func8J,func9J,func10J,func11J, funcTP4J ! add TwoPart
         integer::j
             double precision,dimension(nnodes):: xx1,ww1
     
@@ -1740,7 +1871,7 @@
                     xx1(1:nnodes) = x3(1:nnodes)
                     ww1(1:nnodes) = w3(1:nnodes)
             end if
-    
+
         ss=0.d0
             auxfunca = 0.d0
             if(methodGH.eq.0) then
@@ -1753,6 +1884,8 @@
                             auxfunca = func7J(frailpol,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.3) then
                             auxfunca = func10J(frailpol2,frailpol,xx1(j))
+                    else if(typeJoint.eq.2.and.nb1.eq.4) then
+                            auxfunca = funcTP4J(frailpol3,frailpol2,frailpol,xx1(j)) ! add TwoPart
                     else if(typeJoint.eq.3.and.nea.eq.2) then
                             auxfunca = func8J(frailpol,xx1(j))
     
@@ -1942,6 +2075,79 @@
     
         END SUBROUTINE gauherJ23
     
+    
+    
+        !***********************************
+        !********* Gauss-Hermit pour la dimension 4 (bivarie)*
+        !*************************************
+    
+        SUBROUTINE gauherJ24(ss,choix,nnodes)
+    
+        use tailles
+        use donnees
+        use comon,only:methodGH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
+        use donnees_indiv,only : frailpol3,numpat
+        Implicit none
+    
+        double precision,intent(out)::ss
+        integer,intent(in)::choix,nnodes
+    !  double precision :: frail2
+        double precision::auxfunca
+        integer::j
+            double precision,dimension(nnodes):: xx1,ww1
+    
+                    if(nnodes.eq.5) then
+                    xx1(1:nnodes) = x5(1:nnodes)
+                    ww1(1:nnodes) = w5(1:nnodes)
+            else if (nnodes.eq.7) then
+                    xx1(1:nnodes) = x7(1:nnodes)
+                    ww1(1:nnodes) = w7(1:nnodes)
+            else if (nnodes.eq.9) then
+                    xx1(1:nnodes) = x9(1:nnodes)
+                    ww1(1:nnodes) = w9(1:nnodes)
+            else if (nnodes.eq.12) then
+                    xx1(1:nnodes) = x12(1:nnodes)
+                    ww1(1:nnodes) = w12(1:nnodes)
+            else if (nnodes.eq.15) then
+                    xx1(1:nnodes) = x15(1:nnodes)
+                    ww1(1:nnodes) = w15(1:nnodes)
+            else if (nnodes.eq.20) then
+                    xx1(1:nnodes) = x2(1:nnodes)
+                    ww1(1:nnodes) = w2(1:nnodes)
+            else if (nnodes.eq.32) then
+                    xx1(1:nnodes) = x3(1:nnodes)
+                    ww1(1:nnodes) = w3(1:nnodes)
+            end if
+    
+        ss=0.d0
+            if(methodGH.eq.0) then
+    
+            do j=1,nnodes
+            !  if (choix.eq.3) then
+                frailpol3 = xx1(j)
+                    call gauherJ23(auxfunca,choix,nnodes)
+                    ss = ss+ww1(j)*(auxfunca)
+            !    endif
+            end do
+    
+    
+            ss = ss
+            else
+            do j=1,nnodes
+            !  if (choix.eq.3) then
+                    frailpol3 = xx1(j)
+                    call gauherJ23(auxfunca,choix,nnodes)
+                    ss = ss+ww1(j)*(auxfunca)
+            end do
+    
+            ss = ss*invBi_cholDet(numpat)*2.d0**(nea/2.d0)
+    
+            end if
+        return
+    
+        END SUBROUTINE gauherJ24
+    
+    
             !***********************************
         !********* Gauss-Hermit pour la dimension 2 - modC(le trviarie b_10, v*
         !*************************************
@@ -1983,7 +2189,6 @@
                     xx1(1:nnodes) = x3(1:nnodes)
                     ww1(1:nnodes) = w3(1:nnodes)
             end if
-    
     
         ss=0.d0
             if(methodGH.eq.0) then
@@ -2163,7 +2368,7 @@
         use optim
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,betaD,etaD,t1dc,etaydc,link,t0dc,&
-            vey,typeof,s_cag_id,s_cag,ut,methodGH,b_lme,invBi_chol
+            vey,typeof,s_cag_id,s_cag,ut,methodGH,b_lme,invBi_chol,TwoPart
             !auxig,alpha,sig2,res1,res3,nb1,nea,nig,utt,
         use donnees_indiv
         IMPLICIT NONE
@@ -2198,6 +2403,7 @@
         else
             mu1(1:nmescur,1)  = mu(1:nmescur,1)
         end if
+
     
     
     !ccccccccccccccccccccccccccccccccccccccccc
@@ -2308,6 +2514,7 @@
     
     func6JL = dexp(func6JL)
     
+
     
         deallocate(mu1)
         return
@@ -2325,7 +2532,8 @@
         use comongroup,only:vet2!vet
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol
+            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
+            nbB, nby, nvaB, nmesB,TwoPart,veB! add TwoPart
             !auxig,alpha,sig2,res1,res3,nig,nea
         use donnees_indiv
         IMPLICIT NONE
@@ -2342,8 +2550,20 @@
         double precision,external::survdcCM
         double precision :: resultdc,abserr,resabs,resasc
         double precision,parameter::pi=3.141592653589793d0
-    
+        double precision :: Bscalar ! add TwoPart
+        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
+        
         upper = .false.
+        
+    !add TwoPart
+    if(TwoPart.eq.1) then
+        if(nmesB(numpat).gt.0) then
+            allocate(mu1B(nmesB(numpat),1))
+        else
+            allocate(mu1B(1,1))
+        end if
+    end if
+    
         if(nmesy(numpat).gt.0) then
             allocate(mu1(nmesy(numpat),1))
         else
@@ -2368,9 +2588,6 @@
         Xea22(2) = frail2!
             end if
         mat = matmul(ut,utt)
-    
-    
-    
     
         jj=0
     ! jjj = 0
@@ -2411,6 +2628,15 @@
             mu1(1:nmescur,1)  = mu(1:nmescur,1)
         end if
     
+        
+        ! add TwoPart
+        if(TwoPart.eq.1) then
+            if(nmescurB.gt.0) then 
+                mu1B(1:nmescurB,1) = muB(1:nmescurB,1) +MATMUL(Z1B(1:nmescurB,1:nbB),Xea2(nby+1:nb1,1))
+            else
+                mu1B(1:nmescurB,1)  = muB(1:nmescurB,1)
+            end if
+        end if
     
     !ccccccccccccccccccccccccccccccccccccccccc
     ! pour le deces
@@ -2419,7 +2645,7 @@
         if(nva2.gt.0)then
                 vet2 = 0.d0
                 do j=1,nva2
-            vet2 =vet2 + b1(npp-nva3-nva2+j)*dble(vedc(numpat,j))
+            vet2 =vet2 + b1(npp-nva3-nva2-nvaB+j)*dble(vedc(numpat,j))
                 end do
                 vet2 = dexp(vet2)
             else
@@ -2487,6 +2713,14 @@
         end do
         end if
     
+       !add TwoPart
+    Bscalar=0.d0
+    if(TwoPart.eq.1) then
+        do k=1,nmescurB
+            Bscalar = Bscalar + (Bcurrent(k)*mu1B(k,1)+dlog(1-(dexp(mu1B(k,1))/(1+dexp(mu1B(k,1))))))
+        end do
+    end if
+    
         !yscalar = norm2(ycurrent(1:nmescur) - mu1(1:nmescur))
     
         yscalar = dsqrt(yscalar)
@@ -2497,6 +2731,7 @@
         func7J = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                     -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
+                        +Bscalar& ! add TwoPart
                         -aux1(numpat)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
                         + cdc(numpat)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
@@ -2504,13 +2739,14 @@
         func7J =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
+                        +Bscalar& ! add TwoPart
                         -aux1(numpat)&
                         + cdc(numpat)*(etaydc(1)*current_mean(1))
         end if
         
         func7J = dexp(func7J)
         deallocate(mu1)
-    
+        if(TwoPart.eq.1) deallocate(mu1B) ! add TwoPart
         return
     
         end function func7J
@@ -2724,6 +2960,336 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        !#################################################################################### add TwoPart (4 correlated random effects)
+            double precision function funcTP4J(frail4,frail3,frail2,frail)
+        use optim
+    
+        use tailles
+        use comongroup,only:vet2!vet
+        use comon,only:aux1,cdc,sigmae,nmesy,&
+            nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
+            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
+            nbB, nby, nvaB, nmesB,TwoPart,veB!,compteur !(REMOVE!) ! add TwoPart
+        use donnees_indiv
+        IMPLICIT NONE
+    
+        double precision,intent(in)::frail,frail2,frail3,frail4
+        double precision :: yscalar,eps,finddet,det,alnorm,prod_cag
+        integer :: j,i,jj,k,ier
+        double precision,dimension(nb1*(nb1+1)/2)::matv
+        double precision,dimension(4,1)::  Xea2
+        double precision,dimension(4):: uii, Xea22,Xea
+        double precision,dimension(1)::uiiui
+        double precision,dimension(4,4)::mat,matb_chol
+        logical :: upper
+        double precision,external::survdcCM
+        double precision :: resultdc,abserr,resabs,resasc
+        double precision,parameter::pi=3.141592653589793d0
+        double precision :: Bscalar ! add TwoPart
+        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
+    ! for each node on quadrature, we compute the integrand (it is then multiplied by weight in gauher subroutine)
+
+        upper = .false.
+        if(nmesy(numpat).gt.0) then
+            allocate(mu1(nmesy(numpat),1))
+        else
+            allocate(mu1(1,1))
+        end if
+    
+    !add TwoPart
+    if(TwoPart.eq.1) then
+        if(nmesB(numpat).gt.0) then
+            allocate(mu1B(nmesB(numpat),1))
+        else
+            allocate(mu1B(1,1))
+        end if
+    end if
+    
+        i = numpat
+        matb_chol = 0.d0
+            matb_chol(1,1) = invBi_chol(i,1)
+            matb_chol(2,1) =  invBi_chol(i,2)
+            matb_chol(2,2) =  invBi_chol(i,3)
+            matb_chol(3,1) =  invBi_chol(i,4)
+            matb_chol(3,2) =  invBi_chol(i,5)
+            matb_chol(3,3) =  invBi_chol(i,6)
+            matb_chol(4,1) =  invBi_chol(i,7)
+            matb_chol(4,2) =  invBi_chol(i,8)
+            matb_chol(4,3) =  invBi_chol(i,9)
+            matb_chol(4,4) =  invBi_chol(i,10)
+           
+
+
+
+
+           
+        if(methodGH.eq.1) then ! if Pseudo-adaptive
+            Xea(1) = frail
+            Xea(2) = frail2
+            Xea(3) = frail3
+            Xea(4) = frail4
+            Xea22(1:nb1) = b_lme(i,1:nb1) +  Matmul(matb_chol,Xea)*sqrt(2.d0)
+            Xea2(1:nb1,1) = Xea22(1:nb1)
+    
+            else ! Standard
+            Xea2(1,1) = frail! values defined by quadrature
+        Xea2(2,1) = frail2!
+        Xea2(3,1) = frail3!
+        Xea2(4,1) = frail4
+        Xea22(1) = frail!
+        Xea22(2) = frail2
+        Xea22(3) = frail3
+        Xea22(4) = frail4
+            end if
+        mat = matmul(ut,utt)
+    
+ 
+    
+        jj=0
+    ! jjj = 0
+        do j=1,4
+        do k=j,4
+        jj=j+k*(k-1)/2
+        matv(jj)=mat(j,k)
+    
+        end do
+        end do
+        ier = 0
+        eps = 1.d-10
+    
+    
+            call dsinvj(matv,nb1,eps,ier)
+     
+    
+        mat=0.d0
+        do j=1,4
+                do k=1,4
+                            if (k.ge.j) then
+                mat(j,k)=matv(j+k*(k-1)/2)
+                else
+                mat(j,k)=matv(k+j*(j-1)/2)
+                end if
+            end do
+                end do
+    
+    
+        uii = matmul(Xea22,mat)
+            det = finddet(matmul(ut,utt),4)
+    
+            uiiui=matmul(uii,Xea2)
+    
+    ! mu : covariates values*parameters for each observations
+    ! Z1 : covariates values for random effects
+    ! mu1 : mu + random effects
+        if(nmescur.gt.0) then
+            mu1(1:nmescur,1) = mu(1:nmescur,1) +MATMUL(Z1(1:nmescur,1:nby),Xea2(1:nby,1))
+        else
+            mu1(1:nmescur,1)  = mu(1:nmescur,1)
+        end if
+    
+        ! add TwoPart
+        if(TwoPart.eq.1) then
+            if(nmescurB.gt.0) then 
+                mu1B(1:nmescurB,1) = muB(1:nmescurB,1) +MATMUL(Z1B(1:nmescurB,1:nbB),Xea2(nby+1:nb1,1))
+            else
+                mu1B(1:nmescurB,1)  = muB(1:nmescurB,1)
+            end if
+        end if
+
+       
+    !ccccccccccccccccccccccccccccccccccccccccc
+    ! pour le deces
+    !ccccccccccccccccccccccccccccccccccccccccc
+    
+        if(nva2.gt.0)then
+                vet2 = 0.d0
+                do j=1,nva2
+            vet2 =vet2 + b1(npp-nva3-nva2-nvaB+j)*dble(vedc(numpat,j)) ! modif TwoPart
+                end do
+                vet2 = dexp(vet2)
+            else
+                vet2=1.d0
+            endif
+    
+        if(link.eq.1) then !************ Random Effects ****************
+    
+            if(typeof.eq.2) then
+                aux1(numpat)=((t1dc(numpat)/etaD)**betaD)*vet2
+            else if(typeof.eq.0) then
+                aux1(numpat)=ut2cur*vet2
+            end if
+      
+    
+        else !******* Current Level *************** # TO DO
+    
+    
+    
+            call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,xea22)
+    
+            aux1(i) = resultdc
+    
+                x2cur(1,1) = 1.d0
+            x2cur(1,2) = t1dc(numpat)
+            if(nva3.gt.2) then ! modif TwoPart
+                do k=3,nva3
+                    x2cur(1,k) = dble(vey(it_cur+1,k))
+                end do
+            end if
+
+            if(TwoPart.eq.1) then
+                            x2Bcur(1,1) = 1.d0
+                    x2Bcur(1,2) = t1dc(numpat)
+                    if(nvaB.gt.2) then
+                        do k=3,nvaB
+                            x2Bcur(1,k) = dble(veB(it_curB+1,k))
+                        end do
+                    end if
+            end if
+            
+
+            Z1cur(1,1) = 1.d0
+            Z1cur(1,2) = t1dc(numpat)
+            
+                current_mean = 0.d0
+                    if(TwoPart.eq.1) then
+
+                        z1Ycur(1,1) = 1.d0
+                        z1Ycur(1,2) = t1dc(numpat)
+                        z1Ycur(1,3) = 0.d0
+                        z1Bcur(1,1) = 0.d0 ! need to decide intercept / time here !
+                        z1Bcur(1,2) = 0.d0
+                        z1Bcur(1,3) = 1.d0
+                        Bcurrentvalue=0.d0
+                        Bcv=0.d0
+                        Bcv=MATMUL(x2Bcur,b1((npp-nvaB+1):npp))+Matmul(z1Bcur,Xea22)
+                        Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
+                    
+        cmY = (MATMUL(x2cur,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1Ycur,Xea22))
+
+        current_mean = cmY*Bcurrentvalue
+
+
+        
+                    else if(TwoPart.eq.0) then
+                            current_mean = MATMUL(X2cur,b1((npp-nva3+1):npp))+Matmul(Z1cur,Xea22)
+
+                    end if
+        end if
+    
+            if ((aux1(numpat).ne.aux1(numpat)) ) then
+    
+  
+            end if
+    
+        !********* Left-censoring ***********
+    
+    
+    
+        yscalar = 0.d0
+            prod_cag = 1.d0
+    
+        if(s_cag_id.eq.1)then
+    
+            do k = 1,nmescur
+    
+                if(ycurrent(k).le.s_cag) then
+                prod_cag = prod_cag*(1.d0-alnorm((mu1(k,1)-s_cag)/sqrt(sigmae),upper))
+      
+                    else
+                yscalar = yscalar + (ycurrent(k)-mu1(k,1))**2.d0
+                end if
+            end do
+        else
+            do k=1,nmescur
+        yscalar = yscalar + (ycurrent(k)-mu1(k,1))**2.d0
+        end do
+        end if
+        ! yscalar=(Y*-Y)^2
+  
+    !add TwoPart
+    Bscalar=0.d0
+    if(TwoPart.eq.1) then
+        do k=1,nmescurB
+            Bscalar = Bscalar + (Bcurrent(k)*mu1B(k,1)+dlog(1-(dexp(mu1B(k,1))/(1+dexp(mu1B(k,1))))))
+        end do
+    end if
+ 
+     ! yscalar=yscalar+Bscalar
+      
+        yscalar = dsqrt(yscalar)
+        if(prod_cag.lt.0.1d-321)prod_cag= 0.1d-321
+
+        if(link.eq.1) then 
+        funcTP4J = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+                  -uiiui(1)/2.d0-0.5d0*dlog(det)&
+                        -3.d0/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
+                   +Bscalar& ! add TwoPart
+                   -aux1(numpat)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
+                    + cdc(numpat)*dot_product(etaydc,Xea22(1:nb1))
+    
+        else
+        funcTP4J =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+                        -uiiui(1)/2.d0-(nb1/2.d0)*dlog(det*2.d0*pi)&
+                   +Bscalar& ! add TwoPart
+                        -aux1(numpat)&
+                        + cdc(numpat)*(etaydc(1)*current_mean(1))
+        end if
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/frailtypack_TPJM/debug_funcpalongisplines_TP2.txt')
+!write(3,*)'matb_chol',matb_chol
+!write(3,*)'invBi_chol',invBi_chol
+!write(3,*)'vey',vey
+!write(3,*)'x2Bcur',x2Bcur
+!write(3,*)'nvaB',nvaB
+!write(3,*)'veB',veB
+!write(3,*)'nb1',nb1
+!write(3,*)'x2cur',x2cur
+!write(3,*)'Bcurrentvalue',Bcurrentvalue
+!write(3,*)'cmY',cmY
+!write(3,*)'current_mean',current_mean
+!write(3,*)'funcTP4J',funcTP4J
+!write(3,*)'yscalar',yscalar
+!write(3,*)'Bscalar',Bscalar
+!write(3,*)'mu1',mu1
+!write(3,*)'mu1B',mu1B
+!write(3,*)'Xea2',Xea2
+!write(3,*)'Xea22',Xea22
+!write(3,*)'b_lme',b_lme
+!write(3,*)'Xea',Xea
+!write(3,*)'mat',mat
+!write(3,*)'det',det
+!write(3,*)'uiiui',uiiui
+!write(3,*)'mu',mu
+!write(3,*)'Z1',Z1
+!write(3,*)'nmescur',nmescur
+!write(3,*)'muB',muB
+!write(3,*)'Z1B',Z1B
+!write(3,*)'nmescurB',nmescurB
+!write(3,*)'vet2',vet2
+!write(3,*)'b1',b1
+!close(3)
+        funcTP4J = dexp(funcTP4J)
+   
+        deallocate(mu1)
+        if(TwoPart.eq.1) deallocate(mu1B) ! add TwoPart
+        return
+    
+        end function funcTP4J
+    
+    
                     !***********************************************
             !****************** func8J **********************
             !***********************************************
@@ -2765,7 +3331,7 @@
             Xea(1) = frail!2!*sqrt(2.d0)*ut(1,1)
             Xea(2) = frail2
             end if
-    
+
             if(nmesy(numpat).gt.0) then
                     allocate(mu1(nmesy(numpat),1))
             else
@@ -2969,7 +3535,7 @@
             end if
     
             !yscalar = norm2(ycurrent(1:nmescur) - mu1(1:nmescur))
-    
+            
     
             func8J= 0.d0
     
@@ -2993,9 +3559,17 @@
             end if
     
         func8J = dexp(func8J)
-        
+      
     deallocate(mu1)
     
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!        write(2,*)'Xea',Xea
+!        write(2,*)'b_lme',b_lme
+!        write(2,*)'prod_cag',prod_cag
+!        write(2,*)'nmescur',nmescur
+!        write(2,*)'func8J',func8J
+!       close(2)
+                
         return
     
         end function func8J
