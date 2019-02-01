@@ -232,6 +232,10 @@
         integer :: methodGH,nodes_number,initGH
         integer :: res_ind,it,n_wezly
         
+        !add current-level association - interaction with time
+        integer,save :: numInter, numInterB
+        integer,dimension(:),allocatable,save::positionVarT
+        
     ! add TwoPart
         integer,save :: TwoPart, nsujetB, nbB,nby, maxmesB, nvaB, compteur !(remove!)
         double precision,dimension(:),allocatable,save::bb ! add TwoPart

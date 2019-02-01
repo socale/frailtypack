@@ -257,7 +257,6 @@
     dimnames(tab.B1) <- list(x$names.re,rep("",dim(x$B1)[1]))
     prmatrix(tab.B1)
 
-
     cat("\n")
 
 

@@ -16,6 +16,7 @@
         ,typeof0,equidistant,mtaille &
         ,counts,ier_istop,paraweib &
         ,MartinGales,ResLongi,Pred_y0 &
+        ,positionVarTime,numInterac &
         ,linearpred,linearpreddc,ziOut &
     ,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc,BetaTpsMatY,EPS,GH,paGH)
     
@@ -52,7 +53,11 @@
         integer,dimension(VectNsujet(3)),intent(in) :: groupeB0 ! add TwoPaart
         integer,dimension(ng0),intent(in)::icdc0
         double precision,dimension(2),intent(in) :: cag0
-    
+        
+        !add for interaction terms in current-level association
+        integer,dimension(2),intent(in):: numInterac
+        integer,dimension((numInterac(1)+numInterac(2))*3),intent(in) :: positionVarTime
+
         double precision,dimension(ng0)::tt0dc0,tt1dc0
         double precision,dimension(VectNsujet(1))::tt00,tt10 !! rajout
         double precision,dimension(2)::k0
@@ -113,11 +118,9 @@
         double precision,dimension(1,VectNvar(1))::coefBeta
         double precision,dimension(1,VectNvar(2))::coefBetadc
         double precision,dimension(1,VectNvar(3))::coefBetaY
-        double precision,dimension(1,VectNvar(4))::coefBetaB ! add TwoPart
         double precision::coefBeta2
         double precision,dimension(1,VectNsujet(1))::XBeta
         double precision,dimension(1,VectNsujet(2))::XBetaY
-        double precision,dimension(1,VectNsujet(3))::XBetaB ! add TwoPart
         double precision,dimension(1,ng0)::XBetadc    
     
         integer::ngtemp
@@ -135,11 +138,9 @@
         double precision,dimension(ng0,Vectnb0(1)+1+Vectnb0(1) + (Vectnb0(1)*(Vectnb0(1)-1))/2),intent(in):: paGH
             
         character(len=100)::bar
-    
-    
+   
    !add TwoPart
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
-   
 
     nsujet0=VectNsujet(1)
     nsujety0=VectNsujet(2)
@@ -171,7 +172,16 @@
     
             ier = ier_istop(1)
             istop = ier_istop(2)
-    
+            
+                
+    ! add for current-level interaction with time
+    if(numInterac(1).ne.0) then
+    allocate(positionVarT(numInterac(1)+numInterac(2)))
+    positionVarT = positionVarTime
+    end if
+    numInter = numInterac(1)
+    numInterB = numInterac(2)
+            
         allocate(vaxdc(nva20),vaxy(nva30))
         if(TwoPart.eq.1) allocate(vaxB(nvaB0)) ! add TwoPart
         
@@ -297,6 +307,7 @@
         yy = yy0
         if(TwoPart.eq.1) allocate(bb(nsujetBmax))!TwoPart
         if(TwoPart.eq.1) bb = bb0 ! binary values for TwoPart
+        nbB = nbB0 ! number of random effects in binary part
         nb_re = nb0 + INT((nb0*(nb0-1))/2.d0)
         netadc = neta0(1)
         netar = neta0(2)
@@ -329,7 +340,7 @@
         if(TwoPart.eq.1) allocate (ziB(nsujetB0, nbB),sum_matB(nvaB0,nvaB0)) ! add TwoPart (+modif ziy)
         if(TwoPart.eq.1) ziB = matzB0 ! binary random effects covariates ! add TwoPart 
     
-        ziy = matzy0
+        ziy = matzy0 ! random effects covariates matrix
     
     
         allocate(vuu(nea))
@@ -1385,7 +1396,6 @@
         coefBeta = 0.d0
         coefBetadc = 0.d0
         coefBetaY = 0.d0
-        coefBetaB = 0.d0 ! add TwoPart
         Xbeta = 0.d0
         Xbetadc = 0.d0
         Zet = 0.d0
@@ -1438,10 +1448,8 @@
                     if(typeJoint.eq.2) then
                             coefBetadc(1,:) = b((np-nva+1):(np-nva+nva2))
                             coefBetaY(1,:) = b((np-nva+nva2+1):(np-nva+nva2+nva3))
-                            if(TwoPart.eq.1) coefBetaB(1,:) = b((np-nva+nva2+nva3+1):np) ! add TwoPart
                             Xbetadc = matmul(coefBetadc,transpose(ve2))
                             XbetaY = matmul(coefBetaY,transpose(ve3))
-                            if(TwoPart.eq.1) XbetaB = matmul(coefBetaB,transpose(ve4)) ! add TwoPart
                     else
                             coefBeta(1,:) = b((np-nva+1):(np-nva+nva1))
                             coefBetadc(1,:) = b((np-nva+nva1+1):(np-nva+nva1+nva2))
@@ -1615,8 +1623,7 @@
         if(TwoPart.eq.1) deallocate(filtreB,Z1B, ZetB, muB, Bcurrent, XB, x2Bcur)!, z1Bcur)
         if(TwoPart.eq.1) deallocate(sum_matB, varcov_margB, z1Bcur, z1Ycur)
         if(TwoPart.eq.0) deallocate(filtreB)
-
-    
+if(numInterac(1).ne.0) deallocate(positionVarT)
     
             deallocate(ve)
         deallocate(hess,v,I1_hess,H1_hess,I2_hess,H2_hess,HI2,HIH,IH,HI,BIAIS,date,datedc)
@@ -2368,7 +2375,8 @@
         use optim
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,betaD,etaD,t1dc,etaydc,link,t0dc,&
-            vey,typeof,s_cag_id,s_cag,ut,methodGH,b_lme,invBi_chol,TwoPart
+            vey,typeof,s_cag_id,s_cag,ut,methodGH,b_lme,invBi_chol,&
+            numInter,positionVarT,TwoPart
             !auxig,alpha,sig2,res1,res3,nb1,nea,nig,utt,
         use donnees_indiv
         IMPLICIT NONE
@@ -2381,6 +2389,7 @@
         double precision :: resultdc,abserr,resabs,resasc,Xea
         double precision,parameter::pi=3.141592653589793d0
     
+    integer :: counter, counter2 ! add for current-level interaction
         upper = .false.
         i = numpat
     
@@ -2435,9 +2444,11 @@
             end if
         !end if
         else !********** Current Mean ****************
-    
-    
-    
+
+        counter=0
+        counter2=1
+
+
     
             !if(typeof.eq.2) then
             !    aux1(i)=((t1dc(i)/etaD)**betaD)*vet2*dexp(etaydc1*current_mean(1))
@@ -2449,14 +2460,29 @@
         !    else if(typeof.eq.0) then
         !        aux1(i)=ut2cur*vet2*dexp(etaydc1*current_mean(1))
         !    end if
-        X2cur(1,1) = 1.d0
-            X2cur(1,2) =t1dc(numpat)
-            if((nva3-2).gt.0) then
-                do k=3,nva3
+        
+
+
+    
+
+
+            if((nva3-1).gt.0) then
+            X2cur(1,1) = 1.d0
+                    do k=2,nva3
                         X2cur(1,k) = dble(vey(it_cur+1,k))
                     end do
+if(numInter.eq.1) then! compute time and interactions at t1dc
+X2cur(1,positionVarT(2)) =t1dc(numpat) ! time effect
+X2cur(1,positionVarT(3)) =t1dc(numpat)*dble(vey(it_cur+1,positionVarT(1))) ! interaction
+else if(numInter.gt.1)then
+do counter = 1,numInter !in case of multiple interactions
+X2cur(1,positionVarT(counter2+1)) =t1dc(numpat)
+X2cur(1,positionVarT(counter2+2)) =t1dc(numpat)*dble(vey(it_cur+1,positionVarT(counter2)))
+counter2=counter2+3
+end do
+end if
             end if
-    
+
             Z1cur(1,1) = 1.d0
             current_mean = 0.d0
     
@@ -2514,8 +2540,6 @@
     
     func6JL = dexp(func6JL)
     
-
-    
         deallocate(mu1)
         return
     
@@ -2533,6 +2557,7 @@
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
             vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
+            numInter,numInterB,positionVarT,&
             nbB, nby, nvaB, nmesB,TwoPart,veB! add TwoPart
             !auxig,alpha,sig2,res1,res3,nig,nea
         use donnees_indiv
@@ -2553,6 +2578,7 @@
         double precision :: Bscalar ! add TwoPart
         double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
         
+        integer::counter, counter2
         upper = .false.
         
     !add TwoPart
@@ -2623,7 +2649,7 @@
     
     
         if(nmescur.gt.0) then
-            mu1(1:nmescur,1) = mu(1:nmescur,1) +MATMUL(Z1(1:nmescur,1:nb1),Xea2(1:2,1))
+            mu1(1:nmescur,1) = mu(1:nmescur,1) +MATMUL(Z1(1:nmescur,1:nby),Xea2(1:nby,1))! modif TwoPart
         else
             mu1(1:nmescur,1)  = mu(1:nmescur,1)
         end if
@@ -2645,7 +2671,7 @@
         if(nva2.gt.0)then
                 vet2 = 0.d0
                 do j=1,nva2
-            vet2 =vet2 + b1(npp-nva3-nva2-nvaB+j)*dble(vedc(numpat,j))
+            vet2 =vet2 + b1(npp-nva3-nva2-nvaB+j)*dble(vedc(numpat,j))! modif TwoPart
                 end do
                 vet2 = dexp(vet2)
             else
@@ -2663,28 +2689,72 @@
     
         else !******* Current Level ***************
     
-    
+            counter=0
+        counter2=1
     
             call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,xea22)
     
             aux1(i) = resultdc
     
-                X2cur(1,1) = 1.d0
-            X2cur(1,2) = t1dc(numpat)
-            if(nva3.gt.2) then
-                do k=3,nva3
-                    X2cur(1,k) = dble(vey(it_cur+1,k))
-                end do
-            end if
+if((nva3-1).gt.0) then
+    X2cur(1,1) = 1.d0
+    do k=2,nva3
+    X2cur(1,k) = dble(vey(it_cur+1,k))
+    end do
+    if(numInter.ge.1) then
+    do counter = 1,numInter ! compute time and interactions at t1dc
+    X2cur(1,positionVarT(counter2+1)) =t1dc(numpat) ! time effect
+    X2cur(1,positionVarT(counter2+2)) =t1dc(numpat)*dble(vey(it_cur+1,positionVarT(counter2)))! interaction
+    counter2=counter2+3
+    end do
+    end if
+end if
     
+    if(TwoPart.eq.1) then
+    if((nvaB-1).gt.0) then
+    X2Bcur(1,1) = 1.d0
+    do k=2,nvaB
+    X2Bcur(1,k) = dble(veB(it_curB+1,k))
+    end do
+    if(numInterB.ge.1) then
+    do counter = 1,numInter ! compute time and interactions at t1dc
+    X2Bcur(1,positionVarT(counter2+1)) =t1dc(numpat)! time effect
+    X2Bcur(1,positionVarT(counter2+2)) =t1dc(numpat)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    counter2=counter2+3
+    end do
+    end if
+end if
+end if
     
             Z1cur(1,1) = 1.d0
             Z1cur(1,2) = t1dc(numpat)
     
     
                 current_mean = 0.d0
-                current_mean = MATMUL(X2cur,b1((npp-nva3+1):npp))+Matmul(Z1cur,Xea22)
-    
+                
+                
+                
+                                   if(TwoPart.eq.1) then
+
+                        z1Ycur(1,1) = 1.d0 ! random intercept only for now
+                        z1Ycur(1,2) = 0.d0!z1Ycur(1,2) = t1dc(numpat)
+                        z1Bcur(1,1) = 0.d0 ! need to decide intercept / time here !
+                        z1Bcur(1,2) = 1.d0
+                        Bcurrentvalue=0.d0
+                        Bcv=0.d0
+
+                        Bcv=MATMUL(x2Bcur,b1((npp-nvaB+1):npp))+Matmul(z1Bcur,Xea22)
+                        Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
+                    
+
+        cmY = (MATMUL(x2cur,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1Ycur,Xea22))
+
+        current_mean = cmY*Bcurrentvalue
+        
+                    else if(TwoPart.eq.0) then
+                            current_mean = MATMUL(X2cur,b1((npp-nva3+1):npp))+Matmul(Z1cur,Xea22)
+
+                    end if    
         end if
     
         
@@ -2745,6 +2815,9 @@
         end if
         
         func7J = dexp(func7J)
+        
+
+        
         deallocate(mu1)
         if(TwoPart.eq.1) deallocate(mu1B) ! add TwoPart
         return
@@ -2762,7 +2835,9 @@
         use comongroup,only:vet2!vet
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol
+            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
+            numInter,numInterB,positionVarT,&
+            nbB, nby, nvaB, nmesB,TwoPart,veB! add TwoPart
         use donnees_indiv
         IMPLICIT NONE
     
@@ -2778,8 +2853,22 @@
         double precision,external::survdcCM
         double precision :: resultdc,abserr,resabs,resasc
         double precision,parameter::pi=3.141592653589793d0
-    
+        double precision :: Bscalar ! add TwoPart
+        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
+        
+        integer::counter, counter2
+        
         upper = .false.
+        
+        !add TwoPart
+    if(TwoPart.eq.1) then
+        if(nmesB(numpat).gt.0) then
+            allocate(mu1B(nmesB(numpat),1))
+        else
+            allocate(mu1B(1,1))
+        end if
+    end if
+    
         if(nmesy(numpat).gt.0) then
             allocate(mu1(nmesy(numpat),1))
         else
@@ -2853,6 +2942,14 @@
             mu1(1:nmescur,1)  = mu(1:nmescur,1)
         end if
     
+            ! add TwoPart
+        if(TwoPart.eq.1) then
+            if(nmescurB.gt.0) then 
+                mu1B(1:nmescurB,1) = muB(1:nmescurB,1) +MATMUL(Z1B(1:nmescurB,1:nbB),Xea2(nby+1:nb1,1))
+            else
+                mu1B(1:nmescurB,1)  = muB(1:nmescurB,1)
+            end if
+        end if
     
     !ccccccccccccccccccccccccccccccccccccccccc
     ! pour le deces
@@ -2861,7 +2958,7 @@
         if(nva2.gt.0)then
                 vet2 = 0.d0
                 do j=1,nva2
-            vet2 =vet2 + b1(npp-nva3-nva2+j)*dble(vedc(numpat,j))
+            vet2 =vet2 + b1(npp-nva3-nva2-nvaB+j)*dble(vedc(numpat,j))
                 end do
                 vet2 = dexp(vet2)
             else
@@ -2879,34 +2976,75 @@
     
         else !******* Current Level ***************
     
-    
+               counter=0
+        counter2=1
     
             call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,xea22)
     
             aux1(i) = resultdc
     
-                X2cur(1,1) = 1.d0
-            X2cur(1,2) = t1dc(numpat)
-            if(nva3.gt.2) then
-                do k=3,nva3
-                    X2cur(1,k) = dble(vey(it_cur+1,k))
-                end do
-            end if
+if((nva3-1).gt.0) then
+    X2cur(1,1) = 1.d0
+    do k=2,nva3
+    X2cur(1,k) = dble(vey(it_cur+1,k))
+    end do
+    if(numInter.ge.1) then
+    do counter = 1,numInter ! compute time and interactions at t1dc
+    X2cur(1,positionVarT(counter2+1)) =t1dc(numpat) ! time effect
+    X2cur(1,positionVarT(counter2+2)) =t1dc(numpat)*dble(vey(it_cur+1,positionVarT(counter2)))! interaction
+    counter2=counter2+3
+    end do
+    end if
+end if
     
+    if(TwoPart.eq.1) then
+    if((nvaB-1).gt.0) then
+    X2Bcur(1,1) = 1.d0
+    do k=2,nvaB
+    X2Bcur(1,k) = dble(veB(it_curB+1,k))
+    end do
+    if(numInterB.ge.1) then
+    do counter = 1,numInter ! compute time and interactions at t1dc
+    X2Bcur(1,positionVarT(counter2+1)) =t1dc(numpat)! time effect
+    X2Bcur(1,positionVarT(counter2+2)) =t1dc(numpat)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    counter2=counter2+3
+    end do
+    end if
+end if
+end if
     
-            Z1cur(1,1) = 1.d0
-            Z1cur(1,2) = t1dc(numpat)
-    
+          !  Z1cur(1,1) = 1.d0
+          !  Z1cur(1,2) = t1dc(numpat)
+          !  Z1cur(1,3) = 1.d0
     
                 current_mean = 0.d0
-                current_mean = MATMUL(X2cur,b1((npp-nva3+1):npp))+Matmul(Z1cur,Xea22)
-    
+                
+                
+                
+                                   if(TwoPart.eq.1) then
+
+                        z1Ycur(1,1) = 1.d0 ! random intercept only for now
+                        z1Ycur(1,2) = t1dc(numpat)!z1Ycur(1,2) = t1dc(numpat)
+                        z1Ycur(1,3) = 0.d0
+                        z1Bcur(1,1) = 0.d0 ! need to decide intercept / time here !
+                        z1Bcur(1,2) = 0.d0
+                        z1Bcur(1,3) = 1.d0
+                        Bcurrentvalue=0.d0
+                        Bcv=0.d0
+
+                        Bcv=MATMUL(x2Bcur,b1((npp-nvaB+1):npp))+Matmul(z1Bcur,Xea22)
+                        Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
+                    
+
+        cmY = (MATMUL(x2cur,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1Ycur,Xea22))
+
+        current_mean = cmY*Bcurrentvalue
+        
+                    else if(TwoPart.eq.0) then
+                            current_mean = MATMUL(X2cur,b1((npp-nva3+1):npp))+Matmul(Z1cur,Xea22)
+
+                    end if    
         end if
-    
-            if ((aux1(numpat).ne.aux1(numpat)) ) then
-    
-  
-            end if
     
         !********* Left-censoring ***********
     
@@ -2932,20 +3070,31 @@
         end do
         end if
   
-   
+          !add TwoPart
+    Bscalar=0.d0
+    if(TwoPart.eq.1) then
+        do k=1,nmescurB
+            Bscalar = Bscalar + (Bcurrent(k)*mu1B(k,1)+dlog(1-(dexp(mu1B(k,1))/(1+dexp(mu1B(k,1))))))
+        end do
+    end if
+    
         yscalar = dsqrt(yscalar)
         if(prod_cag.lt.0.1d-321)prod_cag= 0.1d-321
+        
+
       
         if(link.eq.1) then
         func10J = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                   -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -3.d0/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
+                     +Bscalar& ! add TwoPart
                    -aux1(numpat)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(numpat)*dot_product(etaydc,Xea22(1:nb1))
     
         else
         func10J =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         -uiiui(1)/2.d0-(nb1/2.d0)*dlog(det*2.d0*pi)&
+                        +Bscalar& ! add TwoPart
                         -aux1(numpat)&
                         + cdc(numpat)*(etaydc(1)*current_mean(1))
         end if
@@ -2953,7 +3102,8 @@
         func10J = dexp(func10J)
    
         deallocate(mu1)
-    
+ if(TwoPart.eq.1) deallocate(mu1B) ! add TwoPart
+
         return
     
         end function func10J
@@ -3561,14 +3711,6 @@
         func8J = dexp(func8J)
       
     deallocate(mu1)
-    
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!        write(2,*)'Xea',Xea
-!        write(2,*)'b_lme',b_lme
-!        write(2,*)'prod_cag',prod_cag
-!        write(2,*)'nmescur',nmescur
-!        write(2,*)'func8J',func8J
-!       close(2)
                 
         return
     
@@ -4366,45 +4508,91 @@
         double precision::bbb,su
         double precision,dimension(np)::bh
     double precision,dimension(nea)::frail
-    
+            double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY ! add TwoPart
+    integer::counter, counter2
     
         k=0
         j=0
         su=0.d0
         bbb=0.d0
-    
+    counter=0
+    counter2=1
     
         if(nva2.gt.0)then
                 vet2 = 0.d0
                 do j=1,nva2
-            vet2 =vet2 + bh(np-nva3-nva2+j)*dble(vedc(i,j))
+            vet2 =vet2 + bh(np-nva3-nva2-nvaB+j)*dble(vedc(i,j))
                 end do
                 vet2 = dexp(vet2)
             else
                 vet2=1.d0
             endif
   
+if((nva3-1).gt.0) then
     X2cur(1,1) = 1.d0
-             X2cur(1,2) = tps
-        if(nva3.gt.2) then
-            do k=3,nva3
-                    X2cur(1,k) = dble(vey(it_cur+1,k))
+    do k=2,nva3
+    X2cur(1,k) = dble(vey(it_cur+1,k))
+    end do
+    if(numInter.ge.1) then
+    do counter = 1,numInter ! compute time and interactions at t1dc
+    X2cur(1,positionVarT(counter2+1)) =tps ! time effect
+    X2cur(1,positionVarT(counter2+2)) =tps*dble(vey(it_cur+1,positionVarT(counter2)))! interaction
+    counter2=counter2+3
+    end do
+    end if
+end if
     
-                end do
-        end if
+    if(TwoPart.eq.1)then
+    if((nvaB-1).gt.0) then
+    X2Bcur(1,1) = 1.d0
+    do k=2,nvaB
+    X2Bcur(1,k) = dble(veB(it_curB+1,k))
+    end do
+    if(numInterB.ge.1) then
+    do counter = 1,numInter ! compute time and interactions at t1dc
+    X2Bcur(1,positionVarT(counter2+1)) =tps! time effect
+    X2Bcur(1,positionVarT(counter2+2)) =tps*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    counter2=counter2+3
+    end do
+    end if
+end if
+end if
+  
     
         Z1cur(1,1) = 1.d0
         if(nb1.eq.2)  Z1cur(1,2) =tps
     
     
+ 
             current_mean = 1.d0
+                    if(TwoPart.eq.1) then
+                        if(nb1.eq.2) then
+                            z1Ycur(1,1) = 1.d0
+                            z1Ycur(1,2) = 0.d0
+                            z1Bcur(1,1) = 0.d0 ! need to decide intercept / time here !
+                            z1Bcur(1,2) = 1.d0
+                        end if
+                        
+                        Bcurrentvalue=0.d0
+                        Bcv=0.d0
+                        Bcv=dot_product(x2Bcur(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1Bcur(1,1:nb1),frail(1:nb1))
+                        Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
+                    
+        cmY = (dot_product(x2cur(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1Ycur(1, 1:nb1),frail(1:nb1)))
+
+        current_mean = cmY*Bcurrentvalue
+
+
+        
+                    else if(TwoPart.eq.0) then
             if(nea.gt.1) then
-                current_mean =dot_product(X2cur(1,1:nva3),bh((np-nva3+1):np))&
+                current_mean =dot_product(x2cur(1,1:nva3),bh((np-nva3+1):np))&
                                             +dot_product(Z1cur(1,1:nb1),frail(1:nb1))
             else
-                current_mean = dot_product(X2cur(1,1:nva3),bh((np-nva3+1):np))+Z1cur(1,1:nb1)*frail(1:nb1)
+                current_mean = dot_product(x2cur(1,1:nva3),bh((np-nva3+1):np))+Z1cur(1,1:nb1)*frail(1:nb1)
             end if
-    
+                    end if
+
     
     
         select case(typeof)
@@ -4440,6 +4628,16 @@
             if(res_ind.eq.1) bbb = Rdc_res(i)
     
             survdcCM =bbb*vet2*dexp(etaydc(1)*current_mean(1))!+cdc(i)*etaydc1*current_mean(1)
+    
+!    if(X2cur(1,4).eq.1) then
+!            open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!        write(2,*)'survdcCM',survdcCM
+!        write(2,*)'current_mean',current_mean
+!       write(2,*)'X2cur',X2cur
+!       close(2)
+!end if
+    
+    
     
         return
     
