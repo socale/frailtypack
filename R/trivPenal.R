@@ -1762,8 +1762,7 @@
 
   ans <- .Fortran(C_joint_longi,
                   VectNsujet = as.integer(c(nsujet,nsujety, nsujetB)),
-                  as.integer(ng),
-                  as.integer(n.knots),
+                  ngnzag=as.integer(c(ng, n.knots, AG)),
                   k0=as.double(kappa), # joint avec generalisation de strate
                   as.double(tt0),
                   as.double(tt1),
@@ -1787,7 +1786,6 @@
                   vaxy0 = as.double(varY),
                   vaxB0 = as.double(varB),
                   noVar = as.integer(c(noVarR,noVarT,noVarY, noVarB)),
-                  ag0 = as.integer(AG),
                   as.integer(maxit),
                   np=as.integer(np),
                   neta0 = as.integer(c(netadc,netar)),

@@ -1904,6 +1904,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
         if(!is.null(interactB)){  # binary
 
     count=0 
+    count2=0
     numInteracB <- 0
         if(length(interactB)==1){
 
@@ -1944,7 +1945,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     }
     
-    
+
   if(!TwoPart){ # initialize TwoPart variables if not activated
     Binary <- rep(0, length(nsujety))
     nsujetB=0
@@ -1956,11 +1957,10 @@ if(TwoPart) max_repB <- max(table(clusterB))
     noVarB <- 1
     numInteracB=0
   }
-  browser()
+
         ans <- .Fortran(C_joint_longi,
 			VectNsujet = as.integer(c(1,nsujety, nsujetB)),
-			ng0 = as.integer(ng),
-			nz0 = as.integer(n.knots),
+            ngnzag=as.integer(c(ng, n.knots, 1)),
 			k0 = as.double(c(0,kappa)), # joint avec generalisation de strate
 			tt00 = as.double(0),
 			tt10 = as.double(0),
@@ -1984,7 +1984,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
 			vaxy0 = as.double(varY),
             vaxB0 = as.double(varB),
 			noVar = as.integer(c(0,noVarT,noVarY, noVarB)),
-			ag0 = as.integer(1),
 			maxit0 = as.integer(maxit),
 			np=as.integer(np),
 			neta0 = as.integer(c(netadc,0)),

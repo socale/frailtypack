@@ -9,9 +9,9 @@
     
     
     !--entC*te pour fortran
-        subroutine joint_longi(VectNsujet,ng0,nz0,k0,tt00,tt10,ic0,groupe0      &
+        subroutine joint_longi(VectNsujet,ngnzag,k0,tt00,tt10,ic0,groupe0      &
         ,tt0dc0,tt1dc0,icdc0,link0,yy0,bb0,groupey0,groupeB0,Vectnb0,matzy0,matzB0 &
-        ,cag0,VectNvar,vax0,vaxdc0,vaxy0,vaxB0,noVar,ag0,maxit0   &
+        ,cag0,VectNvar,vax0,vaxdc0,vaxy0,vaxB0,noVar,maxit0   &
         ,np,neta0,b,H_hessOut,HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out &
         ,typeof0,equidistant,mtaille &
         ,counts,ier_istop,paraweib &
@@ -42,27 +42,30 @@
 
         integer::maxit0,npinit,nvatmp,indic_alphatmp,mt1,mt2,mt11,mt12 !nn
         integer,dimension(4),intent(in)::mtaille
-        integer,intent(in)::ng0,nz0,ag0
+        integer,dimension(3),intent(in)::ngnzag
         integer,dimension(2),intent(in)::Vectnb0
         integer,dimension(2),intent(in)::link0
-    double precision,dimension(nz0+6),intent(out)::ziOut
-        integer::np,equidistant,nva10,nva20,nva30
+    double precision,dimension(ngnzag(2)+6),intent(out)::ziOut
+    integer, intent(in)::equidistant
+        integer::np,nva10,nva20,nva30
         integer,dimension(2),intent(in) :: neta0
         integer,dimension(VectNsujet(1)),intent(in)::groupe0,ic0
         integer,dimension(VectNsujet(2)),intent(in) :: groupey0
         integer,dimension(VectNsujet(3)),intent(in) :: groupeB0 ! add TwoPaart
-        integer,dimension(ng0),intent(in)::icdc0
+        integer,dimension(ngnzag(1)),intent(in)::icdc0
         double precision,dimension(2),intent(in) :: cag0
         
         !add for interaction terms in current-level association
         integer,dimension(2),intent(in):: numInterac
         integer,dimension((numInterac(1)+numInterac(2))*3),intent(in) :: positionVarTime
 
-        double precision,dimension(ng0)::tt0dc0,tt1dc0
+        integer::ng0,nz0,ag0
+        
+        double precision,dimension(ngnzag(1))::tt0dc0,tt1dc0
         double precision,dimension(VectNsujet(1))::tt00,tt10 !! rajout
         double precision,dimension(2)::k0
         double precision,dimension(VectNsujet(1),VectNvar(1)),intent(in):: vax0
-        double precision,dimension(ng0,VectNvar(2)),intent(in):: vaxdc0
+        double precision,dimension(ngnzag(1),VectNvar(2)),intent(in):: vaxdc0
         double precision,dimension(VectNsujet(2),VectNvar(3)),intent(in):: vaxy0
         double precision,dimension(VectNsujet(3),VectNvar(4)),intent(in):: vaxB0 ! add TwoPart
         double precision,dimension(VectNsujet(2),(Vectnb0(1)-Vectnb0(2))) :: matzy0
@@ -103,10 +106,10 @@
     
         integer::typeof0
     !predictor
-        double precision,dimension(ng0)::Resmartingale,Resmartingaledc!,frailtypred!,frailtyvar
+        double precision,dimension(ngnzag(1))::Resmartingale,Resmartingaledc!,frailtypred!,frailtyvar
     
-        double precision,dimension(ng0,(Vectnb0(1)+1))::re_pred
-       double precision,dimension(ng0,(2+Vectnb0(1)+1)),intent(out)::MartinGales
+        double precision,dimension(ngnzag(1),(Vectnb0(1)+1))::re_pred
+       double precision,dimension(ngnzag(1),(2+Vectnb0(1)+1)),intent(out)::MartinGales
         double precision,dimension(VectNsujet(2),2),intent(out):: Pred_y0
        double precision,dimension(VectNsujet(2),4),intent(out):: ResLongi
         double precision,dimension(VectNsujet(2)) :: ResLongi_cond0,ResLongi_marg0,&
@@ -114,14 +117,14 @@
     
         double precision,external::funcpajres,funcpajres_log,funcpajres_biv,funcpajres_tri
         double precision,dimension(VectNsujet(1)),intent(out)::linearpred
-        double precision,dimension(ng0),intent(out)::linearpreddc
+        double precision,dimension(ngnzag(1)),intent(out)::linearpreddc
         double precision,dimension(1,VectNvar(1))::coefBeta
         double precision,dimension(1,VectNvar(2))::coefBetadc
         double precision,dimension(1,VectNvar(3))::coefBetaY
         double precision::coefBeta2
         double precision,dimension(1,VectNsujet(1))::XBeta
         double precision,dimension(1,VectNsujet(2))::XBetaY
-        double precision,dimension(1,ng0)::XBetadc    
+        double precision,dimension(1,ngnzag(1))::XBetadc    
     
         integer::ngtemp
     
@@ -135,13 +138,18 @@
         double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : 
         ! on recupere les valeurs obtenues lors de l'algorithme a la fin
         integer,dimension(2),intent(in):: GH
-        double precision,dimension(ng0,Vectnb0(1)+1+Vectnb0(1) + (Vectnb0(1)*(Vectnb0(1)-1))/2),intent(in):: paGH
+        double precision,dimension(ngnzag(1),Vectnb0(1)+1+Vectnb0(1) + (Vectnb0(1)*(Vectnb0(1)-1))/2),intent(in):: paGH
             
         character(len=100)::bar
    
    !add TwoPart
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
 
+   
+   ng0=ngnzag(1)
+   nz0=ngnzag(2)
+   ag0=ngnzag(3)
+   
     nsujet0=VectNsujet(1)
     nsujety0=VectNsujet(2)
     nsujetB0=VectNsujet(3)
@@ -955,12 +963,21 @@
                     j=0
                     do j=1,nzdc-2
                         pord = dble(j)/(dble(nzdc)-1.d0)
-                !        call percentile3(t3,nbdeces,pord,zidc(j+1))
+                        call percentile3(t3,nbdeces,pord,zidc(j+1))
                     end do
                     zidc(nzdc) = maxtdc
                     zidc(nzdc+1) = maxtdc
                     zidc(nzdc+2) = maxtdc
                     zidc(nzdc+3) = maxtdc
+open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+        write(2,*)'zidc',zidc
+        write(2,*)'equidistant',equidistant
+       write(2,*)'pord',pord
+        write(2,*)'nzdc',nzdc
+        write(2,*)'mintdc',mintdc
+       write(2,*)'ngtemp',ngtemp
+       write(2,*)'t3',t3
+       close(2)
                     deallocate(t3)
                 else ! equidistant
     
@@ -979,10 +996,20 @@
                     zidc(nzdc+1)=zidc(nzdc)
                     zidc(nzdc+2)=zidc(nzdc)
                     zidc(nzdc+3)=zidc(nzdc)
+open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+        write(2,*)'zidc',zidc
+        write(2,*)'equidistant',equidistant
+       !write(2,*)'pord',pord
+        write(2,*)'nzdc',nzdc
+        !write(2,*)'mintdc',mintdc
+       write(2,*)'ngtemp',ngtemp
+       !write(2,*)'t3',t3
+       close(2)
                 endif
                 if(typeJoint.eq.2) ziOut = zidc
     ! fin ajout    
             end if
+    
     
     !---------- affectation nt0dc,nt1dc DECES ----------------------------
     
@@ -3133,7 +3160,7 @@ end if
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
             vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
-            nbB, nby, nvaB, nmesB,TwoPart,veB!,compteur !(REMOVE!) ! add TwoPart
+            nbB, nby, nvaB, nmesB,TwoPart,veB! add TwoPart
         use donnees_indiv
         IMPLICIT NONE
     
