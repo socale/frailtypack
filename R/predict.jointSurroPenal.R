@@ -3,7 +3,7 @@
 ##' 
 ##' @description{
 ##' Predict the treatment effect on the true endpoint (\eqn{beta_T}), basing on the 
-##' treatment effect observed on the the surrogate endpoint (\eqn{beta_S}).
+##' treatment effect observed on the surrogate endpoint (\eqn{beta_S}).
 ##' }
 ##' 
 ##' @details{

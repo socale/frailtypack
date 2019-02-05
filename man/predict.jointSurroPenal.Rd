@@ -38,7 +38,7 @@ endpoint(if available) is included into the prediction interval, the last column
 \description{
 {
 Predict the treatment effect on the true endpoint (\eqn{beta_T}), basing on the 
-treatment effect observed on the the surrogate endpoint (\eqn{beta_S}).
+treatment effect observed on the surrogate endpoint (\eqn{beta_S}).
 }
 }
 \details{

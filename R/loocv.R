@@ -15,12 +15,13 @@
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).
-##' @param unusedtrial A list of trial not to be taken into account in the cross-validation
+##' @param unusedtrial A list of trial not to be taken into account in the cross-validation.
+##' This parameter is useful when after excluding some trials, the model is facing convergence problem
 ##' @param var.used This argument takes two values. The first one is \code{"error.meta"}
-##' and indicates if the prediction error take into account
-##' the estimation error of the estimates of the parameters. If the estimates 
-##' are suppose knew or if the dataset includes a high number of trials with 
-##' a high number of subject per trial, value \code{No.error} can be used. 
+##' and indicates if the prediction variance takes into account
+##' the estimation errors from the estimates of the parameters. If estimates 
+##' are suppose known or if the dataset includes a high number of trials with 
+##' a high number of subject per trial, value \code{"No.error"} can be used. 
 ##' The default is \code{error.meta}.
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param print.times a logical parameter to print estimation time. Default is TRUE.
@@ -54,12 +55,12 @@
 ##'          full.data = 0, random.generator = 1, seed = 0, nb.reject.data = 0)
 ##' 
 ##' ###--- Joint surrogate model ---###
-##'  (Computation takes around 5 minutes)
-##' 
+##'  
 ##' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
 ##'                    nb.mc = 300, nb.gh = 20)
 ##'                 
-##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 25)
+##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 26)
+##' dloocv$result
 ##' 
 ##' }
 ##' 
