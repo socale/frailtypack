@@ -32,7 +32,8 @@ and confidence intervals. Default of 3 digits is used.}
 \item{...}{other unused arguments.}
 }
 \value{
-Returns and display a dataframe including for each trial the observed 
+Returns and display a dataframe including for each trial the number of included subjects, 
+the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint (if available) and the predicted treatment effect on the 
 true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 

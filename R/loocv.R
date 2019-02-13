@@ -29,7 +29,7 @@
 ##' @param print.times a logical parameter to print estimation time. Default is TRUE.
 ##' 
 ##' @return Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
-##' including for each trial the observed 
+##' including for each trial the number of included subjects, the observed 
 ##' treatment effect on the surrogate endpoint, the observed treatment effect on
 ##' the true endpoint and the predicted treatment effect on the 
 ##' true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
@@ -88,8 +88,8 @@ loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
   
   trial <- unique(dataUse$trialID)
   # init of the result
-  d <- data.frame(matrix(rep(NA,7), nrow = 1, ncol = 7))[-1,]
-  names(d) <- c("trialID","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
+  d <- data.frame(matrix(rep(NA,8), nrow = 1, ncol = 8))[-1,]
+  names(d) <- c("trialID","ntrial","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
   
   for(i in 1:length(trial)){
     if(!(i %in% unusedtrial)){ # one can identifie trials that pose problem when they are removed, and then ignore them

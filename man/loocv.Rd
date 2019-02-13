@@ -30,7 +30,7 @@ and confidence intervals. Default of 3 digits is used.}
 }
 \value{
 Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
-including for each trial the observed 
+including for each trial the number of included subjects, the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint and the predicted treatment effect on the 
 true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 

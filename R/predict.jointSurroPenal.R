@@ -33,7 +33,8 @@
 ##' and confidence intervals. Default of 3 digits is used.
 ##' @param ... other unused arguments.
 ##' 
-##' @return Returns and display a dataframe including for each trial the observed 
+##' @return Returns and display a dataframe including for each trial the number of included subjects, 
+##' the observed 
 ##' treatment effect on the surrogate endpoint, the observed treatment effect on
 ##' the true endpoint (if available) and the predicted treatment effect on the 
 ##' true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
@@ -113,9 +114,11 @@
   }
   
   trial <- unique(data$trialID)
+  trialtable <- table(data$trialID)
+  
   if(F %in% (c("timeT","statusT") %in% names(data))){
-    matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 5))
-    names(matrixPred) <- c("trialID","bata.S", "beta.T.i", "Inf.95.CI", "Sup.95.CI" )
+    matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 6))
+    names(matrixPred) <- c("trialID","ntrial","bata.S", "beta.T.i", "Inf.95.CI", "Sup.95.CI" )
     matrixPred$trialID <- trial
     for(i in 1:length(trial)){
       subdata <- data[data$trialID == trial[i],]
@@ -123,8 +126,8 @@
     }
   }
   else{
-    matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 7))
-    names(matrixPred) <- c("trialID","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
+    matrixPred <- data.frame(matrix(0, nrow = length(trial), ncol = 8))
+    names(matrixPred) <- c("trialID","ntrial","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
     matrixPred$trialID <- trial
     for(i in 1:length(trial)){
       subdata <- data[data$trialID == trial[i],]
@@ -164,7 +167,9 @@
     matrixPred$Inf.95.CI[i] <- matrixPred$beta.T.i[i] - qnorm(1-alpha./2) * sqrt(variance)
     matrixPred$Sup.95.CI[i] <- matrixPred$beta.T.i[i] + qnorm(1-alpha./2) * sqrt(variance)
     
-    matrixPred[,-1] <- round(matrixPred[,-1],dec)
+    # matrixPred[i,-c(1,2)] <- round(matrixPred[i,-c(1,2)],dec)
+    # ajout du nombre d'essais
+    matrixPred$ntrial[i] <- trialtable[matrixPred[i,1]]
     
     # je mets une "*" si la valeur observee est incluse dans l'intervalle de prediction
     if(!(F %in% (c("timeT","statusT") %in% names(data)))){
@@ -174,6 +179,7 @@
         matrixPred[i,ncol(matrixPred)] <- " "
     }
   }
+  matrixPred[,-c(1,2,8)] <- round(matrixPred[,-c(1,2,8)],dec)
   
   
  # print(matrixPred)
