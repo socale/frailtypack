@@ -6,7 +6,7 @@
 canditate surrogate endpoint.}
 \usage{
 \method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.meta", 
-alpha. = 0.05, ...)
+alpha. = 0.05, dec = 3, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -25,6 +25,9 @@ a high number of subject per trial, value \code{No.error} can be used.
 The default is \code{error.meta}.}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
+
+\item{dec}{The desired number of digits after the decimal point for parameters
+and confidence intervals. Default of 3 digits is used.}
 
 \item{...}{other unused arguments.}
 }

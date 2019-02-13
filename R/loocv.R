@@ -11,7 +11,7 @@
 ##' @aliases loocv 
 ##' @usage
 ##' 
-##' loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
+##' loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, dec = 3, print.times = TRUE)
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).
@@ -24,6 +24,8 @@
 ##' a high number of subject per trial, value \code{"No.error"} can be used. 
 ##' The default is \code{error.meta}.
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
+##' @param dec The desired number of digits after the decimal point for parameters
+##' and confidence intervals. Default of 3 digits is used.
 ##' @param print.times a logical parameter to print estimation time. Default is TRUE.
 ##' 
 ##' @return Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
@@ -65,7 +67,7 @@
 ##' }
 ##' 
 ##' 
-loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
+loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, dec = 3, print.times = TRUE)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
@@ -142,7 +144,7 @@ loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
     if(is.null(joint.surro)) 
       cat(c("===Model without trial", i, "did not converged!!! please try to modified initial values or others parameters===: \n"))
     else{
-      d1 <- predict(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],])
+      d1 <- predict(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],], d = dec)
       # Merger of the results
       d <- rbind(d,d1)
       # impression du temps de calcul

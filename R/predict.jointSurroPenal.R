@@ -15,7 +15,7 @@
 ##' @usage
 ##' 
 ##' \method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.meta", 
-##' alpha. = 0.05, ...)
+##' alpha. = 0.05, dec = 3, ...)
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).
 ##' @param datapred Dataset to used for the prediction. If this argument is specified,
@@ -29,6 +29,8 @@
 ##' a high number of subject per trial, value \code{No.error} can be used. 
 ##' The default is \code{error.meta}.
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
+##' @param dec The desired number of digits after the decimal point for parameters
+##' and confidence intervals. Default of 3 digits is used.
 ##' @param ... other unused arguments.
 ##' 
 ##' @return Returns and display a dataframe including for each trial the observed 
@@ -69,7 +71,8 @@
 ##' }
 ##' 
 ##' 
-"predict.jointSurroPenal" <- function (object, datapred = NULL, var.used = "error.meta", alpha. = 0.05, ...)
+"predict.jointSurroPenal" <- function (object, datapred = NULL, var.used = "error.meta", alpha. = 0.05
+                                       , dec = 3, ...)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
@@ -160,6 +163,8 @@
     
     matrixPred$Inf.95.CI[i] <- matrixPred$beta.T.i[i] - qnorm(1-alpha./2) * sqrt(variance)
     matrixPred$Sup.95.CI[i] <- matrixPred$beta.T.i[i] + qnorm(1-alpha./2) * sqrt(variance)
+    
+    matrixPred[,-1] <- round(matrixPred[,-1],dec)
     
     # je mets une "*" si la valeur observee est incluse dans l'intervalle de prediction
     if(!(F %in% (c("timeT","statusT") %in% names(data)))){

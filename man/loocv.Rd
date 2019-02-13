@@ -5,7 +5,7 @@
 \title{Leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, print.times = TRUE)
+loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, dec = 3, print.times = TRUE)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -22,6 +22,9 @@ a high number of subject per trial, value \code{"No.error"} can be used.
 The default is \code{error.meta}.}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
+
+\item{dec}{The desired number of digits after the decimal point for parameters
+and confidence intervals. Default of 3 digits is used.}
 
 \item{print.times}{a logical parameter to print estimation time. Default is TRUE.}
 }
