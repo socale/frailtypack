@@ -2,6 +2,7 @@
 output:
   html_document: default
   pdf_document: default
+  word_document: default
 ---
 
 <!--
@@ -37,8 +38,10 @@ output:
 |     `Model evaluation `                         |                                       |                                       |                                       |                                       |                                        |                                        |                                       |                                      |                                            |                                       |                                       |                                       |                                  
 | Cmeasures                                       | ![](blue_x.png)                       |                                       |                                       |                                       |                                        |                                        |                                       |                                      |                                            |                                       |                                       |                                       |
 | Epoce                                           |                                       |                                       |                                       |                                       |  ![](blue_x.png)                       |                                        |                                       |                                      | ![](blue_x.png)                            | ![](blue_x.png)                       |                                       |                                       |
+| STE                      |                                       |                       |                                       |                                       |                                        |                                        |                                       |                                      |                                            |                                       |                                       |  ![](blue_x.png)                       |
+| Prediction of treatment effects                      |                                       |                        |                                       |                                       |                                        |                                        |                                       |                                      |                                            |                                       |                                       |  ![](blue_x.png)                       |
 
-Table 1: Package characteristics. Blue cross is for option available for a given type of model in the package on CRAN, orange cross is for option included in the package but not on CRAN yet. Empty cells mean that an option is not available for a given type of model (either not coded yet or simply not applicable). RE = Recurrent Event ; TE = Terminal Event ; LO = Longitudinal Outcome
+Table 1: Package characteristics. Blue cross is for option available for a given type of model in the package on CRAN, orange cross is for option included in the package but not on CRAN yet. Empty cells mean that an option is not available for a given type of model (either not coded yet or simply not applicable). RE = Recurrent Event ; TE = Terminal Event ; LO = Longitudinal Outcome; STE = Surrogate threshold effect
 
 
 

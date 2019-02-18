@@ -97,7 +97,7 @@
     p <- ifelse(as.numeric(beta$P) < 10^-10, "< e-10", beta$P)
     beta$P <- p
     
-    cat("Estimates for variances parameters of the random effets", "\n")
+    cat("Estimates for variances parameters of the random effects", "\n")
     rownames(beta)[(nrow(beta) - 4)] <- "sigma2_S"
     rownames(beta)[(nrow(beta) - 3)] <- "sigma2_T"
     rownames(beta)[(nrow(beta) - 2)] <- "sigma_ST"
@@ -107,7 +107,7 @@
     beta2$Estimate <- round(beta2$Estimate,min(4,len))
    
     cat(" ", "\n")
-    cat("Estimates for the fixed treatment effets", "\n")
+    cat("Estimates for the fixed treatment effects", "\n")
     print(beta2)
     
     cat("---","\n")
@@ -116,7 +116,7 @@
     cat(" ", "\n")
     cat(" ","\n")
     
-    cat("hazard ratios (HR) and confidence intervals for the fixed treatment effets", "\n")
+    cat("hazard ratios (HR) and confidence intervals for the fixed treatment effects", "\n")
     HR <- round(exp(coef[((nrow(coef) - 3) : (nrow(coef)-2)),-2]), len)
     names(HR)[1] <- c("exp(coef)")
     print(HR)
