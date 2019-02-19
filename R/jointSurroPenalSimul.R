@@ -152,7 +152,7 @@
 #' different trial sizes, fill in \code{prop.subj.trial} the proportions
 #' of subjects to be considered per trial. The default is \code{1}.
 #' @param prop.subj.trial Vector of the proportions of subjects to consider per trial. 
-#' Requires if \code{equi.subj.trial} is different to \code{1}. The size of this vector is equal to the 
+#' Requires if the argument \code{equi.subj.trial} is different to \code{1}. The size of this vector is equal to the 
 #' number of trials.
 #' @param equi.subj.trt Indicates if the same proportion of treated subjects per trial should be
 #' considered \code{(1)} or not \code{(0)}. If \code{0}, fill in \code{prop.subj.trt} 

@@ -83,7 +83,8 @@
 ##'                    nb.gh = 20, indicator.alpha = 1, n.knots = 6)
 ##'                    
 #'  Ktau3 <- jointSurroTKendall(joint.surrogate)
-#'  Ktau4 <- jointSurroTKendall(joint.surrogate,nb.MC.kendall = 4000,seed = 1)
+#'  Ktau4 <- jointSurroTKendall(joint.surrogate,nb.MC.kendall = 4000,
+#'           seed = 1)
 #' }
 #' 
 jointSurroTKendall <- function(object = NULL, theta, gamma, alpha = 1, zeta = 1,
