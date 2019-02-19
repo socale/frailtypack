@@ -63,3 +63,36 @@ bibentry(bibtype = "Article",
 
   header       = "To cite frailtypack in publications use:"
 )
+
+
+bibentry(bibtype = "Manual",
+  title        = "{frailtypack}: General Frailty Models: Shared, Joint and Nested Frailty Models with Prediction; Evaluation of Failure-Time Surrogate Endpoints",
+  author       = c(person(given = "Virginie",
+                          family = "Rondeau",
+                          email = "Virginie.Rondeau@u-bordeaux.fr"),
+                   person(given = "Juan R.",
+                          family = "Gonzalez"),
+                   person(given = "Yassin",
+                          family = "Mazroui",
+                          email = "Yassin.Mazroui@upmc.fr"),
+                   person(given = "Audrey",
+                          family = "Mauguen",
+                          email = "Audrey.Mauguen@u-bordeaux.fr"),
+                   person(given = "Amadou",
+                          family = "Diakite"),
+                   person(given = "Alexandre",
+                          family = "Laurent"),
+                   person(given = "Myriam",
+                          family = "Lopez"),                          
+                   person(given = "Agnieszka",
+                          family = "Kr\\'{o}l",
+                          email = "Agnieszka.Listwon@u-bordeaux.fr"),
+                   person(given = "Casimir L.",
+                          family = "Sofeu",
+                          email = "casimir.sofeu@u-bordeaux.fr")),
+  year         = "2019",
+  note         = "{R} package version 3.0.3",
+  url          = "https://CRAN.R-project.org/package=frailtypack",
+  
+  header       = "To cite frailtypack in publications use:"
+)
