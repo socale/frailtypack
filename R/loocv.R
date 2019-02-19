@@ -11,7 +11,8 @@
 ##' @aliases loocv 
 ##' @usage
 ##' 
-##' loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, dec = 3, print.times = TRUE)
+##' loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
+##' dec = 3, print.times = TRUE)
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling \code{jointSurroPenal} function).

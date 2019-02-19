@@ -5,7 +5,8 @@
 \title{Leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, dec = 3, print.times = TRUE)
+loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
+dec = 3, print.times = TRUE)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
