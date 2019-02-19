@@ -6,8 +6,9 @@
 \usage{
 jointSurroTKendall(object = NULL, theta, gamma, alpha = 1, zeta = 1, 
                    sigma.v = matrix(rep(0,4),2,2), int.method = 0, 
-                   nb.MC.kendall = 10000, nb.gh = 32, random.generator = 1, 
-                   random = 0, random.nb.sim = 0, seed = 0, ui = 1)
+                   nb.MC.kendall = 10000, nb.gh = 32, 
+                   random.generator = 1, random = 0, 
+                   random.nb.sim = 0, seed = 0, ui = 1)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class. The default is \code{NULL}}
@@ -66,7 +67,8 @@ The actual value of nodes used is the maximum between \code{20} and \code{nb.gh}
 }
 \examples{
 Ktau1 <- jointSurroTKendall(theta = 3.5, gamma = 2.5, nb.gh = 32)
-Ktau2 <- jointSurroTKendall(theta = 1, gamma = 0.8, alpha = 1, zeta = 1, nb.gh = 32)
+Ktau2 <- jointSurroTKendall(theta = 1, gamma = 0.8, alpha = 1, zeta = 1, 
+         nb.gh = 32)
 
 ###---Kendall's \\eqn{\\tau} from a joint surrogate model ---###
 

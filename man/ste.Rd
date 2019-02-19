@@ -5,11 +5,12 @@
 \title{Surrogate threshold effect for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-ste(object, var.used = "error.meta", alpha. = 0.05, pred.int.use = "up")
+ste(object, var.used = "error.meta", alpha. = 0.05, 
+    pred.int.use = "up")
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling \code{jointSurroPenal} function).}
+(output from calling the function \code{jointSurroPenal}).}
 
 \item{var.used}{This argument takes two values. The first one is \code{"error.meta"}
 and indicates if the prediction error take into account
@@ -72,8 +73,8 @@ The details on the computation of STE is describes in
 
 data(dataOvarian)
 joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8, 
-                init.kappa = c(2000,1000), indicator.alpha = 0, nb.mc = 200, 
-                scale = 1/365)
+                init.kappa = c(2000,1000), indicator.alpha = 0, 
+                nb.mc = 200, scale = 1/365)
 
 # STE
 # ste(joint.surro.ovar)

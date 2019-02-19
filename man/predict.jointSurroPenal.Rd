@@ -10,7 +10,7 @@ alpha. = 0.05, dec = 3, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling \code{jointSurroPenal} function).}
+(output from calling the function \code{jointSurroPenal}).}
 
 \item{datapred}{Dataset to used for the prediction. If this argument is specified,
 the data structure must be the same as the parameter \code{data} in the 
@@ -63,8 +63,8 @@ the estimate of the treatment effect on the surrogate endpoint in the new trial.
 
 data(dataOvarian)
 joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8, 
-                init.kappa = c(2000,1000), indicator.alpha = 0, nb.mc = 200, 
-                scale = 1/365)
+                init.kappa = c(2000,1000), indicator.alpha = 0, 
+                nb.mc = 200, scale = 1/365)
 
 # prediction of the treatment effects on the true endpoint in each trial of 
 the dataOvarian dataset

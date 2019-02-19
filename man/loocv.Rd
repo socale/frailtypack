@@ -10,7 +10,7 @@ dec = 3, print.times = TRUE)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling \code{jointSurroPenal} function).}
+(output from calling the function \code{jointSurroPenal}).}
 
 \item{unusedtrial}{A list of trial not to be taken into account in the cross-validation.
 This parameter is useful when after excluding some trials, the model is facing convergence problem}
@@ -55,7 +55,8 @@ Leave-one-out crossvalidation for the evaluation of the joint surrogate model
  data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
          alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, 
          sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25, 
-         full.data = 0, random.generator = 1, seed = 0, nb.reject.data = 0)
+         full.data = 0, random.generator = 1, seed = 0, 
+         nb.reject.data = 0)
 
 ###--- Joint surrogate model ---###
  

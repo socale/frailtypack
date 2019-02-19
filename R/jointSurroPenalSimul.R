@@ -158,7 +158,7 @@
 #' considered \code{(1)} or not \code{(0)}. If \code{0}, fill in \code{prop.subj.trt} 
 #' the proportions of treated subjects to be considered per trial. The default is \code{1}.
 #' @param prop.subj.trt Vector of the proportions of treated subjects to consider per trial. 
-#' Requires if \code{equi.subj.trt} is different to \code{0.5}. The size of this vector is equal to the 
+#' Requires if the argument \code{equi.subj.trt} is different to \code{0.5}. The size of this vector is equal to the 
 #' number of trials.
 #' @param theta2 True value for \eqn{\theta}. The default is \code{3.5}.
 #' @param zeta True value for \eqn{\zeta} in case of simulation. The default is \code{1}.

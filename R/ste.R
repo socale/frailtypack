@@ -36,9 +36,10 @@
 ##' @aliases ste 
 ##' @usage
 ##' 
-##' ste(object, var.used = "error.meta", alpha. = 0.05, pred.int.use = "up")
+##' ste(object, var.used = "error.meta", alpha. = 0.05, 
+##'     pred.int.use = "up")
 ##' @param object An object inheriting from \code{jointSurroPenal} class
-##' (output from calling \code{jointSurroPenal} function).
+##' (output from calling the function \code{jointSurroPenal}).
 ##' @param var.used This argument takes two values. The first one is \code{"error.meta"}
 ##' and indicates if the prediction error take into account
 ##' the estimation error of the estimates of the parameters. If the estimates 
@@ -77,8 +78,8 @@
 ##' 
 ##' data(dataOvarian)
 ##' joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8, 
-##'                 init.kappa = c(2000,1000), indicator.alpha = 0, nb.mc = 200, 
-##'                 scale = 1/365)
+##'                 init.kappa = c(2000,1000), indicator.alpha = 0, 
+##'                 nb.mc = 200, scale = 1/365)
 ##' 
 ##' # STE
 ##' # ste(joint.surro.ovar)

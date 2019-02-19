@@ -85,7 +85,7 @@ The default is \code{0}. Required if \code{random.generator} is set to 1.}
 
 \item{random.nb.sim}{required if \code{random.generator} is set to 1, and if \code{random} is set to 1.}
 
-\item{seed}{The seed to use for data (or samples) generation. Required if \code{random.generator} is set to 1. 
+\item{seed}{The seed to use for data (or samples) generation. Required if the argument \code{random.generator} is set to 1. 
 Must be a positive value. If negative, the program do not account for seed. The default is \code{0}.}
 
 \item{nb.reject.data}{Number of generation to reject before the considered dataset. this parameter is required
@@ -119,10 +119,11 @@ the desired individual level correlation (Kendall's \eqn{\tau}) depend on the va
 }
 \examples{
 
-data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, alpha = 1.5, 
-            theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, sigma.t = 0.7,
-            rsqrt = 0.8, betas = -1.25, betat = -1.25, full.data = 0, 
-            random.generator = 1, seed = 0, nb.reject.data = 0)
+data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
+            alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
+            zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, 
+            betat = -1.25, full.data = 0, random.generator = 1, 
+            seed = 0, nb.reject.data = 0)
 
 }
 \references{
