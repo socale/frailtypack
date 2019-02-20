@@ -463,7 +463,7 @@ joint.surro.sim.MCPGH <- jointSurroPenal(data = data.sim, int.method = 2,
                    
 # Results
 summary(joint.surro.sim.MCGH)
-summary(joint.surro.sim.PMCGH)
+summary(joint.surro.sim.MCPGH)
 
 # Data from the advanced ovarian cancer randomized clinical trials.
 # Joint surrogate model with \\eqn{\\zeta} fixed to \\code{1}, 8 nodes spline 
