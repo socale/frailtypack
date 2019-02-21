@@ -149,14 +149,14 @@
     integer,intent(inout)::ni,ier,istop
     double precision,dimension(m*(m+3)/2),intent(out)::v
     double precision,intent(out)::rl
-    double precision,dimension(m),intent(inout)::b
+    double precision,dimension(:),intent(inout)::b
     double precision,intent(out)::ca,cb,dd
     double precision,dimension(2)::k0
         double precision,dimension(2)::zero
 !   variables locales
     integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k
     double precision,dimension(m*(m+3)/2)::fu,v1,vnonpen
-    double precision,dimension(m)::delta,b1,bh
+    double precision,dimension(:),allocatable::delta,b1,bh ! /scl 21/02/2019 allocation des vecteur pour eviter des probleme lorsqu'on estime un seul parametre 
     double precision::da,dm,ga,tr
     double precision::GHG,step,eps,vw,fi,maxt, &
     z,rl1,th,ep
@@ -165,6 +165,8 @@
 !---------- ajout
     integer::kkk
     
+	! /scl 21/02/2019 allocation des vecteur pour eviter des probleme lorsqu'on estime un seul parametre 
+	allocate(delta(m),b1(m),bh(m))
     ! if(model==10) then
         ! !print*,"suis la dans Marquard"
         ! stop
@@ -503,6 +505,7 @@
     end if
        
  110   continue
+		deallocate(delta,b1,bh) ! scl_22-09-2017
        return    
        end subroutine marq98j_scl
 
@@ -518,13 +521,15 @@
     integer,intent(in)::m
     double precision,intent(inout)::rl
     double precision,dimension(2)::k0
-    double precision,dimension(m),intent(in)::b
+    double precision,dimension(:),intent(in)::b ! scl_22-09-2017
     double precision,dimension((m*(m+3)/2)),intent(out)::v
-    double precision,dimension(m)::fcith
+    double precision,dimension(:),allocatable::fcith ! scl_22-09-2017
     integer ::i0,m1,ll,i,k,j,iun
     double precision::fctnames,thn,th,z,vl,th2,vaux
     external::fctnames
     
+	allocate(fcith(m)) ! scl_22-09-2017
+	fcith = 0.d0
     !!print*,"suis dans derivaJ, model=",model
     !stop
     select case(model)
@@ -589,6 +594,7 @@
     end do
 
 123   continue    
+	deallocate(fcith) ! scl_22-09-2017
     return
     
     end subroutine derivaj
@@ -604,9 +610,9 @@
       implicit none
     integer, intent(in)::individu ! indice de l'individu sur lequel on maximise la vraisemblance
       integer,intent(in)::m
-      double precision,dimension(m),intent(in)::b
+      double precision,dimension(:),intent(in)::b !scl_22-09-2017
       double precision,intent(inout)::vw
-      double precision,dimension(m),intent(inout)::bh,delta
+      double precision,dimension(:),intent(inout)::bh,delta ! scl_22-09-2017 j'enleve la dimension prour prevenir le cas 1
       double precision,intent(inout)::fim,step
       double precision::vlw,vlw1,vlw2,vlw3,vm,fi1,fi2,fi3
       double precision,dimension(2)::k0
@@ -1039,8 +1045,8 @@
     
     integer, intent(in)::individu ! indice de l'individu sur lequel on maximise la vraisemblance
     integer,intent(in)::m  
-    double precision,dimension(m),intent(in)::b,delta  
-    double precision,dimension(m),intent(out)::bk 
+    double precision,dimension(:),intent(in)::b,delta  !scl_22-09-2017 j'enleve la dimension
+    double precision,dimension(:),intent(out)::bk  !scl_22-09-2017 j'enleve la dimension
     double precision,intent(out)::fi 
     double precision::vw,fctnames,z    
     double precision,dimension(2)::k0
@@ -1069,7 +1075,7 @@
     implicit none
     
     integer,intent(in)::m
-    double precision,dimension(m),intent(in)::delta
+    double precision,dimension(:),intent(in)::delta !scl_22-09-2017 j'enleve la dimension
     double precision,intent(out)::maxt
     integer::i 
     
