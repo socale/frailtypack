@@ -195,7 +195,6 @@
         !!print*,b(m-2+1),b(m),b(m-4+1),b(m-4+2)
 !        !print*,b
         call derivaj(b,m,v,rl,k0,fctnames,individu)
-
     rl1=rl
     if(rl.eq.-1.D9) then
         istop=4
@@ -217,7 +216,6 @@
     end do
     
         call dsinvj(fu,m,ep,ier)
-    
     if (ier.eq.-1) then ! hessienne non inversible
         !!print*,"here"
         dd=epsd+1.d0
@@ -433,7 +431,7 @@
                 hess(i,j)=v1((j-1)*j/2+i)
             end do
         end do
-
+		
         do i=2,m1
             do j=1,i-1
                 hess(i,j)=hess(j,i)
@@ -472,6 +470,8 @@
             I_hess(i,j)=vnonpen((j-1)*j/2+i)
         end do
     end do
+
+
    
     do i=2,m
         do j=1,i-1
@@ -503,7 +503,6 @@
     end if
        
  110   continue
-
        return    
        end subroutine marq98j_scl
 

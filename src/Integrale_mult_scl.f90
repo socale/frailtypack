@@ -1104,7 +1104,7 @@ module monteCarlosMult_Gaus
     end do
     
     !prediction des effects aleatoires a posteori au niveau individuel en cas de quadrature pseudo-adaptative
-    
+    !stop
     if(adaptative .and. control_adaptative==1) then ! on effectue le changement de variable
         nmax_2=0
         kk=1
@@ -1133,10 +1133,12 @@ module monteCarlosMult_Gaus
                 np_2=1
                 np_1=1
                 effet2=0
+				!call intpr("je suis la pour pseudo-adpdative 1136", -1, adaptative, 1)
                 allocate(I_hess_scl(np_2,np_2),v(1),b_2(1))
-                allocate(H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
-                allocate(H_hessOut(np_2,np_2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2))
-                            
+                allocate(H_hess_scl(np_2,np_2),hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
+                allocate(H_hessOut(np_2,np_2))
+                !allocate(HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),invBi_chol_2(np_2,np_2))
+				call intpr("je suis la pour pseudo-adpdative 1136", -1, adaptative, 1)
                 b_2(1)=0.5d0
                 v=0.d0
                 
@@ -1152,17 +1154,22 @@ module monteCarlosMult_Gaus
                 vt_i=fraili(ind_frail,2)
                 u_i=fraili(ind_frail,3)
                 
+				!call intpr("je suis la pour pseudo-adpdative 1156", -1, adaptative, 1)
                 call marq98J_scl(k0_2,b_2,np_1,ni,v,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_ind,I_hess_scl,H_hess_scl,&
                                 hess_scl,vvv_scl,individu_j)
+				!call intpr("istop pseudo-adpda 1160", -1, istop, 1)				
                 nparamfrail=nparamfrail_save ! on restitu sa valeur avant de continuer
                 model=model_save
                 maxiter=maxiter_save
-                                    
+                
+				
+				!call intpr("ind_frail pseudo-adpd 1165", -1, ind_frail, 1)
                 if (istop.ne.1 .and. ind_frail.eq.5) then
                     ind_frail=ind_frail+1 ! on prend un autre jeux d'effets aleatoire: le suivant
                     goto 1241
                 endif
                 
+				!call intpr("istop pour pseudo-adpdative 1171", -1, istop, 1)
                 if(istop .ne.1) then
                     non_conv=1
                     ! !print*,"2-individu",ii,"wij=",b_2,"istop=",istop,"ier=",ier,"v=",v
@@ -1173,7 +1180,7 @@ module monteCarlosMult_Gaus
                 
                 switch_adaptative=1 ! Cas de convergence, car goto non execute
                 ui_chap(ii,1)=b_2(1)        
-                
+                !call intpr("je suis la pour pseudo-adpdative 1179", -1, adaptative, 1)
                 do jj=1,np_1
                     do sss=1,np_1
                         H_hessOut(jj,sss)= I_hess_scl(jj,sss)
@@ -1183,7 +1190,20 @@ module monteCarlosMult_Gaus
                 invBi_chol_Individuel(ii)=dsqrt(H_hess_scl(1,1))
                 !calcul du determinant de la cholesky de l'inverse de la hessienne                    
                 invBi_cholDet(ii)=invBi_chol_Individuel(ii) !individuel
-                deallocate(H_hess_scl,I_hess_scl,H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl,v,b_2)
+				
+				!call intpr("je suis la pour pseudo-adpdative 1189", -1, adaptative, 1)
+				deallocate(H_hessOut)
+				!deallocate(HIH,HIHOut,IH,invBi_chol_2)
+                deallocate(H_hess_scl)
+				
+				deallocate(I_hess_scl)
+				deallocate(hess_scl)
+				!call intpr("je suis la pour pseudo-adpdative 1193", -1, adaptative, 1)
+				deallocate(vvv_scl)
+				!call intpr("je suis la pour pseudo-adpdative 1200", -1, adaptative, 1)
+				deallocate(v)
+				deallocate(b_2)
+				!call intpr("je suis la pour pseudo-adpdative 1192", -1, adaptative, 1)
             enddo ! fin estimation des w_ij_chapeau
             kk=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
         enddo
