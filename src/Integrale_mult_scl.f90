@@ -1138,7 +1138,7 @@ module monteCarlosMult_Gaus
                 allocate(H_hess_scl(np_2,np_2),hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
                 allocate(H_hessOut(np_2,np_2))
                 !allocate(HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),invBi_chol_2(np_2,np_2))
-				call intpr("je suis la pour pseudo-adpdative 1136", -1, adaptative, 1)
+				!call intpr("je suis la pour pseudo-adpdative 1136", -1, adaptative, 1)
                 b_2(1)=0.5d0
                 v=0.d0
                 

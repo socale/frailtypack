@@ -544,7 +544,8 @@
     double precision::fctnames,thn,th,z,vl,th2,vaux
     external::fctnames
     logical::endDeriva
-
+	
+	fcith = 0.d0
     endDeriva=.false.
     
     select case(model)
