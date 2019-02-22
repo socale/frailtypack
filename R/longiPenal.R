@@ -395,16 +395,23 @@
     if(!is.logical(intercept))stop("The argument 'intercept' must be logical")
     ### Gauss-Hermite method
     
-    if(all(!(c("Standard","Pseudo-adaptive","HRMSYM") %in% method.GH))){
-      stop("Only 'Standard', 'Pseudo-adaptive' and 'HRMSYM' hazard can be specified as a method for the Gaussian quadrature")
+    if(all(!(c("Standard","Pseudo-adaptive","HRMSYM", "Monte-carlo") %in% method.GH))){
+      stop("Only 'Standard', 'Pseudo-adaptive', 'Monte-carlo' and 'HRMSYM' hazard can be specified as a method for the Gaussian quadrature")
     }
-    GH <- switch(method.GH,"Standard"=0,"Pseudo-adaptive"=1,"HRMSYM"=2)
+    GH <- switch(method.GH,"Standard"=0,"Pseudo-adaptive"=1,"HRMSYM"=2,"Monte-carlo"=3)
     
+    if(GH<=2){
     if(!missing(n.nodes) ){
       if(!n.nodes%in%c(5,7,9,12,15,20,32)) stop("Number of points used in the numerical integration must be chosen from following: 5, 7, 9, 12, 15, 20, 32")
       if(n.nodes%in%c(5,7,9,12,15,20,32) && GH==2) warning("Using HRMSYM algorithm the number of points cannot be chosen")
     }else{
       n.nodes <- 9
+    }}else if(GH==3){
+    if(!missing(n.nodes) ){
+      if(n.nodes<1) stop("Number of simulations for Monte-carlo must be positive.")
+    }else{
+      n.nodes <- 200 #default number of simulations for monte-carlo
+    }
     }
     
     ##### hazard specification ######
@@ -1478,7 +1485,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
       b_lme <- matrix(rep(0,length(uni.cluster)*nRE),ncol=nRE,nrow=length(uni.cluster))
       invBi_cholDet <-  matrix(rep(0,length(uni.cluster)),ncol=1,nrow=length(uni.cluster))
       invBi_chol <- matrix(rep(0,length(uni.cluster)*ne_re),ncol=ne_re,nrow=length(uni.cluster))
-      
     }
     
     #================== Survival Data ===================
@@ -1836,7 +1842,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
   # paGH=cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)) = matrix of pseudo-adaptive gauss-hermite initialization from LME
   
       # position of time and interactions for current-level association
-    
     interact <- NULL
     interactB<-NULL
     columns <- names(X_L)
@@ -1854,6 +1859,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
       }
       }}
 
+      
     if(!is.null(interact)){ # continuous
 
     count=0 

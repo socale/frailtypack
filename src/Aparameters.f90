@@ -75,7 +75,7 @@
                 integer,save:: it_rec
                 double precision:: ut2cur,frailpol,frailpol2,frailpol3,frailpol4
                 double precision,dimension(:),allocatable,save :: res1cur,res3cur,res2cur
-    double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,x2Bcur,mu1B,z1Bcur,z1Ycur ! add TwoPart
+    double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,mu1B ! add TwoPart
     double precision,dimension(:),allocatable,save :: Bcurrent, current_meanRaw ! add TwoPart
     integer,save::nmescurB, it_curB !add TwoPart
     end module donnees_indiv
@@ -229,7 +229,7 @@
         double precision,dimension(:),allocatable,save::invBi_cholDet,vet22
         double precision,dimension(:,:),allocatable,save:: invBi_chol,b_lme,mat,matb_chol
         double precision,dimension(:),allocatable,save::v_jf,varv_jf
-        integer :: methodGH,nodes_number,initGH
+        integer,save :: methodGH,nodes_number,initGH
         integer :: res_ind,it,n_wezly
         
         !add current-level association - interaction with time

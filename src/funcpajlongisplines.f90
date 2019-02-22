@@ -8,6 +8,8 @@
         use lois_normales
         use tailles
         use comon
+            use Autres_fonctions, only:rmvnorm!add Monte-carlo
+        use var_surrogate, only: a_deja_simul,graine,aleatoire,nbre_sim,Vect_sim_MC,Chol!,frailt_base,nb_procs
         !use ParametresPourParallelisation
             use residusM
             use optim
@@ -52,8 +54,13 @@
         double precision,dimension(:,:),allocatable :: mat_sigmaB, varcov_marg_invB ! add TwoPart
         double precision,dimension(:),allocatable :: matvB ! add TwoPart
         double precision,dimension(nvaB,nvaB) :: elementB ! add TwoPart
-        
-        
+            double precision,dimension(3):: resultatInt ! add Monte-carlo
+            double precision::func8J,func9J,func10J,func11J, funcTP4J,funcG
+        external::func8J,func9J,func10J,func11J, funcTP4J,funcG ! add Monte-carlo
+        integer::vcdiag ! add Monte-carlo
+        double precision,dimension(nb1)::mu_mc
+    double precision,dimension(nb1,nb1)::vcjm
+    double precision,dimension(nodes_number,nb1)::fraili
             npp = np
         eps_s = 1.d-7
     !    print*,'debut funcpa'
@@ -126,7 +133,28 @@
                 Ut(nea,nea) = sqrt(sigmav**2.d0)
                 Utt(nea,nea) = sqrt(sigmav**2.d0)
             end if
-    
+            
+            if(nb1.eq.1)then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            else if(nb1.eq.2) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            !Chol(1,2)=bh(np-nva-nb_re+2)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            else if(nb1.eq.2) then
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            Chol(3,1)=bh(np-nva-nb_re+3)
+            Chol(2,2)=bh(np-nva-nb_re+4)
+            Chol(3,2)=bh(np-nva-nb_re+5)
+            Chol(3,3)=bh(np-nva-nb_re+6)
+            end if
+            
+            
+ 
+            
         end if
 
     !----------  calcul de ut1(ti) et ut2(ti) ---------------------------
@@ -235,7 +263,7 @@
             integrale1(k) = 0.d0
             integrale2(k) = 0.d0
             integrale3(k) = 0.d0
-            !integrale4(k) = 1.d0
+            !integrale4(k) = 0.d0!!
             aux1(k)=0.d0
             aux2(k)=0.d0
         end do
@@ -337,9 +365,11 @@
             if(TwoPart.eq.1) then
             sum_matB=0.d0
             end if
-    
+
+    a_deja_simul=0 ! add Monte-carlo
+    fraili=0.d0
             do ig=1,ng
-    
+            
                 ycurrent  = 0.d0
                 auxig=ig
                 choix = 4
@@ -385,7 +415,7 @@
             end do
         end if
     end if
-    
+
                 res1cur = 0.d0
                 res2cur = 0.d0
                 res3cur = 0.d0
@@ -453,7 +483,6 @@
             end do
         end do
     end if          
-
     
             varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nb1), &
                     MATMUL(Ut(1:nb1,1:nb1),Utt(1:nb1,1:nb1))),transpose(ziy((it+1):(it+nmescur),1:nb1)))+ &
@@ -512,20 +541,21 @@
             end if
             xea = 0.d0
             
-    !       open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-    !    write(2,*)'nb1',nb1
-    !    write(2,*)'typeJoint',typeJoint
-    !    write(2,*)'element',element
-    !    write(2,*)'varcov_marg',varcov_marg
-    !    write(2,*)'X2',X2
-    !    write(2,*)'bh',bh
-    !    write(2,*)'mu',mu
-    !    write(2,*)' ut1', ut1
-    !    write(2,*)'dut1',dut1
-    !    write(2,*)'ut2',ut2
-    !    write(2,*)'dut2',dut2
-    !   close(2)
-       
+  !         open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+  !      write(2,*)'nb1',nb1
+  !      write(2,*)'typeJoint',typeJoint
+  !      write(2,*)'element',element
+  !      write(2,*)'varcov_marg',varcov_marg
+  !      write(2,*)'X2',X2
+  !      write(2,*)'bh',bh
+  !      write(2,*)'mu',mu
+  !      write(2,*)' ut1', ut1
+  !      write(2,*)'dut1',dut1
+  !      write(2,*)'ut2',ut2
+  !      write(2,*)'dut2',dut2
+  !     close(2)
+
+
     if(TwoPart.eq.1) then
         allocate(matvB(nmescurB*(nmescurB+1)/2),varcov_marg_invB(nmescurB,nmescurB))
         do j=1,nmescurB
@@ -563,11 +593,26 @@
         deallocate(matvB,varcov_marg_invB)
     end if    
 
-
             ut2cur = ut2(nt1dc(ig))
-    
+            
+!if(ig.eq.2) then
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+! !      write(2,*)'integrale4(ig)',integrale4(ig)
+! !write(2,*)'int',int
+! write(2,*)'pint'
+!     close(2)
+!end if
+       
+
                     choix = 3
             if(methodGH.le.1) then
+            
+        if(nmesy(numpat).gt.0) then
+            allocate(mu1(nmesy(numpat),1))
+        else
+            allocate(mu1(1,1))
+        end if
+
                 if(typeJoint.eq.2.and.nb1.eq.1) then
                     call gauherJ21(int,choix,nodes_number)
                 else if(typeJoint.eq.2.and.nb1.eq.2) then
@@ -583,13 +628,88 @@
                 else if(typeJoint.eq.3.and.nb1.eq.3) then
                     call gauherJ33(int,choix,nodes_number)
                 end if
+deallocate(mu1) 
                 integrale4(ig) =int !result(1) !
-            else
+        
+            else if(methodGH.eq.2)then
                 call  hrmsym(nea, nf2,genz(1),genz(2),vraistot_splines, epsabs, &
                     epsrel, restar, result, abserr2, neval, ifail, work)
                 integrale4(ig) =result(1)
-            end if
+                else if(methodGH.eq.3) then
+                !allocate(mu_MC(ng)) !initialisation du vecteur des moyennes des effects alatoires
+                !allocate(vc_MC(ng, ng)) !initialisation de la matrice de variance covariance pour le MC
+               ! mu_MC=0.d0
+               ! vc_MC=0.d0
+               ! do l=1,nsujety
+               !     vc_MC(l,l)=theta2    
+               ! end do      
 
+!fraili=0.d0
+mu_mc=0.d0
+vcjm=0.d0
+!graine=0              
+!aleatoire=1
+nbre_sim=nodes_number
+vcjm = Chol
+
+                open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+     write(2,*)' nea', nea
+      write(2,*)'fraili',fraili
+      write(2,*)'a_deja_simul',a_deja_simul
+        close(2)
+
+    if(a_deja_simul.eq.0) then
+
+    !    call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation pour lagraine
+
+        !!print*,"nsimu=",nsimu,size(Vect_sim_MC,1),size(Vect_sim_MC,2)
+        !stop
+       ! Vect_sim_MC=0.d0
+ !   l=0  
+ !       do while(l.le.nsimu)
+ !         !  usim=0.d0!
+
+ !           call bgos(SX,0,Vect_sim_MC(l,1),x2222,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite pour ws_ij
+ !           call bgos(SX,0,Vect_sim_MC(l,2),x2222,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite pour wt_ij
+
+ !           l=l+1
+!        end do    
+call rmvnorm(mu_mc,vcjm,nbre_sim,1,fraili)
+        a_deja_simul=1 ! pour dire qu'on ne simule plus
+    endif
+
+
+
+    !    allocate(Vect_sim_MC(nbre_sim,nb1))
+
+!Vect_sim_MC=0.d0
+  
+              !  vcdiag=0 ! la matrice n'est plus diagonale
+               ! resultatInt=0.d0
+                !calcul de l'integrale par monte carlo pour l'integrale multiple
+
+                    if(typeJoint.eq.2.and.nb1.eq.1) then
+                            call MC_JointModels(int, funcG, nb1,fraili)
+                    else if(typeJoint.eq.2.and.nb1.eq.2) then
+                            call MC_JointModels(int, funcG, nb1,fraili)
+
+     end if
+     
+if(int.eq.0.d0) then
+                    integrale4(ig)=0.1d-300
+                    !print*,"integrale nulle et affectation de la valeur 0.1d-300, trials:",ig
+                else
+                integrale4(ig) =int !result(1) !
+
+                end if
+            
+                !!print*,"funcpajsplines_surr ligne 312 nsujeti(ig)=",nsujeti(ig),"resultatInt=",integrale3(ig)  
+               ! deallocate(mu_MC,vc_MC)
+!deallocate(Vect_sim_MC)
+        
+   ! deallocate(vc,fraili)
+            end if     
+          
             it_rec = it_rec + nmescurr
             it = it + nmescur
             if(TwoPart.eq.1) then
@@ -603,10 +723,7 @@
         else
         do k=1,nb1
         Z1 (k,1)=0.d0
-            end do
-    
-    
-    
+            end do    
         mu = 0.d0
     if(TwoPart.eq.1) then
         muB = 0.d0
@@ -630,14 +747,16 @@
         end if
         end if
         !    end if
-    
+
+     
         deallocate(mat_sigma)
         if(TwoPart.eq.1) then
             deallocate(mat_sigmaB)
         end if
-
         end do
-    
+
+
+
     !************* FIN INTEGRALES **************************
         else
             sigmae = 1.d0
@@ -727,9 +846,7 @@
         pe = k0(1)*pe1 + k0(2)*pe2
         resnonpen = res
     
-        res = res - pe
-    
-    
+        res = res - pe 
     
         if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
             funcpajLongisplines=-1.d9
@@ -750,6 +867,18 @@
                 Ndc(k)=cdc(k)
             end do
         end if
+                 !if(numpat.eq.3) then   
+!            open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'funcpajLongisplines',funcpajLongisplines
+  !     write(2,*)'resultdc',resultdc
+  !     write(2,*)'nmescur',nmescur
+  !     write(2,*)'numpat',numpat
+   !   write(2,*)'frail',frail
+   !    write(2,*)'frail2',frail2
+   !    write(2,*)'Xea2',Xea2
+!     close(2)
+!end if
+                    
     !Ad:
         123     continue
     
