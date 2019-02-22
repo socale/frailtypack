@@ -4489,7 +4489,7 @@ end if
     if(nb1.eq.1) then
             current_meanG = 0.d0
             current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1curG(1,1)*Xea
-    else if(nb1.gt.2) then
+    else if(nb1.gt.1) then
     
     if(TwoPart.eq.1) then
 if(nb1.eq.2) then
