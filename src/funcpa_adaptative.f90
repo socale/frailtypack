@@ -15,26 +15,16 @@ module func_adaptative
          
         integer,intent(in)::id,jd,np,individu_j
         integer::i
-        double precision,dimension(np),intent(in)::b
+        double precision,dimension(np),intent(in)::b 
         double precision,dimension(2),intent(in)::k0
         double precision,intent(in)::thi,thj
-        double precision::vsi,vti,res,ui
-        double precision,dimension(np)::bh
+        double precision::vsi,vti,res,ui,test
+        double precision,dimension(:),allocatable::bh
         double precision::wij
-        ! double precision ::I1,c1,c2
-        ! double precision, dimension(1,2)::m1,m3
-        ! double precision, dimension(1,1)::m
-        
-        !!print*,"vs_i=",vs_i
-        !!print*,"vt_i=",vt_i
-        !!print*,"individu_j=",individu_j
-        !!print*,"posind_i=",posind_i
-        
-        !!print*,"b_i=",b
-        !!print*,"np=",np
-                        
+		
+		allocate(bh(np))
+        !call dblepr("b(1) funcpafrailtyPred_ind 41", -1, b(1), 1)             
         bh(1)=b(1)
-        
         if (id.ne.0) bh(id)=bh(id)+thi
         if (jd.ne.0) bh(jd)=bh(jd)+thj
         
@@ -44,18 +34,7 @@ module func_adaptative
         vti=vt_i    
         ui=u_i
         
-        ! calcul du terme I1(vsi,vti)
-        ! m1(1,1)=vsi
-        ! m1(1,2)=vti
-        ! m3 = matmul(m1,varcovinv) !produit matriciel, resultat dans m3
-        ! m = matmul(m3,transpose(m1)) !produit matriciel, resultat dans m
-        ! c1=(-1.d0/2.d0) * m(1,1)
-        ! c2=nigts(essai_courant)*vsi+cdcts(essai_courant)*vti
-        ! I1=dexp(c1+c2)
-        ! if(individu_j==1)then
-            ! !print*,"vsi=",vsi,"vti=",vti
-        ! endif
-        
+        !call intpr("funcpafrailtyPred_ind 60", -1, np, 1)
         if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
             res=dexp((vsi*delta(individu_j)+vti*deltastar(individu_j))*dble(ve(individu_j,1))&
             -(wij**2.d0)/(2.d0*theta2)&
@@ -72,13 +51,7 @@ module func_adaptative
                 - const_res5(individu_j)*dexp(eta*wij+alpha_ui*ui+vti*dble(ve(individu_j,1)))&
             )
         endif
-        
-        !res=I1*res
         res=dlog(res)
-        !resnonpen = res
-        !res = res - penalisation
-        !!print*,"res=",res
-        !stop
         
     if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
         funcpafrailtyPred_ind =-1.d9
@@ -89,7 +62,8 @@ module func_adaptative
     
     
     123     continue
-    
+    deallocate(bh)
+	!call dblepr("funcpa95", -1, funcpafrailtyPred_ind, 1)
     return
     
     endfunction funcpafrailtyPred_ind
@@ -176,7 +150,7 @@ module func_adaptative
                             dd=0.d0
                             
                             np_2=1
-                            allocate(I_hess_scl(np_2,np_2),v(1),b_2(1))
+                            allocate(I_hess_scl(np_2,np_2),v(np_2*(np_2+3)/2),b_2(1))
                             allocate(H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
                             allocate(H_hessOut(np_2,np_2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2))
                     

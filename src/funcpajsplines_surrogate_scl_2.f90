@@ -62,7 +62,7 @@
     double precision, dimension(2)::k0_2
     !double precision, dimension(1)::v,b_2
     double precision, dimension(:),allocatable::b_i      ! pour les 2 parametres des effets aleatoires a predire niveau essai
-    double precision, dimension(:,:),allocatable::v_i    ! pour les 2 parametres des effets aleatoires a predire niveau essai
+    double precision, dimension(:),allocatable::v_i    ! pour les 2 parametres des effets aleatoires a predire niveau essai
     double precision, allocatable, dimension(:,:)::H_hessOut,HIH,HIHOut,IH,invBi_chol_2,H_hess_scl,I_hess_scl
     double precision,dimension(:,:), allocatable::hess_scl
     double precision,dimension(:), allocatable::vvv_scl
@@ -814,7 +814,7 @@
                         endif
                         !deallocate(H_hess_scl,I_hess_scl,H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
                         allocate(I_hess_scl(np_2,np_2),H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),H_hessOut(np_2,np_2),&
-                                 b_i(np_2),v_i(np_2,np_2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
+                                 b_i(np_2),v_i(np_2*(np_2+3)/2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
                                 hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
                         b_i=0.5d0
                         v_i=0.d0
@@ -1082,7 +1082,7 @@
                         endif
                         !deallocate(H_hess_scl,I_hess_scl,H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
                         allocate(I_hess_scl(np_2,np_2),H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),H_hessOut(np_2,np_2),&
-                                 b_i(np_2),v_i(np_2,np_2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
+                                 b_i(np_2),v_i(np_2*(np_2+3)/2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
                                 hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
                         b_i=0.5d0
                         v_i=0.d0
