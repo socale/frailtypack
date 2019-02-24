@@ -1960,6 +1960,9 @@ end if
             
                         do j=1,nnodes
                 if (choix.eq.3) then
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'ping',
+!     close(2)
                         if(typeJoint.eq.2.and.nb1.eq.1) then
                             auxfunca=funcG(0.d0,0.d0,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.2) then
@@ -4383,7 +4386,7 @@ end if
         if(nmescur.gt.0) then
         if(nb1.eq.1) then
             mu1G(1:nmescur,1) = mu(1:nmescur,1) +Xea*Z1(1:nmescur,1)
-            else if(nb1.eq.2) then
+            else if(nb1.gt.1) then
             mu1G(1:nmescur,1) = mu(1:nmescur,1) +MATMUL(Z1(1:nmescur,1:nby),Xea2(1:nby,1))
             end if
         else
