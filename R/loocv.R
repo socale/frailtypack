@@ -143,7 +143,7 @@ loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
     if(is.null(joint.surro)) 
       cat(c("===Model without trial", i, "did not converged!!! please try to modified initial values or others parameters===: \n"))
     else{
-      d1 <- predict.jointSurroPenal(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],], d = dec)
+      d1 <- predict.jointSurroPenal(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],], dec = dec)
       # Merger of the results
       d <- rbind(d,d1)
       # impression du temps de calcul
