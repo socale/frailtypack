@@ -225,7 +225,7 @@
 #'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, nb.decimal = 4, 
-#'    print.times = TRUE, print.itter=FALSE)
+#'    print.times = TRUE, print.iter=FALSE)
 #'
 #' @param data A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
 #'    \itemize{
@@ -344,7 +344,7 @@
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
 #' is TRUE.
-#' @param print.itter a logical parameter to print iteration process. Default
+#' @param print.iter a logical parameter to print iteration process. Default
 #' is FALSE.
 #' 
 #' @return
@@ -483,7 +483,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                       sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, gamma.init = 0.5, 
                       alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
                       random.generator = 1, kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, 
-                      init.kappa = NULL, nb.decimal = 4, print.times = TRUE, print.itter = FALSE){
+                      init.kappa = NULL, nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
   
  # The initial followup time. The default value is 0
   data$initTime <- 0 
@@ -700,7 +700,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       death[,i] <- as.double(death[,i])
     }
     if(is.null(kappa0)){
-      if(print.itter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
+      if(print.iter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
       # kappas obtenus par validation croisee correspondant sur le jeu de donnees reelles
       #kappa0 <- frailtypack:::kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0)
       kappa0 <- kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0, print.times = F, scale = scale)
@@ -773,7 +773,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
     if(true.init.val == 2){ # recherche des parametres initiaux
-      if(print.itter) cat("+++++++++++initialization of the parameters using reduced models +++++++++++")
+      if(print.iter) cat("+++++++++++initialization of the parameters using reduced models +++++++++++")
       # # estimation of sigma.s and gamma, using an additive gaussian random effects cox model (Rondeau et al. 2008)
       # cox_surr_sigmaS=try(additivePenal(Surv(initTime, timeS, statusS) ~ cluster(trialID) + trt 
       #                                   + slope (trt), correlation = FALSE, data = donnees, n.knots = nz,
@@ -797,7 +797,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                                   data = dataUse, n.knots = nz, kappa = kappa0, print.times = F), silent = TRUE)
       
       if(class(cox_surr_sigmaS)=="try-error"){
-        if(print.itter) cat("Estimation problem with the shared frailty model: 
+        if(print.iter) cat("Estimation problem with the shared frailty model: 
               initialization of gamma using the given default value",fill=T)
       }else{
         gamma.init <- cox_surr_sigmaS$sigma2
@@ -812,28 +812,28 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       }
       
       if((class(cox_surr_sigmaS)=="try-error") | (class(cox_true_sigmaT)=="try-error")){
-        if(print.itter) cat("initialization of alpha using the given default value",fill=T)
+        if(print.iter) cat("initialization of alpha using the given default value",fill=T)
       }else{
         alpha.init <- cox_surr_sigmaS$sigma2/cox_true_sigmaT$sigma2
       }
       
       if(class(joint_w)=="try-error"){
         if((class(cox_surr_sigmaS)=="try-error") & (class(cox_true_sigmaT)=="try-error")){
-          if(print.itter) cat("Estimation problem with the joint frailty model: 
+          if(print.iter) cat("Estimation problem with the joint frailty model: 
               initialization of eta, theta, beta_S and beta_T using the given default values",fill=T)
         }else{
             if((class(cox_surr_sigmaS)!="try-error") & (class(cox_true_sigmaT)!="try-error")){
-              if(print.itter) cat("Estimation problem with the joint frailty model: 
+              if(print.iter) cat("Estimation problem with the joint frailty model: 
                 initialization of eta and theta using the given default values",fill=T)
               betas.init <- cox_surr_sigmaS$b[length(cox_surr_sigmaS$b)]
               betat.init <- cox_true_sigmaT$b[length(cox_true_sigmaT$b)]
             }else{
               if(class(cox_surr_sigmaS)=="try-error"){
-                if(print.itter) cat("Estimation problem with the joint frailty model: 
+                if(print.iter) cat("Estimation problem with the joint frailty model: 
                 initialization of eta, theta and beta_S using the given default values",fill=T)
                 betat.init <- cox_true_sigmaT$b[length(cox_true_sigmaT$b)]
               }else{
-                if(print.itter) cat("Estimation problem with the joint frailty model: 
+                if(print.iter) cat("Estimation problem with the joint frailty model: 
                 initialization of eta, theta and beta_T using the given default values",fill=T)
                 betas.init <- cox_surr_sigmaS$b[length(cox_surr_sigmaS$b)]
               }
@@ -848,7 +848,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       true.init.val <- 0 
       # je remets cette variable a 0 car le programme principal ne connait que 0 et 1. le valeur
       # 2 etait juste pour gener l'initialisation avec les models reduits
-      if(print.itter) cat("+++++++++++++++++++End initialization+++++++++++++++++++",fill=T)
+      if(print.iter) cat("+++++++++++++++++++End initialization+++++++++++++++++++",fill=T)
     }
   }
     
@@ -968,7 +968,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   
   vect_kappa <- matrix(0,nrow = n_sim1, ncol = 2)
   
-  if(print.itter) 
+  if(print.iter) 
     affiche.itter <- 1
   else
     affiche.itter <- 0
