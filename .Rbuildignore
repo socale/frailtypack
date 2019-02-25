@@ -1,3 +1,16 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^appveyor\.yml$
+<<<<<<< HEAD
+=======
+^\.travis\.yml$
+^.*\.Rdd$
+^.*\.aux$
+^.*\.html$
+^.*\.md$
+^.*\.log$
+^.*\.out$
+^.*\.pdf$
+^.*\.tex$
+^.README\.Rmd$
+>>>>>>> parent of efdc3e3... update
