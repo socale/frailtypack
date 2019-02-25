@@ -101,7 +101,7 @@
 #'
 #' @usage longiPenal(formula, formula.LongitudinalData, data, data.Longi,
 #'   random, id, intercept = TRUE, link = "Random-effects", left.censoring =
-#'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
+#'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines-per", init.B,
 #'   init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam = 1e-3,
 #'   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 #' @param formula a formula object, with the response on the left of a
@@ -152,7 +152,7 @@
 #' @param hazard Type of hazard functions: \code{"Splines"} for semiparametric
 #'   hazard functions using equidistant intervals or \code{"Splines-per"} using
 #'   percentile with the penalized likelihood estimation, \code{"Weibull"} for
-#'   the parametric Weibull functions. The default is \code{"Splines"}.
+#'   the parametric Weibull functions. The default is \code{"Splines-per"}.
 #' @param init.B Vector of initial values for regression coefficients. This
 #'   vector should be of the same size as the whole vector of covariates with
 #'   the first elements for the covariates related to the terminal event and
@@ -348,7 +348,7 @@
 #' 
 "longiPenal" <-
   function (formula, formula.LongitudinalData, data,  data.Longi, random, id, intercept = TRUE, link="Random-effects",left.censoring=FALSE, n.knots, kappa,
-            maxit=350, hazard="Splines",   init.B,
+            maxit=350, hazard="Splines-per",   init.B,
             init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {
     

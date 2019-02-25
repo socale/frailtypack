@@ -8,7 +8,7 @@ canditate surrogate endpoint.}
 \usage{
 \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
 pos.legend = "topright", cex.legend=0.7, main, Xlab = "Time", Ylab
-= "Baseline hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
+= "Baseline hazard function", median=TRUE, xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
 scale = 1, ...)
 }
 \arguments{
@@ -31,6 +31,8 @@ this argument to a single keyword from the list '"bottomright"',
 'par("cex")'. Default is 0.7.}
 
 \item{main}{Title of plot.}
+
+\item{median}{Logical value. Determines whether survival median will be plotted. Default is TRUE.}
 
 \item{Xlab}{Label of x-axis. Default is '"Time"'.}
 

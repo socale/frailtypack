@@ -11,7 +11,7 @@
 #' 
 #' \method{plot}{jointPenal}(x, event = "Both", type.plot = "Hazard", conf.bands
 #' = FALSE, pos.legend="topright", cex.legend = 0.7, ylim, main, color = 2,
-#' Xlab = "Time", Ylab = "Hazard function", ...)
+#' median=TRUE, Xlab = "Time", Ylab = "Hazard function", ...)
 #' @param x A joint model, i.e. an object of class \code{frailtyPenal} for
 #' Joint frailty model (output from calling \code{frailtyPenal} function).
 #' @param event a character string specifying the type of curve. Possible value
@@ -30,6 +30,7 @@
 #' @param ylim y-axis limits
 #' @param main plot title
 #' @param color curve color (integer)
+#' @param median Logical value. Determines whether survival median will be plotted. Default is TRUE.
 #' @param Xlab Label of x-axis. Default is '"Time"'
 #' @param Ylab Label of y-axis. Default is '"Hazard function"'
 #' @param ... other unused arguments
@@ -65,7 +66,7 @@
 #' 
 #' 
 "plot.jointPenal" <-
-function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim, main, color=2, Xlab = "Time", Ylab = "Hazard function", ...)
+function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="topright", cex.legend=0.7, ylim, main, color=2, median=TRUE, Xlab = "Time", Ylab = "Hazard function", ...)
 {
 	event.type <- charmatch(event, c("Both", "Recurrent", "Terminal"), nomatch = 0)
     if (event.type == 0) {
@@ -114,20 +115,24 @@ function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="top
 					matplot(x$xR[,1], x$survR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 					for (i in (1:x$n.strat)[-1]) matlines(x$xR[,i], x$survR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
 					matlines(x$xD, x$survD, col=color+x$n.strat, type="l", lty=c(1,2,2), ...)
+					if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 				}else{
 					plot(x$xR[,1], x$survR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 					for (i in (1:x$n.strat)[-1]) lines(x$xR[,i], x$survR[,1,i], col=color+(i-1), type="l", lty=1, ...)
 					lines(x$xD, x$survD[,1], col=color+x$n.strat, type="l", lty=1, ...)
+					if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 				}
 			}else{
 				if (conf.bands){
 					matplot(x$xSuR[,1], x$survR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 					for (i in (1:x$n.strat)[-1]) matlines(x$xSuR[,i], x$survR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
 					matlines(x$xSuD, x$survD, col=color+x$n.strat, type="l", lty=c(1,2,2), ...)
+					if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 				}else{
 					plot(x$xSuR[,1], x$survR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 					for (i in (1:x$n.strat)[-1]) lines(x$xSuR[,i], x$survR[,1,i], col=color+(i-1), type="l", lty=1, ...)
 					lines(x$xSuD, x$survD[,1], col=color+x$n.strat, type="l", lty=1, ...)
+					if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 				}
 			}
 		}
@@ -166,17 +171,21 @@ function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="top
 			if (conf.bands){
 				matplot(x$xR[,1], x$survR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 				for (i in (1:x$n.strat)[-1]) matlines(x$xR[,i], x$survR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$xR[,1], x$survR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 				for (i in (1:x$n.strat)[-1]) lines(x$xR[,i], x$survR[,1,i], col=color+(i-1), type="l", lty=1, ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}else{
 			if (conf.bands){
 				matplot(x$xSuR[,1], x$survR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 				for (i in (1:x$n.strat)[-1]) matlines(x$xSuR[,i], x$survR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$xSuR[,1], x$survR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
 				for (i in (1:x$n.strat)[-1]) lines(x$xSuR[,i], x$survR[,1,i], col=color+(i-1), type="l", lty=1, ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}
 	}
@@ -212,14 +221,18 @@ function (x, event="Both", type.plot="Hazard", conf.bands=FALSE, pos.legend="top
 		if (x$typeof == 0){
 			if (conf.bands){
 				matplot(x$xD, x$survD, col=color+x$n.strat, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$xD, x$survD[,1], col=color+x$n.strat, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}else{
 			if (conf.bands){
 				matplot(x$xSuD, x$survD, col=color+x$n.strat, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$xSuD, x$survD[,1], col=color+x$n.strat, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}
 	}
