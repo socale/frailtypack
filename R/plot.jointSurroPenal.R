@@ -10,9 +10,9 @@
 ##' @usage
 ##' 
 ##' \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
-##' pos.legend = "topright", cex.legend=0.7, main, Xlab = "Time", Ylab
-##' = "Baseline hazard function", median=TRUE, xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
-##' scale = 1, ...)
+##' pos.legend = "topright", cex.legend=0.7, main, Xlab = "Time", 
+##' Ylab = "Baseline hazard function", median = TRUE, xmin = 0, xmax = NULL, 
+##' ylim = c(0,1), endpoint = 2, scale = 1, ...)
 ##' @param x An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal} ).
 ##' @param type.plot A character string specifying the type of curve. Possible
@@ -73,8 +73,9 @@
 ##' 
 ##' 
 "plot.jointSurroPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend = "topright", 
-                                    cex.legend = 0.7, main, median=TRUE, Xlab = "Time", Ylab = "Baseline hazard function", 
-                                    xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, scale = 1, ...)
+                                    cex.legend = 0.7, main, median = TRUE, Xlab = "Time", 
+                                    Ylab = "Baseline hazard function", xmin = 0, xmax = NULL, 
+                                    ylim = c(0,1), endpoint = 2, scale = 1, ...)
 {
   color = 2
   # gestion de l'echelle des temps
