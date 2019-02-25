@@ -147,7 +147,7 @@
     double precision,intent(out)::rl
     double precision,dimension(m),intent(inout)::b
     double precision,intent(out)::ca,cb,dd
-    !double precision,dimension(2)::k0
+    double precision,dimension(2)::k0
         double precision,dimension(2)::zero
 !   variables locales
     integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k
@@ -615,7 +615,7 @@
       double precision,dimension(m),intent(inout)::bh,delta 
       double precision,intent(inout)::fim,step
       double precision::vlw,vlw1,vlw2,vlw3,vm,fi1,fi2,fi3
-      !double precision,dimension(2)::k0
+      double precision,dimension(2)::k0
       double precision::fctnames
       external::fctnames
       integer::i
@@ -1055,7 +1055,7 @@
     double precision,dimension(m),intent(out)::bk  
     double precision,intent(out)::fi 
     double precision::vw,fctnames,z    
-    !double precision,dimension(2)::k0
+    double precision,dimension(2)::k0
     integer::i0,i
     external::fctnames
     

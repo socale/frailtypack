@@ -2,9 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-src/*.o
-src/*.so
-src/*.dll
+src/*\.o
+src/*\.so
+src/*\.dll
 *.Rproj
-src/*.mod
-R/frailtyPenal.html
+src/*\.mod
+R/frailtyPenal\.html
