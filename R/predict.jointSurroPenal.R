@@ -51,6 +51,7 @@
 ##' 
 ##' @keywords surrogate prediction
 ##' @export
+##' 
 ##' @examples
 ##' 
 ##' 

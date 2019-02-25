@@ -67,6 +67,7 @@
 ##' 
 ##' @keywords surrogate prediction ste Surrogate threshold effect
 ##' @export
+##' @importFrom stats optimize
 ##' @examples
 ##' 
 ##' 
