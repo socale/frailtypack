@@ -11,4 +11,3 @@
 ^.*\.pdf$
 ^.*\.tex$
 ^README\.Rmd$
-..Rcheck
