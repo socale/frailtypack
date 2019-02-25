@@ -42,11 +42,6 @@ endpoint is included into the prediction interval, the last columns contains "*"
 Leave-one-out crossvalidation for the evaluation of the joint surrogate model 
 }
 }
-\details{
-{
-
-}
-}
 \examples{
 
 
