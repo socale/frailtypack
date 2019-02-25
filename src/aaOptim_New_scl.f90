@@ -111,7 +111,7 @@
 
     ! dans cette nouvelle version, nous prenons I_hess,H_hess,hess,vvv en parametre de la subroutine pour permettre l'appel de cette procedure a l'interieur dune autre. sans quoi l'appel ecraserait les valeurs de sortie de la subroutine maitre
 
-    subroutine marq98j_scl(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames,I_hess,&
+    subroutine marq98j_scl(b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames,I_hess,&
                            H_hess,hess,vvv,individu)
 
 !
@@ -147,7 +147,7 @@
     double precision,intent(out)::rl
     double precision,dimension(m),intent(inout)::b
     double precision,intent(out)::ca,cb,dd
-    double precision,dimension(2)::k0
+    !double precision,dimension(2)::k0
         double precision,dimension(2)::zero
 !   variables locales
     integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k
@@ -283,7 +283,7 @@
                 b1(i)=b(i)+delta(i)
             end do
             
-            rl=fctnames(b1,m,id,z,jd,z,k0,individu)
+            rl=fctnames(b1,m,id,z,jd,z,individu)
             if(rl.eq.-1.D9) then
                 istop=4
                 goto 110
@@ -309,7 +309,9 @@
         endif
         step=dlog(1.5d0)
 !      !write(*,*) 'searpas'
+
         call searpasj_scl(vw,step,b,bh,m,delta,fi,k0,fctnames,individu)
+
         rl=-fi
         if(rl.eq.-1.D9) then
             istop=4
@@ -356,7 +358,9 @@
 !================ pour les bandes de confiance
 !==== on ne retient que les para des splines
 
+
    call derivaJ_scl(b,m,v,rl,k0,fctnames,individu)
+
     if(rl.eq.-1.D9) then
         istop=4
         goto 110
@@ -444,6 +448,7 @@
 
 
     ep=10.d-10
+
    call derivaJ_scl(b,m,vnonpen,rl,zero,fctnames,individu)
 
    
@@ -494,15 +499,19 @@
 !                          DERIVA
 !------------------------------------------------------------
 
+
     subroutine derivaJ_scl(b,m,v,rl,k0,fctnames,individu)
+
     use comon,only:model
     implicit none
     
     integer, intent(in)::individu ! indice de l'individu sur lequel on maximise la vraisemblance
     integer,intent(in)::m
     double precision,intent(inout)::rl
+
     double precision,dimension(2)::k0
-    double precision,dimension(m),intent(in)::b ! scl_22-09-2017
+    double precision,dimension(m),intent(in)::b 
+
     double precision,dimension((m*(m+3)/2)),intent(out)::v
     double precision,dimension(:),allocatable::fcith ! scl_22-09-2017
     integer ::i0,m1,ll,i,k,j,iun,tail
@@ -538,8 +547,10 @@
     i0=0
     iun =1
     !!print*,"debut appel de la vraisamblance dans derrivaJ rl=",rl
+	
 	!call dblepr("b(1)derivaJ_scl 562", -1, b(1), 1)
     rl=fctnames(b,m,iun,z,iun,z,k0,individu)
+
     !!print*,"fin appel de la vraisamblance rl=",rl
     !stop
     !call intpr("derivaJ_scl 565", -1, m, 1)
@@ -549,7 +560,7 @@
     end if
 
     do i=1,m
-        fcith(i)=fctnames(b,m,i,th,i0,z,k0,individu)
+        fcith(i)=fctnames(b,m,i,th,i0,z,individu)
         if(fcith(i).eq.-1.d9) then
             rl=-1.d9
             goto 123
@@ -562,7 +573,7 @@
     
     do i=1,m
         ll=ll+1
-        vaux=fctnames(b,m,i,thn,i0,z,k0,individu)
+        vaux=fctnames(b,m,i,thn,i0,z,individu)
                 if(vaux.eq.-1.d9) then
                     rl=-1.d9
                     goto 123
@@ -577,7 +588,7 @@
         v(ll)=vl
         do j=1,i
             k=k+1
-            v(k)=-(fctnames(b,m,i,th,j,th,k0,individu)-fcith(j)-fcith(i)+rl)/th2
+            v(k)=-(fctnames(b,m,i,th,j,th,individu)-fcith(j)-fcith(i)+rl)/th2
         end do
     end do
 
@@ -592,6 +603,7 @@
 
 
       subroutine searpasj_scl(vw,step,b,bh,m,delta,fim,k0,fctnames,individu)
+
 !
 !  MINIMISATION UNIDIMENSIONNELLE
 !
@@ -603,15 +615,17 @@
       double precision,dimension(m),intent(inout)::bh,delta 
       double precision,intent(inout)::fim,step
       double precision::vlw,vlw1,vlw2,vlw3,vm,fi1,fi2,fi3
-      double precision,dimension(2)::k0
+      !double precision,dimension(2)::k0
       double precision::fctnames
       external::fctnames
       integer::i
 
        vlw1=dlog(vw)
        vlw2=vlw1+step
+
        call valfpaj_scl(vlw1,fi1,b,bh,m,delta,k0,fctnames,individu)
        call valfpaj_scl(vlw2,fi2,b,bh,m,delta,k0,fctnames,individu)
+
 
        if(fi2.ge.fi1) then
           vlw3=vlw2
@@ -621,7 +635,9 @@
           step=-step
 
           vlw1=vlw2+step
+
           call valfpaj_scl(vlw1,fi1,b,bh,m,delta,k0,fctnames,individu)
+
           if(fi1.gt.fi2) goto 50
        else 
           vlw=vlw1
@@ -639,7 +655,9 @@
           fi2=fi1
 
           vlw1=vlw2+step
+
           call valfpaj_scl(vlw1,fi1,b,bh,m,delta,k0,fctnames,individu)
+		  
           if(fi1.gt.fi2) goto 50
           if(fi1.eq.fi2) then
              fim=fi2
@@ -1037,7 +1055,7 @@
     double precision,dimension(m),intent(out)::bk  
     double precision,intent(out)::fi 
     double precision::vw,fctnames,z    
-    double precision,dimension(2)::k0
+    !double precision,dimension(2)::k0
     integer::i0,i
     external::fctnames
     
@@ -1046,7 +1064,7 @@
     do i=1,m
     bk(i)=b(i)+dexp(vw)*delta(i)
     end do
-    fi=-fctnames(bk,m,i0,z,i0,z,k0,individu)
+    fi=-fctnames(bk,m,i0,z,i0,z,individu)
     if(fi.eq.-1.D9) then
         goto 1
     end if

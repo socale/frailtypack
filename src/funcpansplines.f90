@@ -330,7 +330,7 @@
 
         mid=0
         mij=0
-		mij_ind = 0
+        mij_ind = 0
         res1=0.d0
         res2=0.d0
         aux1=0.d0
@@ -346,7 +346,7 @@
             if(c(k).eq.1)then
                 mid(g(k))=mid(g(k))+1
                 mij(g(k),ssg(k,g(k)))=mij(g(k),ssg(k,g(k)))+1
-				mij_ind(g(k)) = mij_ind(g(k))+1
+                mij_ind(g(k)) = mij_ind(g(k))+1
 !nb de dc ds ss gpe ssg(k)
             endif
         end do

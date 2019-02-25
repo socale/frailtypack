@@ -14,12 +14,12 @@ contains
         !determin : le determinant de la matrice de variance-covariance effects aleatoires niveau essai
         !essaicourant: essai courant
         !posindi : poisition du sujet dans le jeu de donnee
-        use var_surrogate, only:vs_i,vt_i,u_i,theta2,const_res5,const_res4,&
-            deltastar,delta,pi,varcovinv,nsujeti,essai_courant,position_i,&
-            nparamfrail,alpha_ui,rho,varcov,gamma_ui,res2s_sujet,res2_dcs_sujet,wij_chap,&
-            Test
+        use var_surrogate, only:vs_i,vt_i,u_i,Test,&
+            pi,nsujeti,essai_courant,position_i,&
+            nparamfrail,rho,varcov,gamma_ui,wij_chap
+            !alpha_ui,res2s_sujet,res2_dcs_sujet,deltastar,delta,const_res5,const_res4,theta2,varcovinv
             
-        use comon, only: eta,ve
+        use comon, only: eta !ve
         use Autres_fonctions,only:Determinant
         use optim_scl2, only:marq98j_scl2  ! pour faire appel a marquard 
         use func_laplace, only:funcpaXi_chapeau ! se traouve dans le fichier funcpa_laplace.f90 pour les autres fonction necessaires a laplace
@@ -31,13 +31,14 @@ contains
         double precision, intent(in)::determin    
         !integer, intent(in)::essaicourant,posindi
         integer,parameter::effet2=0
-        double precision::ca,cb,dd,k_second,zeta,h_second_ui,h_ui_vsi,h_ui_vti,h_second_vsi,h_vsi_vti,h_second_vti,&
-                            jacobien,h1,h2,h,ui,vsi,vti,tp1,tp2,res,B_Lap,control
+        double precision::ca,cb,dd,zeta,jacobien,h2,h,ui,vsi,vti,res,B_Lap,control
+                            !k_second,h_second_ui,h_ui_vsi,h_ui_vti,h_second_vsi,h_vsi_vti,h_second_vti,&
+                            !tp1,tp2,h1
         double precision, dimension(2)::k0_2
         double precision, allocatable, dimension(:,:)::H_hess_scl,I_hess_scl,hess_scl
         double precision,dimension(:), allocatable::vvv_scl,v,b_2
-        integer::ier,istop,ni,np_2,nparamfrail_save,i,individu_j,non_conv
-        double precision,dimension(3,3)::mat_J ! matrice jacobienne
+        integer::ier,istop,ni,np_2,nparamfrail_save,i,non_conv !individu_j
+        !double precision,dimension(3,3)::mat_J ! matrice jacobienne
         
         zeta=eta        
         !====================================================================================================
@@ -257,7 +258,7 @@ module monteCarlosMult_Gaus
 !
 !========================================================================
 
-    subroutine monteCarlosMult(funcMC,mu,vc,nsim,vcdiag,posind_i,result)
+    subroutine monteCarlosMult(funcMC,mu,vc,nsim,vcdiag,result)
     ! mu: l'esperance de mes variables
     ! VC: matrice de variance-covariance
     ! func: fonction a moyenner ou encore la fonction dont il faut calculer l'experance
@@ -266,13 +267,13 @@ module monteCarlosMult_Gaus
     ! posind_i: position du cluster courant
     ! result: vecteur contenant le resltats de l'integrale, la variance et la precision
     use Autres_fonctions, only:init_random_seed
-    use var_surrogate,only:Vect_sim_MC,a_deja_simul,sujet_essai_max,graine,aleatoire,nbre_sim
+    use var_surrogate,only:Vect_sim_MC,a_deja_simul,graine,aleatoire,nbre_sim !sujet_essai_max
     !$ use OMP_LIB
         
     implicit none
-    integer :: jj,j,k,ier,l,m,maxmes,nbrejet,stemp,tid1 !maxmes= nombre de dimension ou encore dimension de X
+    integer :: jj,j,k,ier,l,maxmes,stemp !tid1,nbrejet,m !maxmes= nombre de dimension ou encore dimension de X
     integer, intent(in)::nsim,vcdiag
-    integer, intent(in)::posind_i
+    !integer, intent(in)::posind_i
     double precision::eps,ymarg,SX,x22,somp ! ymarg contient le resultat de l'integrale
     double precision, intent(out),dimension(3):: result
     double precision,dimension(:),allocatable::usim,ysim
@@ -448,7 +449,7 @@ module monteCarlosMult_Gaus
     use var_surrogate,only:Vect_sim_MC,a_deja_simul,sujet_essai_max,graine,aleatoire,nbre_sim
         
     implicit none
-    integer :: jj,j,k,ier,l,m,maxmes,nbrejet,stemp !maxmes= nombre de dimension ou encore dimension de X
+    integer :: jj,j,k,ier,l,m,maxmes,stemp !nbrejet !maxmes= nombre de dimension ou encore dimension de X
     integer, intent(in)::nsim,vcdiag
     integer, intent(in)::posind_ind
     double precision::eps,ymarg,SX,x22,somp ! ymarg contient le resultat de l'integrale
@@ -823,7 +824,7 @@ module monteCarlosMult_Gaus
 
 !C ------------------- FIN SUBROUTINE DMFSD -----------------
 
- double precision function MC_Multiple_surr(func,vsi,vti,ui,nsimu,mu1,vc1,n,i) 
+ double precision function MC_Multiple_surr(func,vsi,vti,ui,nsimu,mu1,vc1,n) 
    !Monte carlo a l'aide du produit des integrales de chaque individu du cluster
    ! func est la fonction a integrer, definie dans le module fonction_A_integrer (Integrant_scl.f90)
    ! nsimu = nombre de boucle MC
@@ -835,16 +836,15 @@ module monteCarlosMult_Gaus
    ! ui fragilite associe au risque de base
    ! i= cluster courant
    
-   use var_surrogate, only:adaptative,varcovinv,cdcts,nigts,frailt_base,nigs,cdcs,&
-                            alpha_ui,nb_procs
-   use comon, only:invBi_cholDet
+   use var_surrogate, only:nb_procs !alpha_ui,cdcs,adaptative,varcovinv,cdcts,nigts,frailt_base,nigs
+   !use comon, only:invBi_cholDet
    use comon, only: lognormal
    !$ use OMP_LIB
    
    implicit none
    
    integer ::k2
-   integer, intent(in)::n,i,nsimu
+   integer, intent(in)::n,nsimu !i
    double precision,intent(in)::vsi,vti,mu1,vc1,ui
    double precision ::herm,I1
    
@@ -900,7 +900,7 @@ module monteCarlosMult_Gaus
  
     ! produit des integrales au niveau individuel MC pour modele complet
     
-    double precision function MC_Multiple_surr_cor(func,vsi,vti,ui,uti,nsimu,mu1,frailij,ndim,n,i) 
+    double precision function MC_Multiple_surr_cor(func,vsi,vti,ui,uti,nsimu,frailij,ndim,n,i) 
        ! Monte carlo a l'aide du produit des integrales de chaque individu du cluster
        ! func est la fonction a integrer, definie dans le module fonction_A_integrer (Integrant_scl.f90)
        ! nsimu = nombre de boucle MC
@@ -914,27 +914,26 @@ module monteCarlosMult_Gaus
        ! i= cluster courant
        ! ndim= dimension de l'integrale 2 ou 1 integrations?
        
-       use var_surrogate, only:adaptative,varcovinv,cdcts,nigts,frailt_base,nigs,cdcs,&
-                                alpha_ui
-       use comon, only: lognormal,invBi_cholDet
+       use var_surrogate, only:cdcts,nigts,frailt_base,nigs,cdcs !adaptative,varcovinv,alpha_ui
+       use comon, only: lognormal !invBi_cholDet
        !$ use OMP_LIB
        
        implicit none
        
        integer ::k2
        integer, intent(in)::n,i,nsimu,ndim
-       double precision,intent(in)::vsi,vti,mu1,ui,uti
+       double precision,intent(in)::vsi,vti,ui,uti !mu1
        double precision,dimension(nsimu,ndim),intent(in)::frailij
        double precision ::herm,I1
        
        ! bloc interface pour la definition de la fonction func
         interface
-            double precision function func(vsi,vti,ui,uti,j,nsimu,ndim,mu1,frailij)
+            double precision function func(vsi,vti,ui,uti,j,nsimu,ndim,frailij)
                 use var_surrogate, only: delta,deltastar,const_res4,const_res5,Vect_sim_MC,frailt_base,posind_i
                 use comon, only: eta,ve
                 integer,intent(in):: j,nsimu,ndim
                 double precision,intent(in)::vsi,vti,ui,uti
-                double precision, intent(in)::mu1
+                !double precision, intent(in)::mu1
                 double precision,dimension(nsimu,ndim),intent(in)::frailij
             end function func
         end interface
@@ -946,7 +945,7 @@ module monteCarlosMult_Gaus
             herm =1.d0
             !$OMP PARALLEL DO default(none) PRIVATE (k2,I1) shared(n,vsi,vti,nsimu,mu1,frailij,ui,uti,ndim) REDUCTION(*:herm)
                 do k2=1,n
-                    I1=func(vsi,vti,ui,uti,k2,nsimu,ndim,mu1,frailij)
+                    I1=func(vsi,vti,ui,uti,k2,nsimu,ndim,frailij)
                     herm=herm*I1
                 end do
             !$OMP END PARALLEL DO
@@ -971,7 +970,7 @@ module monteCarlosMult_Gaus
     end function MC_Multiple_surr_cor
     
       ! calcul de l'integral au niveau essai par Monte-carlo et par quadrature au niveau individuel
- double precision function MC_Gauss_MultInd_Essai(func,func2,ndim,nsujet_trial,i,npoint)
+ double precision function MC_Gauss_MultInd_Essai(func,func2,ndim,nsujet_trial,npoint)
     ! dans cette fonction on fait une quadrature adaptative ou non pour les deux effets aleatoire vsi et vti
     ! func: fonction a integrer au niveau individuel
     ! mu1= moyenne du frailty
@@ -985,10 +984,10 @@ module monteCarlosMult_Gaus
     use comon, only: model
     use func_adaptative, only: funcpafrailtyPred_ind
     use optim_scl, only:marq98j_scl  ! pour faire appel a marquard 
-    use var_surrogate, only: Vect_sim_MC,a_deja_simul,sujet_essai_max,theta2,nsim,chol,frailt_base,&
-                             gamma_ui,alpha_ui,graine,aleatoire,nbre_sim,nsujeti,essai_courant,indicej,&
+    use var_surrogate, only: Vect_sim_MC,a_deja_simul,nsim,chol,frailt_base,&
+                             graine,aleatoire,nbre_sim,nsujeti,essai_courant,indicej,&
                              vs_i,vt_i,u_i,invBi_chol_Individuel,ui_chap,adaptative,control_adaptative,&
-                             nparamfrail,ntrials,switch_adaptative,nb_procs
+                             nparamfrail,ntrials,switch_adaptative,nb_procs !gamma_ui,alpha_ui,sujet_essai_max,theta2
     use Autres_fonctions, only:pos_proc_domaine
     use comon, only:invBi_cholDet
     !use mpi
@@ -997,15 +996,15 @@ module monteCarlosMult_Gaus
     !$ use OMP_LIB
     
     implicit none
-    integer ::ii,jj,npg,kk,j,k,l,m,maxmes,nbrejet,stemp,tid1,nsimu,ig,ind_frail,init_i,max_i,code,erreur,rang  !maxmes= nombre de dimension ou encore dimension de X
+    integer ::ii,jj,kk,l,m,maxmes,nsimu,ig,ind_frail,init_i,max_i,rang !code,erreur,nbrejet,stemp,tid1,j,k,npg !maxmes= nombre de dimension ou encore dimension de X
             
-    integer,intent(in):: ndim,nsujet_trial,i
+    integer,intent(in):: ndim,nsujet_trial !i
     !double precision,dimension(1:nnodes) ::xx1,ww1
-    double precision::ss1,ss2,auxfunca,ss,mu1,vc1,ca,cb,dd,res
+    double precision::auxfunca,ss,ca,cb,dd,res !mu1,vc1,ss1,ss2
     double precision,dimension(:,:),allocatable::vc
     double precision,dimension(:,:),allocatable::fraili
     double precision,dimension(:),allocatable::usim
-    double precision::eps,ymarg,SX,x22,somp ! ymarg contient le resultat de l'integrale
+    double precision::ymarg,SX,x22,somp !eps !ymarg contient le resultat de l'integrale
     !double precision,dimension(:),allocatable::ysim
     double precision,dimension(:),allocatable::vi
     integer,intent(in):: npoint
@@ -1029,8 +1028,8 @@ module monteCarlosMult_Gaus
             double precision,intent(in)::vsi,vti,ui
         end function func
         
-        double precision function func2(func,vsi,vti,ui,npoint1,n,i)
-            integer, intent(in)::n,npoint1,i
+        double precision function func2(func,vsi,vti,ui,npoint1,n)
+            integer, intent(in)::n,npoint1 !i
             double precision,intent(in)::vsi,vti,ui
             
             interface
@@ -1152,7 +1151,7 @@ module monteCarlosMult_Gaus
                 vt_i=fraili(ind_frail,2)
                 u_i=fraili(ind_frail,3)
                 
-                call marq98J_scl(k0_2,b_2,np_1,ni,v,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_ind,I_hess_scl,H_hess_scl,&
+                call marq98J_scl(b_2,np_1,ni,v,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_ind,I_hess_scl,H_hess_scl,&
                                 hess_scl,vvv_scl,individu_j)
 									
                 nparamfrail=nparamfrail_save ! on restitu sa valeur avant de continuer
@@ -1225,7 +1224,7 @@ module monteCarlosMult_Gaus
             !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,nsujet_trial,i,fraili,npoint)&
             !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
-                    auxfunca=func2(func,fraili(ii,1),fraili(ii,2),0.d0,npoint,nsujet_trial,i)
+                    auxfunca=func2(func,fraili(ii,1),fraili(ii,2),0.d0,npoint,nsujet_trial)
                     ss=ss+auxfunca
                     !!print*,"ss",ss
                 end do
@@ -1234,7 +1233,7 @@ module monteCarlosMult_Gaus
             !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,nsujet_trial,i,fraili,npoint)&
             !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
-                    auxfunca=func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),npoint,nsujet_trial,i)
+                    auxfunca=func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),npoint,nsujet_trial)
                     ss=ss+auxfunca
                     !!print*,"ss",ss
                 end do
@@ -1250,7 +1249,7 @@ module monteCarlosMult_Gaus
                 if((ii<init_i).or.ii>max_i) then 
                     goto 1005 ! pour dire le processus ne considere pas cet itteration car n'appartient pas a son domaine
                 endif
-                auxfunca=func2(func,fraili(ii,1),fraili(ii,2),0.d0,npoint,nsujet_trial,i)
+                auxfunca=func2(func,fraili(ii,1),fraili(ii,2),0.d0,npoint,nsujet_trial)
                 ss=ss+auxfunca
                 1005 continue
             end do
@@ -1259,7 +1258,7 @@ module monteCarlosMult_Gaus
                 if((ii<init_i).or.ii>max_i) then 
                     goto 1006 ! pour dire le processus ne considere pas cet itteration car n'appartient pas a son domaine
                 endif
-                auxfunca=func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),npoint,nsujet_trial,i)
+                auxfunca=func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),npoint,nsujet_trial)
                 ss=ss+auxfunca
                 1006 continue
             end do
@@ -1280,7 +1279,7 @@ module monteCarlosMult_Gaus
   end function MC_Gauss_MultInd_Essai
   
 ! calcul de l'integral au niveau essai pour le modele surrogate final par Monte-carlo
- double precision function MC_MultInd_Essai(func,func2,ndim,nsujet_trial,i,mat_A)
+ double precision function MC_MultInd_Essai(func,func2,ndim,nsujet_trial)
     ! dans cette fonction on fait une quadrature adaptative ou non pour les deux effets aleatoire vsi et vti
     ! func: fonction a integrer au niveau individuel
     ! mu1= moyenne du frailty
@@ -1289,25 +1288,25 @@ module monteCarlosMult_Gaus
     ! nsujet_trial= nombre de sujets dans le cluster courant
     ! i= cluster courant
     use Autres_fonctions, only:init_random_seed
-    use var_surrogate, only: Vect_sim_MC,a_deja_simul,sujet_essai_max,theta2,nsim,chol,frailt_base,&
-                             gamma_ui,alpha_ui,graine,aleatoire,nbre_sim,nb_procs
+    use var_surrogate, only: Vect_sim_MC,a_deja_simul,theta2,nsim,chol,frailt_base,&
+                             graine,aleatoire,nbre_sim,nb_procs !gamma_ui,alpha_ui,sujet_essai_max
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use Autres_fonctions, only:pos_proc_domaine
     !use mpi
     !$ use OMP_LIB
     
     implicit none
-    integer ::ii,jj,npg,kk,j,k,ier,l,m,maxmes,nbrejet,stemp,tid1,nsimu,init_i,max_i,code,erreur,rang !maxmes= nombre de dimension ou encore dimension de X
-    integer,intent(in):: ndim,nsujet_trial,i
+    integer ::ii,l,m,maxmes,nsimu,init_i,max_i,rang !code,erreur,nbrejet,stemp,tid1,kk,j,k,ier,jj,npg !maxmes= nombre de dimension ou encore dimension de X
+    integer,intent(in):: ndim,nsujet_trial !i
     !double precision,dimension(1:nnodes) ::xx1,ww1
-    double precision::ss1,ss2,auxfunca,ss,mu1,vc1
+    double precision::auxfunca,ss !mu1,vc1,ss1,ss2
     double precision,dimension(:,:),allocatable::vc
     double precision,dimension(:,:),allocatable::fraili
     double precision,dimension(:),allocatable::usim
-    double precision::eps,ymarg,SX,x22,somp ! ymarg contient le resultat de l'integrale
+    double precision::ymarg,SX,x22,somp !eps !ymarg contient le resultat de l'integrale
     !double precision,dimension(:),allocatable::ysim
     double precision,dimension(:),allocatable::vi
-    double precision,dimension(2,2),intent(in):: mat_A
+    !double precision,dimension(2,2),intent(in):: mat_A
 
     !double precision, external::gauss_HermMultA_surr    
     
@@ -1325,8 +1324,8 @@ module monteCarlosMult_Gaus
             double precision, intent(in)::mu1,vc1
         end function func
         
-        double precision function func2(func,vsi,vti,ui,nsimu,mu1,vc1,n,i)
-            integer, intent(in)::n,nsimu,i
+        double precision function func2(func,vsi,vti,ui,nsimu,mu1,vc1,n)
+            integer, intent(in)::n,nsimu !i
             double precision,intent(in)::vsi,vti,ui
             double precision, intent(in)::mu1,vc1
             
@@ -1420,7 +1419,7 @@ module monteCarlosMult_Gaus
             !$OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili,theta2)&
             !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
-                    ss=ss+func2(func,fraili(ii,1),fraili(ii,2),0.d0,nsimu,0.d0,theta2,nsujet_trial,i)
+                    ss=ss+func2(func,fraili(ii,1),fraili(ii,2),0.d0,nsimu,0.d0,theta2,nsujet_trial)
                     !!print*,"ss",ss
                 end do
             !$OMP END PARALLEL DO
@@ -1428,7 +1427,7 @@ module monteCarlosMult_Gaus
             !$OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili,theta2)&
             !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
-                    ss=ss+func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),nsimu,0.d0,theta2,nsujet_trial,i)
+                    ss=ss+func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),nsimu,0.d0,theta2,nsujet_trial)
                     ! !print*,"ss",ss
                 end do
             !$OMP END PARALLEL DO
@@ -1445,7 +1444,7 @@ module monteCarlosMult_Gaus
                 if((ii<init_i).or.ii>max_i) then 
                     goto 1003 ! pour dire le processus ne considere pas cet itteration car n'appartient pas a son domaine
                 endif
-                ss=ss+func2(func,fraili(ii,1),fraili(ii,2),0.d0,nsimu,0.d0,theta2,nsujet_trial,i)
+                ss=ss+func2(func,fraili(ii,1),fraili(ii,2),0.d0,nsimu,0.d0,theta2,nsujet_trial)
                 ! !print*,"ss",ss
                 1003 continue
             end do
@@ -1454,7 +1453,7 @@ module monteCarlosMult_Gaus
                 if((ii<init_i).or.ii>max_i) then 
                     goto 1004 ! pour dire le processus ne considere pas cet itteration car n'appartient pas a son domaine
                 endif
-                ss=ss+func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),nsimu,0.d0,theta2,nsujet_trial,i)
+                ss=ss+func2(func,fraili(ii,1),fraili(ii,2),fraili(ii,3),nsimu,0.d0,theta2,nsujet_trial)
                 ! !print*,"ss",ss
                 1004 continue
             end do
@@ -1496,14 +1495,14 @@ module monteCarlosMult_Gaus
     !$ use OMP_LIB
     
     implicit none
-    integer ::ii,jj,npg,kk,j,k,ier,l,m,maxmes,nbrejet,stemp,tid1,nsimu,init_i,max_i,code,erreur,rang !maxmes= nombre de dimension ou encore dimension de X
+    integer ::ii,jj,l,m,maxmes,nsimu,init_i,max_i,rang !code,erreur,nbrejet,stemp,tid1,npg,kk,j,k,ier !maxmes= nombre de dimension ou encore dimension de X
     integer,intent(in):: ndim,nsujet_trial,i,ndim_Ind
     !double precision,dimension(1:nnodes) ::xx1,ww1
-    double precision::ss1,ss2,auxfunca,ss,mu1,vc1
+    double precision::auxfunca,ss !mu1,vc1,ss1,ss2
     double precision,dimension(:,:),allocatable::vc
     double precision,dimension(:,:),allocatable::fraili
     double precision,dimension(:),allocatable::usim
-    double precision::eps,ymarg,SX,x22,somp ! ymarg contient le resultat de l'integrale
+    double precision::ymarg,SX,x22,somp !eps !ymarg contient le resultat de l'integrale
     !double precision,dimension(:),allocatable::ysim
     double precision,dimension(:),allocatable::vi
     integer,intent(in):: npoint
@@ -1687,14 +1686,14 @@ module monteCarlosMult_Gaus
     !$ use OMP_LIB
     
     implicit none
-    integer ::ii,jj,npg,kk,j,k,ier,l,m,maxmes,nbrejet,stemp,tid1,nsimu,nfrail2 !maxmes= nombre de dimension ou encore dimension de X
+    integer ::ii,jj,l,m,maxmes,nsimu,nfrail2 !nbrejet,stemp,tid1,npg,kk,j,k,ier !maxmes= nombre de dimension ou encore dimension de X
     integer,intent(in):: ndim,nsujet_trial,i,ndim_Ind
     !double precision,dimension(1:nnodes) ::xx1,ww1
-    double precision::ss1,ss2,auxfunca,ss,mu1
+    double precision::auxfunca,ss !mu1,ss1,ss2
     double precision,dimension(:,:),allocatable::vc,vc1!,usim_
     double precision,dimension(:,:),allocatable::fraili,frailij
     double precision,dimension(:),allocatable::usim
-    double precision::eps,ymarg,SX,x22,somp ! ymarg contient le resultat de l'integrale
+    double precision::ymarg,SX,x22,somp !eps  !ymarg contient le resultat de l'integrale
     !double precision,dimension(:),allocatable::ysim
     double precision,dimension(:),allocatable::vi
 
@@ -1702,28 +1701,28 @@ module monteCarlosMult_Gaus
     
     ! bloc interface pour la definition de la fonction func
     interface
-        double precision function func(vsi,vti,ui,uti,j,nsimu,ndim,mu1,frailij)
+        double precision function func(vsi,vti,ui,uti,j,nsimu,ndim,frailij)
         use Autres_fonctions, only:init_random_seed
             use var_surrogate, only: delta,deltastar,const_res4,const_res5,Vect_sim_MC,frailt_base,posind_i,&
                 graine,aleatoire,nbre_sim
             
             integer,intent(in):: j,nsimu,ndim
             double precision,intent(in)::vsi,vti,ui,uti
-            double precision, intent(in)::mu1
+            !double precision, intent(in)::mu1
             double precision,dimension(nsimu,ndim),intent(in)::frailij
         end function func
                
-        double precision function func2(func,vsi,vti,ui,uti,nsimu,mu1,frailij,ndim,n,i)
-            integer, intent(in)::n,i,nsimu,ndim
-            double precision,intent(in)::vsi,vti,mu1,ui,uti
+        double precision function func2(func,vsi,vti,ui,uti,nsimu,frailij,ndim,n,i)
+        integer, intent(in)::n,i,nsimu,ndim
+            double precision,intent(in)::vsi,vti,ui,uti !mu1
             double precision,dimension(nsimu,ndim),intent(in)::frailij
             
             interface
-                double precision function func(vsi,vti,ui,uti,j,nsimu,ndim,mu1,frailij)
+                double precision function func(vsi,vti,ui,uti,j,nsimu,ndim,frailij)
                     use var_surrogate, only: delta,deltastar,const_res4,const_res5,Vect_sim_MC,frailt_base,posind_i
                     integer,intent(in):: j,nsimu,ndim
                     double precision,intent(in)::vsi,vti,ui,uti
-                    double precision, intent(in)::mu1
+                    !double precision, intent(in)::mu1
                     double precision,dimension(nsimu,ndim),intent(in)::frailij
                 end function func
             end interface
@@ -1873,7 +1872,7 @@ module monteCarlosMult_Gaus
         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,nsujet_trial,i,fraili,ndim_Ind,frailij)&
         !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
-                auxfunca=func2(func,fraili(ii,3),fraili(ii,4),fraili(ii,1),fraili(ii,2),nsimu,0.d0,frailij,ndim_Ind,nsujet_trial,i)
+                auxfunca=func2(func,fraili(ii,3),fraili(ii,4),fraili(ii,1),fraili(ii,2),nsimu,frailij,ndim_Ind,nsujet_trial,i)
                 ss=ss+auxfunca
                 !!print*,"ss",ss (func,vsi,vti,ui,uti,nsimu,mu1,vc1,ndim,n,i)
             end do
@@ -1918,7 +1917,7 @@ recursive function gaussHermMult(func,frail1,frail,i,k,x,w,inc) result(herm)
    ! inc un increment pour le controle, vaut 0 initialement
    
    use var_surrogate, only:adaptative
-   use comon, only:invBi_cholDet
+   !use comon, only:invBi_cholDet
    
    implicit none
    
@@ -1979,7 +1978,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
    ! i: trial courant dans le quel on effectue le calcul integrale
    
    use var_surrogate, only:adaptative
-   use comon, only:invBi_cholDet
+   !use comon, only:invBi_cholDet
    
    implicit none
    
@@ -2040,7 +2039,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
    ! n: nombre de suijet dans le cluster courant
    
    use var_surrogate, only:adaptative
-   use comon, only: lognormal,invBi_cholDet
+   use comon, only: lognormal !invBi_cholDet
    
    implicit none
    
@@ -2160,7 +2159,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     return
  end function gauss_HermMultA
  
- double precision function gauss_HermMultA_surr(func,vsi,vti,ui,npoint1,n,i) 
+ double precision function gauss_HermMultA_surr(func,vsi,vti,ui,npoint1,n) 
    ! quadrature a l'aide du produit des integrales de chaque individu du cluster
    ! func est la fonction a integrer, definie dans le module fonction_A_integrer (Integrant_scl.f90)
    ! npoint: nombre de point de quadratures
@@ -2169,18 +2168,17 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
    ! vti= frailtie niveau essai associe a t
    ! i= cluster courant
    
-   use var_surrogate, only:adaptative,varcovinv,cdcts,nigts,estim_wij_chap,gamma_ui,&
-                           alpha_ui,nigs,cdcs,frailt_base,methodInt,nb_procs,nsim,theta2,methodInt&
-                           ,nb_procs
-   use comon, only: lognormal,invBi_cholDet
+   use var_surrogate, only:varcovinv,gamma_ui,nb_procs,frailt_base,methodInt,nb_procs,methodInt
+                          !nsim,theta2,alpha_ui,nigs,cdcs,cdcts,nigts,estim_wij_chap,adaptative
+   use comon, only: lognormal !invBi_cholDet
    use Autres_fonctions, only:pos_proc_domaine
    !use mpi
    !$ use OMP_LIB
    
    implicit none
    
-   integer ::k2,init_i,max_i,code,erreur,rang
-   integer, intent(in)::n,npoint1,i
+   integer ::k2,init_i,max_i,rang !code,erreur
+   integer, intent(in)::n,npoint1 !i
    double precision,intent(in)::vsi,vti,ui
    double precision ::herm,I1,c1,c2
    double precision, dimension(:,:),allocatable::m1,m3  
@@ -2242,7 +2240,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                     I1=func(vsi,vti,ui,k2,npoint1)
                 ! endif
                 herm=herm*I1
-                1001 continue
+                !1001 continue
             end do
             ! on fait la reduction et redistribu le resultat a tous les procesus
             ! !call MPI_ALLREDUCE(herm,herm,1,MPI_DOUBLE_PRECISION,MPI_PROD,MPI_COMM_WORLD,code)
@@ -2313,12 +2311,12 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     endif
     
     gauss_HermMultA_surr=I1*herm
-    100 continue
+    !100 continue
     return
  end function gauss_HermMultA_surr
  
  !integration au niveau individuel par monte-carlo  et essai par guass hermite
-  double precision function gauss_HermMultA_surr_MC(func,vsi,vti,ui,npoint1,n,i) 
+  double precision function gauss_HermMultA_surr_MC(func,vsi,vti,ui,n) 
    ! quadrature a l'aide du produit des integrales de chaque individu du cluster
    ! func est la fonction a integrer, definie dans le module fonction_A_integrer (Integrant_scl.f90)
    ! npoint: nombre de point de quadratures
@@ -2327,18 +2325,17 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
    ! vti= frailtie niveau essai associe a t
    ! i= cluster courant
    
-   use var_surrogate, only:adaptative,varcovinv,cdcts,nigts,estim_wij_chap,gamma_ui,&
-                           alpha_ui,nigs,cdcs,frailt_base,methodInt,nb_procs,nsim,theta2,methodInt&
-                           ,nb_procs
-   use comon, only: lognormal,invBi_cholDet
+   use var_surrogate, only:gamma_ui,frailt_base,methodInt,nb_procs,nsim,theta2,methodInt,nb_procs,varcovinv
+                          !adaptative,cdcts,nigts,estim_wij_chap,alpha_ui,nigs,cdcs
+   use comon, only: lognormal !invBi_cholDet
    use Autres_fonctions, only:pos_proc_domaine
    !use mpi
    !$ use OMP_LIB
    
    implicit none
    
-   integer ::k2,init_i,max_i,code,erreur,rang
-   integer, intent(in)::n,npoint1,i
+   integer ::k2,init_i,max_i,rang !code,erreur
+   integer, intent(in)::n !npoint1,i
    double precision,intent(in)::vsi,vti,ui
    double precision ::herm,I1,c1,c2
    double precision, dimension(:,:),allocatable::m1,m3  
@@ -2465,7 +2462,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     endif
     
     gauss_HermMultA_surr_MC=I1*herm
-    110 continue
+    !110 continue
     return
  end function gauss_HermMultA_surr_MC
   
@@ -2478,8 +2475,8 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     ! nsujet_trial= nombre de sujets dans le cluster courant
     ! i= cluster courant
     
-    use var_surrogate, only: adaptative,xx1,ww1,estim_wij_chap,posind_i,invBi_chol_Essai,ui_chap_Essai,&
-        invBi_cholDet_Essai,frailt_base,nb_procs
+    use var_surrogate, only: adaptative,xx1,ww1,invBi_chol_Essai,ui_chap_Essai,&
+        invBi_cholDet_Essai,nb_procs !frailt_base,estim_wij_chap,posind_i
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use fonction_A_integrer, only:multiJ
     use Autres_fonctions, only:pos_proc_domaine
@@ -2488,11 +2485,11 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     
     
     implicit none
-    integer ::ii,jj,npg,kk,cpt,init_i,max_i,code,erreur,rang
+    integer ::ii,jj,npg,kk,cpt,init_i,max_i,rang !code,erreur
     integer,intent(in):: ndim,nnodes,nsujet_trial,i
     !double precision,dimension(1:nnodes) ::xx1,ww1
     double precision::ss1,ss2,auxfunca,ss
-    double precision, dimension(ndim)::xxl,m,xx !vecteur qui contiendra à chaque fois les points de quadrature
+    double precision, dimension(ndim)::xxl,m !xx !vecteur qui contiendra à chaque fois les points de quadrature
     double precision,dimension(ndim,ndim)::invBi_chol_Essai_k ! pour recuperer les matrice B_k dans le vecteur des matrices B des essais K
     !double precision, external::gauss_HermMultA_surr    
     
@@ -2506,8 +2503,8 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
             double precision,intent(in)::vsi,vti,ui
         end function func
         
-        double precision function func2(func,vsi,vti,ui,npoint1,n,i)
-            integer, intent(in)::n,npoint1,i
+        double precision function func2(func,vsi,vti,ui,npoint1,n)
+            integer, intent(in)::n,npoint1 !i
             double precision,intent(in)::vsi,vti,ui
             
             interface
@@ -2572,7 +2569,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                     !xxl(2)=xx1(jj)
                     
                     !auxfunca=func2(func,xx1(ii),xx1(jj),nnodes,nsujet_trial,i)
-                    auxfunca=func2(func,xxl(1),xxl(2),0.d0,nnodes,nsujet_trial,i)
+                    auxfunca=func2(func,xxl(1),xxl(2),0.d0,nnodes,nsujet_trial)
                     !!print*,"12"
                     ss1 = ss1+ww1(jj)*(auxfunca)
                     !!print*,"13"
@@ -2605,7 +2602,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                         end if
                         
                         !auxfunca=func2(func,xx1(ii),xx1(jj),nnodes,nsujet_trial,i)
-                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nnodes,nsujet_trial,i)
+                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nnodes,nsujet_trial)
                         !!print*,"12"
                         ss1 = ss1+ww1(jj)*(auxfunca)
                         ! !print*,ww1(jj)
@@ -2649,7 +2646,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                         end if
                         
                         !auxfunca=func2(func,xx1(ii),xx1(jj),nnodes,nsujet_trial,i)
-                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nnodes,nsujet_trial,i)
+                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nnodes,nsujet_trial)
                         !!print*,"12"
                         ss1 = ss1+ww1(jj)*(auxfunca)
                         ! !print*,ww1(jj)
@@ -2664,7 +2661,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                 ss = ss+ww1(kk)*ss2
                 ! !print*,ww1(kk)
                 ! stop
-                1000 continue
+                !1000 continue
             end do
             ! on fait la reduction et redistribu le resultat a tous les procesus
             ! !call MPI_ALLREDUCE(ss,ss,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,code)
@@ -2681,7 +2678,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     !!print*,"ss_transformé=",ss
     
     gauss_HermMultInd_Essai=ss
-    101 continue
+    !101 continue
     return
   end function gauss_HermMultInd_Essai
   
@@ -2694,8 +2691,8 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     ! nsujet_trial= nombre de sujets dans le cluster courant
     ! i= cluster courant
     
-    use var_surrogate, only: adaptative,xx1,ww1,estim_wij_chap,posind_i,invBi_chol_Essai,ui_chap_Essai,&
-        invBi_cholDet_Essai,frailt_base,nb_procs
+    use var_surrogate, only: adaptative,xx1,ww1,invBi_chol_Essai,ui_chap_Essai,&
+        invBi_cholDet_Essai,nb_procs !estim_wij_chap,posind_i,frailt_base
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use fonction_A_integrer, only:multiJ
     use Autres_fonctions, only:pos_proc_domaine
@@ -2704,11 +2701,11 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     
     
     implicit none
-    integer ::ii,jj,npg,kk,cpt,init_i,max_i,code,erreur,rang
+    integer ::ii,jj,npg,kk,cpt,init_i,max_i,rang !code,erreur
     integer,intent(in):: ndim,nnodes,nsujet_trial,i
     !double precision,dimension(1:nnodes) ::xx1,ww1
     double precision::ss1,ss2,auxfunca,ss
-    double precision, dimension(ndim)::xxl,m,xx !vecteur qui contiendra à chaque fois les points de quadrature
+    double precision, dimension(ndim)::m,xxl !xx !vecteur qui contiendra à chaque fois les points de quadrature
     double precision,dimension(ndim,ndim)::invBi_chol_Essai_k ! pour recuperer les matrice B_k dans le vecteur des matrices B des essais K
     !double precision, external::gauss_HermMultA_surr    
     
@@ -2724,8 +2721,8 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
             double precision,intent(in)::vsi,vti,ui,mu1,vc1
         end function func
         
-        double precision function func2(func,vsi,vti,ui,npoint1,n,i)
-            integer, intent(in)::n,npoint1,i
+        double precision function func2(func,vsi,vti,ui,n)
+            integer, intent(in)::n !npoint1,i
             double precision,intent(in)::vsi,vti,ui
             
             interface
@@ -2790,7 +2787,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                     !xxl(2)=xx1(jj)
                     
                     !auxfunca=func2(func,xx1(ii),xx1(jj),nnodes,nsujet_trial,i)
-                    auxfunca=func2(func,xxl(1),xxl(2),0.d0,nnodes,nsujet_trial,i)
+                    auxfunca=func2(func,xxl(1),xxl(2),0.d0,nsujet_trial)
                     !!print*,"12"
                     ss1 = ss1+ww1(jj)*(auxfunca)
                     !!print*,"13"
@@ -2823,7 +2820,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                         end if
                         
                         !auxfunca=func2(func,xx1(ii),xx1(jj),nnodes,nsujet_trial,i)
-                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nnodes,nsujet_trial,i)
+                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nsujet_trial)
                         !!print*,"12"
                         ss1 = ss1+ww1(jj)*(auxfunca)
                         ! !print*,ww1(jj)
@@ -2867,7 +2864,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                         end if
                         
                         !auxfunca=func2(func,xx1(ii),xx1(jj),nnodes,nsujet_trial,i)
-                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nnodes,nsujet_trial,i)
+                        auxfunca=func2(func,xxl(1),xxl(2),xxl(3),nsujet_trial)
                         !!print*,"12"
                         ss1 = ss1+ww1(jj)*(auxfunca)
                         ! !print*,ww1(jj)
@@ -2882,7 +2879,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
                 ss = ss+ww1(kk)*ss2
                 ! !print*,ww1(kk)
                 ! stop
-                1000 continue
+                !1000 continue
             end do
             ! on fait la reduction et redistribu le resultat a tous les procesus
             ! !call MPI_ALLREDUCE(ss,ss,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,code)
@@ -2899,7 +2896,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     !!print*,"ss_transformé=",ss
     
     gauss_HermMultInd_Essai_MC=ss
-    101 continue
+    !101 continue
     return
   end function gauss_HermMultInd_Essai_MC
   
@@ -2912,20 +2909,20 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     ! nsujet_trial= nombre de sujets dans le cluster courant
     ! i= cluster courant
     
-    use var_surrogate, only: adaptative,xx1,ww1,estim_wij_chap,posind_i,invBi_chol_Essai,ui_chap_Essai,&
-        invBi_cholDet_Essai,frailt_base,nigs,cdcs,nigts,cdcts,determinant,pi
+    use var_surrogate, only: frailt_base,nigs,cdcs,nigts,cdcts,pi 
+    !,& determinant,invBi_chol_Essai,ui_chap_Essai,adaptative,xx1,ww1,estim_wij_chap,posind_i,invBi_cholDet_Essai
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use fonction_A_integrer, only:multiJ
     !$ use OMP_LIB
     
     implicit none
-    integer ::ii,jj,npg,kk,cpt,k2
+    integer ::k2 !ii,jj,npg,kk,cpt
     double precision,intent(in)::vsi,vti,ui,uti
     integer,intent(in):: ndim,nnodes,nsujet_trial,i
     !double precision,dimension(1:nnodes) ::xx1,ww1
-    double precision::ss1,ss2,auxfunca,ss,herm,I1,c2
-    double precision, dimension(ndim)::xxl,m,xx !vecteur qui contiendra à chaque fois les points de quadrature
-    double precision,dimension(ndim,ndim)::invBi_chol_Essai_k ! pour recuperer les matrice B_k dans le vecteur des matrices B des essais K
+    double precision::ss,herm,I1,c2 !ss1,ss2,auxfunca
+    !double precision, dimension(ndim)::xxl,m,xx !vecteur qui contiendra à chaque fois les points de quadrature
+    !double precision,dimension(ndim,ndim)::invBi_chol_Essai_k ! pour recuperer les matrice B_k dans le vecteur des matrices B des essais K
     !double precision, external::gauss_HermMultA_surr    
     
     ! bloc interface pour la definition de la fonction func
@@ -3014,7 +3011,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
      ! stop
     
     gauss_HermMultInd_cor=I1*herm
-    101 continue
+    !101 continue
     return
   end function gauss_HermMultInd_cor
     
@@ -3026,15 +3023,15 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
    ! nsim: nombre de simulation
    ! vcdiag: dit si la matrice vc est diagonale
    
-    use var_surrogate, only:adaptative
-    use comon, only:invBi_cholDet
+    !use var_surrogate, only:adaptative
+    !use comon, only:invBi_cholDet
     use monteCarlosMult_Gaus ! pour l'integrale par monte carlo   
    
     implicit none
    
     integer ::k2
     integer::n
-    double precision ::mc,gauss_HermMult
+    double precision ::mc !gauss_HermMult
     double precision,intent(in),dimension(:,:)::vc
     double precision,intent(in),dimension(:)::mu
     double precision,dimension(1)::mu1
@@ -3079,7 +3076,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     
         double precision,intent(out)::ss
         integer,intent(in)::nnodes,position_i
-        double precision::auxfunca,func6JL,func7J,func8J,func9J
+        double precision::auxfunca !func6JL,func7J,func8J,func9J
         integer::j,methodGH
         double precision,dimension(nnodes):: xx1,ww1
         

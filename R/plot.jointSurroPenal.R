@@ -11,8 +11,8 @@
 ##' 
 ##' \method{plot}{jointSurroPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
 ##' pos.legend = "topright", cex.legend=0.7, main, Xlab = "Time", Ylab
-##' = "Baseline hazard function", xmin = 0, xmax = NULL, ylim = c(0,1), 
-##' endpoint = 2, scale = 1, ...)
+##' = "Baseline hazard function", median=TRUE, xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, 
+##' scale = 1, ...)
 ##' @param x An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal} ).
 ##' @param type.plot A character string specifying the type of curve. Possible
@@ -27,6 +27,7 @@
 ##' @param cex.legend Character expansion factor *relative* to current
 ##' 'par("cex")'. Default is 0.7.
 ##' @param main Title of plot.
+##' @param median Logical value. Determines whether survival median will be plotted. Default is TRUE.
 ##' @param Xlab Label of x-axis. Default is '"Time"'.
 ##' @param Ylab Label of y-axis. Default is '"Baseline hazard function"'.
 ##' @param xmin Minimum value for x-axis, the default is \code{0}. 
@@ -72,7 +73,7 @@
 ##' 
 ##' 
 "plot.jointSurroPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend = "topright", 
-                                    cex.legend = 0.7, main, Xlab = "Time", Ylab = "Baseline hazard function", 
+                                    cex.legend = 0.7, main, median=TRUE, Xlab = "Time", Ylab = "Baseline hazard function", 
                                     xmin = 0, xmax = NULL, ylim = c(0,1), endpoint = 2, scale = 1, ...)
 {
   color = 2
@@ -109,9 +110,11 @@
   			if (conf.bands){
   				matplot(x$xT, x$survT, col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, main=main, xlim = xlim, ylim = ylim, ...)
   				matlines(x$xT, x$survT, col=color+(i-1), type="l", lty=c(1,2,2), ...)
+  				if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
   			}else{
   				plot(x$xT, x$survT[,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, main=main, xlim = xlim, ylim = ylim, ...)
   				lines(x$xT, x$survT[,1], col=color+(i-1), type="l", lty=1, ...)
+  				if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
   			}
   	}
   	
@@ -133,9 +136,11 @@
 	    if (conf.bands){
 	      matplot(x$xS, x$survS, col=color + 1, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, main=main, xlim = xlim, ylim = ylim, ...)
 	      matlines(x$xS, x$survS, col=color + 1, type="l", lty=c(1,2,2), ...)
+	      if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 	    }else{
 	      plot(x$xS, x$survS[,1], col=color + 1, type="l", lty=1, xlab=Xlab,ylab=Ylab, main=main, xlim = xlim, ylim = ylim, ...)
 	      lines(x$xS, x$survS[,1], col=color + 1, type="l", lty=1, ...)
+	      if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 	    }
 	  }
 	  
@@ -166,10 +171,12 @@
 	    if(conf.bands){
 	      matplot(x$xT, matS, col=c(color,color,color,color+1,color+1,color+1), type="l", lty=c(1,2,2,1,2,2), xlab=Xlab,ylab=Ylab, main=main, xlim = xlim, ylim = ylim, ...)
 	      matlines(x$xT, matS, col=c(color,color,color,color+1,color+1,color+1), type="l", lty=c(1,2,2,1,2,2), ...)
+	      if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 	    }else{
 	      matS2 <- matS[,c(1,4)]
 	      matplot(x$xT, matS2, col=c(color,color+1), type="l", lty=c(1,1), xlab = Xlab,ylab = Ylab, main = main, xlim = xlim, ylim = ylim, ...)
 	      matlines(x$xT, matS2, col=c(color,color+1), type="l", lty=c(1,1), ...)
+	      if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 	    }
 	  }
 	  

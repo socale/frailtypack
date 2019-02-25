@@ -403,7 +403,7 @@
         goto 123
 
     else
-	     funcpajsplines_fam = res
+    funcpajsplines_fam = res
         do k=1,ng
 		
             Rrec(k)=res1(k)
@@ -413,13 +413,13 @@
         end do
         k=0
         do i= 1,nfam
-		     do j=1,fsize(i)
+        do j=1,fsize(i)
 		!	 if(i.eq.1) then 
 		!	 write(*,*)i,fam(i),fsize(i),fsize(1)+j,aux1(fsize(1)+j)
 		!	else  
 		!	write(*,*)i,fam(i),fsize(i),aux1(k+j)
 		!	end if
-			 cumulhaz1(i,j) = res1(k+j)
+        cumulhaz1(i,j) = res1(k+j)
                 cumulhaz0(i,j) = res3(k+j)
                 cumulhazdc(i,j) = aux1(k+j)
 				

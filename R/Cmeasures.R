@@ -171,7 +171,7 @@ Cmeasures <- function(fitc, ties=1, marginal=0, cindex=0, Nboot=0, tau=0, data.v
 	if (!missing(data.val)){ # validation externe sur data.val
 		m <- fitc$call
 		m2 <- match.call()
-		m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha <- m$... <- NULL
+		m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha  <- NULL
 		
 		m[[1]] <- as.name("model.frame")
 		m[[3]] <- as.name(m2$data.val)

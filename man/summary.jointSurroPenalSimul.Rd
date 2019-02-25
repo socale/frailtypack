@@ -44,7 +44,7 @@ and a read only memory of 378 Go)
 joint.simul <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul=600, 
                    ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001, 
                    LIMderiv = 0.001, nb.mc = 200, nb.gh = 20, 
-                   nb.gh2 = 32, true.init.val = 1, print.iter=F)
+                   nb.gh2 = 32, true.init.val = 1, print.itter=F)
 
 # results
 summary(joint.simul, d = 3, R2boot = 1) # bootstrap
