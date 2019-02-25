@@ -5,19 +5,19 @@
 \title{Surrogate threshold effect for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-ste(object, var.used = "error.meta", alpha. = 0.05, 
+ste(object, var.used = "error.estim", alpha. = 0.05, 
     pred.int.use = "up")
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
 (output from calling the function \code{jointSurroPenal}).}
 
-\item{var.used}{This argument takes two values. The first one is \code{"error.meta"}
+\item{var.used}{This argument takes two values. The first one is \code{"error.estim"}
 and indicates if the prediction error take into account
 the estimation error of the estimates of the parameters. If the estimates 
-are suppose knew or if the dataset includes a high number of trials with 
+are supposed to be known or if the dataset includes a high number of trials with 
 a high number of subject per trial, value \code{No.error} can be used. 
-The default is \code{error.meta}.}
+The default is \code{error.estim}.}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
 
@@ -30,14 +30,14 @@ Returns and displays the STE.
 }
 \description{
 {
-This function compute the the surrogate threshold effect (STE) from the one-step joint 
+This function compute the surrogate threshold effect (STE) from the one-step joint 
 surrogate \code{\link[=jointSurroPenal]{model}}. The STE is defined as the minimum treament effect on the surrogate 
-necessary to predict a non-zero effect on the true endpoint (Burzikwosky \emph{et al.}, 2006).
+necessary to predict a non-zero effect on the true endpoint (Burzykowski \emph{et al.}, 2006).
 }
 }
 \details{
 {  
-The STE is obtain by solving the equation \eqn{l(\alpha_0) = 0} (resp. \eqn{u(\alpha_0) = 0}), where \eqn{\alpha_0} represent
+The STE is obtained by solving the equation \eqn{l(\alpha_0) = 0} (resp. \eqn{u(\alpha_0) = 0}), where \eqn{\alpha_0} represents
 the corresponding STE, and \eqn{l(\alpha_0)} (resp. \eqn{u(\alpha_0}) is the lower (resp. upper) bound of the prediction interval 
 of the treatment effect on the true endpoint (\eqn{\beta + b_0}). Thereby,
 
@@ -50,16 +50,17 @@ and
 E(\beta + b_0|\alpha_0, \vartheta) + Z_{1-(\gamma/2)} \sqrt(Var(\beta + b_0|\alpha_0, \vartheta))}
 
 where \eqn{\vartheta} represents the set of estimates for the fixed-effects and the 
-variance-covariance parameters of the random effects abtained from the joint surrogate 
+variance-covariance parameters of the random effects obtained from the joint surrogate 
 \code{\link[=jointSurroPenal]{model}} 
 (Sofeu \emph{et al.}, 2018). 
 
 Given that negative values of treatment effect indicate a reduction of the risk 
-of failure and are considered beneficial, STE should be computed from the upper prediction
+of failure and are considered beneficial, STE is recommended to be computed from 
+the upper prediction
 limit \eqn{u(\alpha_0)}.
 
 The details on the computation of STE is describes in 
-(Burzikwosky \emph{et al.}, 2006).
+Burzykowski \emph{et al.} (2006).
 }
 }
 \examples{
@@ -76,8 +77,10 @@ joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8,
                 init.kappa = c(2000,1000), indicator.alpha = 0, 
                 nb.mc = 200, scale = 1/365)
 
-# STE
-# ste(joint.surro.ovar)
+# ======STE=====
+# ste(joint.surro.ovar, var.used = "error.estim")
+# Assuming no errors on the estimates
+# ste(joint.surro.ovar, var.used = "No.error", pred.int.use = "up")
 
 }
 

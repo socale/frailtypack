@@ -2,13 +2,13 @@
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' This function compute the the surrogate threshold effect (STE) from the one-step joint 
+##' This function compute the surrogate threshold effect (STE) from the one-step joint 
 ##' surrogate \code{\link[=jointSurroPenal]{model}}. The STE is defined as the minimum treament effect on the surrogate 
-##' necessary to predict a non-zero effect on the true endpoint (Burzikwosky \emph{et al.}, 2006).
+##' necessary to predict a non-zero effect on the true endpoint (Burzykowski \emph{et al.}, 2006).
 ##' }
 ##' 
 ##' @details{  
-##' The STE is obtain by solving the equation \eqn{l(\alpha_0) = 0} (resp. \eqn{u(\alpha_0) = 0}), where \eqn{\alpha_0} represent
+##' The STE is obtained by solving the equation \eqn{l(\alpha_0) = 0} (resp. \eqn{u(\alpha_0) = 0}), where \eqn{\alpha_0} represents
 ##' the corresponding STE, and \eqn{l(\alpha_0)} (resp. \eqn{u(\alpha_0}) is the lower (resp. upper) bound of the prediction interval 
 ##' of the treatment effect on the true endpoint (\eqn{\beta + b_0}). Thereby,
 ##' 
@@ -21,31 +21,32 @@
 ##' E(\beta + b_0|\alpha_0, \vartheta) + Z_{1-(\gamma/2)} \sqrt(Var(\beta + b_0|\alpha_0, \vartheta))}
 ##' 
 ##' where \eqn{\vartheta} represents the set of estimates for the fixed-effects and the 
-##' variance-covariance parameters of the random effects abtained from the joint surrogate 
+##' variance-covariance parameters of the random effects obtained from the joint surrogate 
 ##' \code{\link[=jointSurroPenal]{model}} 
 ##' (Sofeu \emph{et al.}, 2018). 
 ##' 
 ##' Given that negative values of treatment effect indicate a reduction of the risk 
-##' of failure and are considered beneficial, STE should be computed from the upper prediction
+##' of failure and are considered beneficial, STE is recommended to be computed from 
+##' the upper prediction
 ##' limit \eqn{u(\alpha_0)}.
 ##' 
 ##' The details on the computation of STE is describes in 
-##' (Burzikwosky \emph{et al.}, 2006).
+##' Burzykowski \emph{et al.} (2006).
 ##' }
 ##' 
 ##' @aliases ste 
 ##' @usage
 ##' 
-##' ste(object, var.used = "error.meta", alpha. = 0.05, 
+##' ste(object, var.used = "error.estim", alpha. = 0.05, 
 ##'     pred.int.use = "up")
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal}).
-##' @param var.used This argument takes two values. The first one is \code{"error.meta"}
+##' @param var.used This argument takes two values. The first one is \code{"error.estim"}
 ##' and indicates if the prediction error take into account
 ##' the estimation error of the estimates of the parameters. If the estimates 
-##' are suppose knew or if the dataset includes a high number of trials with 
+##' are supposed to be known or if the dataset includes a high number of trials with 
 ##' a high number of subject per trial, value \code{No.error} can be used. 
-##' The default is \code{error.meta}.
+##' The default is \code{error.estim}.
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param pred.int.use A character string that indicates the bound of the prediction interval 
 ##' to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
@@ -82,19 +83,21 @@
 ##'                 init.kappa = c(2000,1000), indicator.alpha = 0, 
 ##'                 nb.mc = 200, scale = 1/365)
 ##' 
-##' # STE
-##' # ste(joint.surro.ovar)
+##' # ======STE=====
+##' # ste(joint.surro.ovar, var.used = "error.estim")
+##' # Assuming no errors on the estimates
+##' # ste(joint.surro.ovar, var.used = "No.error", pred.int.use = "up")
 ##' 
 ##' }
 ##' 
 ##' 
-ste <- function (object, var.used = "error.meta", alpha. = 0.05, pred.int.use = "up")
+ste <- function (object, var.used = "error.estim", alpha. = 0.05, pred.int.use = "up")
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
   
-  if(! var.used %in% c("error.meta","No.error"))
-    stop("Argument 'var.used' must be specified to 'error.meta' or 'No.error' ")
+  if(! var.used %in% c("error.estim","No.error"))
+    stop("Argument 'var.used' must be specified to 'error.estim' or 'No.error' ")
   
   if(! pred.int.use %in% c("up","lw"))
     stop("Argument 'pred.int.use' must be specified to 'up' or 'lw' ")
@@ -124,7 +127,7 @@ ste <- function (object, var.used = "error.meta", alpha. = 0.05, pred.int.use = 
   # variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) * VD) %*% x
   # + variance.inf
   
-  # if(var.used == "error.meta") 
+  # if(var.used == "error.estim") 
   #   variance <- variance.N
   # else 
   #   variance <- variance.inf
@@ -155,7 +158,7 @@ ste <- function (object, var.used = "error.meta", alpha. = 0.05, pred.int.use = 
                        object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
     R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1]
     
-    if(var.used == "error.meta") {
+    if(var.used == "error.estim") {
       if(pred.int.use == "lw"){
         return((beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
           sqrt(t(x.) %*% (Vmu + (((x - alpha)/daa)**2) * VD) %*% x.

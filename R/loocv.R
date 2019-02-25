@@ -8,19 +8,20 @@
 ##' @aliases loocv 
 ##' @usage
 ##' 
-##' loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
+##' loocv(object, unusedtrial, var.used = "error.estim", alpha. = 0.05, 
 ##' dec = 3, print.times = TRUE)
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal}).
 ##' @param unusedtrial A list of trial not to be taken into account in the cross-validation.
-##' This parameter is useful when after excluding some trials, the model is facing convergence problem
-##' @param var.used This argument takes two values. The first one is \code{"error.meta"}
+##' This parameter is useful when after excluding some trials, the model is facing 
+##' convergence problem.
+##' @param var.used This argument takes two values. The first one is \code{"error.estim"}
 ##' and indicates if the prediction variance takes into account
 ##' the estimation errors from the estimates of the parameters. If estimates 
-##' are suppose known or if the dataset includes a high number of trials with 
+##' are supposed to be known or if the dataset includes a high number of trials with 
 ##' a high number of subject per trial, value \code{"No.error"} can be used. 
-##' The default is \code{error.meta}.
+##' The default is \code{error.estim}.
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param dec The desired number of digits after the decimal point for parameters
 ##' and confidence intervals. Default of 3 digits is used.
@@ -30,7 +31,7 @@
 ##' including for each trial the number of included subjects, the observed 
 ##' treatment effect on the surrogate endpoint, the observed treatment effect on
 ##' the true endpoint and the predicted treatment effect on the 
-##' true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
+##' true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
 ##' endpoint is included into the prediction interval, the last columns contains "*".
 ##' @seealso \code{\link{jointSurroPenal}}
 ##' 
@@ -66,13 +67,13 @@
 ##' }
 ##' 
 ##' 
-loocv <- function (object, unusedtrial, var.used = "error.meta", alpha. = 0.05, dec = 3, print.times = TRUE)
+loocv <- function (object, unusedtrial, var.used = "error.estim", alpha. = 0.05, dec = 3, print.times = TRUE)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
   
-  if(! var.used %in% c("error.meta","No.error"))
-    stop("Argument 'var.used' must be specified to 'error.meta' or 'No.error' ")
+  if(! var.used %in% c("error.estim","No.error"))
+    stop("Argument 'var.used' must be specified to 'error.estim' or 'No.error' ")
   
   # gestion de l'affichage a l'ecran
   flush.console()

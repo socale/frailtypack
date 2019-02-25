@@ -2,7 +2,7 @@
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' Predict the treatment effect on the true endpoint (\eqn{beta_T}), basing on the 
+##' Predict the treatment effect on the true endpoint (\eqn{beta_T}), based on the 
 ##' treatment effect observed on the surrogate endpoint (\eqn{beta_S}).
 ##' }
 ##' 
@@ -14,31 +14,31 @@
 ##' @aliases predict.jointSurroPenal 
 ##' @usage
 ##' 
-##' \method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.meta", 
+##' \method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.estim", 
 ##' alpha. = 0.05, dec = 3, ...)
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal}).
-##' @param datapred Dataset to used for the prediction. If this argument is specified,
+##' @param datapred Dataset to use for the prediction. If this argument is specified,
 ##' the data structure must be the same as the parameter \code{data} in the 
 ##' function \link{jointSurroPenal}. However, if observation on te true endpoint are
 ##' not available, columns timeT and \code{statusT} can be absent.
-##' @param var.used This argument takes two values. The first one is \code{"error.meta"}
+##' @param var.used This argument can take two values. The first one is \code{"error.estim"}
 ##' and indicates if the prediction error take into account
 ##' the estimation error of the estimates of the parameters. If the estimates 
-##' are suppose knew or if the dataset includes a high number of trials with 
+##' are supposed to be known or if the dataset includes a high number of trials with 
 ##' a high number of subject per trial, value \code{No.error} can be used. 
-##' The default is \code{error.meta}.
+##' The default is \code{error.estim}.
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param dec The desired number of digits after the decimal point for parameters
 ##' and confidence intervals. Default of 3 digits is used.
 ##' @param ... other unused arguments.
 ##' 
-##' @return Returns and display a dataframe including for each trial the number of included subjects, 
+##' @return Return and display a dataframe including for each trial the number of included subjects, 
 ##' the observed 
 ##' treatment effect on the surrogate endpoint, the observed treatment effect on
 ##' the true endpoint (if available) and the predicted treatment effect on the 
-##' true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
-##' endpoint(if available) is included into the prediction interval, the last columns contains "*".
+##' true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
+##' endpoint (if available) is included into the prediction interval, the last columns contains "*".
 ##' @seealso \code{\link{jointSurroPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -73,14 +73,14 @@
 ##' }
 ##' 
 ##' 
-"predict.jointSurroPenal" <- function (object, datapred = NULL, var.used = "error.meta", alpha. = 0.05
+"predict.jointSurroPenal" <- function (object, datapred = NULL, var.used = "error.estim", alpha. = 0.05
                                        , dec = 3, ...)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
   
-  if(! var.used %in% c("error.meta","No.error"))
-    stop("Argument 'var.used' must be specified to 'error.meta' or 'No.error' ")
+  if(! var.used %in% c("error.estim","No.error"))
+    stop("Argument 'var.used' must be specified to 'error.estim' or 'No.error' ")
   
   if(is.null(datapred)){ # we used the dataset from the model
     data <- object$data
@@ -160,7 +160,7 @@
     variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) * VD) %*% x
     + variance.inf
     
-    if(var.used == "error.meta") 
+    if(var.used == "error.estim") 
       variance <- variance.N
     else 
       variance <- variance.inf

@@ -5,7 +5,7 @@
 \title{Leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-loocv(object, unusedtrial, var.used = "error.meta", alpha. = 0.05, 
+loocv(object, unusedtrial, var.used = "error.estim", alpha. = 0.05, 
 dec = 3, print.times = TRUE)
 }
 \arguments{
@@ -13,14 +13,15 @@ dec = 3, print.times = TRUE)
 (output from calling the function \code{jointSurroPenal}).}
 
 \item{unusedtrial}{A list of trial not to be taken into account in the cross-validation.
-This parameter is useful when after excluding some trials, the model is facing convergence problem}
+This parameter is useful when after excluding some trials, the model is facing 
+convergence problem.}
 
-\item{var.used}{This argument takes two values. The first one is \code{"error.meta"}
+\item{var.used}{This argument takes two values. The first one is \code{"error.estim"}
 and indicates if the prediction variance takes into account
 the estimation errors from the estimates of the parameters. If estimates 
-are suppose known or if the dataset includes a high number of trials with 
+are supposed to be known or if the dataset includes a high number of trials with 
 a high number of subject per trial, value \code{"No.error"} can be used. 
-The default is \code{error.meta}.}
+The default is \code{error.estim}.}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
 
@@ -34,7 +35,7 @@ Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\
 including for each trial the number of included subjects, the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint and the predicted treatment effect on the 
-true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
+true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
 endpoint is included into the prediction interval, the last columns contains "*".
 }
 \description{

@@ -5,24 +5,24 @@
 \title{Predict Method for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-\method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.meta", 
+\method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.estim", 
 alpha. = 0.05, dec = 3, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
 (output from calling the function \code{jointSurroPenal}).}
 
-\item{datapred}{Dataset to used for the prediction. If this argument is specified,
+\item{datapred}{Dataset to use for the prediction. If this argument is specified,
 the data structure must be the same as the parameter \code{data} in the 
 function \link{jointSurroPenal}. However, if observation on te true endpoint are
 not available, columns timeT and \code{statusT} can be absent.}
 
-\item{var.used}{This argument takes two values. The first one is \code{"error.meta"}
+\item{var.used}{This argument can take two values. The first one is \code{"error.estim"}
 and indicates if the prediction error take into account
 the estimation error of the estimates of the parameters. If the estimates 
-are suppose knew or if the dataset includes a high number of trials with 
+are supposed to be known or if the dataset includes a high number of trials with 
 a high number of subject per trial, value \code{No.error} can be used. 
-The default is \code{error.meta}.}
+The default is \code{error.estim}.}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
 
@@ -32,16 +32,16 @@ and confidence intervals. Default of 3 digits is used.}
 \item{...}{other unused arguments.}
 }
 \value{
-Returns and display a dataframe including for each trial the number of included subjects, 
+Return and display a dataframe including for each trial the number of included subjects, 
 the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint (if available) and the predicted treatment effect on the 
-true enpoint with the associated prediction intervalls. If the observed treatment effect on the true 
-endpoint(if available) is included into the prediction interval, the last columns contains "*".
+true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
+endpoint (if available) is included into the prediction interval, the last columns contains "*".
 }
 \description{
 {
-Predict the treatment effect on the true endpoint (\eqn{beta_T}), basing on the 
+Predict the treatment effect on the true endpoint (\eqn{beta_T}), based on the 
 treatment effect observed on the surrogate endpoint (\eqn{beta_S}).
 }
 }
