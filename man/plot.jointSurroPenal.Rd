@@ -32,11 +32,11 @@ this argument to a single keyword from the list '"bottomright"',
 
 \item{main}{Title of plot.}
 
-\item{median}{Logical value. Determines whether survival median will be plotted. Default is TRUE.}
-
 \item{Xlab}{Label of x-axis. Default is '"Time"'.}
 
 \item{Ylab}{Label of y-axis. Default is '"Baseline hazard function"'.}
+
+\item{median}{Logical value. Determines whether survival median will be plotted. Default is TRUE.}
 
 \item{xmin}{Minimum value for x-axis, the default is \code{0}.}
 
