@@ -170,7 +170,8 @@
     
     # matrixPred[i,-c(1,2)] <- round(matrixPred[i,-c(1,2)],dec)
     # ajout du nombre d'essais
-    matrixPred$ntrial[i] <- trialtable[matrixPred[i,1]]
+    # matrixPred$ntrial[i] <- trialtable[matrixPred[i,1]]
+    matrixPred$ntrial[i] <- trialtable[i]
     
     # je mets une "*" si la valeur observee est incluse dans l'intervalle de prediction
     if(!(F %in% (c("timeT","statusT") %in% names(data)))){
