@@ -67,7 +67,8 @@
 ##' }
 ##' 
 ##' 
-loocv <- function (object, unusedtrial, var.used = "error.estim", alpha. = 0.05, dec = 3, print.times = TRUE)
+loocv <- function (object, unusedtrial, var.used = "error.estim", alpha. = 0.05,
+                   dec = 3, print.times = TRUE)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
