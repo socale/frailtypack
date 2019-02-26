@@ -28,7 +28,7 @@
         use tailles
         use lois_normales
         use optim
-     use var_surrogate, only:a_deja_simul,Chol,Vect_sim_MC ! add Monte-carlo
+     use var_surrogate, only:Chol ! add Monte-carlo
     !     use ParametresPourParallelisation
     !AD:pour fortran
         use sortie
@@ -4262,7 +4262,7 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
         use tailles
         !use comongroup,only:vet2!vet
         use optim
-        use comon,only:aux1,cdc,sigmae,nmesy,&
+        use comon,only:cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
             vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
             nbB, nby, nvaB, nmesB,TwoPart,veB,numInter,numInterB,positionVarT
@@ -4291,12 +4291,15 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,external::survdcCM
         double precision :: resultdc,abserr,resabs,resasc,Xea,vet2
         double precision,parameter::pi=3.141592653589793d0
-        double precision :: Bscalar, resultf1, resultf2, f1, f2 ! add TwoPart
+        double precision :: Bscalar!, resultf1, resultf2, f1, f2 ! add TwoPart
         double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
         integer :: counter, counter2 ! add for current-level interaction
         upper = .false.
         i = numpat
 
+ current_meanG = 0.d0
+ uiiui=0.d0
+ funcG=0.d0
 
     if(nb1.eq.1) then
             if(methodGH.eq.1) then
@@ -4412,7 +4415,7 @@ end if
                 vet2 = 0.d0
                 do j=1,nva2
     
-            vet2 =vet2 + b1(npp-nva3-nva2-nvaB+j)*dble(vedc(numpat,j))
+            vet2 =vet2 + b1(npp-nva3-nva2-nvaB+j)*dble(vedc(i,j))
     
                 end do
                 vet2 = dexp(vet2)
@@ -4424,40 +4427,34 @@ end if
     ! pour le calcul des integrales / pour la survie, pas les donno?=es recurrentes:
         
             if(typeof.eq.2) then
-                auxG(numpat)=((t1dc(numpat)/etaD)**betaD)*vet2!*dexp(etaydc1*frail)
+                auxG(i)=((t1dc(i)/etaD)**betaD)*vet2!*dexp(etaydc1*frail)
             else if(typeof.eq.0) then
-                auxG(numpat)=ut2cur*vet2!*dexp(etaydc1*frail)
+                auxG(i)=ut2cur*vet2!*dexp(etaydc1*frail)
             end if
         !end if
         else !********** Current Mean ****************
 
         counter=0
         counter2=1
-            !if(typeof.eq.2) then
-            !    aux1(i)=((t1dc(i)/etaD)**betaD)*vet2*dexp(etaydc1*current_mean(1))
       if(nb1.eq.1) then
-        call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,Xea)
+        call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,Xea)
     else if(nb1.gt.1) then
-        call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,xea22)
+        call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,xea22)
     end if
         auxG(i) = resultdc
-    !         if(aux1(i).ge.1.d0) write(*,*)i,aux1(i),Xea
-    
-        !    else if(typeof.eq.0) then
-        !        aux1(i)=ut2cur*vet2*dexp(etaydc1*current_mean(1))
-        !    end if
+
     if((nva3-1).gt.0) then
         x2curG(1,1) = 1.d0
         do k=2,nva3
             x2curG(1,k) = dble(vey(it_cur+1,k))
         end do
         if(numInter.eq.1) then! compute time and interactions at t1dc
-            x2curG(1,positionVarT(2)) =t1dc(numpat) ! time effect
-            x2curG(1,positionVarT(3)) =t1dc(numpat)*dble(vey(it_cur+1,positionVarT(1))) ! interaction
+            x2curG(1,positionVarT(2)) =t1dc(i) ! time effect
+            x2curG(1,positionVarT(3)) =t1dc(i)*dble(vey(it_cur+1,positionVarT(1))) ! interaction
         else if(numInter.gt.1)then
             do counter = 1,numInter !in case of multiple interactions
-                x2curG(1,positionVarT(counter2+1)) =t1dc(numpat)
-                x2curG(1,positionVarT(counter2+2)) =t1dc(numpat)*dble(vey(it_cur+1,positionVarT(counter2)))
+                x2curG(1,positionVarT(counter2+1)) =t1dc(i)
+                x2curG(1,positionVarT(counter2+2)) =t1dc(i)*dble(vey(it_cur+1,positionVarT(counter2)))
                 counter2=counter2+3
             end do
         end if
@@ -4473,8 +4470,8 @@ end if
     end do
     if(numInterB.ge.1) then
     do counter = 1,numInter ! compute time and interactions at t1dc
-    X2BcurG(1,positionVarT(counter2+1)) =t1dc(numpat)! time effect
-    X2BcurG(1,positionVarT(counter2+2)) =t1dc(numpat)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    X2BcurG(1,positionVarT(counter2+1)) =t1dc(i)! time effect
+    X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
     counter2=counter2+3
     end do
     end if
@@ -4486,23 +4483,23 @@ end if
     
             z1curG(1,1) = 1.d0
             if(nb1.eq.2) then
-                Z1curG(1,2) = t1dc(numpat)
+                Z1curG(1,2) = t1dc(i)
             end if  
             
+ 
     if(nb1.eq.1) then
-            current_meanG = 0.d0
             current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1curG(1,1)*Xea
     else if(nb1.gt.1) then
     
     if(TwoPart.eq.1) then
 if(nb1.eq.2) then
     z1curG(1,1) = 1.d0 ! random intercept only for now
-    z1curG(1,2) = 0.d0!z1Ycur(1,2) = t1dc(numpat)
+    z1curG(1,2) = 0.d0!z1Ycur(1,2) = t1dc(i)
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 1.d0
 else if(nb1.eq.3) then
     z1curG(1,1) = 1.d0 !
-    z1curG(1,2) = t1dc(numpat)
+    z1curG(1,2) = t1dc(i)
     z1curG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
@@ -4565,13 +4562,13 @@ end if
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                     - (Xea**2.d0)/(2.d0*ut(1,1)**2) &
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
-                        -auxG(numpat)*dexp(etaydc(1)*Xea)  + cdc(numpat)*etaydc(1)*Xea
+                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea
         else
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
-                        -auxG(numpat) &
-                        + cdc(numpat)*etaydc(1)*current_meanG(1)
+                        -auxG(i) &
+                        + cdc(i)*etaydc(1)*current_meanG(1)
     
         
         end if
@@ -4581,16 +4578,16 @@ end if
                     -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
-                        -auxG(numpat)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
-                        + cdc(numpat)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
+                        -auxG(i)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
+                        + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
         else
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
-                        -auxG(numpat)&
-                        + cdc(numpat)*(etaydc(1)*current_meanG(1))
+                        -auxG(i)&
+                        + cdc(i)*(etaydc(1)*current_meanG(1))
         end if
         else if(nb1.gt.2) then
         if(link.eq.1) then
@@ -4598,14 +4595,14 @@ end if
                   -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -3.d0/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
                      +Bscalar& ! add TwoPart
-                   -auxG(numpat)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
-                    + cdc(numpat)*dot_product(etaydc,Xea22(1:nb1))
+                   -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
+                    + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
         else
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         -uiiui(1)/2.d0-(nb1/2.d0)*dlog(det*2.d0*pi)&
                         +Bscalar& ! add TwoPart
-                        -auxG(numpat)&
-                        + cdc(numpat)*(etaydc(1)*current_meanG(1))
+                        -auxG(i)&
+                        + cdc(i)*(etaydc(1)*current_meanG(1))
         end if
         end if
     
@@ -4635,15 +4632,15 @@ end if
     ! vc1= variance du frailty
     ! ndim= dimension de l'integrale niveau essai
     use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,rmvnorm
-    use var_surrogate, only: Vect_sim_MC,a_deja_simul,chol,frailt_base,graine,aleatoire,nbre_sim,nb_procs
+    use var_surrogate, only: nbre_sim
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
-    use comon, only:ng,invBi_chol,nb1,nodes_number
+    use comon, only:nb1,nodes_number
     use donnees_indiv
     !use mpi
   !  !$ use OMP_LIB
     
     implicit none
-    integer ::ii,jj,l,m,maxmes,nsimu,init_i,max_i,rang !code,erreur,nbrejet,stemp,tid1,npg,kk,j,k,ier !maxmes= nombre de dimension ou encore dimension de X
+    integer ::ii,nsimu !code,erreur,nbrejet,stemp,tid1,npg,kk,j,k,ier !maxmes= nombre de dimension ou encore dimension de X
     integer,intent(in):: ndim
     double precision,intent(out)::ss
   !  double precision,intent(in)::CholMat
@@ -4652,11 +4649,11 @@ end if
 
   !  double precision,dimension(nb1)::mu_mc
    ! double precision,dimension(:),allocatable::usim
-    double precision::ymarg,SX,x2222,somp !eps !ymarg contient le resultat de l'integrale
+    double precision::x2222,somp !eps !ymarg contient le resultat de l'integrale
     !double precision,dimension(:),allocatable::ysim
    ! double precision,dimension(:),allocatable::vi
 double precision::func2
-integer::i
+!integer::i
     !double precision, external::gauss_HermMultA_surr    
    
     ! bloc interface pour la definition de la fonction func
@@ -4677,7 +4674,7 @@ integer::i
     nsimu=nbre_sim
     x2222=0.d0
     somp=0.d0
-
+    ss=0.d0
 
    ! maxmes=size(CholMat,2)
      !allocate(vi(maxmes*(maxmes+1)/2))

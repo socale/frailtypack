@@ -9,7 +9,7 @@
         use tailles
         use comon
             use Autres_fonctions, only:rmvnorm!add Monte-carlo
-        use var_surrogate, only: a_deja_simul,graine,aleatoire,nbre_sim,Vect_sim_MC,Chol!,frailt_base,nb_procs
+        use var_surrogate, only: a_deja_simul,nbre_sim,Chol!,frailt_base,nb_procs
         !use ParametresPourParallelisation
             use residusM
             use optim
@@ -54,10 +54,10 @@
         double precision,dimension(:,:),allocatable :: mat_sigmaB, varcov_marg_invB ! add TwoPart
         double precision,dimension(:),allocatable :: matvB ! add TwoPart
         double precision,dimension(nvaB,nvaB) :: elementB ! add TwoPart
-            double precision,dimension(3):: resultatInt ! add Monte-carlo
+            !double precision,dimension(3):: resultatInt ! add Monte-carlo
             double precision::func8J,func9J,func10J,func11J, funcTP4J,funcG
         external::func8J,func9J,func10J,func11J, funcTP4J,funcG ! add Monte-carlo
-        integer::vcdiag ! add Monte-carlo
+        !integer::vcdiag ! add Monte-carlo
         double precision,dimension(nb1)::mu_mc
     double precision,dimension(nb1,nb1)::vcjm
     double precision,dimension(nodes_number,nb1)::fraili
