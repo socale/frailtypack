@@ -36,7 +36,7 @@
 ##' 
 ##' # Studies simulation
 #' \dontrun{
-#' # (Computation takes around 20 minutes using a processor including 40
+#' # (Computation takes around 45 minutes using a processor including 40
 #' and a read only memory of 378 Go)
 #' joint.simul <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul=600, 
 #'                    ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001, 

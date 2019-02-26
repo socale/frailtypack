@@ -216,7 +216,7 @@
 #' 
 #' data(dataAdditive)
 #' 
-#' modAdd <- additivePenal(Surv(time,event)~cluster(group)+
+#' modAdd <- additivePenal(Surv(t1,t2,event)~cluster(group)+
 #' var1+slope(var1),correlation=TRUE,data=dataAdditive,
 #' n.knots=8,kappa=10000)
 #' 
@@ -309,7 +309,7 @@
     
     call <- match.call()
     m <- match.call(expand.dots = FALSE)
-    m$correlation <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$print.times <- NULL
+    m$correlation <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$print.times <- m$... <- NULL
     special <- c("strata", "cluster", "slope")
     Terms <- if (missing(data)) 
       terms(formula, special)
@@ -329,7 +329,6 @@
     if (length(classofY)>1) classofY <- classofY[2]
     
     typeofY <- attr(model.extract(m, "response"),"type")
-    if (typeofY != "right") stop ("Only right-censored data are allowed for additive model")
     
     #Al : tri du jeu de donnees par cluster croissant
     if (length(cluster)){

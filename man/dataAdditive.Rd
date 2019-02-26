@@ -5,7 +5,9 @@
 \alias{dataAdditive}
 \title{Simulated data as a gathering of clinical trials databases}
 \format{This data frame contains the following columns: \describe{
-\item{group}{identification variable} \item{time}{interocurrence or censoring time} \item{event}{censoring status (0:alive, 1:death,
+\item{group}{identification variable} \item{t1}{start of interval (=0,
+because left-truncated data are not allowed)} \item{t2}{end of interval
+(death or censoring time)} \item{event}{censoring status (0:alive, 1:death,
 as acensoring indicator} \item{var1}{dichotomous covariate (=0 or 1,as a
 treatment variable)} \item{var2}{dichotomous covariate (=0 or 1,as a
 treatment variable)} }}

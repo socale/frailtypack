@@ -302,7 +302,8 @@ with about a 23\% rejection rate.
 
 \dontrun{
 # Surrogacy model evaluation performance study based on 10 generated data
-# (Computation takes around 30 minutes)
+# (Computation takes around 20 minutes using a processor including 40
+and a read only memory of 378 Go)
 # To realize a simulation study on 100 samples or more (as required), use 
 # nb.dataset = 100
 

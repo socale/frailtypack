@@ -169,7 +169,7 @@
 #' trivPenalNL(formula, formula.terminalEvent, biomarker, formula.KG,
 #' formula.KD, dose, time.biomarker, data, data.Longi, random, id, link =
 #' "Random-effects", BoxCox = FALSE, left.censoring = FALSE, recurrentAG =
-#' FALSE, n.knots, kappa, maxit = 300, hazard = "Splines-per", init.B, init.Random,
+#' FALSE, n.knots, kappa, maxit = 300, hazard = "Splines", init.B, init.Random,
 #' init.Eta, init.Alpha, init.Biomarker, method.GH = "Standard", init.GH =
 #' FALSE, n.nodes, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3,
 #' print.times = TRUE)
@@ -240,7 +240,7 @@
 #' @param hazard Type of hazard functions: \code{"Splines"} for semiparametric
 #' hazard functions using equidistant intervals or \code{"Splines-per"} using
 #' percentile with the penalized likelihood estimation, \code{"Weibull"} for
-#' the parametric Weibull functions. The default is \code{"Splines-per"}.
+#' the parametric Weibull functions. The default is \code{"Splines"}.
 #' @param init.B Vector of initial values for regression coefficients. This
 #' vector should be of the same size as the whole vector of covariates with the
 #' first elements for the covariates related to the recurrent events, then to
@@ -483,21 +483,21 @@
   function (formula, formula.terminalEvent, biomarker, formula.KG, formula.KD, dose, time.biomarker, data,  data.Longi, random, id, 
             link="Random-effects", BoxCox = FALSE,
             left.censoring=FALSE, recurrentAG=FALSE, n.knots, kappa,
-            maxit=300, hazard="Splines-per", init.B,
+            maxit=300, hazard="Splines", init.B,
             init.Random, init.Eta, init.Alpha, init.Biomarker,
             method.GH = "Standard", init.GH = FALSE, n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {
     
     m3 <- match.call() # longitudinal (KG)
-    m3$formula <- m3$formula.terminalEvent <- m3$biomarker <- m3$formula.KD <- m3$dose <- m3$data <- m3$recurrentAG <- m3$random <- m3$id <- m3$link <- m3$n.knots <- m3$kappa <- m3$maxit <- m3$hazard <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$left.censoring <- m3$init.Random <- m3$init.Eta <- m3$init.Alpha <- m3$method.GH <- m3$n.nodes <- m3$time.biomarker <- m3$init.GH <- m3$BoxCox <- m3$init.Biomarker <- NULL
+    m3$formula <- m3$formula.terminalEvent <- m3$biomarker <- m3$formula.KD <- m3$dose <- m3$data <- m3$recurrentAG <- m3$random <- m3$id <- m3$link <- m3$n.knots <- m3$kappa <- m3$maxit <- m3$hazard <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$left.censoring <- m3$init.Random <- m3$init.Eta <- m3$init.Alpha <- m3$method.GH <- m3$n.nodes <- m3$time.biomarker <- m3$init.GH <- m3$BoxCox <- m3$init.Biomarker <- m3$... <- NULL
     Names.data.Longi <- m3$data.Longi
     
     m4 <- match.call() # longitudinal (KD)
-    m4$formula <- m4$formula.terminalEvent <- m4$biomarker <- m4$formula.KG <- m4$dose <- m4$data <- m4$recurrentAG <- m4$random <- m4$id <- m4$link <- m4$n.knots <- m4$kappa <- m4$maxit <- m4$hazard <- m4$init.B <- m4$LIMparam <- m4$LIMlogl <- m4$LIMderiv <- m4$print.times <- m4$left.censoring <- m4$init.Random <- m4$init.Eta <- m4$init.Alpha <- m4$method.GH <- m4$n.nodes <- m4$time.biomarker <- m4$init.GH <- m4$BoxCox <-  m4$init.Biomarker <- NULL
+    m4$formula <- m4$formula.terminalEvent <- m4$biomarker <- m4$formula.KG <- m4$dose <- m4$data <- m4$recurrentAG <- m4$random <- m4$id <- m4$link <- m4$n.knots <- m4$kappa <- m4$maxit <- m4$hazard <- m4$init.B <- m4$LIMparam <- m4$LIMlogl <- m4$LIMderiv <- m4$print.times <- m4$left.censoring <- m4$init.Random <- m4$init.Eta <- m4$init.Alpha <- m4$method.GH <- m4$n.nodes <- m4$time.biomarker <- m4$init.GH <- m4$BoxCox <-  m4$init.Biomarker <- m4$... <- NULL
     
     
     m2 <- match.call() #terminal
-    m2$formula <- m2$formula.terminalEvent <- m2$formula.LongitudinalData <- m2$formula.KG <- m2$formula.KD <- m2$biomarker <- m2$dose <- m2$data.Longi <- m2$recurrentAG <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <-  m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$init.Alpha <- m2$method.GH <- m2$n.nodes <- m2$time.biomarker <- m2$init.GH <- m2$BoxCox <-  m2$init.Biomarker <- NULL
+    m2$formula <- m2$formula.terminalEvent <- m2$formula.LongitudinalData <- m2$formula.KG <- m2$formula.KD <- m2$biomarker <- m2$dose <- m2$data.Longi <- m2$recurrentAG <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <-  m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$init.Alpha <- m2$method.GH <- m2$n.nodes <- m2$time.biomarker <- m2$init.GH <- m2$BoxCox <-  m2$init.Biomarker <- m2$... <- NULL
     Names.data.Terminal <- m2$data
     
     
@@ -649,7 +649,7 @@
     
     m <- match.call(expand.dots = FALSE) # recurrent events
     
-    m$formula.KG <- m$formula.KD <- m$formula.terminalEvent <- m$biomarker <- m$dose <- m$recurrentAG <- m$data.Longi <- m$n.knots <- m$random <- m$link  <- m$id <- m$kappa <- m$maxit <- m$hazard   <-  m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$print.times <- m$init.Random <- m$init.Eta <- m$init.Alpha <- m$method.GH <- m$n.nodes <- m$time.biomarker <- m$init.GH <- m$BoxCox <-  m$init.Biomarker <- NULL
+    m$formula.KG <- m$formula.KD <- m$formula.terminalEvent <- m$biomarker <- m$dose <- m$recurrentAG <- m$data.Longi <- m$n.knots <- m$random <- m$link  <- m$id <- m$kappa <- m$maxit <- m$hazard   <-  m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$print.times <- m$init.Random <- m$init.Eta <- m$init.Alpha <- m$method.GH <- m$n.nodes <- m$time.biomarker <- m$init.GH <- m$BoxCox <-  m$init.Biomarker <- m$... <- NULL
     
     
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")

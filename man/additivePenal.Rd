@@ -229,7 +229,7 @@ this value by 10 or 5 until it converges.
 
 data(dataAdditive)
 
-modAdd <- additivePenal(Surv(time,event)~cluster(group)+
+modAdd <- additivePenal(Surv(t1,t2,event)~cluster(group)+
 var1+slope(var1),correlation=TRUE,data=dataAdditive,
 n.knots=8,kappa=10000)
 

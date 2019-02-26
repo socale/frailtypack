@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{multivPenal}(x, event = "Both", type.plot = "Hazard",
 conf.bands = FALSE, pos.legend = "topright", cex.legend = 0.7, ylim, main,
-color1="red", color2="blue", colorEnd="green", median=TRUE, Xlab = "Time", Ylab = "Hazard function",
+color1="red", color2="blue", colorEnd="green", Xlab = "Time", Ylab = "Hazard function",
  ...)
 }
 \arguments{
@@ -44,8 +44,6 @@ name in quotation marks)}
 
 \item{colorEnd}{curve color for terminal event (integer or color name in
 quotation marks)}
-
-\item{median}{Logical value. Determines whether survival median will be plotted. Default is TRUE.}
 
 \item{Xlab}{Label of x-axis. Default is '"Time"'}
 

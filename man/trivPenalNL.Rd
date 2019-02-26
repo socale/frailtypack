@@ -8,7 +8,7 @@ Event with a Biomarker Described with an ODE Population Model}
 trivPenalNL(formula, formula.terminalEvent, biomarker, formula.KG,
 formula.KD, dose, time.biomarker, data, data.Longi, random, id, link =
 "Random-effects", BoxCox = FALSE, left.censoring = FALSE, recurrentAG =
-FALSE, n.knots, kappa, maxit = 300, hazard = "Splines-per", init.B, init.Random,
+FALSE, n.knots, kappa, maxit = 300, hazard = "Splines", init.B, init.Random,
 init.Eta, init.Alpha, init.Biomarker, method.GH = "Standard", init.GH =
 FALSE, n.nodes, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3,
 print.times = TRUE)
@@ -99,7 +99,7 @@ Default is 300}
 \item{hazard}{Type of hazard functions: \code{"Splines"} for semiparametric
 hazard functions using equidistant intervals or \code{"Splines-per"} using
 percentile with the penalized likelihood estimation, \code{"Weibull"} for
-the parametric Weibull functions. The default is \code{"Splines-per"}.}
+the parametric Weibull functions. The default is \code{"Splines"}.}
 
 \item{init.B}{Vector of initial values for regression coefficients. This
 vector should be of the same size as the whole vector of covariates with the

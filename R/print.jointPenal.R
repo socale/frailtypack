@@ -114,7 +114,6 @@
         }
         else if ((x$logNormal == 0)&(x$joint.clust==2)){
           cat("  General Joint gamma frailty model for recurrent and a terminal event processes","\n")
-          cat("  with a Splines baseline hazard function","\n")
         }
         else{
           cat("  Joint Log-Normal frailty model for recurrent and a terminal event processes","\n")

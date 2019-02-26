@@ -3,10 +3,10 @@
 
     use tailles
     !use comon,only:AG,nt0dc,res4,t0,t1,t0dc,t1dc
-    use comon,only:mm,mm3,mm2,mm1,& !m3m3,m2m2,m1m1,mmm,m3m2,m3m1,m3m,m2m1,m2m,m1m
+    use comon,only:m3m3,m2m2,m1m1,mmm,m3m2,m3m1,m3m,m2m1,m2m,m1m,mm3,mm2,mm1,mm,&
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst, &
-    effet,stra,ve,vedc,ng,g,nig,indic_ALPHA,ALPHA,theta,nstRec, & !pe,k0T
+    effet,stra,ve,vedc,pe,ng,g,nig,indic_ALPHA,ALPHA,theta,nstRec,k0T, &
     auxig,aux1,aux2,res1,res3,kkapa,resnonpen, wtsvec !IJ: wtsvec added (incorporated into comon)
     use residusM
     !use comongroup,only:the1
@@ -23,8 +23,8 @@
     double precision,dimension(-2:npmax,nstRec)::the1T
     integer::n,i,j,k,vj,ig,choix,jj
     integer,dimension(ngmax)::cpt
-    double precision::sum,inv,som2,res,h1 !pe2
-    double precision,dimension(nstRec)::som1T !pe1T
+    double precision::pe2,sum,inv,som2,res,h1
+    double precision,dimension(nstRec)::pe1T,som1T
     double precision,dimension(np)::bh
     double precision,dimension(ngmax)::res2,res1dc,res2dc &
     ,res3dc,integrale1,integrale2,integrale3

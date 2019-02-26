@@ -6,7 +6,7 @@
 \usage{
 longiPenal(formula, formula.LongitudinalData, data, data.Longi,
   random, id, intercept = TRUE, link = "Random-effects", left.censoring =
-  FALSE, n.knots, kappa, maxit = 350, hazard = "Splines-per", init.B,
+  FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
   init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam = 1e-3,
   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 }
@@ -71,7 +71,7 @@ default is 350.}
 \item{hazard}{Type of hazard functions: \code{"Splines"} for semiparametric
 hazard functions using equidistant intervals or \code{"Splines-per"} using
 percentile with the penalized likelihood estimation, \code{"Weibull"} for
-the parametric Weibull functions. The default is \code{"Splines-per"}.}
+the parametric Weibull functions. The default is \code{"Splines"}.}
 
 \item{init.B}{Vector of initial values for regression coefficients. This
 vector should be of the same size as the whole vector of covariates with

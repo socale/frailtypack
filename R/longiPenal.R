@@ -101,7 +101,7 @@
 #'
 #' @usage longiPenal(formula, formula.LongitudinalData, data, data.Longi,
 #'   random, id, intercept = TRUE, link = "Random-effects", left.censoring =
-#'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines-per", init.B,
+#'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
 #'   init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam = 1e-3,
 #'   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 #' @param formula a formula object, with the response on the left of a
@@ -152,7 +152,7 @@
 #' @param hazard Type of hazard functions: \code{"Splines"} for semiparametric
 #'   hazard functions using equidistant intervals or \code{"Splines-per"} using
 #'   percentile with the penalized likelihood estimation, \code{"Weibull"} for
-#'   the parametric Weibull functions. The default is \code{"Splines-per"}.
+#'   the parametric Weibull functions. The default is \code{"Splines"}.
 #' @param init.B Vector of initial values for regression coefficients. This
 #'   vector should be of the same size as the whole vector of covariates with
 #'   the first elements for the covariates related to the terminal event and
@@ -348,7 +348,7 @@
 #' 
 "longiPenal" <-
   function (formula, formula.LongitudinalData, data,  data.Longi, random, id, intercept = TRUE, link="Random-effects",left.censoring=FALSE, n.knots, kappa,
-            maxit=350, hazard="Splines-per",   init.B,
+            maxit=350, hazard="Splines",   init.B,
             init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {
     
@@ -356,7 +356,7 @@
     OrderDat <- data[,id]
     
     m2 <- match.call()
-    m2$formula <-  m2$data <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
+    m2$formula <-  m2$data <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- m2$... <- NULL
     Names.data.Longi <- m2$data.Longi
     
     #### Frailty distribution specification ####
@@ -479,7 +479,7 @@
     
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur
     
-    m$formula.LongitudinalData <- m$data.Longi <- m$n.knots <- m$random <- m$link  <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- NULL
+    m$formula.LongitudinalData <- m$data.Longi <- m$n.knots <- m$random <- m$link  <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- m$... <- NULL
     
     
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")

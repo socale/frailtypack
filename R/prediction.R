@@ -1057,7 +1057,7 @@ prediction <- function(fit, data, data.Longi, t, window, event = "Both", conditi
   m <- fit$call
   m2 <- match.call()
   
-  m$formula.terminalEvent <- m$formula.LongitudinalData <- m$data.Longi <- m$random <- m$id  <- m$link <- m$left.censoring <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$print.times <- m$init.Theta <- m$init.Alpha <- m$init.Random <- m$init.Eta <- m$Alpha <- m$method.GH <- m$intercept <- m$n.nodes <- m$jointGeneral <- m$initialize <- m$biomarker <- m$formula.KG <- m$formula.KD <- m$dose <- m$time.biomarker <- m$init.Biomarker <- m$BoxCox  <- m$Ksi <- m$init.Ksi <- NULL
+  m$formula.terminalEvent <- m$formula.LongitudinalData <- m$data.Longi <- m$random <- m$id  <- m$link <- m$left.censoring <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$print.times <- m$init.Theta <- m$init.Alpha <- m$init.Random <- m$init.Eta <- m$Alpha <- m$method.GH <- m$intercept <- m$n.nodes <- m$jointGeneral <- m$initialize <- m$biomarker <- m$formula.KG <- m$formula.KD <- m$dose <- m$time.biomarker <- m$init.Biomarker <- m$BoxCox  <- m$Ksi <- m$init.Ksi <- m$... <- NULL
   
   m[[1]] <- as.name("model.frame")
   m3 <- m # pour recuperer les donnees du dataset initial en plus
@@ -1387,7 +1387,7 @@ prediction <- function(fit, data, data.Longi, t, window, event = "Both", conditi
     m3 <- fit$call
     m2 <- match.call()
     
-    m3$formula.LongitudinalData <- m3$data.Longi <- m3$random <- m3$id <- m3$link <- m3$left.censoring <- m3$n.knots <- m3$recurrentAG <- m3$cross.validation <- m3$kappa <- m3$maxit <- m3$hazard <- m3$nb.int <- m3$RandDist <- m3$betaorder <- m3$betaknots <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$init.Theta <- m3$init.Alpha <- m3$init.Ksi <- m3$Alpha <- m3$init.Random <- m3$init.Eta <- m3$method.GH <- m3$intercept <- m3$n.nodes <- m3$jointGeneral <- m3$initialize <-  m3$init.Biomarker <- NULL
+    m3$formula.LongitudinalData <- m3$data.Longi <- m3$random <- m3$id <- m3$link <- m3$left.censoring <- m3$n.knots <- m3$recurrentAG <- m3$cross.validation <- m3$kappa <- m3$maxit <- m3$hazard <- m3$nb.int <- m3$RandDist <- m3$betaorder <- m3$betaknots <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$init.Theta <- m3$init.Alpha <- m3$init.Ksi <- m3$Alpha <- m3$init.Random <- m3$init.Eta <- m3$method.GH <- m3$intercept <- m3$n.nodes <- m3$jointGeneral <- m3$initialize <-  m3$init.Biomarker <- m3$... <- NULL
     
     m3$formula <- formula_fit
     m3$formula[[3]] <- fit$formula.terminalEvent[[2]]		
@@ -1639,7 +1639,7 @@ prediction <- function(fit, data, data.Longi, t, window, event = "Both", conditi
       m2 <- match.call()
       
       
-      m3$formula.LongitudinalData <- m3$data.Longi <- m3$random <- m3$id <- m3$link <- m3$left.censoring <- m3$n.knots <- m3$recurrentAG <- m3$cross.validation <- m3$kappa <- m3$maxit <- m3$hazard <- m3$nb.int <- m3$RandDist <- m3$betaorder <- m3$betaknots <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$init.Theta <- m3$init.Alpha <- m3$Alpha <- m3$init.Random <- m3$init.Eta <- m3$method.GH <- m3$intercept <- m3$n.nodes <- m3$biomarker <- m3$formula.KG <- m3$formula.KD <- m3$dose <- m3$time.biomarker <- m3$BoxCox <- m3$init.Biomarker <- m3$init.Ksi<- NULL
+      m3$formula.LongitudinalData <- m3$data.Longi <- m3$random <- m3$id <- m3$link <- m3$left.censoring <- m3$n.knots <- m3$recurrentAG <- m3$cross.validation <- m3$kappa <- m3$maxit <- m3$hazard <- m3$nb.int <- m3$RandDist <- m3$betaorder <- m3$betaknots <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$init.Theta <- m3$init.Alpha <- m3$Alpha <- m3$init.Random <- m3$init.Eta <- m3$method.GH <- m3$intercept <- m3$n.nodes <- m3$biomarker <- m3$formula.KG <- m3$formula.KD <- m3$dose <- m3$time.biomarker <- m3$BoxCox <- m3$init.Biomarker <- m3$init.Ksi<- m3$... <- NULL
       
       m3$formula <- formula_fit
       m3$formula[[3]] <- fit$formula.terminalEvent[[2]]
@@ -1675,7 +1675,7 @@ prediction <- function(fit, data, data.Longi, t, window, event = "Both", conditi
     if(class(fit)!= "trivPenalNL"){
       m2 <- fit$call
       
-      m2$formula <-  m2$data <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$init.Alpha <- m2$intercept <- m2$n.nodes  <- NULL
+      m2$formula <-  m2$data <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$init.Alpha <- m2$intercept <- m2$n.nodes  <- m2$... <- NULL
       
       special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")
       
@@ -1788,12 +1788,12 @@ prediction <- function(fit, data, data.Longi, t, window, event = "Both", conditi
       
     }else{#trviPenalNL
       m3 <- fit$call # longitudinal (KG)
-      m3$formula <- m3$formula.terminalEvent <- m3$biomarker <- m3$formula.KD <- m3$dose <- m3$data <- m3$recurrentAG <- m3$random <- m3$id <- m3$link <- m3$n.knots <- m3$kappa <- m3$maxit <- m3$hazard <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$left.censoring <- m3$init.Random <- m3$init.Eta <- m3$init.Alpha <- m3$method.GH <- m3$n.nodes  <- m3$init.GH <- m3$time.biomarker <- m3$BoxCox <- m3$init.Biomarker <- NULL
+      m3$formula <- m3$formula.terminalEvent <- m3$biomarker <- m3$formula.KD <- m3$dose <- m3$data <- m3$recurrentAG <- m3$random <- m3$id <- m3$link <- m3$n.knots <- m3$kappa <- m3$maxit <- m3$hazard <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$left.censoring <- m3$init.Random <- m3$init.Eta <- m3$init.Alpha <- m3$method.GH <- m3$n.nodes  <- m3$init.GH <- m3$time.biomarker <- m3$BoxCox <- m3$init.Biomarker <- m3$... <- NULL
       Names.data.Longi <- m3$data.Longi
       formula.KG <- fit$formula.KG
       
       m4 <- fit$call # longitudinal (KD)
-      m4$formula <- m4$formula.terminalEvent <- m4$biomarker <- m4$formula.KG <- m4$dose <- m4$data <- m4$recurrentAG <- m4$random <- m4$id <- m4$link <- m4$n.knots <- m4$kappa <- m4$maxit <- m4$hazard <- m4$init.B <- m4$LIMparam <- m4$LIMlogl <- m4$LIMderiv <- m4$print.times <- m4$left.censoring <- m4$init.Random <- m4$init.Eta <- m4$init.Alpha <- m4$method.GH <- m4$n.nodes <- m4$init.GH <- m4$time.biomarker <- m4$BoxCox <- m4$init.Biomarker <- NULL
+      m4$formula <- m4$formula.terminalEvent <- m4$biomarker <- m4$formula.KG <- m4$dose <- m4$data <- m4$recurrentAG <- m4$random <- m4$id <- m4$link <- m4$n.knots <- m4$kappa <- m4$maxit <- m4$hazard <- m4$init.B <- m4$LIMparam <- m4$LIMlogl <- m4$LIMderiv <- m4$print.times <- m4$left.censoring <- m4$init.Random <- m4$init.Eta <- m4$init.Alpha <- m4$method.GH <- m4$n.nodes <- m4$init.GH <- m4$time.biomarker <- m4$BoxCox <- m4$init.Biomarker <- m4$... <- NULL
       
       Y <- data.Longi[,which(names(data.Longi)==fit$biomarker)]
       
@@ -3232,7 +3232,7 @@ prediction <- function(fit, data, data.Longi, t, window, event = "Both", conditi
     m3 <- fit$call
     m2 <- match.call() # formule appelee pour prediction()
     
-    m3$formula.LongitudinalData <- m3$data.Longi <- m3$random <- m3$id <- m3$link <- m3$left.censoring <- m3$n.knots <- m3$recurrentAG <- m3$cross.validation <- m3$kappa <- m3$maxit <- m3$hazard <- m3$nb.int <- m3$RandDist <- m3$betaorder <- m3$betaknots <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$init.Theta <- m3$init.Alpha <- m3$Alpha <- m3$init.Random <- m3$init.Eta <- m3$method.GH <- m3$intercept <- m3$n.nodes <- m3$jointGeneral <- m3$initialize <- m3$Ksi <- m3$init.Ksi <- NULL
+    m3$formula.LongitudinalData <- m3$data.Longi <- m3$random <- m3$id <- m3$link <- m3$left.censoring <- m3$n.knots <- m3$recurrentAG <- m3$cross.validation <- m3$kappa <- m3$maxit <- m3$hazard <- m3$nb.int <- m3$RandDist <- m3$betaorder <- m3$betaknots <- m3$init.B <- m3$LIMparam <- m3$LIMlogl <- m3$LIMderiv <- m3$print.times <- m3$init.Theta <- m3$init.Alpha <- m3$Alpha <- m3$init.Random <- m3$init.Eta <- m3$method.GH <- m3$intercept <- m3$n.nodes <- m3$jointGeneral <- m3$initialize <- m3$Ksi <- m3$init.Ksi <- m3$... <- NULL
     
     mPred <- m3
     m3$formula <- formula_fit

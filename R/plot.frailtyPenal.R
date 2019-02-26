@@ -8,7 +8,7 @@
 #' @usage
 #' 
 #' \method{plot}{frailtyPenal}(x, type.plot = "Hazard", conf.bands=TRUE,
-#' pos.legend = "topright", cex.legend=0.7, main, color=2, median=TRUE, Xlab = "Time", Ylab
+#' pos.legend = "topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab
 #' = "Hazard function", ...)
 #' @param x A shared frailty model, i.e. a \code{frailtyPenal} class object
 #' (output from calling \code{frailtyPenal} function).
@@ -25,7 +25,6 @@
 #' 'par("cex")'. Default is 0.7
 #' @param main title of plot
 #' @param color color of the curve (integer)
-#' @param median Logical value. Determines whether survival median will be plotted. Default is TRUE.
 #' @param Xlab Label of x-axis. Default is '"Time"'
 #' @param Ylab Label of y-axis. Default is '"Hazard function"'
 #' @param ... other unused arguments
@@ -61,7 +60,7 @@
 #' }
 #' 
 #' 
-"plot.frailtyPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend="topright", cex.legend=0.7, main, color=2, median=TRUE, Xlab = "Time", Ylab = "Hazard function", ...)
+"plot.frailtyPenal" <- function (x, type.plot="Hazard", conf.bands=TRUE, pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab = "Hazard function", ...)
 {
 	plot.type <- charmatch(type.plot, c("Hazard", "Survival"),nomatch = 0)
 	if (plot.type == 0) {
@@ -86,21 +85,17 @@
 			if (conf.bands){
 				matplot(x$x[,1], x$surv[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, main=main, ...)
 				for (i in (1:x$n.strat)[-1]) matlines(x$x[,i], x$surv[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
-			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$x[,1], x$surv[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, main=main, ...)
 				for (i in (1:x$n.strat)[-1]) lines(x$x[,i], x$surv[,1,i], col=color+(i-1), type="l", lty=1, ...)
-			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}else{
 			if (conf.bands){
 				matplot(x$xSu[,1], x$surv[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, main=main,...)
 				for (i in (1:x$n.strat)[-1]) matlines(x$xSu[,i], x$surv[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
-			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}else{
 				plot(x$xSu[,1], x$surv[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, main=main, ...)
 				for (i in (1:x$n.strat)[-1]) lines(x$xSu[,i], x$surv[,1,i], col=color+(i-1), type="l", lty=1, ...)
-			  if (median){abline(a=0.5,b=0,cex=.5,col=1,lty=3)}
 			}
 		}		
 	}
