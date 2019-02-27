@@ -145,10 +145,13 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
     else{
       prop_i <- prop.subj.trial
     }
+    
+    don_simul = as.double(matrix(0, nrow = n.obs , ncol = n.col))
+    don_simulS1 = as.double(matrix(0, nrow = n.obs , ncol = n.col))
       
     ans <- .Fortran(C_surrosim,
-                    don_simul = matrix(0, nrow = n.obs , ncol = n.col),
-                    don_simulS1 = matrix(0, nrow = n.obs , ncol = n.col),
+                    don_simul = as.double(matrix(0, nrow = n.obs , ncol = n.col)),
+                    don_simulS1 = as.double(matrix(0, nrow = n.obs , ncol = n.col)),
                     as.integer(n.obs),
                     as.integer(n.col),
                     as.integer(lognormal),
@@ -185,9 +188,13 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
                     as.integer(param.weibull),
                     PACKAGE="frailtypack"
                     )
+    
+    #ans$don_simul <- data.frame(ans$don_simul)
+    #ans$don_simulS1 <- data.frame(ans$don_simulS1)
+    
+    ans$don_simul <- data.frame(matrix(ans$don_simul,nrow = n.obs , ncol = n.col))
+    ans$don_simulS1 <- data.frame(matrix(ans$don_simulS1,nrow = n.obs , ncol = n.col))
 
-    ans$don_simul <- data.frame(ans$don_simul)
-    ans$don_simulS1 <- data.frame(ans$don_simulS1)
     names(ans$don_simul) <- c("trt1","v_s1","v_t1","trialref1","w_ij1","timeS1","timeT1",
                               "timeC1","statusS1","statusT1","initTime1","Patienref1","u_i1")
     names(ans$don_simulS1) <- c("trt1","v_s1","v_t1","trialref1","w_ij1","timeS1","timeT1",
