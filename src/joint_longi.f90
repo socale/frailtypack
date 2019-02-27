@@ -145,13 +145,7 @@
    
    !add TwoPart
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
-
-   
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'numInterac',numInterac
-! write(2,*)'positionVarTime',positionVarTime
-!     close(2)
-            
+      
    
    ng0=ngnzag(1)
    nz0=ngnzag(2)
@@ -190,19 +184,14 @@
             
                 
     ! add for current-level interaction with time
- !        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-  !     write(2,*)'link0(1)',link0(1)
-  !     write(2,*)'numInterac',numInterac
-  !     write(2,*)'positionVarTime',positionVarTime
-    !   write(2,*)'tps',tps
-   !   write(2,*)'mu1G'
-   !    write(2,*)'mu1G'
-   !    write(2,*)'mu1G'
-   !    write(2,*)'mu1G'
-   !    write(2,*)'mu1G'
-   !  close(2)
+!        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'link0(1)',link0(1)
+!       write(2,*)'numInterac',numInterac
+!       write(2,*)'positionVarTime',positionVarTime
+!     close(2)
+     
     if(link0(1).eq.2) then
-    if(numInterac(1).ne.0) then
+    if(numInterac(1).ne.15) then
     allocate(positionVarT(numInterac(1)+numInterac(2)))
     positionVarT = positionVarTime
     end if
@@ -4297,9 +4286,9 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         upper = .false.
         i = numpat
 
- current_meanG = 0.d0
- uiiui=0.d0
- funcG=0.d0
+! current_meanG = 0.d0
+! uiiui=0.d0
+! funcG=0.d0
 
     if(nb1.eq.1) then
             if(methodGH.eq.1) then
@@ -4627,10 +4616,6 @@ end if
     
     !! Monte-carlo
     subroutine MC_JointModels(ss,func2,ndim,intpoints)
-    ! dans cette fonction on fait une quadrature adaptative ou non pour les deux effets aleatoire wsi et wti
-    ! mu1= moyenne du frailty
-    ! vc1= variance du frailty
-    ! ndim= dimension de l'integrale niveau essai
     use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,rmvnorm
     use var_surrogate, only: nbre_sim
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
@@ -4643,75 +4628,31 @@ end if
     integer ::ii,nsimu !code,erreur,nbrejet,stemp,tid1,npg,kk,j,k,ier !maxmes= nombre de dimension ou encore dimension de X
     integer,intent(in):: ndim
     double precision,intent(out)::ss
-  !  double precision,intent(in)::CholMat
     double precision,dimension(nodes_number,nb1),intent(in)::intpoints
     double precision::auxfunca!,ss !mu1,vc1,ss1,ss2
-
-  !  double precision,dimension(nb1)::mu_mc
-   ! double precision,dimension(:),allocatable::usim
     double precision::x2222,somp !eps !ymarg contient le resultat de l'integrale
-    !double precision,dimension(:),allocatable::ysim
-   ! double precision,dimension(:),allocatable::vi
-double precision::func2
-!integer::i
-    !double precision, external::gauss_HermMultA_surr    
-   
-    ! bloc interface pour la definition de la fonction func
-   ! interface
-   !     double precision function func2(frail1,frail2,frail3,frail4)
-   !         double precision,intent(in)::frail1,frail2,frail3,frail4
-   !     end function func2
-   ! end interface
-
-!allocate(fraili(nbre_sim,size(Chol,2)))
-!allocate(vcjm(size(Chol,2),size(Chol,2)))
-
-
-            !i = numpat
-          !  mu_mc=0.d0
-      !  vcjm = Chol
+    double precision::func2
         
     nsimu=nbre_sim
     x2222=0.d0
     somp=0.d0
     ss=0.d0
 
-   ! maxmes=size(CholMat,2)
-     !allocate(vi(maxmes*(maxmes+1)/2))
-     !allocate(usim(maxmes))
-    !!print*,'voila la cholesky de vc:',vc
-    !!print*,"mat_A vs,vt,covst=",mat_A(1,1),mat_A(2,2),mat_A(1,2)
-    !!print*,"chol vs,vt,covst=",vc(1,1),vc(2,1),vc(1,2),vc(2,2)
-    
-    
   ! --------------------- boucle du MC ------------------------
-  !          SX=1.d0    
-  !  ymarg=0.d0
-  !  l=0
-    
-    !stemp=0
-    !===============================================================================
-    ! initialisation de la matrice des donnees generees pour l'estimation de l'integrale 
-    !===============================================================================
-
-    !integration sur usi, uti, vsi et vti
     auxfunca=0.d0
     ss=0.d0
     select case(ndim)
      case(1)
-      !!print*,'je suis la'
         !ii=0
         ! !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,fraili)&
         ! !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,intpoints(ii,1))
                 ss=ss+auxfunca
-                !!print*,"ss",ss
             end do
         ! !$OMP END PARALLEL DO
    case(2)
 
-      !!print*,'je suis la'
         !ii=0
         ! !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,fraili)&
         ! !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
@@ -4719,15 +4660,10 @@ double precision::func2
                 auxfunca=func2(0.d0,intpoints(ii,2),intpoints(ii,1))
 
                 ss=ss+auxfunca
-                !!print*,"ss",ss
             end do
         ! !$OMP END PARALLEL DO
     end select
     ss=ss/dble(nsimu) 
-
-!deallocate(vcjm, fraili)
-!vi,usim,!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
     return 
   end subroutine MC_JointModels
@@ -4735,110 +4671,6 @@ double precision::func2
 
   
   
-        subroutine dmfsd(a,n,eps,ier)
-!
-!   FACTORISATION DE CHOLESKY D'UNE MATRICE SDP
-!   MATRICE = TRANSPOSEE(T)*T
-!   ENTREE : TABLEAU A CONTENANT LA PARTIE SUPERIEURE STOCKEE COLONNE
-!            PAR COLONNE DE LA METRICE A FACTORISER
-!   SORTIE : A CONTIENT LA PARTIE SUPPERIEURE DE LA MATRICE triangulaire T
-!
-!   SUBROUTINE APPELE PAR DSINV
-!
-!   N : DIM. MATRICE
-!   EPS : SEUIL DE TOLERANCE
-!   IER = 0 PAS D'ERREUR
-!   IER = -1 ERREUR
-!   IER = K COMPRIS ENTRE 1 ET N, WARNING, LE CALCUL CONTINUE
-!
-      implicit none
-      
-      integer,intent(in)::n
-      integer,intent(inout)::ier
-      double precision,intent(in)::eps 
-      double precision,dimension(n*(n+1)/2),intent(inout)::A
-      double precision :: dpiv,dsum,tol
-      integer::i,k,l,kpiv,ind,lend,lanf,lind
-
-!
-!   TEST ON WRONG INPUT PARAMETER N
-!
-      dpiv=0.d0
-      if (n-1.lt.0) goto 12
-      if (n-1.ge.0) ier=0
-!
-!   INITIALIZE DIAGONAL-LOOP
-!
-      kpiv=0
-      do k=1,n
-          kpiv=kpiv+k
-          ind=kpiv
-          lend=k-1
-!
-!   CALCULATE TOLERANCE
-!
-          tol=dabs(eps*sngl(A(kpiv)))
-!
-!   START FACTORIZATION-LOOP OVER K-TH ROW
-!
-         do i=k,n
-        dsum=0.d0
-            if (lend.lt.0) goto 2
-            if (lend.eq.0) goto 4
-            if (lend.gt.0) goto 2
-!
-!   START INNER LOOP
-!
-2           do l=1,lend
-               lanf=kpiv-l
-               lind=ind-l
-           dsum=dsum+A(lanf)*A(lind)
-            end do 
-          
-!     
-!   END OF INNEF LOOP
-!
-!   TRANSFORM ELEMENT A(IND)
-!     
-4           dsum=A(ind)-dsum
-            if (i-k.ne.0) goto 10
-            if (i-k.eq.0) goto 5
-!   TEST FOR NEGATIVE PIVOT ELEMENT AND FOR LOSS OF SIGNIFICANCE
-!    
-
-
-5           if (sngl(dsum)-tol.le.0) goto 6
-            if (sngl(dsum)-tol.gt.0) goto 9
-6           if (dsum.le.0) goto 12 
-            if (dsum.gt.0) goto 7
-7           if (ier.le.0) goto 8
-            if (ier.gt.0) goto 9
-8           ier=k-1
-!
-!   COMPUTE PIVOT ELEMENT
-!
-9           dpiv=dsqrt(dsum)
-            A(kpiv)=dpiv
-            dpiv=1.D0/dpiv
-            goto 11
-!
-!   CALCULATE TERMS IN ROW
-!
-10          A(ind)=dsum*dpiv
-11          ind=ind+i
-         end do
-      end do
-      
-!
-!   END OF DIAGONAL-LOOP
-!
-      return
-12    ier=-1
-      return
-
-      end subroutine dmfsd
- 
- 
  
  
  

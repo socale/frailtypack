@@ -1902,9 +1902,11 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }}
     }}else{
     positionVarTime=0
-    numInterac=0
+    numInterac=15 # here 15 means no interaction !!
+    # cannot set to zero because PositionvarTime is allocated in joint_longi.f90 with the size of this variable
     }
 
+    browser()
     
     if(TwoPart){
         if(!is.null(interactB)){  # binary

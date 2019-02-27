@@ -628,87 +628,45 @@
                 else if(typeJoint.eq.3.and.nb1.eq.3) then
                     call gauherJ33(int,choix,nodes_number)
                 end if
-deallocate(mu1) 
+    deallocate(mu1) 
                 integrale4(ig) =int !result(1) !
         
             else if(methodGH.eq.2)then
                 call  hrmsym(nea, nf2,genz(1),genz(2),vraistot_splines, epsabs, &
                     epsrel, restar, result, abserr2, neval, ifail, work)
                 integrale4(ig) =result(1)
-                else if(methodGH.eq.3) then
-                !allocate(mu_MC(ng)) !initialisation du vecteur des moyennes des effects alatoires
-                !allocate(vc_MC(ng, ng)) !initialisation de la matrice de variance covariance pour le MC
-               ! mu_MC=0.d0
-               ! vc_MC=0.d0
-               ! do l=1,nsujety
-               !     vc_MC(l,l)=theta2    
-               ! end do      
+    else if(methodGH.eq.3) then ! Monte-carlo   
+        mu_mc=0.d0
+        vcjm=0.d0
+        nbre_sim=nodes_number
+        vcjm = Chol
+        if(a_deja_simul.eq.0) then
+            call rmvnorm(mu_mc,vcjm,nbre_sim,1,fraili)
+            a_deja_simul=1 ! pour dire qu'on ne simule plus
+        endif
+        !calcul de l'integrale par monte carlo pour l'integrale multiple
+        if(typeJoint.eq.2.and.nb1.eq.1) then
+            call MC_JointModels(int, funcG, nb1,fraili)
+        else if(typeJoint.eq.2.and.nb1.eq.2) then
+            call MC_JointModels(int, funcG, nb1,fraili)
+        end if
+        if(int.eq.0.d0) then
+            integrale4(ig)=0.1d-300
+        else
+            integrale4(ig) =int !result(1) !
+        end if
+    end if    
+    
+    
+    
+    
+        !             open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+        !  write(2,*)' nea', nea
+        !   write(2,*)'fraili',fraili
+        !   write(2,*)'a_deja_simul',a_deja_simul
+        !     close(2)
 
-!fraili=0.d0
-mu_mc=0.d0
-vcjm=0.d0
-!graine=0              
-!aleatoire=1
-nbre_sim=nodes_number
-vcjm = Chol
-
-                open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-     write(2,*)' nea', nea
-      write(2,*)'fraili',fraili
-      write(2,*)'a_deja_simul',a_deja_simul
-        close(2)
-
-    if(a_deja_simul.eq.0) then
-
-    !    call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation pour lagraine
-
-        !!print*,"nsimu=",nsimu,size(Vect_sim_MC,1),size(Vect_sim_MC,2)
-        !stop
-       ! Vect_sim_MC=0.d0
- !   l=0  
- !       do while(l.le.nsimu)
- !         !  usim=0.d0!
-
- !           call bgos(SX,0,Vect_sim_MC(l,1),x2222,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite pour ws_ij
- !           call bgos(SX,0,Vect_sim_MC(l,2),x2222,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite pour wt_ij
-
- !           l=l+1
-!        end do    
-call rmvnorm(mu_mc,vcjm,nbre_sim,1,fraili)
-        a_deja_simul=1 ! pour dire qu'on ne simule plus
-    endif
-
-
-
-    !    allocate(Vect_sim_MC(nbre_sim,nb1))
-
-!Vect_sim_MC=0.d0
-  
-              !  vcdiag=0 ! la matrice n'est plus diagonale
-               ! resultatInt=0.d0
-                !calcul de l'integrale par monte carlo pour l'integrale multiple
-
-                    if(typeJoint.eq.2.and.nb1.eq.1) then
-                            call MC_JointModels(int, funcG, nb1,fraili)
-                    else if(typeJoint.eq.2.and.nb1.eq.2) then
-                            call MC_JointModels(int, funcG, nb1,fraili)
-
-     end if
-     
-if(int.eq.0.d0) then
-                    integrale4(ig)=0.1d-300
-                    !print*,"integrale nulle et affectation de la valeur 0.1d-300, trials:",ig
-                else
-                integrale4(ig) =int !result(1) !
-
-                end if
             
-                !!print*,"funcpajsplines_surr ligne 312 nsujeti(ig)=",nsujeti(ig),"resultatInt=",integrale3(ig)  
-               ! deallocate(mu_MC,vc_MC)
-!deallocate(Vect_sim_MC)
-        
-   ! deallocate(vc,fraili)
-            end if     
           
             it_rec = it_rec + nmescurr
             it = it + nmescur
