@@ -4620,7 +4620,7 @@ end if
     
     !! Monte-carlo
     subroutine MC_JointModels(ss,func2,ndim,intpoints)
-    use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,rmvnorm,DMFSD
+   ! use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,rmvnorm,DMFSD
     use var_surrogate, only: nbre_sim
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use comon, only:nb1,nodes_number
@@ -4674,6 +4674,316 @@ end if
   
 
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+   
+!C ******************** BGOS ********************************
+! pour la simulation des X_i suivant une gaussienne centree reduite
+
+    SUBROUTINE BGOS(SX,ID,X1,X2,RO)
+      
+!C     ID=1:U(0,SX); ID DIFF DE 1 :N(0,SX)
+      use var_surrogate, only: random_generator
+      
+      implicit none
+      double precision ::RO,SX
+      integer ::ID
+      double precision ::F,V1,V2,S,DLS,RO2
+      double precision ::X1,X2!,UNIRAN
+!C     !write(*,*)'dans bgos'
+
+
+ 5    CONTINUE
+
+!C     !write(*,*)'avant rand :'
+
+!C     X1=RAND()
+!C     X2=RAND()
+    ! scl 27/03/2018: remplacement de uniran() par random_number(), pour pouvoir gerer le seed
+      if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
+          X1=UNIRAN()
+          X2=UNIRAN()
+      else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
+          CALL RANDOM_NUMBER(X1)
+          CALL RANDOM_NUMBER(X2)
+      endif
+      
+      IF(ID.NE.1) GO TO 10
+      F=2.d0*dSQRT(3.d0)
+      X1=(X1-0.5)*F
+      X2=(X2-0.5)*F
+      GO TO 20
+10    CONTINUE
+      V1=2.d0*X1-1
+      V2=2.d0*X2-1
+      S=V1*V1+V2*V2
+      IF(S.GE.1.) GO TO 5
+      DLS=dSQRT(-2.d0*dLOG(S)/S)
+      X1=V1*DLS
+      X2=V2*DLS
+20    CONTINUE
+      RO2=RO*RO
+      IF(ABS(RO).GT.1.E-10) X2=(X1+X2*dSQRT(1.d0/RO2-1.d0))*RO
+      X1=X1*SX
+      X2=X2*SX
+
+!C      !write(*,*) 'X1 ',X1,' X2 ',X2
+!C OK, X1 et X2 sont créés
+
+!C      !write(*,*)'fin bgos'
+
+      RETURN
+    END subroutine bgos
+!C ------------------- FIN SUBROUTINE BGOS -----------------
+
+! =====================subroutine uniran=====================
+   
+    double precision function uniran()
+!
+!     Random number generator(RCARRY), adapted from F. James
+!     "A Review of Random Number Generators"
+!      Comp. Phys. Comm. 60(1990), pp. 329-344.
+    
+    double precision,save::carry
+    double precision,dimension(24),save::seeds 
+    double precision,parameter::one=1 
+    double precision,parameter::twom24 = ONE/16777216
+    integer,save::i,j
+    data i, j, carry / 24, 10, 0.0 /
+    data seeds / &
+    0.8804418, 0.2694365, 0.0367681, 0.4068699, 0.4554052, 0.2880635, &
+    0.1463408, 0.2390333, 0.6407298, 0.1755283, 0.7132940, 0.4913043, &
+    0.2979918, 0.1396858, 0.3589528, 0.5254809, 0.9857749, 0.4612127, &
+    0.2196441, 0.7848351, 0.4096100, 0.9807353, 0.2689915, 0.5140357/
+
+    uniran = seeds(i) - seeds(j) - carry
+    
+    if (uniran .lt. 0) then
+        uniran = uniran + 1
+        carry = twom24
+    else
+        carry = 0
+    end if
+    
+    seeds(I) = uniran
+    I = 24 - MOD( 25-I, 24 )
+    J = 24 - MOD( 25-J, 24 )
+    
+    end function uniran
+   
+! =========== subroutine pour la generation des donnees suivant une multinormal et vecteur de moyenne et da matrice de variance covariance donnees
+
+subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
+    ! mu: l'esperance de mes variables
+    ! VC1: matrice de variance-covariance
+    ! nsim: nombre de generations a faire
+    ! vcdiag: un entier(1=oui, 0=non) qui dit si la matrice de variance covariance est diagonale ou pas. pour eviter la transformation de cholesky
+    ! ysim: vecteur des realisations d'ne normale de moyenne mu et de matrice de covariance vc
+        
+    implicit none
+    integer :: jj,j,k,ier,l,m,maxmes !maxmes= nombre de dimension ou encore dimension de X
+    integer, intent(in)::nsim,vcdiag
+    double precision::eps,ymarg,SX,x22 ! ymarg contient le resultat de l'integrale
+    double precision, intent(in),dimension(:)::mu
+    double precision,dimension(:,:),intent(in)::vc1
+    double precision,dimension(:,:),allocatable::vc
+    double precision,dimension(:),allocatable::usim
+    !double precision,dimension(nsim,size(vc,2)),intent(out)::ysim
+    double precision,dimension(:,:),intent(out)::ysim
+    double precision,dimension(:),allocatable::vi
+    
+    !=============debut de la fonction=============================
+    !!print*,vc
+    !stop
+    x22=0.d0
+    maxmes=size(vc1,2)
+    allocate(vi(maxmes*(maxmes+1)/2),usim((size(vc1,2))),vc(size(vc1,1),size(vc1,2)))
+    vc=vc1
+    jj=0
+    Vi=0.d0
+    do j=1,maxmes
+        do k=j,maxmes
+           jj=j+k*(k-1)/2
+           Vi(jj)=VC(j,k)
+        end do
+    end do
+    ! !print*,vi
+    EPS=10.d-10
+    if(vcdiag.eq.0) then
+        CALL DMFSD(Vi,maxmes,eps,ier) ! si matice diagonale on na pas besoin de ceci
+    end if
+    !!print*,vi
+    if (ier.eq.-1) then
+        !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
+        !stop
+		call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
+    else ! ysim sera un vecteur de 0
+     
+		VC=0.d0
+		do j=1,maxmes
+			do k=1,j
+				VC(j,k)=Vi(k+j*(j-1)/2)
+			end do
+		end do    
+		
+		! --------------------- Generation des donnees ------------------------
+		ymarg=0.d0
+		!!print*,vc
+		!stop
+		l=1
+		do while(l.le.nsim)
+			usim=0.d0
+			do m=1,maxmes
+				SX=1.d0
+				call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
+			end do
+			ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
+			l=l+1
+		end do
+	endif
+			
+    deallocate(vi,usim,vc)
+    return
+end subroutine rmvnorm
+
+
+
+
+
+
+
+!C ******************** DMFSD ********************************
+
+
+    subroutine dmfsd(a,n,eps,ier)
+!
+!   FACTORISATION DE CHOLESKY D'UNE MATRICE SDP
+!   MATRICE = TRANSPOSEE(T)*T
+!   ENTREE : TABLEAU A CONTENANT LA PARTIE SUPERIEURE STOCKEE COLONNE
+!            PAR COLONNE DE LA METRICE A FACTORISER
+!   SORTIE : A CONTIENT LA PARTIE SUPPERIEURE DE LA MATRICE triangulaire T
+!
+!   SUBROUTINE APPELE PAR DSINV
+!
+!   N : DIM. MATRICE
+!   EPS : SEUIL DE TOLERANCE
+!   IER = 0 PAS D'ERREUR
+!   IER = -1 ERREUR
+!   IER = K COMPRIS ENTRE 1 ET N, WARNING, LE CALCUL CONTINUE
+!
+      implicit none
+
+      integer,intent(in)::n
+      integer,intent(out)::ier
+      double precision,intent(in)::eps
+      double precision,dimension(n*(n+1)/2),intent(inout)::A
+      double precision :: dpiv,dsum,tol
+      integer::i,k,l,kpiv,ind,lend,lanf,lind
+
+!
+!   TEST ON WRONG INPUT PARAMETER N
+!
+      dpiv=0.d0
+      if (n-1.lt.0) goto 12
+      if (n-1.ge.0) ier=0
+!
+!   INITIALIZE DIAGONAL-LOOP
+!
+      kpiv=0
+      do k=1,n
+          kpiv=kpiv+k
+          ind=kpiv
+          lend=k-1
+!
+!   CALCULATE TOLERANCE
+!
+          tol=dabs(eps*sngl(A(kpiv)))
+!
+!   START FACTORIZATION-LOOP OVER K-TH ROW
+!
+         do i=k,n
+            dsum=0.d0
+            if (lend.lt.0) goto 2
+            if (lend.eq.0) goto 4
+            if (lend.gt.0) goto 2
+!
+!   START INNER LOOP
+!
+2           do l=1,lend
+               lanf=kpiv-l
+               lind=ind-l
+               dsum=dsum+A(lanf)*A(lind)
+            end do
+
+!
+!   END OF INNEF LOOP
+!
+!   TRANSFORM ELEMENT A(IND)
+!
+4           dsum=A(ind)-dsum
+            if (i-k.ne.0) goto 10
+            if (i-k.eq.0) goto 5
+!   TEST FOR NEGATIVE PIVOT ELEMENT AND FOR LOSS OF SIGNIFICANCE
+!
+
+
+5           if (sngl(dsum)-tol.le.0) goto 6
+            if (sngl(dsum)-tol.gt.0) goto 9
+6           if (dsum.le.0) goto 12
+            if (dsum.gt.0) goto 7
+7           if (ier.le.0) goto 8
+            if (ier.gt.0) goto 9
+8           ier=k-1
+!
+!   COMPUTE PIVOT ELEMENT
+!
+9           dpiv=dsqrt(dsum)
+            A(kpiv)=dpiv
+            dpiv=1.D0/dpiv
+            goto 11
+!
+!   CALCULATE TERMS IN ROW
+!
+10          A(ind)=dsum*dpiv
+11          ind=ind+i
+         end do
+      end do
+
+!
+!   END OF DIAGONAL-LOOP
+!
+      if(ier.eq.-1) then 
+        !print*,'Erreur dans le calcul de la cholesky, subroutine dmfsd: ier1=',ier
+      end if
+      
+      return
+12    ier=-1
+      !print*,'Erreur dans le calcul de la cholesky, subroutine dmfsd: ier1=',ier
+      return
+
+    end subroutine dmfsd
+    
+    
+    
+    
   
  
  
