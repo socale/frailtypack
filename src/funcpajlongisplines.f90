@@ -435,7 +435,7 @@
                 l=0
     
                 if(nmescur.gt.0) then
-                    do k=1,nb1
+                    do k=1,nby
                         l=l+1
                         do i=1,nmescur
                             Z1(i,l)=dble(ziy(it+i,k))
