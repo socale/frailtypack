@@ -484,8 +484,8 @@
         end do
     end if          
     
-            varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nb1), &
-                    MATMUL(Ut(1:nb1,1:nb1),Utt(1:nb1,1:nb1))),transpose(ziy((it+1):(it+nmescur),1:nb1)))+ &
+            varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nby), &
+                    MATMUL(Ut(1:nby,1:nby),Utt(1:nby,1:nby))),transpose(ziy((it+1):(it+nmescur),1:nby)))+ &
                     mat_sigma
     
                 !add TwoPart
