@@ -3192,6 +3192,7 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
         CALL DMFSD(Vi,maxmes,eps,ier) ! si matice diagonale on na pas besoin de ceci
     end if
     !!print*,vi
+    
     if (ier.eq.-1) then
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
         !stop
