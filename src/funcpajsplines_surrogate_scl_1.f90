@@ -23,7 +23,7 @@
     
     integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial
     integer,dimension(ngmax)::cpt
-    double precision::pe1,pe2,inv,som1,som2,res,vet,vet2,h1 !som,inc
+    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc
     double precision,dimension(3):: resultatInt
     
     double precision,dimension(-2:npmax):: the1,the2
@@ -36,8 +36,8 @@
 !AD:end
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
-    !double precision,dimension(:),allocatable::frail
-    double precision::pourgam,gammaJ !c3,c4,int
+    double precision,dimension(:),allocatable::frail
+    double precision::int,gammaJ,c3,c4,pourgam
     double precision,dimension(ntrials)::integrale3
 
 !    !print*,'debut funcpa'
@@ -314,7 +314,7 @@
                 resultatInt=0.d0
                 !calcul de l'integrale par monte carlo pour l'integrale multiple et quadrature adaptative ou pas pour l'integrale su vsi et vti
                 if(vectorisation.eq.1) then ! on vectorise, reduction du temps de calcul
-                    call monteCarlosMult(integrant_indiv_1MCA,mu,vc,nsim,vcdiag,resultatInt)
+                    call monteCarlosMult(integrant_indiv_1MCA,mu,vc,nsim,vcdiag,ig,resultatInt)
                 else ! on ne vectorise pas
                     resultatInt=monteCarlos_ind(integrant_indiv_1MC,mu,vc,nsim,vcdiag)
                 endif

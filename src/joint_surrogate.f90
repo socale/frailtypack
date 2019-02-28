@@ -5,13 +5,13 @@
 !paratps = c(timedep0,nbinnerknots,qorder0)
 
 !--entête pour fortran
-    subroutine joint_surrogate(nsujet0,ng0,ntrials0,lignedc0,nz0,k0,tt00,tt10,ic0,groupe0,trials,pourtrial0,nigs0,&
+    subroutine joint_surrogate(nsujet0,ng0,ntrials0,lignedc0,nz0,nst0,k0,tt00,tt10,ic0,groupe0,trials,pourtrial0,nigs0,&
                                cdcs0,groupe00,tt0dc0,tt1dc0,icdc0,tempdc,icdc00,nva10,vax0,nva20,vaxdc0,vaxdc00,noVar1,&
                                noVar2,ag0,maxit0,np,b,H_hessOut,HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,&
                                xSu2,su2Out,typeof0,equidistant,nbintervR0,nbintervDC0,mtaille,ni,cpt,cpt_dc,ier,istop,&
                                paraweib,MartinGales,linearpred,linearpreddc,ziOut,time,timedc,linearpredG,typeJoint0,&
                                intcens0,ttU0,logNormal0,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc,EPS,nsim_nodes,indice_esti,&
-                               indice_covST0,param_weibull0)
+                               indice_covST0,paGH,param_weibull0)
 
 !AD: add for new marq
     use parameters
@@ -33,9 +33,9 @@
     implicit none
     
     integer, dimension(4), intent(in)::indice_esti
-    integer::maxit0,mt1,mt2,mt11,mt12,nnodes,aaa,control !nn,npinit,nvatmp
+    integer::maxit0,nvatmp,mt1,mt2,mt11,mt12,nnodes,aaa,control !nn,npinit
     integer,dimension(4),intent(in)::mtaille
-    integer,intent(in)::nsujet0,ng0,nz0,nva10,nva20,lignedc0,ag0,ntrials0 !nst0
+    integer,intent(in)::nsujet0,ng0,nz0,nva10,nva20,lignedc0,ag0,ntrials0,nst0
     integer,intent(in),dimension(ntrials0)::trials
     double precision,dimension(nz0+6),intent(out)::ziOut
     integer::np,equidistant
@@ -67,14 +67,14 @@
     integer,intent(in)::noVar1,noVar2,intcens0,param_weibull0 !param_weibull! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation 
 	!                                                         a l'aide de la fonction de weibull donnee dans le cours de Pierre
     integer,intent(out)::cpt,cpt_dc,ier,ni
-    integer::groupe,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2   & !code
+    integer::groupe,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2,code   &
     ,i,ic,icdc,istop,cptni,cptni1,cptni2,nb_echec,nb_echecor,id,cptbiais &
-    ,cptauxdc,p !rang,erreur
+    ,cptauxdc,p,rang!,erreur
     double precision::tt0,tt0dc,tt1,tt1dc,h,hdc,res,min,mindc,max_, &
     maxdc,maxt,maxtdc,moy_peh0,moy_peh1,lrs,BIAIS_moy,ttU,mintdc !! rajout
     double precision,dimension(2)::res01
 !AD: add for new marq
-    double precision::ca,cb,dd !result_
+    double precision::ca,cb,dd,result_
     double precision,external::funcpajsplines_surrogate,funcpajsplines_surrogate_1,funcpajcpm,funcpajweib
     double precision,external::funcpajsplines_intcens,funcpajweib_intcens
     double precision,external::funcpajsplines_log,funcpajcpm_log,funcpajweib_log
@@ -119,11 +119,11 @@
     double precision,dimension(0:100,0:4*sum(filtretps0(nva10+1:nva10+nva20)))::BetaTpsMatDc
     double precision,dimension(paratps(2)+paratps(3))::basis
     double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : on recupere les valeurs obtenues lors de l'algorithme a la fin
-    integer, dimension(8),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
+	integer, dimension(8),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
                                                  !0=Monte carlo,1= MC+quadrature, 2=quadrature, le cinquieme le nombre de parametres associes a la fragilite
                                                  ! le septieme indique le nombre d'effet aleatoire dans le cas de la quadrature adaptative
                                                  ! et le huitieme le type de modele a estimer (0=joint surrogate classique,1=joint surrogate complet)
-    !double precision,dimension(ng0,nsim_nodes(7)+1+nsim_nodes(7) + (nsim_nodes(7)*(nsim_nodes(7)-1))/2),intent(in):: paGH ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
+	double precision,dimension(ng0,nsim_nodes(7)+1+nsim_nodes(7) + (nsim_nodes(7)*(nsim_nodes(7)-1))/2),intent(in):: paGH ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
 
     integer, dimension(ntrials0,2),intent(in)::nigs0,cdcs0
     integer, dimension(nsujet0),intent(in)::pourtrial0
@@ -1189,7 +1189,7 @@
                 ! !print*,"ca,cb,dd =",ca,cb,dd
     if(adaptative .and. estim_wij_chap.eq.0)then
         nb0=nsim_nodes(7)
-        nb_ree = int(nb0 + (nb0*(nb0-1))/2.d0) ! les variances + covariances estimes de la cholesky
+        nb_ree = nb0 + (nb0*(nb0-1))/2.d0 ! les variances + covariances estimes de la cholesky
         ! Parametres pour GH pseudo-adaptative
         allocate(ui_chap(ng0,1),invBi_cholDet(ng0),invBi_chol(ng0,nb_ree),invBi_cholDet_Essai(ntrials))
         allocate(invBi_chol_Essai(ntrials*9),invBi_chol_Individuel(ng0),ui_chap_Essai(ntrials,3))

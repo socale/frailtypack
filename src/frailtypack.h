@@ -268,7 +268,7 @@ F77_SUB(jointsurrogate)(int *nsujet1, int *ng, int *ntrials1, int *maxiter, int 
              double *b, double *H_hessOut, double *HIHOut, double *resOut, double *LCV,
              double *x1Out, double *lamOut, double *xSu1, double *suOut, double *x2Out,
              double *lam2Out, double *xSu2, double *su2Out, int *ni, int *ier, int *istop,
-             double *ziOut, int *affiche_itter);
+             double *ziOut, int *affiche_itter, double *Varcov, double *dataHessian, double *dataHessianIH, double *datab);
 
 void
 F77_SUB(surrosim)(double *don_simul, double *don_simulS1, int *n_obs, int *n_col,
