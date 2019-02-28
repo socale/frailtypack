@@ -3246,36 +3246,35 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     if (ier.eq.-1) then
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
         !stop
-        call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
-        else ! ysim sera un vecteur de 0
-        
-        VC=0.d0
-        do j=1,maxmes
-        do k=1,j
-        VC(j,k)=Vi(k+j*(j-1)/2)
-        end do
-        end do    
+		call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
+    else ! ysim sera un vecteur de 0
+     
+		VC=0.d0
+		do j=1,maxmes
+			do k=1,j
+				VC(j,k)=Vi(k+j*(j-1)/2)
+			end do
+		end do    
 		
 		! --------------------- Generation des donnees ------------------------
-        ymarg=0.d0
-        !!print*,vc
-        !stop
-        l=1
-        do while(l.le.nsim)
-        usim=0.d0
-        do m=1,maxmes
-        SX=1.d0
-        call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
-        end do
-        ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
-        l=l+1
-        end do
-        endif
+		ymarg=0.d0
+		!!print*,vc
+		!stop
+		l=1
+		do while(l.le.nsim)
+			usim=0.d0
+			do m=1,maxmes
+				SX=1.d0
+				call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
+			end do
+			ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
+			l=l+1
+		end do
+	endif
 			
     deallocate(vi,usim,vc)
     return
 end subroutine rmvnorm
-
 !subroutine pour la factorisation de cholesky 
 
 subroutine Cholesky_Factorisation(vc)
