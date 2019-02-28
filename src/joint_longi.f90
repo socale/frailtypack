@@ -4160,14 +4160,6 @@ end if
 end if
 end if
 
-        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-       write(2,*)'x2curG',x2curG
-       write(2,*)'X2BcurG',X2BcurG
-       write(2,*)'positionVarT',positionVarT
-       write(2,*)'numInter',numInter
-       write(2,*)'numInterB',numInterB
-     close(2)
-
         Z1curG(1,1) = 1.d0
         if(nb1.eq.2)  Z1curG(1,2) =tps
      
