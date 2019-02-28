@@ -191,8 +191,8 @@
 !     close(2)
      
     if(link0(1).eq.2) then
-    if(numInterac(1).ne.15) then
-    allocate(positionVarT(numInterac(1)+numInterac(2)))
+    if(positionVarTime(1).ne.404) then
+    allocate(positionVarT((numInterac(1)+numInterac(2))*3))
     positionVarT = positionVarTime
     end if
     end if
@@ -1702,7 +1702,7 @@
         deallocate(etaydc,etayr,b_lme,invBi_chol,invBi_cholDet)
     deallocate(chol) !Monte-carlo
     if(link.eq.2) then
-    if(numInterac(1).ne.0) deallocate(positionVarT)
+    if(positionVarTime(1).ne.404) deallocate(positionVarT)
 end if
         return
     
@@ -4124,35 +4124,49 @@ end if
                 vet2=1.d0
             endif
 
-if((nva3-1).gt.0) then
-    x2curG(1,1) = 1.d0
-    do k=2,nva3
-    x2curG(1,k) = dble(vey(it_cur+1,k))
-    end do
-    if(numInter.ge.1) then
-    do counter = 1,numInter ! compute time and interactions at t1dc
-    x2curG(1,positionVarT(counter2+1)) =tps ! time effect
-    x2curG(1,positionVarT(counter2+2)) =tps*dble(vey(it_cur+1,positionVarT(counter2)))! interaction
-    counter2=counter2+3
-    end do
+    if((nva3-1).gt.0) then ! set the value of covariates at time to event! (interaction must be computed accordingly)
+        x2curG(1,1) = 1.d0
+        do k=2,nva3
+            x2curG(1,k) = dble(vey(it_cur+1,k))
+        end do
+        if(numInter.eq.1) then! compute time and interactions at tps
+            x2curG(1,positionVarT(2)) =tps ! time effect
+            x2curG(1,positionVarT(3)) =tps*dble(vey(it_cur+1,positionVarT(1))) ! interaction
+                counter2=counter2+3
+        else if(numInter.gt.1)then
+            do counter = 1,numInter !in case of multiple interactions
+                x2curG(1,positionVarT(counter2+1)) =tps
+                x2curG(1,positionVarT(counter2+2)) =tps*dble(vey(it_cur+1,positionVarT(counter2)))
+                counter2=counter2+3
+            end do
+        end if
     end if
-end if
 
-    if(TwoPart.eq.1)then
+    
+    
+    if(TwoPart.eq.1) then
     if((nvaB-1).gt.0) then
     X2BcurG(1,1) = 1.d0
     do k=2,nvaB
     X2BcurG(1,k) = dble(veB(it_curB+1,k))
     end do
     if(numInterB.ge.1) then
-    do counter = 1,numInter ! compute time and interactions at t1dc
-    X2BcurG(1,positionVarT(counter2+1)) =tps! time effect
+    do counter = 1,numInterB ! compute time and interactions at tps
+    X2BcurG(1,positionVarT(counter2+1)) =tps ! time effect
     X2BcurG(1,positionVarT(counter2+2)) =tps*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-    counter2=counter2+3
+    counter2=counter2+3    
     end do
     end if
 end if
 end if
+
+        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+       write(2,*)'x2curG',x2curG
+       write(2,*)'X2BcurG',X2BcurG
+       write(2,*)'positionVarT',positionVarT
+       write(2,*)'numInter',numInter
+       write(2,*)'numInterB',numInterB
+     close(2)
 
         Z1curG(1,1) = 1.d0
         if(nb1.eq.2)  Z1curG(1,2) =tps
@@ -4166,7 +4180,7 @@ end if
                             z1BcurG(1,2) = 1.d0
                         else if(nb1.eq.3) then
                             z1YcurG(1,1) = 1.d0 !
-    z1YcurG(1,2) = t1dc(numpat)
+    z1YcurG(1,2) = tps
     z1YcurG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
@@ -4432,7 +4446,7 @@ end if
     end if
         auxG(i) = resultdc
 
-    if((nva3-1).gt.0) then
+    if((nva3-1).gt.0) then ! set the value of covariates at time to event! (interaction must be computed accordingly)
         x2curG(1,1) = 1.d0
         do k=2,nva3
             x2curG(1,k) = dble(vey(it_cur+1,k))
@@ -4440,6 +4454,7 @@ end if
         if(numInter.eq.1) then! compute time and interactions at t1dc
             x2curG(1,positionVarT(2)) =t1dc(i) ! time effect
             x2curG(1,positionVarT(3)) =t1dc(i)*dble(vey(it_cur+1,positionVarT(1))) ! interaction
+                counter2=counter2+3
         else if(numInter.gt.1)then
             do counter = 1,numInter !in case of multiple interactions
                 x2curG(1,positionVarT(counter2+1)) =t1dc(i)
@@ -4458,17 +4473,14 @@ end if
     X2BcurG(1,k) = dble(veB(it_curB+1,k))
     end do
     if(numInterB.ge.1) then
-    do counter = 1,numInter ! compute time and interactions at t1dc
+    do counter = 1,numInterB ! compute time and interactions at t1dc
     X2BcurG(1,positionVarT(counter2+1)) =t1dc(i)! time effect
     X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-    counter2=counter2+3
+    counter2=counter2+3    
     end do
     end if
 end if
 end if
-    
-    
-    
     
             z1curG(1,1) = 1.d0
             if(nb1.eq.2) then
