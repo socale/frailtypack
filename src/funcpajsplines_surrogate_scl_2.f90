@@ -31,9 +31,9 @@
     double precision,dimension(2),intent(in)::k0
     double precision,intent(in)::thi,thj
     
-    integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial,dimint,dimint_Ind,erreur,code,compteur,init_i,max_i
+    integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial,dimint,dimint_Ind,init_i,max_i !code,compteur,erreur
     integer,dimension(ngmax)::cpt
-    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc,varS1,varT1,covST1,som_cont_0
+    double precision::pe1,pe2,inv,som1,som2,res,vet,vet2,h1,varS1,varT1,covST1,som_cont_0 !som,inc
     double precision,dimension(3):: resultatInt
     
     double precision,dimension(-2:npmax):: the1,the2
@@ -46,23 +46,23 @@
 !AD:end
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
-    double precision,dimension(:),allocatable::frail
-    double precision::int,gammaJ,c3,c4,pourgam
+    !double precision,dimension(:),allocatable::frail
+    !double precision::c3,c4,pourgam int,gammaJ
     double precision,dimension(ntrials)::integrale3
     double precision,dimension(:,:),allocatable:: mat_A
     !double precision,dimension(ng,1)::wij_chap1
     
     ! var utilisees en vue de l'estimation des fragilites a posteriorie
-    integer::ier,istop,ss,sss,ni,model_save,nparamfrail_save,maxiter_save,nmax_2,nb_pro2,comm,rang2,&
-             np_2,indice_B_essai,indice_ind_util_essai,non_conv,control_est,rang,n_par_pro
-    integer::frail_essai_deja_est,lm ! variable qui dit si pour un essai donne l'on a deja estimes les vsi et vti (1) ou non (0)
+    integer::ier,istop,ss,sss,ni,model_save,nparamfrail_save,maxiter_save,nmax_2,& !nb_pro2,comm,rang2
+             np_2,indice_B_essai,non_conv,rang,n_par_pro !indice_ind_util_essai,control_est
+    integer::lm !frail_essai_deja_est !variable qui dit si pour un essai donne l'on a deja estimes les vsi et vti (1) ou non (0)
     integer,parameter::effet2=0,np_1=1
     double precision::ca,cb,dd,som_cont,usim,x22,SX
     !double precision::res
     double precision, dimension(2)::k0_2
     !double precision, dimension(1)::v,b_2
     double precision, dimension(:),allocatable::b_i      ! pour les 2 parametres des effets aleatoires a predire niveau essai
-    double precision, dimension(:),allocatable::v_i    ! pour les 2 parametres des effets aleatoires a predire niveau essai
+    double precision, dimension(:,:),allocatable::v_i    ! pour les 2 parametres des effets aleatoires a predire niveau essai
     double precision, allocatable, dimension(:,:)::H_hessOut,HIH,HIHOut,IH,invBi_chol_2,H_hess_scl,I_hess_scl
     double precision,dimension(:,:), allocatable::hess_scl
     double precision,dimension(:), allocatable::vvv_scl
@@ -595,7 +595,7 @@
                     else
                         dimint=2 ! deux integrations au niveau essai correspondant aux effets aleatoires correles 
                     endif
-                    resultatInt=MC_MultInd_Essai(Integrale_Individuel_MC,MC_Multiple_surr,dimint,nsujet_trial,ig,mat_A)
+                    resultatInt=MC_MultInd_Essai(Integrale_Individuel_MC,MC_Multiple_surr,dimint,nsujet_trial)
     !                !print*,"funcpa: resultatInt(ig)=",resultatInt(ig),"ig=",ig
                     !stop
                     
@@ -631,7 +631,7 @@
                     endif
                     resultatInt=MC_MultInd_Essai_Cor(Integrale_Individuel_MC_cor,MC_Multiple_surr_cor,dimint_Ind,dimint,&
                                                      nsujet_trial,ig)
-        !            resultatInt=MC_MultInd_Essai(Integrale_Individuel_MC,MC_Multiple_surr,dimint,nsujet_trial,ig,mat_A)
+        !            resultatInt=MC_MultInd_Essai(Integrale_Individuel_MC,MC_Multiple_surr,dimint,nsujet_trial)
                      ! !print*,"funcpa: resultatInt(ig)=",dlog(resultatInt(ig)),"ig=",ig
                      ! stop
                     
@@ -673,7 +673,7 @@
                     else
                         dimint=2 ! deux integrations au niveau essai correspondant aux effets aleatoires correles 
                     endif
-                    resultatInt=MC_Gauss_MultInd_Essai(Integrale_Individuel,gauss_HermMultA_surr,dimint,nsujet_trial,ig,npoint)
+                    resultatInt=MC_Gauss_MultInd_Essai(Integrale_Individuel,gauss_HermMultA_surr,dimint,nsujet_trial,npoint)
                     
                     deallocate(mu,vc)
                     
@@ -814,7 +814,7 @@
                         endif
                         !deallocate(H_hess_scl,I_hess_scl,H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
                         allocate(I_hess_scl(np_2,np_2),H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),H_hessOut(np_2,np_2),&
-                                 b_i(np_2),v_i(np_2*(np_2+3)/2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
+                                 b_i(np_2),v_i(np_2,np_2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
                                 hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
                         b_i=0.5d0
                         v_i=0.d0
@@ -1082,7 +1082,7 @@
                         endif
                         !deallocate(H_hess_scl,I_hess_scl,H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
                         allocate(I_hess_scl(np_2,np_2),H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),H_hessOut(np_2,np_2),&
-                                 b_i(np_2),v_i(np_2*(np_2+3)/2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
+                                 b_i(np_2),v_i(np_2,np_2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
                                 hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
                         b_i=0.5d0
                         v_i=0.d0

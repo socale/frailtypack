@@ -237,7 +237,7 @@
         integer,dimension(:),allocatable,save::positionVarT
         
     ! add TwoPart
-        integer,save :: TwoPart, nsujetB, nbB,nby, maxmesB, nvaB
+        integer,save :: TwoPart, nsujetB, nbB,nby, maxmesB, nvaB, compteur !(remove!)
         double precision,dimension(:),allocatable,save::bb ! add TwoPart
         double precision,dimension(:,:),allocatable,save :: ziB,varcov_margB, sum_matB
     double precision,dimension(:,:),allocatable,save::veB

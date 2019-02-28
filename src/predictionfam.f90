@@ -9,7 +9,7 @@
     
     implicit none
     
-    integer::i,ii,iii,j,jj,k,kk,typeof,nsample2
+    integer::i,ii,iii,j,jj,k,kk,typeof !nsample2
     integer,intent(in)::np,nz,nva1,nva2,nst,typeof0,&
     icproba,nsujet,nsample, npred0, nrec0,indID,ntimeAll  
     integer,dimension(2)::indic
@@ -294,10 +294,10 @@
                     SurvRalea,survDCalea,survDCialea, icdctime(1:npred0,iii), nrec0,nrecT(1:npred0,iii), npred0)
                     
                     predProbaalea(j) = ss1/ss2
-					if(predprobaalea(j).eq.predprobaalea(j)) then 
-					kk = kk + 1
-					predprobaalea2(kk) = predprobaalea(j)
-					end if
+                    if(predprobaalea(j).eq.predprobaalea(j)) then 
+                    kk = kk + 1
+                    predprobaalea2(kk) = predprobaalea(j)
+                    end if
      !   write(*,*) 'predprobaalea(j)', predProbaalea(j),j, kk, predprobaalea2(kk)
             end do
  !       write(*,*) 'predictfam: predprobaalea, nsample', predProbaalea, nsample

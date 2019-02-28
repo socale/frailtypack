@@ -24,7 +24,7 @@
 
       ! end subroutine marq98j_scl
 
-      ! subroutine derivaJ_scl(b,m,v,rl,k0,fctnames,individu)
+      ! subroutine derivaj(b,m,v,rl,k0,fctnames,individu)
         ! integer, intent(in)::individu
         ! integer,intent(in)::m
     ! double precision,dimension(2)::k0
@@ -32,9 +32,9 @@
         ! double precision,dimension(m),intent(in)::b
         ! double precision,dimension((m*(m+3)/2)),intent(out)::v
     ! double precision,external::fctnames
-      ! end subroutine derivaJ_scl
+      ! end subroutine derivaj
 
-      ! subroutine searpasj_scl(vw,step,b,bh,m,delta,fim,k0,fctnames,individu)
+      ! subroutine searpasj(vw,step,b,bh,m,delta,fim,k0,fctnames,individu)
         ! integer, intent(in)::individu
         ! integer,intent(in)::m
     ! double precision,dimension(2)::k0
@@ -42,16 +42,16 @@
         ! double precision,dimension(m),intent(inout)::bh,delta
         ! double precision,intent(inout)::vw,fim,step
     ! double precision,external::fctnames
-      ! end subroutine searpasj_scl
+      ! end subroutine searpasj
 
-      ! subroutine dmfsdj_scl(a,n,eps,ier)
+      ! subroutine dmfsdj(a,n,eps,ier)
         ! integer,intent(in)::n
         ! integer,intent(inout)::ier
         ! double precision,intent(inout)::eps 
         ! double precision,dimension(n*(n+1)/2),intent(inout)::A
-      ! end subroutine dmfsdj_scl
+      ! end subroutine dmfsdj
 
-      ! subroutine valfpaj_scl(vw,fi,b,bk,m,delta,k0,fctnames,individu)
+      ! subroutine valfpaj(vw,fi,b,bk,m,delta,k0,fctnames,individu)
         ! integer, intent(in)::individu
         ! integer,intent(in)::m
     ! double precision,dimension(2)::k0
@@ -60,28 +60,28 @@
         ! double precision,dimension(m),intent(out)::bk
         ! double precision,intent(out)::fi
     ! double precision,external::fctnames
-      ! end subroutine valfpaj_scl
+      ! end subroutine valfpaj
 
-      ! subroutine dmaxt_scl(maxt,delta,m)
+      ! subroutine dmaxt(maxt,delta,m)
         ! integer,intent(in)::m
         ! double precision,dimension(m),intent(in)::delta 
         ! double precision,intent(out)::maxt
-      ! end subroutine dmaxt_scl
+      ! end subroutine dmaxt
       ! end interface verif1
 
       ! interface verif2
-      ! subroutine dsinvj_scl(A,N,EPS,IER)
+      ! subroutine dsinvj(A,N,EPS,IER)
         ! integer,intent(in)::n
         ! integer,intent(inout)::ier
         ! double precision,intent(inout)::eps
         ! double precision,dimension(n*(n+1)/2),intent(inout)::A
-      ! end subroutine dsinvj_scl
+      ! end subroutine dsinvj
 
-      ! subroutine dcholej_scl(a,k,nq,idpos)
+      ! subroutine dcholej(a,k,nq,idpos)
       ! integer,intent(in)::k,nq
       ! integer,intent(inout)::idpos
       ! double precision,dimension(k*(k+3)/2),intent(inout)::a
-      ! end subroutine dcholej_scl
+      ! end subroutine dcholej
       ! end interface verif2
 
       ! end module type
@@ -97,11 +97,11 @@
       implicit none
 ! -Interface permettant la verification des type des arguments
       interface verif1
-        module procedure marq98j_scl,derivaJ_scl,searpasj_scl,dmfsdj_scl,valfpaj_scl
+        module procedure marq98j_scl,derivaj,searpasj,dmfsdj,valfpaj
       end interface verif1
 
       interface verif2
-        module procedure dsinvj_scl,dcholej_scl,dmaxt_scl
+        module procedure dsinvj,dcholej,dmaxt
       end interface verif2
 
       CONTAINS
@@ -111,7 +111,7 @@
 
     ! dans cette nouvelle version, nous prenons I_hess,H_hess,hess,vvv en parametre de la subroutine pour permettre l'appel de cette procedure a l'interieur dune autre. sans quoi l'appel ecraserait les valeurs de sortie de la subroutine maitre
 
-    subroutine marq98j_scl(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames,I_hess,&
+    subroutine marq98j_scl(b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames,I_hess,&
                            H_hess,hess,vvv,individu)
 
 !
@@ -121,11 +121,11 @@
 !  1: critere d'arret satisfait (prm=ca, vraisblce=cb, derivee=dd)
 !  2: nb max d'iterations atteints
 !  4: Erreur
-    !use residusM,only:indg	
-    use parameters,only:epsa,epsb,epsd,maxiter
-    use comon,only:nva,model,indic_ALPHA,typeof
-	!t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc,PEN_deri,Hspl_hess, &
-    !nt1dc,nsujet,nva1,nva2,ndate,ndatedc,nst,indic_eta
+    !use residusM,only:indg
+    use parameters
+    use comon,only:nva,model,indic_ALPHA,typeof !t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc, &
+    !nt1dc,nsujet,nva1,nva2,ndate,ndatedc,nst, &
+    !PEN_deri,Hspl_hess,indic_eta
 
 !add additive
     !use additiv,only:correl
@@ -135,24 +135,28 @@
 !   variables globales
 
     ! nouvelles declarations_scl
-    integer, intent(in)::m,individu ! indice de l'individu sur lequel on maximise la vraisemblance
-    double precision,dimension(m,m),intent(inout)::I_hess
-    double precision,dimension(m,m),intent(inout)::H_hess
-    double precision,dimension(m,m),intent(inout)::hess
-    double precision,dimension(m*(m+1)/2),intent(inout)::vvv
+    ! double precision,dimension(size(I_hess,1),size(I_hess,2)),intent(out)::I_hess
+    ! double precision,dimension(size(H_hess,1),size(H_hess,2)),intent(out)::H_hess
+    ! double precision,dimension(size(hess,1),size(hess,2)),intent(out)::hess
+    ! double precision,dimension(size(vvv)),intent(out)::vvv
+    integer, intent(in)::individu ! indice de l'individu sur lequel on maximise la vraisemblance
+    double precision,dimension(:,:),intent(inout)::I_hess
+    double precision,dimension(:,:),intent(inout)::H_hess
+    double precision,dimension(:,:),intent(inout)::hess
+    double precision,dimension(:),intent(inout)::vvv
 
-    integer,intent(in) :: effet
+    integer,intent(in) :: m,effet
     integer,intent(inout)::ni,ier,istop
     double precision,dimension(m*(m+3)/2),intent(out)::v
     double precision,intent(out)::rl
     double precision,dimension(m),intent(inout)::b
     double precision,intent(out)::ca,cb,dd
-    double precision,dimension(2)::k0
+    !double precision,dimension(2)::k0
         double precision,dimension(2)::zero
 !   variables locales
     integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k
     double precision,dimension(m*(m+3)/2)::fu,v1,vnonpen
-    double precision,dimension(:),allocatable::delta,b1,bh ! /scl 21/02/2019 allocation des vecteur pour eviter des probleme lorsqu'on estime un seul parametre 
+    double precision,dimension(m)::delta,b1,bh
     double precision::da,dm,ga,tr
     double precision::GHG,step,eps,vw,fi,maxt, &
     z,rl1,th,ep
@@ -161,9 +165,11 @@
 !---------- ajout
     integer::kkk
     
-	! /scl 21/02/2019 allocation des vecteur pour eviter des probleme lorsqu'on estime un seul parametre 
-	allocate(delta(m),b1(m),bh(m))
-    v=0.d0
+    ! if(model==10) then
+        ! !print*,"suis la dans Marquard"
+        ! stop
+    ! endif
+    
     zero=0.d0
     id=0
     jd=0
@@ -181,11 +187,15 @@
     nql=1
     m1=m*(m+1)/2
     ep=1.d-20
-
+    !!print*,b
+    !!print*,m
+    !stop
     Main:Do
+        !!print*,"siuis dans main de Marquard"
+        !!print*,b(m-2+1),b(m),b(m-4+1),b(m-4+2)
+!        !print*,b
+        call derivaj(b,m,v,rl,fctnames,individu)
 
-        call derivaJ_scl(b,m,v,rl,k0,fctnames,individu)	
-		
     rl1=rl
     if(rl.eq.-1.D9) then
         istop=4
@@ -206,7 +216,8 @@
         end do
     end do
     
-        call dsinvj_scl(fu,m,ep,ier)
+        call dsinvj(fu,m,ep,ier)
+    
     if (ier.eq.-1) then ! hessienne non inversible
         !!print*,"here"
         dd=epsd+1.d0
@@ -233,6 +244,16 @@
         !print*,"b(17:22)=",b((m-nparamfrail-2+1):m)
     endif
     
+    !!print*,"suis la model=",model
+    ! if(model==10) !print*,"b=",b 
+    
+!    !print*,"-------------------------"
+!     if (ni.eq.50) then
+!         !print*,"====================> FAUSSE CONVERGENCE"
+!         ca=1.d-5
+!         cb=1.d-5
+!         dd=1.d-5
+!     endif
     if(model.ne.9) then
         !write(*,*)"ligne 225 Optim, critère sur les coefficients: ca=",ca
         !write(*,*)"ligne 226 Optim, critère sur la vraisemblance: cb=",cb
@@ -264,7 +285,7 @@
             endif
         end do
         
-        call dcholej_scl(fu,m,nql,idpos)
+        call dcholej(fu,m,nql,idpos)
 
         if (idpos.ne.0) then
             ncount=ncount+1
@@ -283,7 +304,7 @@
                 b1(i)=b(i)+delta(i)
             end do
             
-            rl=fctnames(b1,m,id,z,jd,z,k0,individu)
+            rl=fctnames(b1,m,id,z,jd,z,individu)
             if(rl.eq.-1.D9) then
                 istop=4
                 goto 110
@@ -298,18 +319,18 @@
             endif
         endif
 !      !write(6,*) 'loglikelihood not improved '
-        call dmaxt_scl(maxt,delta,m)
+        call dmaxt(maxt,delta,m)
 
         if(maxt.eq.0.D0) then
             vw=th
         else
-            !call dmaxt_scl(maxt,delta,m)
+            !call dmaxt(maxt,delta,m)
             vw=th/maxt
             
         endif
         step=dlog(1.5d0)
 !      !write(*,*) 'searpas'
-        call searpasj_scl(vw,step,b,bh,m,delta,fi,k0,fctnames,individu)
+        call searpasj(vw,step,b,bh,m,delta,fi,fctnames,individu)
         rl=-fi
         if(rl.eq.-1.D9) then
             istop=4
@@ -356,7 +377,7 @@
 !================ pour les bandes de confiance
 !==== on ne retient que les para des splines
 
-   call derivaJ_scl(b,m,v,rl,k0,fctnames,individu)
+    call derivaJ(b,m,v,rl,fctnames,individu)
     if(rl.eq.-1.D9) then
         istop=4
         goto 110
@@ -398,7 +419,7 @@
 
         ep=10.d-10
         !!print*,"v1=",v1,"m1=",m1,"ep=",ep,"ier=",ier,"istop=",istop !scl 22-09-2017
-        call dsinvj_scl(v1,m1,ep,ier)
+        call dsinvJ(v1,m1,ep,ier)
 
         if (ier.eq.-1) then
              !write(*,*)   'echec inversion matrice information pour m1'
@@ -412,7 +433,7 @@
                 hess(i,j)=v1((j-1)*j/2+i)
             end do
         end do
-		
+
         do i=2,m1
             do j=1,i-1
                 hess(i,j)=hess(j,i)
@@ -422,14 +443,14 @@
 
     
     ep=10.d-10
-    call dsinvj_scl(v,m,ep,ier)
+    call dsinvJ(v,m,ep,ier)
     
     if (ier.eq.-1) then
         !write(*,*)   'echec inversion matrice information pur m'
         istop=3
         
 !AD:
-!        call dsinvj_scl(v1,m1,ep,ier)
+!        call dsinvj(v1,m1,ep,ier)
 !        if (ier.eq.-1) then
 !             !write(*,*)'echec inversion matrice information
 !     & prms fixes'
@@ -444,16 +465,13 @@
 
 
     ep=10.d-10
-   call derivaJ_scl(b,m,vnonpen,rl,zero,fctnames,individu)
-
-   
+    call derivaJ(b,m,vnonpen,rl,fctnames,individu)
+    
     do i=1,m
         do j=i,m
             I_hess(i,j)=vnonpen((j-1)*j/2+i)
         end do
     end do
-
-
    
     do i=2,m
         do j=1,i-1
@@ -485,8 +503,7 @@
     end if
        
  110   continue
-		deallocate(delta,b1,bh) ! scl_22-09-2017
-		!call dblepr("b(1) sortie Marquard 510", -1, b(1), 1)
+
        return    
        end subroutine marq98j_scl
 
@@ -494,24 +511,22 @@
 !                          DERIVA
 !------------------------------------------------------------
 
-    subroutine derivaJ_scl(b,m,v,rl,k0,fctnames,individu)
+    subroutine derivaj(b,m,v,rl,fctnames,individu)
     use comon,only:model
     implicit none
     
     integer, intent(in)::individu ! indice de l'individu sur lequel on maximise la vraisemblance
     integer,intent(in)::m
     double precision,intent(inout)::rl
-    double precision,dimension(2)::k0
-    double precision,dimension(m),intent(in)::b ! scl_22-09-2017
+    !double precision,dimension(2)::k0
+    double precision,dimension(m),intent(in)::b
     double precision,dimension((m*(m+3)/2)),intent(out)::v
-    double precision,dimension(:),allocatable::fcith ! scl_22-09-2017
-    integer ::i0,m1,ll,i,k,j,iun,tail
+    double precision,dimension(m)::fcith
+    integer ::i0,m1,ll,i,k,j,iun
     double precision::fctnames,thn,th,z,vl,th2,vaux
     external::fctnames
-    !call intpr("derivaJ_scl 532", -1, m, 1)
-	allocate(fcith(m)) ! scl_22-09-2017
-	fcith = 0.d0
-    !!print*,"suis dans derivaJ_scl, model=",model
+    
+    !!print*,"suis dans derivaJ, model=",model
     !stop
     select case(model)
     case(1)
@@ -530,7 +545,7 @@
         th=1.d-3 !surrogate
     end select
 
-    ! !print*,"suis dans derivaJ_scl, model=",model,"th=",th
+    ! !print*,"suis dans derivaJ, model=",model,"th=",th
     
     thn=-th
     th2=th*th
@@ -538,18 +553,17 @@
     i0=0
     iun =1
     !!print*,"debut appel de la vraisamblance dans derrivaJ rl=",rl
-	!call dblepr("b(1)derivaJ_scl 562", -1, b(1), 1)
-    rl=fctnames(b,m,iun,z,iun,z,k0,individu)
+    rl=fctnames(b,m,iun,z,iun,z,individu)
     !!print*,"fin appel de la vraisamblance rl=",rl
     !stop
-    !call intpr("derivaJ_scl 565", -1, m, 1)
+    
     if(rl.eq.-1.d9) then
         rl=-1.d9
         goto 123
     end if
 
     do i=1,m
-        fcith(i)=fctnames(b,m,i,th,i0,z,k0,individu)
+        fcith(i)=fctnames(b,m,i,th,i0,z,individu)
         if(fcith(i).eq.-1.d9) then
             rl=-1.d9
             goto 123
@@ -562,56 +576,49 @@
     
     do i=1,m
         ll=ll+1
-        vaux=fctnames(b,m,i,thn,i0,z,k0,individu)
+        vaux=fctnames(b,m,i,thn,i0,z,individu)
                 if(vaux.eq.-1.d9) then
                     rl=-1.d9
                     goto 123
                 end if    
         vl=(fcith(i)-vaux)/(2.d0*th)
-		
-		tail= size(v)
-		! call intpr(" ll pseudo-adpdative 1136", -1, ll, 1)
-		! call dblepr(" v pseudo-adpdative 1136", -1, vl, 1)
-		! call intpr(" tail pseudo-adpdative 1136", -1, tail, 1)
-		! call dblepr(" v(ll) pseudo-adpdative 1136", -1, v(ll), 1)
         v(ll)=vl
         do j=1,i
             k=k+1
-            v(k)=-(fctnames(b,m,i,th,j,th,k0,individu)-fcith(j)-fcith(i)+rl)/th2
+            v(k)=-(fctnames(b,m,i,th,j,th,individu)-fcith(j)-fcith(i)+rl)/th2
         end do
     end do
 
 123   continue    
-	deallocate(fcith) ! scl_22-09-2017
     return
     
-    end subroutine derivaJ_scl
+    end subroutine derivaj
 !------------------------------------------------------------
 !                        SEARPAS
 !------------------------------------------------------------
 
 
-      subroutine searpasj_scl(vw,step,b,bh,m,delta,fim,k0,fctnames,individu)
+      subroutine searpasj(vw,step,b,bh,m,delta,fim,fctnames,individu)
 !
 !  MINIMISATION UNIDIMENSIONNELLE
 !
       implicit none
     integer, intent(in)::individu ! indice de l'individu sur lequel on maximise la vraisemblance
       integer,intent(in)::m
-      double precision,dimension(m),intent(in)::b 
+      double precision,dimension(m),intent(in)::b
       double precision,intent(inout)::vw
-      double precision,dimension(m),intent(inout)::bh,delta 
+      double precision,dimension(m),intent(inout)::bh,delta
       double precision,intent(inout)::fim,step
       double precision::vlw,vlw1,vlw2,vlw3,vm,fi1,fi2,fi3
-      double precision,dimension(2)::k0
+      !double precision,dimension(2)::k0
       double precision::fctnames
       external::fctnames
       integer::i
 
        vlw1=dlog(vw)
        vlw2=vlw1+step
-       call valfpaj_scl(vlw1,fi1,b,bh,m,delta,k0,fctnames,individu)
-       call valfpaj_scl(vlw2,fi2,b,bh,m,delta,k0,fctnames,individu)
+       call valfpaj(vlw1,fi1,b,bh,m,delta,fctnames,individu)
+       call valfpaj(vlw2,fi2,b,bh,m,delta,fctnames,individu)
 
        if(fi2.ge.fi1) then
           vlw3=vlw2
@@ -621,7 +628,7 @@
           step=-step
 
           vlw1=vlw2+step
-          call valfpaj_scl(vlw1,fi1,b,bh,m,delta,k0,fctnames,individu)
+          call valfpaj(vlw1,fi1,b,bh,m,delta,fctnames,individu)
           if(fi1.gt.fi2) goto 50
        else 
           vlw=vlw1
@@ -639,7 +646,7 @@
           fi2=fi1
 
           vlw1=vlw2+step
-          call valfpaj_scl(vlw1,fi1,b,bh,m,delta,k0,fctnames,individu)
+          call valfpaj(vlw1,fi1,b,bh,m,delta,fctnames,individu)
           if(fi1.gt.fi2) goto 50
           if(fi1.eq.fi2) then
              fim=fi2
@@ -655,7 +662,7 @@
 !  CALCUL MINIMUM QUADRIQUE
 !
       vm=vlw2-step*(fi1-fi3)/(2.d0*(fi1-2.d0*fi2+fi3))   
-      call valfpaj_scl(vm,fim,b,bh,m,delta,k0,fctnames,individu)    
+      call valfpaj(vm,fim,b,bh,m,delta,fctnames,individu)    
       if(fim.le.fi2) goto 100
       vm=vlw2
       fim=fi2
@@ -664,13 +671,13 @@
       
       return
 
-      end subroutine searpasj_scl
+      end subroutine searpasj
 
 !------------------------------------------------------------
 !                         DCHOLE
 !------------------------------------------------------------
 
-      subroutine dcholej_scl(a,k,nq,idpos)
+      subroutine dcholej(a,k,nq,idpos)
 
       implicit none
       
@@ -779,10 +786,10 @@
       end do
 50    continue
       return
-      end subroutine dcholej_scl
+      end subroutine dcholej
 
 
-      subroutine dmfsdj_scl(a,n,eps,ier)
+      subroutine dmfsdj(a,n,eps,ier)
 !
 !   FACTORISATION DE CHOLESKY D'UNE MATRICE SDP
 !   MATRICE = TRANSPOSEE(T)*T
@@ -882,7 +889,7 @@
 12    ier=-1
       return
 
-      end subroutine dmfsdj_scl
+      end subroutine dmfsdj
 
 
 !------------------------------------------------------------
@@ -890,7 +897,7 @@
 !------------------------------------------------------------
 
 
-    subroutine dsinvj_scl(A,N,EPS,IER)
+    subroutine dsinvj(A,N,EPS,IER)
 
 !
 !     INVERSION D'UNE MATRICE SYMETRIQUE DEFINIE POSITIVE :
@@ -925,7 +932,7 @@
 !     A=TRANSPOSE(T) * T
 !
 
-    call dmfsdj_scl(A,n,eps,ier)
+    call dmfsdj(A,n,eps,ier)
       
 
 
@@ -1021,23 +1028,23 @@
 !     END OF ROW-AND MULTIPLICATION-LOOP
 !
 9     return
-      end subroutine dsinvj_scl
+      end subroutine dsinvj
 
 !------------------------------------------------------------
 !                          VALFPA
 !------------------------------------------------------------
 
-    subroutine valfpaj_scl(vw,fi,b,bk,m,delta,k0,fctnames,individu)
+    subroutine valfpaj(vw,fi,b,bk,m,delta,fctnames,individu)
     
     implicit none
     
     integer, intent(in)::individu ! indice de l'individu sur lequel on maximise la vraisemblance
     integer,intent(in)::m  
     double precision,dimension(m),intent(in)::b,delta  
-    double precision,dimension(m),intent(out)::bk  
+    double precision,dimension(m),intent(out)::bk 
     double precision,intent(out)::fi 
     double precision::vw,fctnames,z    
-    double precision,dimension(2)::k0
+    !double precision,dimension(2)::k0
     integer::i0,i
     external::fctnames
     
@@ -1046,24 +1053,24 @@
     do i=1,m
     bk(i)=b(i)+dexp(vw)*delta(i)
     end do
-    fi=-fctnames(bk,m,i0,z,i0,z,k0,individu)
+    fi=-fctnames(bk,m,i0,z,i0,z,individu)
     if(fi.eq.-1.D9) then
         goto 1
     end if
 1       continue
     return
     
-    end subroutine valfpaj_scl
+    end subroutine valfpaj
 
 !------------------------------------------------------------
 !                            MAXT
 !------------------------------------------------------------
-    subroutine dmaxt_scl(maxt,delta,m)
+    subroutine dmaxt(maxt,delta,m)
     
     implicit none
     
     integer,intent(in)::m
-    double precision,dimension(m),intent(in)::delta 
+    double precision,dimension(m),intent(in)::delta
     double precision,intent(out)::maxt
     integer::i 
     
@@ -1077,7 +1084,7 @@
     end do 
         
     return
-    end subroutine dmaxt_scl
+    end subroutine dmaxt
 
 
     end module optim_scl

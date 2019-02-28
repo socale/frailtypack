@@ -1,10 +1,10 @@
-subroutine somme(ab,s,nboot,nbr,vOut)
+subroutine somme(ab,s,nboot,vOut)
   !$ use OMP_LIB
     implicit none
-    integer,intent(in)::nbr,nboot
+    integer,intent(in)::nboot !nbr
     double precision, dimension(2), intent(in):: ab
     double precision, intent(out)::s
-    integer:: i,num_thread,num_proc,nb_thread,d
+    integer:: i,num_thread !num_proc,nb_thread,d
     double precision::c,a,b
     double precision, dimension(3), intent(inout)::vOut ! pour tester les parametre de sortie, vecteur allocatable
     

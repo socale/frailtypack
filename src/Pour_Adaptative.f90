@@ -3,7 +3,7 @@ module mod_Adaptative
     
     contains
     !========================          fonction qui une fois lancee permet l'estimation a posteriorie des effets aleatoires        ====================
-    double precision function funcpa_estimatin_fragilite(b,np,id,thi,jd,thj,k0)
+    double precision function funcpa_estimatin_fragilite(b,np,id,thi,jd,thj)
     
     use tailles
     use comon
@@ -20,12 +20,12 @@ module mod_Adaptative
     
     integer,intent(in)::id,jd,np
     double precision,dimension(np),intent(in)::b
-    double precision,dimension(2),intent(in)::k0
+    !double precision,dimension(2),intent(in)::k0
     double precision,intent(in)::thi,thj
     
-    integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial,dimint
+    integer::n,i,j,k,vj,ig,choix,l,nsujet_trial,dimint !vcdiag
     integer,dimension(ngmax)::cpt
-    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc,varS1,varT1,covST1
+    double precision::inv,som1,som2,res,vet,vet2,h1,varS1,varT1,covST1 !inc,pe1,pe2,som
     double precision,dimension(3):: resultatInt
     
     double precision,dimension(-2:npmax):: the1,the2
@@ -38,8 +38,8 @@ module mod_Adaptative
 !AD:end
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
-    double precision,dimension(:),allocatable::frail
-    double precision::int,gammaJ,c3,c4,pourgam
+    !double precision,dimension(:),allocatable::frail
+    !double precision::int,gammaJ,c3,c4,pourgam
     double precision,dimension(ntrials)::integrale3
     double precision,dimension(2,2):: mat_A
 
@@ -106,10 +106,10 @@ module mod_Adaptative
     ! pour eviter d'avoir des matrices de variances-covariances non defini positive, je suppose que c'est la cholesky qui est generee. par consequent sigma=Chol*Chol^T
     !Chol: matrice triangulaire inferieur. pour eviter de refaire la factorisation de cholesky pour l'algo MC, j'utilise directement cette matrice de cholesky a la place de la matrice de variance-covariance
     Chol=0.d0 
-    Chol(1,1)=varS1
-    Chol(2,1)=covST1
+    !Chol(1,1)=varS1
+    !Chol(2,1)=covST1
     !Chol(1,2)=covST1
-    Chol(2,2)=varT1
+    !Chol(2,2)=varT1
     mat_A=MATMUL(Chol,TRANSPOSE(Chol))
     varS=mat_A(1,1)
     varT=mat_A(2,2)
