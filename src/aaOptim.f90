@@ -585,16 +585,16 @@ call dblepr('b',-1,b(i),1)
         do i=1,m
             if(endDeriva.eqv..false.) then
                 fcith(i)=fctnames(b,m,i,th,i0,z,k0)
+                if(fcith(i).eq.-1.d9) then
+                    endDeriva=.true.
+                    fcith(i)=-1.d9
+                end if
             else
                 rl=-1.d9
                 endDeriva=.true.
             end if
         end do
             
-if(fcith(i).eq.-1.d9) then
-endDeriva=.true.
-fcith(i)=-1.d9
-end if
                 
         if (endDeriva.eqv..false.) then
             k=0
