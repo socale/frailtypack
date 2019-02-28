@@ -4620,7 +4620,7 @@ end if
     
     !! Monte-carlo
     subroutine MC_JointModels(ss,func2,ndim,intpoints)
-    use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,rmvnorm
+    use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,rmvnorm,DMFSD
     use var_surrogate, only: nbre_sim
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use comon, only:nb1,nodes_number
