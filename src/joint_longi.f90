@@ -4620,7 +4620,7 @@ end if
     
     !! Monte-carlo
     subroutine MC_JointModels(ss,func2,ndim,intpoints)
-    use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,dmfsd
+    use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran,rmvnorm,DMFSD
     use var_surrogate, only: nbre_sim
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use comon, only:nb1,nodes_number
@@ -4676,80 +4676,5 @@ end if
   
   
  
-subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
-    ! mu: l'esperance de mes variables
-    ! VC1: matrice de variance-covariance
-    ! nsim: nombre de generations a faire
-    ! vcdiag: un entier(1=oui, 0=non) qui dit si la matrice de variance covariance est diagonale ou pas. pour eviter la transformation de cholesky
-    ! ysim: vecteur des realisations d'ne normale de moyenne mu et de matrice de covariance vc
-        
-    implicit none
-    integer :: jj,j,k,ier,l,m,maxmes !maxmes= nombre de dimension ou encore dimension de X
-    integer, intent(in)::nsim,vcdiag
-    double precision::eps,ymarg,SX,x22 ! ymarg contient le resultat de l'integrale
-    double precision, intent(in),dimension(:)::mu
-    double precision,dimension(:,:),intent(in)::vc1
-    double precision,dimension(:,:),allocatable::vc
-    double precision,dimension(:),allocatable::usim
-    !double precision,dimension(nsim,size(vc,2)),intent(out)::ysim
-    double precision,dimension(:,:),intent(out)::ysim
-    double precision,dimension(:),allocatable::vi
-    
-    !=============debut de la fonction=============================
-    !!print*,vc
-    !stop
-    ier=0
-    x22=0.d0
-    maxmes=size(vc1,2)
-    allocate(vi(maxmes*(maxmes+1)/2),usim((size(vc1,2))),vc(size(vc1,1),size(vc1,2)))
-    vc=vc1
-    jj=0
-    Vi=0.d0
-    do j=1,maxmes
-        do k=j,maxmes
-           jj=j+k*(k-1)/2
-           Vi(jj)=VC(j,k)
-        end do
-    end do
-    ! !print*,vi
-    EPS=10.d-10
-    if(vcdiag.eq.0) then
-        CALL DMFSD(Vi,maxmes,eps,ier) ! si matice diagonale on na pas besoin de ceci
-    end if
-    !!print*,vi
-    
-    if (ier.eq.-1) then
-        !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
-        !stop
-		call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
-    else ! ysim sera un vecteur de 0
-     
-		VC=0.d0
-		do j=1,maxmes
-			do k=1,j
-				VC(j,k)=Vi(k+j*(j-1)/2)
-			end do
-		end do    
-		
-		! --------------------- Generation des donnees ------------------------
-		ymarg=0.d0
-		!!print*,vc
-		!stop
-		l=1
-		do while(l.le.nsim)
-			usim=0.d0
-			do m=1,maxmes
-				SX=1.d0
-				call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
-			end do
-			ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
-			l=l+1
-		end do
-	endif
-			
-    deallocate(vi,usim,vc)
-    return
-end subroutine rmvnorm
-
  
  
