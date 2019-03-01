@@ -424,7 +424,7 @@
           
           matv = 0.d0
             mu1_res = 0.d0
-    
+
             if(nmesy(indg).gt.0) then
             !if(nb1.eq.1)mu1_res(1:nmesy(indg)) = XbetaY_res(1,indg) +Zet(1:nmesy(indg),1:netadc)*b_vec
             mu1_res(1:nmesy(indg)) = XbetaY_res(1,it_res:(it_res+nmesy(indg)-1)) &
@@ -536,6 +536,240 @@
     
     
     
+    !!!!
+!!!! =============================== Calcul Residus joint bivariate - longitudinales Two-Part et deces ==============================
+    
+    
+    
+        double precision function funcpajres_bivTP(uu,np,id,thi,jd,thj)
+    
+            use optim
+        use comon
+            use donnees_indiv,only:z1cur,x2cur,current_mean,b1,x2Bcur,z1Bcur
+            use residusM
+    
+        implicit none
+    
+        integer,intent(in)::id,jd,np
+        double precision,intent(in)::thi,thj
+        double precision,dimension(np)::uu,bh
+        double precision::res,yscalar,prod_cag,eps
+            double precision::finddet,alnorm
+            double precision,dimension(nb1)::b_vec,uii
+            double precision,dimension(nb1*(nb1+1)/2)::matv
+            double precision,dimension(nb1,1)::b_vecT
+            double precision,dimension(nb1,nb1)::mat_B
+            double precision,dimension(1)::uiiui
+            integer::jj,j,k,ier
+            logical :: upper
+        double precision,parameter::pi=3.141592653589793d0
+            double precision :: resultdc
+    double precision,external::survdcCM
+        double precision :: abserr,resabs,resasc
+        double precision::Bscalar !add TwoPart
+        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
+        integer :: counter, counter2 ! add for current-level interaction
+            upper=.false.
+        bh=uu
+    
+        if (id.ne.0) bh(id)=bh(id)+thi
+        if (jd.ne.0) bh(jd)=bh(jd)+thj
+    
+        b_vec(1:nb1) = bh(1:nb1)
+        b_vecT(1:nb1,1) = bh(1:nb1)
+          
+          matv = 0.d0
+            mu1_res = 0.d0
+            mu1_resB = 0.d0 ! add TwoPart
+
+            if(nmesy(indg).gt.0) then
+            !if(nb1.eq.1)mu1_res(1:nmesy(indg)) = XbetaY_res(1,indg) +Zet(1:nmesy(indg),1:netadc)*b_vec
+            mu1_res(1:nmesy(indg)) = XbetaY_res(1,it_res:(it_res+nmesy(indg)-1)) &
+                    +MATMUL(Zet(it_res:(it_res+nmesy(indg)-1),1:nby),b_vec(1:nby))
+            end if
+    
+    if(TwoPart.eq.1) then
+    mu1_resB(1:nmesB(indg)) = XbetaB_res(1,it_resB:(it_resB+nmesB(indg)-1)) &
+                    +MATMUL(ZetB(it_resB:(it_resB+nmesB(indg)-1),nby+1:nbB),b_vec(nby+1:nbB))
+    end if
+    
+    
+            !********* Left-censoring ***********
+            yscalar = 0.d0
+                    prod_cag = 1.d0
+            if(s_cag_id.eq.1)then
+                    do k = 0,nmesy(indg)-1
+                            if(yy(k+it_res).le.s_cag) then
+                                    prod_cag = prod_cag*(1.d0-alnorm((mu1_res(k+1)-s_cag)/sqrt(sigmae),upper))
+                            else
+                                    yscalar = yscalar + (yy(k+it_res)-mu1_res(k+1))**2
+                            end if
+                    end do
+            else
+                    do k=0,nmesy(indg)-1
+                            yscalar = yscalar + (yy(k+it_res)-mu1_res(k+1))**2.d0
+                    end do
+            end if
+    
+            yscalar = dsqrt(yscalar)
+    
+    
+    Bscalar=0.d0
+    if(TwoPart.eq.1) then
+        do k=1,nmesB(indg)
+            Bscalar = Bscalar + (bb(k)*mu1_resB(k)+dlog(1-(dexp(mu1_resB(k))/(1+dexp(mu1_resB(k))))))
+        end do
+    end if
+       
+    
+            mat_B = matmul(ut,utt)
+            det = finddet(matmul(ut,utt),nb1)
+    
+        if(nb1.ge.2) then
+                    jj=0
+                    do j=1,nb1
+                            do k=j,nb1
+                                    jj=j+k*(k-1)/2
+                                    matv(jj)=mat_B(j,k)
+                            end do
+                    end do
+                    ier = 0
+                    eps = 1.d-10
+                    call dsinvj(matv,nb1,eps,ier)
+                    mat_b=0.d0
+                    do j=1,nb1
+                            do k=1,nb1
+                                    if (k.ge.j) then
+                                            mat_b(j,k)=matv(j+k*(k-1)/2)
+                                    else
+                                            mat_b(j,k)=matv(k+j*(j-1)/2)
+                                    end if
+                            end do
+                    end do
+            else
+    
+                    matv(1) = 1.d0/mat_B(1,1)
+    
+                    Mat_B(1,1) = matv(1)
+            end if
+    
+            if(link.eq.2) then
+    
+            call integrationdc(survdcCM,t0dc(indg),t1dc(indg),resultdc,abserr,resabs,resasc,indg,b1,npp,b_vec)
+        
+        counter=0
+        counter2=1
+        
+        X2cur = 0.d0
+    if((nva3-1).gt.0) then ! set the value of covariates at time to event! (interaction must be computed accordingly)
+        X2cur(1,1) = 1.d0
+        do k=2,nva3
+            X2cur(1,k) = dble(vey(it_res+1,k))
+        end do
+        if(numInter.eq.1) then! compute time and interactions at t1dc
+            X2cur(1,positionVarT(2)) =t1dc(indg) ! time effect
+            X2cur(1,positionVarT(3)) =t1dc(indg)*dble(vey(it_res+1,positionVarT(1))) ! interaction
+                counter2=counter2+3
+        else if(numInter.gt.1)then
+            do counter = 1,numInter !in case of multiple interactions
+                X2cur(1,positionVarT(counter2+1)) =t1dc(indg)
+                X2cur(1,positionVarT(counter2+2)) =t1dc(indg)*dble(vey(it_res+1,positionVarT(counter2)))
+                counter2=counter2+3
+            end do
+        end if
+    end if
+
+    
+    
+    if(TwoPart.eq.1) then
+    if((nvaB-1).gt.0) then
+    x2Bcur(1,1) = 1.d0
+    do k=2,nvaB
+    x2Bcur(1,k) = dble(veB(it_resB+1,k))
+    end do
+    if(numInterB.ge.1) then
+    do counter = 1,numInterB ! compute time and interactions at t1dc
+    x2Bcur(1,positionVarT(counter2+1)) =t1dc(indg)! time effect
+    x2Bcur(1,positionVarT(counter2+2)) =t1dc(indg)*dble(veB(it_resB+1,positionVarT(counter2)))! interaction
+    counter2=counter2+3    
+    end do
+    end if
+end if
+end if
+    
+    
+            Z1cur(1,1) = 1.d0
+            if(nb1.eq.2) then
+                Z1cur(1,2) = t1dc(indg)
+            end if  
+            
+ current_mean=0.d0
+    if(nb1.eq.1) then
+            current_mean =dot_product(X2cur(1,1:nva3),b1((npp-nva3+1):npp))+Z1cur(1,1)*b_vec
+    else if(nb1.gt.1) then
+    
+    if(TwoPart.eq.1) then
+if(nb1.eq.2) then
+    Z1cur(1,1) = 1.d0 ! random intercept only for now
+    Z1cur(1,2) = 0.d0
+    z1Bcur(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1Bcur(1,2) = 1.d0
+else if(nb1.eq.3) then
+    Z1cur(1,1) = 1.d0 !
+    Z1cur(1,2) = t1dc(indg)
+    Z1cur(1,3) = 0.d0
+    z1Bcur(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1Bcur(1,2) = 0.d0
+    z1Bcur(1,3) = 1.d0
+end if
+                        Bcurrentvalue=0.d0
+                        Bcv=0.d0
+
+                        Bcv=MATMUL(x2Bcur,b1((npp-nvaB+1):npp))+Matmul(z1Bcur,b_vec)
+                        Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
+                    
+
+        cmY = (MATMUL(X2cur,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(Z1cur,b_vec))
+
+        current_mean = cmY*Bcurrentvalue
+        
+                    else if(TwoPart.eq.0) then
+                            current_mean = MATMUL(X2cur,b1((npp-nva3+1):npp))+Matmul(Z1cur,b_vec) !maybe dot product !
+
+                    end if    
+            end if
+            
+            end if
+    
+            uii = matmul(b_vec,mat_b)
+            uiiui=matmul(uii,b_vecT)
+    
+            if(prod_cag.lt.0.1d-321)prod_cag= 0.1d-321
+    
+            res = 0.d0
+            if(link.eq.1) then
+                res = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+&
+                Bscalar+Ndc(indg)*dot_product(etaydc,b_vec) - &
+                Rdc(indg)*dexp(dot_product(etaydc,b_vec))-uiiui(1)/2.d0
+          
+            else
+                res = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+                                    +Bscalar+Ndc(indg)*(etaydc(1)*current_mean(1))  &
+                                    -uiiui(1)/2.d0 - resultdc!      -       Rdc(indg)*dexp(etaydc1*current_mean(1))
+            
+            end if
+    
+        if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+            funcpajres_bivTP=-1.d9
+            goto 222
+        end if
+            funcpajres_bivTP = res
+    
+    222    continue
+    
+        return
+    
+        end function funcpajres_bivTP
     
     !!!!
     !!!! =============================== Calcul Residus joint bivariate - longitudinales et deces ==========

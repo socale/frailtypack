@@ -122,9 +122,11 @@
         double precision,dimension(1,VectNvar(1))::coefBeta
         double precision,dimension(1,VectNvar(2))::coefBetadc
         double precision,dimension(1,VectNvar(3))::coefBetaY
+        double precision,dimension(1,VectNvar(4))::coefBetaB ! add TwoPart
         double precision::coefBeta2
         double precision,dimension(1,VectNsujet(1))::XBeta
         double precision,dimension(1,VectNsujet(2))::XBetaY
+        double precision,dimension(1,VectNsujet(3))::XBetaB !add TwoPart
         double precision,dimension(1,ngnzag(1))::XBetadc    
     
         integer::ngtemp
@@ -437,7 +439,7 @@
         end do
     end if
     
-        if(TwoPart.eq.1) allocate(varcov_margB(nsujetB,maxmesB))
+        if(TwoPart.eq.1) allocate(mu1_resB(maxmesB), varcov_margB(nsujetB,maxmesB))
 
 
         allocate(mu1_res(maxmesy))
@@ -1481,8 +1483,10 @@
                     if(typeJoint.eq.2) then
                             coefBetadc(1,:) = b((np-nva+1):(np-nva+nva2))
                             coefBetaY(1,:) = b((np-nva+nva2+1):(np-nva+nva2+nva3))
+                            if(TwoPart.eq.1) coefBetaB(1,:) = b((np-nva+nva2+nva3+1):(np-nva+nva2+nva3+nvaB)) ! add TwoPart
                             Xbetadc = matmul(coefBetadc,transpose(ve2))
                             XbetaY = matmul(coefBetaY,transpose(ve3))
+                            if(TwoPart.eq.1) XbetaB = matmul(coefBetaB,transpose(ve4))
                     else
                             coefBeta(1,:) = b((np-nva+1):(np-nva+nva1))
                             coefBetadc(1,:) = b((np-nva+nva1+1):(np-nva+nva1+nva2))
@@ -1542,19 +1546,31 @@
                 allocate(vecuiRes2(ng,nb1+1),&
                         vres(nea*(nea+3)/2),&
                         XbetaY_res(1,nsujety))
+                
+                if(TwoPart.eq.1) allocate(XbetaB_res(1,nsujetB)) !add TwoPart
                 !I_hess = 0.d0
                 !H_hess = 0.d0
     
     
                 effetres = effet
                 XbetaY_res = XbetaY
-    
+                if(TwoPart.eq.1) XbetaB_res = XbetaB
+
                 if (typeJoint.eq.2) then
                     Resmartingale = 0.d0
                 Resmartingaledc = 0.d0
     !                      write(*,*)'ok3'
+    if(TwoPart.eq.0) then
         Call Residusj_biv(b,np,funcpajres_biv,Resmartingaledc,ResLongi_cond0,ResLongi_cond_st0,ResLongi_marg0,&
                                                                     ResLongi_chol0,Pred_y0,re_pred)
+    else if(TwoPart.eq.1) then
+            Call Residusj_biv(b,np,funcpajres_biv,Resmartingaledc,ResLongi_cond0,ResLongi_cond_st0,ResLongi_marg0,&
+                                                                    ResLongi_chol0,Pred_y0,re_pred)
+    end if
+    
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'ping'
+!     close(2)
         !    write(*,*)'ok4'
                 ! re_pred = 0.d0
                 re_pred(:,nb1+1) = 0.d0
@@ -1610,7 +1626,7 @@
        !                     Pred_y = 0.d0
     
                 deallocate(vecuiRes2,XbetaY_res,vres)
-    
+    if(TwoPart.eq.1) deallocate(XbetaB_res)
     
     
             end if
@@ -1676,6 +1692,7 @@
     
         deallocate(ziy,b1,yy)
         deallocate(nmesrec,nmesrec1,nmesy,groupee,groupeey,nmes_o,mu1_res)
+        if(TwoPart.eq.1) deallocate(mu1_resB)
     
     !   deallocate(I3_hess,H3_hess,HI3)
     
@@ -1949,9 +1966,6 @@ end if
             
                         do j=1,nnodes
                 if (choix.eq.3) then
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'ping',
-!     close(2)
                         if(typeJoint.eq.2.and.nb1.eq.1) then
                             auxfunca=funcG(0.d0,0.d0,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.2) then
@@ -4123,7 +4137,7 @@ end if
             else
                 vet2=1.d0
             endif
-
+x2curG=0.d0
     if((nva3-1).gt.0) then ! set the value of covariates at time to event! (interaction must be computed accordingly)
         x2curG(1,1) = 1.d0
         do k=2,nva3
@@ -4145,6 +4159,7 @@ end if
     
     
     if(TwoPart.eq.1) then
+    X2BcurG=0.d0
     if((nvaB-1).gt.0) then
     X2BcurG(1,1) = 1.d0
     do k=2,nvaB
@@ -4163,7 +4178,7 @@ end if
         Z1curG(1,1) = 1.d0
         if(nb1.eq.2)  Z1curG(1,2) =tps
      
-            current_meanG = 1.d0
+            current_meanG = 0.d0
                     if(TwoPart.eq.1) then
                         if(nb1.eq.2) then
                             z1YcurG(1,1) = 1.d0
@@ -4292,7 +4307,6 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         upper = .false.
         i = numpat
 
-! current_meanG = 0.d0
 ! uiiui=0.d0
 ! funcG=0.d0
 
@@ -4437,7 +4451,7 @@ end if
         call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,xea22)
     end if
         auxG(i) = resultdc
-
+x2curG=0.d0
     if((nva3-1).gt.0) then ! set the value of covariates at time to event! (interaction must be computed accordingly)
         x2curG(1,1) = 1.d0
         do k=2,nva3
@@ -4459,6 +4473,7 @@ end if
     
     
     if(TwoPart.eq.1) then
+    X2BcurG=0.d0
     if((nvaB-1).gt.0) then
     X2BcurG(1,1) = 1.d0
     do k=2,nvaB
@@ -4479,7 +4494,8 @@ end if
                 Z1curG(1,2) = t1dc(i)
             end if  
             
- 
+  current_meanG = 0.d0
+
     if(nb1.eq.1) then
             current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1curG(1,1)*Xea
     else if(nb1.gt.1) then

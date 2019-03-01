@@ -75,7 +75,7 @@
                 integer,save:: it_rec
                 double precision:: ut2cur,frailpol,frailpol2,frailpol3,frailpol4
                 double precision,dimension(:),allocatable,save :: res1cur,res3cur,res2cur
-    double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,mu1B ! add TwoPart
+    double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,mu1B,x2Bcur,z1Bcur ! add TwoPart
     double precision,dimension(:),allocatable,save :: Bcurrent, current_meanRaw ! add TwoPart
     integer,save::nmescurB, it_curB !add TwoPart
     end module donnees_indiv
@@ -309,17 +309,20 @@
         double precision,save::cares,cbres,ddres
         double precision,dimension(:),allocatable,save:: vres
         integer , save :: ierres,nires,istopres,effetres,indg,it_res,it_res_rec
+        integer, save :: it_resB ! add TwoPart
         double precision,save::rlres,varuiR,moyuiR,varviR,moyviR,corruiviR
         double precision,dimension(:),allocatable::vuu,b_temp
         integer,save::indic_cumul
         integer,dimension(:),allocatable::n_ssgbygrp
         double precision,dimension(:,:),allocatable,save::vecuiRes2,cumulhaz1,cumulhaz0,&
                 cumulhazdc,invsigma,zet,zetd,zetr,XbetaY_res,Pred_y
+        double precision,dimension(:,:),allocatable,save::XbetaB_res !add TwoPart
         double precision,save::detSigma
            integer,save :: nig_mc,np_mc
     double precision,save :: sig2_mc,res1_mc
       double precision,dimension(:),allocatable,save::mu1_res
      double precision,dimension(:,:),allocatable,save::ZetB ! add TwoPart
+      double precision,dimension(:),allocatable,save::mu1_resB
     end module residusM
 
     module splines
