@@ -4644,7 +4644,7 @@ end if
     use comon, only:nb1,nodes_number,typeJoint,invBi_cholDet
     use donnees_indiv
     !use mpi
-  !  !$ use OMP_LIB
+    !$ use OMP_LIB
     
     implicit none
     integer ::ii,nsimu !code,erreur,nbrejet,stemp,tid1,npg,kk,j,k,ier !maxmes= nombre de dimension ou encore dimension de X
@@ -4664,24 +4664,24 @@ end if
     ss=0.d0
     select case(ndim)
      case(1)
-        !ii=0
-        ! !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,fraili)&
-        ! !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+        ii=0
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,intpoints(ii,1))
                 ss=ss+auxfunca
             end do
-        ! !$OMP END PARALLEL DO
+         !$OMP END PARALLEL DO
    case(2)
 
-        !ii=0
-        ! !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,fraili)&
-        ! !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+        ii=0
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
-                auxfunca=func2(0.d0,intpoints(ii,2),intpoints(ii,1))
+                auxfunca=func2(0.d0,intpoints(ii,1),intpoints(ii,2))
                 ss=ss+auxfunca
             end do
-        ! !$OMP END PARALLEL DO
+         !$OMP END PARALLEL DO
     end select
     ss=ss/dble(nsimu) 
 
