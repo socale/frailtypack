@@ -1987,7 +1987,6 @@ end if
     
               if(typeJoint.eq.2.and.nb1.eq.1) ss = ss*invBi_cholDet(numpat)*2.d0**(1.d0/2.d0)
             endif
-      
         return
     
         END SUBROUTINE gauherJ21
@@ -4639,7 +4638,7 @@ end if
     use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran!,DMFSD
     use var_surrogate, only: nbre_sim
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
-    use comon, only:nb1,nodes_number
+    use comon, only:nb1,nodes_number,typeJoint,invBi_cholDet
     use donnees_indiv
     !use mpi
   !  !$ use OMP_LIB
@@ -4656,7 +4655,6 @@ end if
     nsimu=nbre_sim
     x2222=0.d0
     somp=0.d0
-    ss=0.d0
 
   ! --------------------- boucle du MC ------------------------
     auxfunca=0.d0
@@ -4678,7 +4676,6 @@ end if
         ! !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,intpoints(ii,2),intpoints(ii,1))
-
                 ss=ss+auxfunca
             end do
         ! !$OMP END PARALLEL DO
@@ -4688,11 +4685,10 @@ end if
     return 
   end subroutine MC_JointModels
   
-
   
   
- 
-subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
+    
+subroutine rmvnorm2(mu,vc1,nsim,nb1,vcdiag,ysim)
     ! mu: l'esperance de mes variables
     ! VC1: matrice de variance-covariance
     ! nsim: nombre de generations a faire
@@ -4701,19 +4697,20 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
         
     implicit none
     integer :: jj,j,k,ier,l,m,maxmes !maxmes= nombre de dimension ou encore dimension de X
-    integer, intent(in)::nsim,vcdiag
+    integer, intent(in)::nsim,vcdiag,nb1
     double precision::eps,ymarg,SX,x22 ! ymarg contient le resultat de l'integrale
-    double precision, intent(in),dimension(:)::mu
-    double precision,dimension(:,:),intent(in)::vc1
+    double precision,dimension(nb1), intent(in)::mu
+    double precision,dimension(nb1,nb1),intent(in)::vc1
     double precision,dimension(:,:),allocatable::vc
     double precision,dimension(:),allocatable::usim
     !double precision,dimension(nsim,size(vc,2)),intent(out)::ysim
-    double precision,dimension(:,:),intent(out)::ysim
+    double precision,dimension(nsim,nb1),intent(out)::ysim
     double precision,dimension(:),allocatable::vi
     
     !=============debut de la fonction=============================
     !!print*,vc
     !stop
+
     x22=0.d0
     maxmes=size(vc1,2)
     allocate(vi(maxmes*(maxmes+1)/2),usim((size(vc1,2))),vc(size(vc1,1),size(vc1,2)))
@@ -4759,11 +4756,28 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
 			ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
 			l=l+1
 		end do
+   !                 open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+   !      write(2,*)' vcdiag', vcdiag
+   !        write(2,*)'ysim',ysim
+   !        write(2,*)'nsim',nsim
+   !        write(2,*)'mu',mu
+   !        write(2,*)'vc1',vc1
+   !          close(2)
+    
 	endif
 			
     deallocate(vi,usim,vc)
     return
-end subroutine rmvnorm
+end subroutine rmvnorm2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
@@ -4883,3 +4897,5 @@ end subroutine rmvnorm
     end subroutine dmfsd
 
 !C ------------------- FIN SUBROUTINE DMFSD ----------------- 
+
+

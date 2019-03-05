@@ -226,7 +226,7 @@
                         bar(3+k:3+k)="*"
                     enddo
                     if (ni < 300) then 
-                        call intpr(bar, -1, ni, 0)
+                    !    call intpr(bar, -1, ni, 0) ! comment because valgrind error
                         call intpr('Iteration:', -1, ni, 1) 
                     else 
                         call intpr('Iteration:', -1, ni, 1)

@@ -8,7 +8,7 @@
         use lois_normales
         use tailles
         use comon
-            use Autres_fonctions, only:rmvnorm!add Monte-carlo
+           ! use Autres_fonctions, only:rmvnorm!add Monte-carlo
         use var_surrogate, only: a_deja_simul,nbre_sim,Chol!,frailt_base,nb_procs
         !use ParametresPourParallelisation
             use residusM
@@ -133,28 +133,7 @@
                 Ut(nea,nea) = sqrt(sigmav**2.d0)
                 Utt(nea,nea) = sqrt(sigmav**2.d0)
             end if
-            
-            if(nb1.eq.1)then
-            Chol=0.d0 
-            Chol(1,1)=bh(np-nva-nb_re+1)
-            else if(nb1.eq.2) then
-            Chol=0.d0 
-            Chol(1,1)=bh(np-nva-nb_re+1)
-            Chol(2,1)=bh(np-nva-nb_re+2)
-            !Chol(1,2)=bh(np-nva-nb_re+2)
-            Chol(2,2)=bh(np-nva-nb_re+3)
-            else if(nb1.eq.2) then
-            Chol(1,1)=bh(np-nva-nb_re+1)
-            Chol(2,1)=bh(np-nva-nb_re+2)
-            Chol(3,1)=bh(np-nva-nb_re+3)
-            Chol(2,2)=bh(np-nva-nb_re+4)
-            Chol(3,2)=bh(np-nva-nb_re+5)
-            Chol(3,3)=bh(np-nva-nb_re+6)
-            end if
-            
-            
- 
-            
+                      
         end if
 
     !----------  calcul de ut1(ti) et ut2(ti) ---------------------------
@@ -368,8 +347,26 @@
 
     a_deja_simul=0 ! add Monte-carlo
     fraili=0.d0
+    if(nb1.eq.1)then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            else if(nb1.eq.2) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            !Chol(1,2)=bh(np-nva-nb_re+2)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            else if(nb1.eq.2) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            Chol(3,1)=bh(np-nva-nb_re+3)
+            Chol(2,2)=bh(np-nva-nb_re+4)
+            Chol(3,2)=bh(np-nva-nb_re+5)
+            Chol(3,3)=bh(np-nva-nb_re+6)
+            end if  
+
             do ig=1,ng
-            
                 ycurrent  = 0.d0
                 auxig=ig
                 choix = 4
@@ -640,16 +637,25 @@
         vcjm=0.d0
         nbre_sim=nodes_number
         vcjm = Chol
+       ! open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+       !  write(2,*)' vcjm', vcjm
+       !   write(2,*)'mu_mc',mu_mc
+       !    write(2,*)'a_deja_simul',a_deja_simul
+       !    write(2,*)'nbre_sim',nbre_sim
+       !    write(2,*)'fraili',fraili
+       !      close(2)
         if(a_deja_simul.eq.0) then
-            call rmvnorm(mu_mc,vcjm,nbre_sim,1,fraili)
+            call rmvnorm2(mu_mc,vcjm,nbre_sim,nb1,1,fraili)
             a_deja_simul=1 ! pour dire qu'on ne simule plus
-        endif
+        endif            
+        
         !calcul de l'integrale par monte carlo pour l'integrale multiple
         if(typeJoint.eq.2.and.nb1.eq.1) then
             call MC_JointModels(int, funcG, nb1,fraili)
         else if(typeJoint.eq.2.and.nb1.eq.2) then
             call MC_JointModels(int, funcG, nb1,fraili)
         end if
+
         if(int.eq.0.d0) then
             integrale4(ig)=0.1d-300
         else
@@ -659,12 +665,13 @@
     
     
     
-    
-        !             open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-        !  write(2,*)' nea', nea
-        !   write(2,*)'fraili',fraili
-        !   write(2,*)'a_deja_simul',a_deja_simul
-        !     close(2)
+    !                        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+   !      write(2,*)' vcdiag', vcdiag
+   !        write(2,*)'ysim',ysim
+   !        write(2,*)'nsim',nsim
+    !    write(2,*)'int',int
+    !       write(2,*)'fraili',fraili
+    !         close(2)
 
             
           
@@ -825,17 +832,7 @@
                 Ndc(k)=cdc(k)
             end do
         end if
-                 !if(numpat.eq.3) then   
-!            open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'funcpajLongisplines',funcpajLongisplines
-  !     write(2,*)'resultdc',resultdc
-  !     write(2,*)'nmescur',nmescur
-  !     write(2,*)'numpat',numpat
-   !   write(2,*)'frail',frail
-   !    write(2,*)'frail2',frail2
-   !    write(2,*)'Xea2',Xea2
-!     close(2)
-!end if
+
                     
     !Ad:
         123     continue
@@ -1081,7 +1078,6 @@
         deallocate(mu1,re)
     
         end subroutine vraistot_splines
-    
     
     
     
