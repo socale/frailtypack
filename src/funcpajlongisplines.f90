@@ -9,7 +9,7 @@
         use tailles
         use comon
            ! use Autres_fonctions, only:rmvnorm!add Monte-carlo
-        use var_surrogate, only: a_deja_simul,nbre_sim,Chol!,frailt_base,nb_procs
+        use var_surrogate, only: a_deja_simul,nbre_sim,Chol,Vect_sim_MC!,frailt_base,nb_procs
         !use ParametresPourParallelisation
             use residusM
             use optim
@@ -77,6 +77,8 @@
         do i=1,np
         bh(i)=b(i)
         end do
+    
+        fraili=0.d0
     
         if (id.ne.0) bh(id)=bh(id)+thi
         if (jd.ne.0) bh(jd)=bh(jd)+thj
@@ -345,8 +347,6 @@
             sum_matB=0.d0
             end if
 
-    a_deja_simul=0 ! add Monte-carlo
-    fraili=0.d0
     if(nb1.eq.1)then
             Chol=0.d0 
             Chol(1,1)=bh(np-nva-nb_re+1)
@@ -647,13 +647,16 @@
         if(a_deja_simul.eq.0) then
             call rmvnorm2(mu_mc,vcjm,nbre_sim,nb1,1,fraili)
             a_deja_simul=1 ! pour dire qu'on ne simule plus
+            
+            allocate(Vect_sim_MC(nodes_number,nb1))
+            Vect_sim_MC=fraili
         endif            
         
         !calcul de l'integrale par monte carlo pour l'integrale multiple
         if(typeJoint.eq.2.and.nb1.eq.1) then
-            call MC_JointModels(int, funcG, nb1,fraili)
+            call MC_JointModels(int, funcG, nb1,Vect_sim_MC)
         else if(typeJoint.eq.2.and.nb1.eq.2) then
-            call MC_JointModels(int, funcG, nb1,fraili)
+            call MC_JointModels(int, funcG, nb1,Vect_sim_MC)
         end if
 
         if(int.eq.0.d0) then

@@ -28,7 +28,7 @@
         use tailles
         use lois_normales
         use optim
-     use var_surrogate, only:Chol ! add Monte-carlo
+     use var_surrogate, only:Chol,a_deja_simul,Vect_sim_MC ! add Monte-carlo
     !     use ParametresPourParallelisation
     !AD:pour fortran
         use sortie
@@ -148,6 +148,7 @@
    !add TwoPart
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
       
+   a_deja_simul=0 ! add Monte-carlo
    
    ng0=ngnzag(1)
    nz0=ngnzag(2)
@@ -1675,6 +1676,8 @@
 
         if(TwoPart.eq.1) deallocate(sum_matB, varcov_margB)
         if(TwoPart.eq.0) deallocate(filtreB)
+        
+        if(methodGH.eq.3) deallocate(Vect_sim_MC)
 
             deallocate(ve)
         deallocate(hess,v,I1_hess,H1_hess,I2_hess,H2_hess,HI2,HIH,IH,HI,BIAIS,date,datedc)
@@ -4822,13 +4825,13 @@ end subroutine rmvnorm2
       if (n-1.lt.0) goto 12
       if (n-1.ge.0) ier=0
 
-       open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-         write(2,*)' ier', ier
+    !   open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+    !     write(2,*)' ier', ier
     !       write(2,*)'ysim',ysim
    !        write(2,*)'nsim',nsim
     !    write(2,*)'int',int
     !       write(2,*)'fraili',fraili
-            close(2)
+    !        close(2)
       !
 !   INITIALIZE DIAGONAL-LOOP
 !
