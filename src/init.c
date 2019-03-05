@@ -32,7 +32,7 @@ static const R_FortranMethodDef FortEntries[] = {
     {"survival2",            (DL_FUNC) &F77_SUB(survival2),             6},
     {"survivalj_cpm2",       (DL_FUNC) &F77_SUB(survivalj_cpm2),        8},
 	{"somme",                (DL_FUNC) &F77_SUB(somme),                 5},
-    {"jointsurrogate",       (DL_FUNC) &F77_SUB(jointsurrogate),       51},
+    {"jointsurrogate",       (DL_FUNC) &F77_SUB(jointsurrogate),       55},
     {"test",                 (DL_FUNC) &F77_SUB(test),       3},
     {"surrosim",             (DL_FUNC) &F77_SUB(surrosim), 36},
     {"jointsurrokendall",    (DL_FUNC) &F77_SUB(jointsurrokendall), 24},

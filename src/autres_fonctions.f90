@@ -60,8 +60,8 @@ module InverseMatrix
         integer, intent(in)::z_11,z_21, method_int,N_MC,model_complet
         double precision,dimension(:),allocatable::mu,xx1,ww1
         double precision,dimension(:,:),allocatable::u,up,v,vp,w11,wp,sigma,x_
-        integer:: i,nnodes !j,k,l,m,n,o,p,q,r,s,t
-        double precision::integral,rho_wst,rho_ust,rho_vst,somm !s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11
+        integer:: i,nnodes,j,k,l,m,n,o,p,q,r,s,t
+        double precision::integral,rho_wst,rho_ust,rho_vst,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,somm
         double precision,parameter::pi=3.141592653589793d0
         
         ! generation des variables aleatoires suivant des multinormales
@@ -389,7 +389,7 @@ module InverseMatrix
     ! quantile d'ordre 2.5%
     a=(n-1)*0.025d0
     ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
-    b = a - int(a)
+	b = a - int(a)
     c=a-b
     ib=int(c)
     t25= (1-b)*t(ib+1)+b*t(ib+2)
@@ -397,7 +397,7 @@ module InverseMatrix
     ! quantile d'ordre 97.5%
     a=(n-1)*0.975d0
     ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
-    b = a - int(a)
+	b = a - int(a)
     c=a-b
     ib=int(c)
     t975= (1-b)*t(ib+1)+b*t(ib+2)
@@ -405,14 +405,14 @@ module InverseMatrix
     ! quantile d'ordre q%
     a=(n-1)*dble(q)
     ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
-    b = a - int(a)
+	b = a - int(a)
     c=a-b
-    ib=int(c) ! pb: si q = 1, ib = n-1 et donc ib + 2 =n + 1 > n pour la dimension de t
-    if(ib <= n-2)then
-    tq = (1-b)*t(ib+1)+b*t(ib+2)
-    else
-    tq = t(n) ! l'on suppose ici qu'on cherche le 100th percentile de la serie, ce qui est normale car dans ce cas, q est tres proche de 1
-    endif
+	ib=int(c) ! pb: si q = 1, ib = n-1 et donc ib + 2 =n + 1 > n pour la dimension de t
+	if(ib <= n-2)then
+		tq = (1-b)*t(ib+1)+b*t(ib+2)
+	else
+		tq = t(n) ! l'on suppose ici qu'on cherche le 100th percentile de la serie, ce qui est normale car dans ce cas, q est tres proche de 1
+	endif
 
     end subroutine percentile_scl
    
@@ -517,9 +517,9 @@ module InverseMatrix
 !    permet de simuler un jeu de donnee a partir d'un modele conjoint.
 ! --------------------------------------------------------------------
    
-   SUBROUTINE simulation(donnee,donneeS,ind_temp,n_col,theta,ksi,betas,betat,p,prop_i,lambdas,nus,& !alpha
+   SUBROUTINE simulation(donnee,donneeS,ind_temp,n_col,theta,ksi,betas,alpha,betat,p,prop_i,lambdas,nus,&
                          lambdat,nut,mode_cens,temps_cens,cens0,n_essai,n_obs,&
-                         weib,frailty_cor,affiche_stat) !rsqrt,sigma_s,sigma_t
+                         rsqrt,sigma_s,sigma_t,weib,frailty_cor,affiche_stat)
   ! donnee: donnee simulee a retourner pour les deces
   ! donneeS: donnee simulee a retourner pour les surrogate
   ! ind_temp: donne la taille du tableau final complete pour les cas de progression sans deces 
@@ -549,17 +549,17 @@ module InverseMatrix
   Implicit none
   
   integer, intent(in)::mode_cens,n_essai,n_obs,weib,frailty_cor,n_col,affiche_stat
-  double precision,intent(in)::theta,ksi,betas,betat,lambdas,nus,lambdat,nut,temps_cens,cens0 !alpha,rsqrt,sigma_s,sigma_t
+  double precision,intent(in)::theta,ksi,betas,alpha,betat,lambdas,nus,lambdat,nut,temps_cens,cens0,rsqrt,sigma_s,sigma_t
   double precision,dimension(n_essai),intent(in)::prop_i,p
   double precision, dimension(n_obs,n_col),intent(out)::donnee
   double precision, dimension(n_obs,n_col),intent(out)::donneeS ! pour les donnees completees surrogate
   integer,intent(out) ::ind_temp
-  integer ::k,i,n1,cpte !l
+  integer ::k,i,l,n1,cpte
   integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
                       timeC1=8,statusS1=9,statusT1=10,initTime1=11,Patienref1=12 ! definissent les indices du tableau de donnee
   double precision::n_rand,x22,quant_c,t25,t75,t50,cens
   double precision,dimension(n_essai)::n_i
-  double precision,dimension(n_obs)::u !trt
+  double precision,dimension(n_obs)::trt,u
   integer,dimension(n_essai,2)::tab ! pour la table de contingence des essais
   
   !==============initialisation des parametres======================
@@ -586,7 +586,7 @@ module InverseMatrix
     k=1
     do i=1,n_essai
       !variable traitement
-      n1=int(k+n_i(i)-1)
+      n1=k+n_i(i)-1
 !      do l=k,n1
 !        n_rand=uniran()
 !        if(n_rand<=p(i)) then
@@ -597,7 +597,7 @@ module InverseMatrix
 !      end do
       ! reference des essais
       donnee(k:n1,trialref1)=i
-      k=int(k+n_i(i))
+      k=k+n_i(i)
     end do
 ! ============fin randomisation par essai======
     ! ici on randomise sans tenir compte des essai
@@ -825,7 +825,7 @@ end function variance
 function covariance(x,y)
     implicit none
     integer ::m
-    double precision::covariance,xmn,ymn !x_bar
+    double precision::covariance,x_bar,xmn,ymn
     double precision,dimension(:),intent(in)::x,y
     double precision,dimension(size(x))::xdev,ydev
     
@@ -869,10 +869,10 @@ end function table
 function table_essai(tab)
     !n: les case avec 0 correspondent aux modalites sans effectif
     implicit none
-    !integer::n
+    integer::n
     integer,dimension(:),intent(in)::tab
     integer,dimension(size(tab))::t2,table_essai
-    integer::i !j,n_obs
+    integer::i,j,n_obs
         
     t2=0
     do i=1,size(tab)
@@ -888,7 +888,7 @@ end function table_essai
         use var_surrogate, only: random_generator
         double precision :: a,b,c,u,v,w,x,y,z
         double precision ::uniran
-        !real ::ran2
+        real ::ran2
         integer ::accept
 
         accept = 0
@@ -927,7 +927,7 @@ end function table_essai
         use var_surrogate, only: random_generator
         double precision ::a,b,x,u,v,betau
         double precision ::uniran
-        !real ::ran2
+        real ::ran2
         if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
             u = uniran()!dble(rand())
         else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)    
@@ -949,105 +949,104 @@ end function table_essai
     ! subroutine pour la generation  des donnees pour une distribution gamma des effects aleatoires et weibull des risques de bases
     !==============================================================================================================================
     subroutine generation_Gamma(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
-            ng,ver,truealpha,propC,cens_A,gamma1,theta2,lambda_S,nu_S,lambda_T,nu_T,betas)
+            ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,betat)
       !lognormal: dit si la distribution des effets aleatoires est lognormal (1) ou gamma (0)
       !use Autres_fonctions
       use var_surrogate, only: random_generator
       
       integer, intent(in)::n_obs,n_col,lognormal,ng,ver
-      double precision, intent(in)::truealpha,propC,cens_A,gamma1,theta2 !gamma2 !theta2: variance des frailties gaussiens,gamma1,gamma2: parametres de la gamma,cens_A:censure administrative,propC:proportion de personnes censurees
-      double precision, intent(in)::lambda_S,nu_S,lambda_T,nu_T,betas !betat
+      double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2 !theta2: variance des frailties gaussiens,gamma1,gamma2: parametres de la gamma,cens_A:censure administrative,propC:proportion de personnes censurees
+      double precision, intent(in)::lambda_S,nu_S,lambda_T,nu_T,betas,betat
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
       integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000
       integer,parameter::nboumax=1000,NSIMAX=5000,ndatemax=30000
       
-      !integer  groupe,ij,kk,j,k,nz,n,np,cpt,cpt_dc,ii,iii,iii2
-      integer  j,k,nz,cpt,cpt_dc,ii,iii,iii2
-      integer  cptstr1,cptstr2 !trace,trace1,trace2
-      !integer  i,ic,ic2,ni,ier,istop,ef
+      integer  groupe,ij,kk,j,k,nz,n,np,cpt,cpt_dc,ii,iii,iii2
+      integer  cptstr1,cptstr2,trace,trace1,trace2
+      integer  i,ic,ic2,ni,ier,istop,ef
       integer  cptni,cptni1,cptni2,nb_echec,nb_echecor
-      integer  nbou2,cptbiais !l,id
-      integer  nbou !m,idum,icen
+      integer  nbou2,id,cptbiais,l
+      integer  m,nbou,idum,icen
       integer filtre(nvarmax), filtre2(nvarmax) 
-      !integer cpt1(nboumax) 
-      !integer cpt2(nboumax) 
-      !integer cpt3(nboumax) 
+      integer cpt1(nboumax) 
+      integer cpt2(nboumax) 
+      integer cpt3(nboumax) 
       integer ind(nboumax) , cptaux 
       
-      !real vax(nvarmax)
-      !double precision tt0
-      !double precision tt1,tt2
+      real vax(nvarmax)
+      double precision tt0
+      double precision tt1,tt2
       
-      !double precision h
-      !double precision ro,wres,csi,csi1
-      double precision maxtemps !ax1,ax2,res,min,max
-      !double precision bi,bs,wald,str
-      !double precision moyvar1,moyse1,moyse_cor1!theta
-      !double precision moyvar2,moyse2,moyse_cor2!alpha
-      !double precision moybeta1, moysebeta1,moysebeta_cor1
-      !double precision moybeta2, moysebeta2,moysebeta_cor2
-      !double precision moybeta3, moysebeta3,moysebeta_cor3
-      !double precision moybweib1,moybweib2,moybweib3,moybweib4!weibull
-      !double precision moysebweib1,moysebweib2,moysebweib3,moysebweib4
+      double precision h
+      double precision ro,wres,csi,csi1
+      double precision ax1,ax2,res,min,max,maxtemps
+      double precision bi,bs,wald,str
+      double precision moyvar1,moyse1,moyse_cor1!theta
+      double precision moyvar2,moyse2,moyse_cor2!alpha
+      double precision moybeta1, moysebeta1,moysebeta_cor1
+      double precision moybeta2, moysebeta2,moysebeta_cor2
+      double precision moybeta3, moysebeta3,moysebeta_cor3
+      double precision moybweib1,moybweib2,moybweib3,moybweib4!weibull
+      double precision moysebweib1,moysebweib2,moysebweib3,moysebweib4
 !c     double precision  tt0,tt1
 !c     double precision, pointer  tt0
 !c     double precision,pointer  tt1
-      !double precision varxij,eca,varsmarg,smoy,smoyxij
-      double precision lrs !pe1,pe2
+      double precision varxij,eca,varsmarg,smoy,smoyxij
+      double precision pe1,pe2,lrs
       double precision BIAIS_moy
       
-      !double precision aux(2*NOBSMAX)
-      !double precision v((npmax*(npmax+3)/2))
-      !double precision k0(2)
-      !double precision b(npmax)
-      !double precision se1(nboumax),se_cor1(nboumax)!theta
-      !double precision se2(nboumax),se_cor2(nboumax)!alpha
-      !double precision tvars1(nboumax),tvars2(nboumax)
-      !double precision beta1(nboumax),beta2(nboumax),beta3(nboumax)
-      !double precision , dimension(nboumax):: sebeta1,sebeta_cor1
-      !double precision , dimension(nboumax):: sebeta2,sebeta_cor2
-      !double precision , dimension(nboumax):: sebeta3,sebeta_cor3
+      double precision aux(2*NOBSMAX)
+      double precision v((npmax*(npmax+3)/2))
+      double precision k0(2)
+      double precision b(npmax)
+      double precision se1(nboumax),se_cor1(nboumax)!theta
+      double precision se2(nboumax),se_cor2(nboumax)!alpha
+      double precision tvars1(nboumax),tvars2(nboumax)
+      double precision beta1(nboumax),beta2(nboumax),beta3(nboumax)
+      double precision , dimension(nboumax):: sebeta1,sebeta_cor1
+      double precision , dimension(nboumax):: sebeta2,sebeta_cor2
+      double precision , dimension(nboumax):: sebeta3,sebeta_cor3
 
-      !double precision bweib1(nboumax),bweib2(nboumax)!weibull
-      !double precision bweib3(nboumax),bweib4(nboumax)
-      !double precision , dimension(nboumax):: sebweib1,sebweib2
-      !double precision , dimension(nboumax):: sebweib3,sebweib4
+      double precision bweib1(nboumax),bweib2(nboumax)!weibull
+      double precision bweib3(nboumax),bweib4(nboumax)
+      double precision , dimension(nboumax):: sebweib1,sebweib2
+      double precision , dimension(nboumax):: sebweib3,sebweib4
 
-      !double precision biais_theta(nboumax)
-      !double precision I1_hess(npmax,npmax),H1_hess(npmax,npmax)
-      !double precision I2_hess(npmax,npmax),H2_hess(npmax,npmax)
-      !double precision HI1,HI2(npmax,npmax)
-      !double precision HIH(npmax,npmax),IH(npmax,npmax),HI(npmax,npmax)
-      !double precision BIAIS(npmax,1)
+      double precision biais_theta(nboumax)
+      double precision I1_hess(npmax,npmax),H1_hess(npmax,npmax)
+      double precision I2_hess(npmax,npmax),H2_hess(npmax,npmax)
+      double precision HI1,HI2(npmax,npmax)
+      double precision HIH(npmax,npmax),IH(npmax,npmax),HI(npmax,npmax)
+      double precision BIAIS(npmax,1)
       
       character*18 nomvarl
       character*18 nomvar(nvarmax),nomvar2(nvarmax)
-      !character*18 donnees
+      character*18 donnees
       character*24 ficpar
-      !character*14 fich1
-      !character*14 fich2
-      !character*14 fich3
-      !character*14 fich4
-      !character*14 fich1b
-      !character*14 fich2b
-      !character*14 fich3b
-      !character*14 fich4b
+      character*14 fich1
+      character*14 fich2
+      character*14 fich3
+      character*14 fich4
+      character*14 fich1b
+      character*14 fich2b
+      character*14 fich3b
+      character*14 fich4b
       character*20 dateamj
       character*20 zone
       character*20 heure1
-      !character*20 heure2
+      character*20 heure2
       integer values(8)
 
 !c************declarations pour donnees generees **********
-      integer :: nb_recur,nb_dc,nb_cens,delta,deltadc,jj !no
-      integer :: ig,nrecurr,nobs,max_recu !sg
+      integer :: no,nb_recur,nb_dc,nb_cens,delta,deltadc,jj
+      integer :: ig,sg,nrecurr,nobs,max_recu
       real , dimension(2):: v1
-      real :: piece,demi !rien
+      real :: piece,rien,demi
       double precision :: ui,temps1,temps1_S !random effect
-      double precision :: gapx,gapdc,moy_idnum !gapcens
-      double precision :: x,xdc,cens,cbeta1,cbeta3 !cbeta2,tronc
+      double precision :: gapx,gapdc,gapcens,moy_idnum
+      double precision :: x,xdc,tronc,cens,cbeta1,cbeta2,cbeta3
       double precision :: auxbeta1,auxbeta2 ! for recurr and death
-      double precision :: uniran !zbqlexp
+      double precision :: zbqlexp,uniran
       double precision, dimension(2):: bg1,bw1,bw2
       integer, dimension(ngmax):: idnum
       double precision, dimension(ngmax):: vecui
@@ -1066,24 +1065,24 @@ end function table_essai
 !c*****dace2
       double precision t0(NOBSMAX),t1(NOBSMAX),t1_S(NOBSMAX)
       integer c(NOBSMAX), cdc(NOBSMAX)
-      !integer nt0(NOBSMAX),nt1(NOBSMAX)
-      integer  nva1,nva2,nst!ndate,nva,nobs
+      integer nt0(NOBSMAX),nt1(NOBSMAX)
+      integer  nva,nva1,nva2,ndate,nst!,nobs
       !common /dace2/t0,t1,c,cdc,nt0,nt1,nobs,nva,nva1,nva2,ndate,nst
 !c*****dace4
-      !integer  stra(NOBSMAX)
+      integer  stra(NOBSMAX)
       !common /dace4/stra
 !c*****ve1
       double precision ve(NOBSMAX,nvarmax),ve2(NOBSMAX,nvarmax)
       !common /ve1/ve,ve2
 !c*****dace3
-      !double precision  pe
+      double precision  pe
       integer  effet,nz1,nz2
       !common /dace3/pe,effet,nz1,nz2
 !c*****dace7
-      !double precision I_hess(npmax,npmax),H_hess(npmax,npmax)
-      !double precision Hspl_hess(npmax,npmax)
-      !double precision PEN_deri(npmax,1)
-      !double precision hess(npmax,npmax)
+      double precision I_hess(npmax,npmax),H_hess(npmax,npmax)
+      double precision Hspl_hess(npmax,npmax)
+      double precision PEN_deri(npmax,1)
+      double precision hess(npmax,npmax)
       !common /dace7/PEN_deri,I_hess,H_hess,Hspl_hess,hess
 !c*****contrib
       !common /contrib/ng       
@@ -1093,20 +1092,20 @@ end function table_essai
       !common /gpe/g,nig
       
 !c*****mem1
-      !double precision mm3(ndatemax),mm2(ndatemax)
-      !double precision mm1(ndatemax),mm(ndatemax)
+      double precision mm3(ndatemax),mm2(ndatemax)
+      double precision mm1(ndatemax),mm(ndatemax)
       !common /mem1/mm3,mm2,mm1,mm
 !c     %%%%%%%%%%%%% ANDERSEN-GILL %%%%%%%%%%%%%%%%%%%%%%%%% 
-      !integer AG
+      integer AG
       !common /andersengill/AG
 !c     %%%%%%%%%%%%% indic ALPHA %%%%%%%%%%%%%%%%%%%%%%%%% 
       integer indic_ALPHA
       !common /alpha/indic_ALPHA ! pour preciser un para en plus 
 !c**** theta/alpha
-      !double precision  theta,alpha !en exposant pour la frailty deces 
+      double precision  theta,alpha !en exposant pour la frailty deces 
       !common /thetaalpha/alpha,theta
 !c******indicateur de troncature
-      !integer :: indictronq     ! =0 si donnees non tronquées reellement
+      integer :: indictronq     ! =0 si donnees non tronquées reellement
       !common /troncature/indictronq
       
 !c******indicateur iteration
@@ -1121,7 +1120,7 @@ end function table_essai
 !c     I_hess : -hessienne non inversee sur vraisemblance non penalisee
 !c     H_hess : inverse de -hessienne  sur vraisemblance penalisee
       !Ajout SCL
-      double precision::x22,tempon!,theta2 !cens_C
+      double precision::cens_C,x22,tempon!,theta2
       double precision,dimension(:),allocatable::tempsD
       integer::Aretenir
       integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
@@ -1633,8 +1632,8 @@ endsubroutine generation_Gamma !FIN prog principal
 !==============================================================================================================================
 
 subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
-            ng,ver,truealpha,propC,cens_A,gamma1,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
-            betat,n_essai,rsqrt,sigma_s,sigma_t,prop_i,gamma,alpha,frailt_base)
+            ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
+            betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
     ! lognormal: dit si la distribution des effets aleatoires est lognormal pour le modele complet (1) ou lognormal pour le joint classique de 2007 (2) ou gamma pour le joint classique de 2007(0)
     ! use Autres_fonctions
     ! theta2: variance des frailties gaussiens associe a S
@@ -1653,101 +1652,100 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
      use var_surrogate, only: random_generator
 
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver
-      double precision, intent(in)::truealpha,propC,cens_A,gamma1,theta2,gamma,alpha,& !gamma2
+      double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,betas,betat,rsqrt,sigma_s,sigma_t
-      double precision,dimension(n_essai),intent(in)::prop_i !p      
+      double precision,dimension(n_essai),intent(in)::prop_i,p      
       double precision,intent(out)::vrai_theta
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
       
-      integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000,nboumax=1000,NSIMAX=5000,&
+	       integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000,nboumax=1000,NSIMAX=5000,&
                           ndatemax=30000
-      integer  j,k,nz,cpt,cpt_dc,ii,iii,iii2
-      integer  cptstr1,cptstr2 !trace,trace1,trace2
-      integer  i
+      integer  groupe,ij,kk,j,k,nz,n,np,cpt,cpt_dc,ii,iii,iii2
+      integer  cptstr1,cptstr2,trace,trace1,trace2
+      integer  i,ic,ic2,ni,ier,istop,ef
       integer  cptni,cptni1,cptni2,nb_echec,nb_echecor
-      integer  nbou2,cptbiais
-      integer  nbou !idum,icen
+      integer  nbou2,id,cptbiais,l
+      integer  m,nbou,idum,icen
       integer filtre(nvarmax), filtre2(nvarmax) 
-      !integer cpt1(nboumax) 
-      !integer cpt2(nboumax) 
-      !integer cpt3(nboumax) 
+      integer cpt1(nboumax) 
+      integer cpt2(nboumax) 
+      integer cpt3(nboumax) 
       integer ind(nboumax) , cptaux 
       
-      !real vax(nvarmax)
-      !double precision tt0
-      !double precision tt1,tt2
+      real vax(nvarmax)
+      double precision tt0
+      double precision tt1,tt2
       
-      !double precision h
-      !double precision ro,wres
-      double precision maxtemps !res,min,max
-      !double precision wald,str
-      !double precision moyvar1,moyse1,moyse_cor1!theta
-      !double precision moyvar2,moyse2,moyse_cor2!alpha
-      !double precision moybeta1, moysebeta1,moysebeta_cor1
-      !double precision moybeta2, moysebeta2,moysebeta_cor2
-      !double precision moybeta3, moysebeta3,moysebeta_cor3
-      !double precision moybweib1,moybweib2,moybweib3,moybweib4!weibull
-      !double precision moysebweib1,moysebweib2,moysebweib3,moysebweib4
+      double precision h
+      double precision ro,wres,csi,csi1
+      double precision ax1,ax2,res,min,max,maxtemps
+      double precision bi,bs,wald,str
+      double precision moyvar1,moyse1,moyse_cor1!theta
+      double precision moyvar2,moyse2,moyse_cor2!alpha
+      double precision moybeta1, moysebeta1,moysebeta_cor1
+      double precision moybeta2, moysebeta2,moysebeta_cor2
+      double precision moybeta3, moysebeta3,moysebeta_cor3
+      double precision moybweib1,moybweib2,moybweib3,moybweib4!weibull
+      double precision moysebweib1,moysebweib2,moysebweib3,moysebweib4
 !c     double precision  tt0,tt1
 !c     double precision, pointer  tt0
 !c     double precision,pointer  tt1
-      !double precision varxij,varsmarg,smoy,smoyxij
-      double precision lrs !pe1,pe2
+      double precision varxij,eca,varsmarg,smoy,smoyxij
+      double precision pe1,pe2,lrs
       double precision BIAIS_moy
       
-      !double precision aux(2*NOBSMAX)
-      !double precision v((npmax*(npmax+3)/2))
-      !double precision k0(2)
-      !double precision b(npmax)
-      !double precision se1(nboumax),se_cor1(nboumax)!theta
-      !double precision se2(nboumax),se_cor2(nboumax)!alpha
-      !double precision tvars1(nboumax),tvars2(nboumax)
-      !double precision beta1(nboumax),beta2(nboumax),beta3(nboumax)
-      !double precision , dimension(nboumax):: sebeta1,sebeta_cor1
-      !double precision , dimension(nboumax):: sebeta2,sebeta_cor2
-      !double precision , dimension(nboumax):: sebeta3,sebeta_cor3
+      double precision aux(2*NOBSMAX)
+      double precision v((npmax*(npmax+3)/2))
+      double precision k0(2)
+      double precision b(npmax)
+      double precision se1(nboumax),se_cor1(nboumax)!theta
+      double precision se2(nboumax),se_cor2(nboumax)!alpha
+      double precision tvars1(nboumax),tvars2(nboumax)
+      double precision beta1(nboumax),beta2(nboumax),beta3(nboumax)
+      double precision , dimension(nboumax):: sebeta1,sebeta_cor1
+      double precision , dimension(nboumax):: sebeta2,sebeta_cor2
+      double precision , dimension(nboumax):: sebeta3,sebeta_cor3
 
-      !double precision bweib1(nboumax),bweib2(nboumax)!weibull
-      !double precision bweib3(nboumax),bweib4(nboumax)
-      !double precision , dimension(nboumax):: sebweib1,sebweib2
-      !double precision , dimension(nboumax):: sebweib3,sebweib4
+      double precision bweib1(nboumax),bweib2(nboumax)!weibull
+      double precision bweib3(nboumax),bweib4(nboumax)
+      double precision , dimension(nboumax):: sebweib1,sebweib2
+      double precision , dimension(nboumax):: sebweib3,sebweib4
 
-      !double precision biais_theta(nboumax)
-      !double precision I1_hess(npmax,npmax),H1_hess(npmax,npmax)
-      !double precision I2_hess(npmax,npmax),H2_hess(npmax,npmax)
-      !double precision HI1,HI2(npmax,npmax)
-      !double precision HIH(npmax,npmax),IH(npmax,npmax),HI(npmax,npmax)
-      !double precision BIAIS(npmax,1)
+      double precision biais_theta(nboumax)
+      double precision I1_hess(npmax,npmax),H1_hess(npmax,npmax)
+      double precision I2_hess(npmax,npmax),H2_hess(npmax,npmax)
+      double precision HI1,HI2(npmax,npmax)
+      double precision HIH(npmax,npmax),IH(npmax,npmax),HI(npmax,npmax)
+      double precision BIAIS(npmax,1)
       
       character*18 nomvarl
       character*18 nomvar(nvarmax),nomvar2(nvarmax)
-      !character*18 donnees
+      character*18 donnees
       character*24 ficpar
-      !character*14 fich1
-      !character*14 fich2
-      !character*14 fich3
-      !character*14 fich4
-      !character*14 fich1b
-      !character*14 fich2b
-      !character*14 fich3b
-      !character*14 fich4b
+      character*14 fich1
+      character*14 fich2
+      character*14 fich3
+      character*14 fich4
+      character*14 fich1b
+      character*14 fich2b
+      character*14 fich3b
+      character*14 fich4b
       character*20 dateamj
       character*20 zone
       character*20 heure1
-      !character*20 heure2
+      character*20 heure2
       integer values(8)
 
 !c************declarations pour donnees generees **********
-      integer :: nb_recur,nb_dc,nb_cens,delta,deltadc,jj
-      integer :: ig,nrecurr,nobs,max_recu
+      integer :: no,nb_recur,nb_dc,nb_cens,delta,deltadc,jj
+      integer :: ig,sg,nrecurr,nobs,max_recu
       real , dimension(2):: v1
-      real :: piece,demi !rien
+      real :: piece,rien,demi
       double precision :: ui,temps1,temps1_S !random effect
-      double precision :: gapx,gapdc,moy_idnum !gapcens
-      !double precision :: x,xdc,tronc,cens,cbeta1,cbeta2,cbeta3
-      double precision :: x,xdc,cens,cbeta1,cbeta3
+      double precision :: gapx,gapdc,gapcens,moy_idnum
+      double precision :: x,xdc,tronc,cens,cbeta1,cbeta2,cbeta3
       double precision :: auxbeta1,auxbeta2 ! for recurr and death
-      double precision :: uniran !zbqlexp
+      double precision :: zbqlexp,uniran
       double precision, dimension(2):: bg1,bw1,bw2
       integer, dimension(ngmax):: idnum
       double precision, dimension(ngmax):: vecui
@@ -1766,24 +1764,24 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
 !c*****dace2
       double precision t0(NOBSMAX),t1(NOBSMAX),t1_S(NOBSMAX)
       integer c(NOBSMAX), cdc(NOBSMAX)
-      !integer nt0(NOBSMAX),nt1(NOBSMAX)
-      integer  nva1,nva2,nst!,nobs,nva,ndate
+      integer nt0(NOBSMAX),nt1(NOBSMAX)
+      integer  nva,nva1,nva2,ndate,nst!,nobs
       !common /dace2/t0,t1,c,cdc,nt0,nt1,nobs,nva,nva1,nva2,ndate,nst
 !c*****dace4
-      !integer  stra(NOBSMAX)
+      integer  stra(NOBSMAX)
       !common /dace4/stra
 !c*****ve1
-      double precision ve(NOBSMAX,nvarmax),ve2(NOBSMAX,nvarmax)
+      double precision ve(n_obs,ver),ve2(n_obs,ver)
       !common /ve1/ve,ve2
 !c*****dace3
-      !double precision  pe
+      double precision  pe
       integer  effet,nz1,nz2
       !common /dace3/pe,effet,nz1,nz2
 !c*****dace7
-      !double precision I_hess(npmax,npmax),H_hess(npmax,npmax)
-      !double precision Hspl_hess(npmax,npmax)
-      !double precision PEN_deri(npmax,1)
-      !double precision hess(npmax,npmax)
+      double precision I_hess(npmax,npmax),H_hess(npmax,npmax)
+      double precision Hspl_hess(npmax,npmax)
+      double precision PEN_deri(npmax,1)
+      double precision hess(npmax,npmax)
       !common /dace7/PEN_deri,I_hess,H_hess,Hspl_hess,hess
 !c*****contrib
       !common /contrib/ng       
@@ -1793,36 +1791,35 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
       !common /gpe/g,nig
       
 !c*****mem1
-      !double precision mm3(ndatemax),mm2(ndatemax)
-      !double precision mm1(ndatemax),mm(ndatemax)
+      double precision mm3(ndatemax),mm2(ndatemax)
+      double precision mm1(ndatemax),mm(ndatemax)
       !common /mem1/mm3,mm2,mm1,mm
 !c     %%%%%%%%%%%%% ANDERSEN-GILL %%%%%%%%%%%%%%%%%%%%%%%%% 
-      !integer AG
+      integer AG
       !common /andersengill/AG
 !c     %%%%%%%%%%%%% indic ALPHA %%%%%%%%%%%%%%%%%%%%%%%%% 
       integer indic_ALPHA
       !common /alpha/indic_ALPHA ! pour preciser un para en plus 
 !c**** theta/alpha
-      !double precision  theta !en exposant pour la frailty deces 
+      double precision  theta !en exposant pour la frailty deces 
       !common /thetaalpha/alpha,theta
 !c******indicateur de troncature
-      !integer :: indictronq     ! =0 si donnees non tronquées reellement
+      integer :: indictronq     ! =0 si donnees non tronquées reellement
       !common /troncature/indictronq
       
-!c******indicateur iteration
+! c******indicateur iteration
       integer  ibou
-      !common /boucle/ibou
-!c************FIN COMMON ***********************************
+      ! common /boucle/ibou
+! c************FIN COMMON ***********************************
       
-!c     nst: deux finctions de risque a estimer (meme bases de splines)
-!c     ist: appartenance aux strates
-!c icen=1: censure
-!c     ib: matrice de variance de beta chapeau
-!c     I_hess : -hessienne non inversee sur vraisemblance non penalisee
-!c     H_hess : inverse de -hessienne  sur vraisemblance penalisee
-      !Ajout SCL
-      !double precision::cens_C,x22,sigma_st,u_i,tempon
-      double precision::x22,sigma_st,u_i,tempon
+! c     nst: deux finctions de risque a estimer (meme bases de splines)
+! c     ist: appartenance aux strates
+! c icen=1: censure
+! c     ib: matrice de variance de beta chapeau
+! c     I_hess : -hessienne non inversee sur vraisemblance non penalisee
+! c     H_hess : inverse de -hessienne  sur vraisemblance penalisee
+      ! Ajout SCL
+      double precision::cens_C,x22,sigma_st,u_i,tempon
       double precision,dimension(:),allocatable::tempsD
       integer::Aretenir
       integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
@@ -1833,7 +1830,9 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
       double precision,dimension(:,:),allocatable::x_      
       
 !CCCCCCCCCCCCCCCCChosur9.f CCCCCCCCCCCCCCCCCCCCCCCC
-    if(affiche_stat==1)then
+	  don_simulS1 = 0.d0
+	  don_simul = 0.d0
+	      if(affiche_stat==1)then
       !write(*,*)'    ******************************************'
       !write(*,*)'  ****** DEBUT PROGRAMME FRAILTY.F**********'
       !write(*,*)'******************************************'
@@ -1869,10 +1868,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
       !write(4,*)'************ JOINT MODEL *************************'
       !write(4,*)'*** RECURRENT EVENTS and TERMINATING EVENT *******'
       !write(4,*)'**************************************************'
-      !write(4,*)'** nb de groupes=sujets =',ng 
-      !write(*,*)'** nb de groupes=sujets =',ng 
-      !write(4,*)'** deux fonctions de risque de base  = ',nst
-      !write(*,*)'** fonction de risque de base  = ',nst
+
     endif
 
 !c     !write(4,*)'** nb de simulations = ',nbou
@@ -1951,8 +1947,6 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
         !print*,"l'indice du jeu de données à retenitr doit etre inferieure au nombre de simulation"
         !stop
     endif
-
-
 !c*******************************************
 !c***** DEBUT SIMULATIONS *******************
 !c*******************************************
@@ -2025,7 +2019,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
         ! variable trialref
         don_simul(k:((k+NINT(n_i(i)))-1),trialref1)=i
         !!print*,don_simul(k:((k+NINT(n_i(i)))-1),trialref1)
-        k=int(k+n_i(i))
+        k=k+n_i(i)
     enddo
     
     !!print*,"covar=",covariance(don_simul(:,v_s1),don_simul(:,v_s1))
@@ -2035,7 +2029,6 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
     don_simulS1=don_simul
     ! call dblepr("n_i:", -1, n_i(:), size(n_i))
     ! call dblepr("don_simul:", -1, don_simul(n_obs,:), n_col)
-    
     do 1000 ibou=1,nbou 
         if(affiche_stat==1)then
             !write(*,*)'************ Generation NUMERO :      ',ibou
@@ -2081,7 +2074,6 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
                     vrai_theta=theta2
                 endif
            endif
-
 !!c---------------- X --------------------
 
 !!c-- parametres de la WEibull for recurrent events 
@@ -2109,10 +2101,6 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
          max_recu= 1
          moyui = 0.d0
         !close(10)
-!!c--------------------------------------------------------------
-!!c--------------------------------------------------------------
-!!c--------------------------------------------------------------
-
     do 30 ig=1,ng ! sur les groupes
             
         if (lognormal==0)then ! Gamma    
@@ -2132,7 +2120,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
         
         
 !!c---  variables explicatives par sujet
-            do 111 j=1,ver
+         do 111 j=1,ver
                 if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
                     tempon= uniran()
                 else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
@@ -2145,216 +2133,176 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
                else
                   v1(j) = 1.
                endif
- 111        continue
-            
-               x=0.d0
-               xdc=0.d0
-               cens=0.d0
+         111        continue		   
+         x=0.d0
+         xdc=0.d0
+         cens=0.d0
 
-               do 10 k=1,nrecurr ! observations max / sujet
-                  if(k.gt.max_recu)then
-                     max_recu=k 
-                  endif
+         do 10 k=1,nrecurr ! observations max / sujet
+			 if(k.gt.max_recu)then
+				max_recu=k 
+			 endif
 
-                  nobs=nobs+1   ! indice l ensemble des observations
-                  idnum(ig) = k
+             nobs=nobs+1   ! indice l ensemble des observations
+             idnum(ig) = k
 !c----------- CENSORING --------------------------------------------
                   !cens =  1.d0 + 250.d0*uniran() !scl voir plubas
               
 !c-----------RECURRENT --------------------------------------------
 !c---  genere temps recurrents a partir 2 var explic :
-    if (lognormal==0)then ! Gamma
-        !print*,"generation gamma avec 2 effets aleatoires correles au niveau essai non encore", &
-          !      "implementee suis au probleme de la loi gamma multivariee"
-        !stop
-    else ! lognormale
-        !ui represente les w_ij dans cette expression
-        if (lognormal==1)then !joint surrogate
-        if(frailt_base==1) then ! on tient compte des u_i
-        auxbeta1=ui+don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
-        auxbeta2=truealpha*ui+alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-        else ! on ne tient pas compte des u_i dans la generation des temps de survie
-        auxbeta1=ui+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
-        auxbeta2=truealpha*ui+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-        endif
-        else !(2)joint classique, 2007
-			! on ne tient pas compte des u_i dans la generation des temps de survie
-        auxbeta1=ui+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
-        auxbeta2=truealpha*ui+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-        endif
-        endif
+			if (lognormal==0)then ! Gamma
+				!print*,"generation gamma avec 2 effets aleatoires correles au niveau essai non encore", &
+				  !      "implementee suis au probleme de la loi gamma multivariee"
+				!stop
+			else ! lognormale
+				!ui represente les w_ij dans cette expression
+				if (lognormal==1)then !joint surrogate
+					if(frailt_base==1) then ! on tient compte des u_i
+						auxbeta1=ui+don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+						auxbeta2=truealpha*ui+alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+					else ! on ne tient pas compte des u_i dans la generation des temps de survie
+						auxbeta1=ui+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+						auxbeta2=truealpha*ui+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+					endif
+				else !(2)joint classique, 2007
+					! on ne tient pas compte des u_i dans la generation des temps de survie
+					auxbeta1=ui+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+					auxbeta2=truealpha*ui+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+				endif
+			endif
 
-        call weigui2(bw1(1),bw1(2),auxbeta1,gapx)
-!c**************gap time: 
-        x=gapx
-                 
-!c-----------DECES --------------------------------------------
-!c---     genere temps de dc a partir d une var explic :
-        call weigui2(bw2(1),bw2(2),auxbeta2,gapdc) 
-!c************** calendar time: 
-!c               xdc=xdc+gapdc
-!c**************  gap time: 
-        xdc=gapdc
-        tempsD(ig)=xdc
-                 !!print*,"xdc=",xdc,tempsD(i)
-                 
-         
-! scl============censure====================
-        cens=cens_A
-!c------------------------------------------------bilan:
-                ! if ((xdc.le.x).and.(xdc.le.cens)) then !deces
-                !    deltadc = 1
-                !    delta = 0
-                !    temps1 = xdc
-                !    nb_dc =nb_dc + 1
-                ! endif
-                
-                if(xdc.le.cens)then ! patient decede
-                    deltadc=1.d0
-                    temps1 = xdc
-                    nb_dc =nb_dc + 1
-                else    !patient censuree administrativement
-                    deltadc=0.d0
-                    temps1 = cens
-                    nb_cens =nb_cens + 1
-                endif
+				call weigui2(bw1(1),bw1(2),auxbeta1,gapx)
+		!c**************gap time: 
+				x=gapx
+						 
+		!c-----------DECES --------------------------------------------
+		!c---     genere temps de dc a partir d une var explic :
+				call weigui2(bw2(1),bw2(2),auxbeta2,gapdc) 
+		!c************** calendar time: 
+		!c               xdc=xdc+gapdc
+		!c**************  gap time: 
+				xdc=gapdc
+				tempsD(ig)=xdc
+						 !!print*,"xdc=",xdc,tempsD(i)
+						 
+				 
+		! scl============censure====================
+				cens=cens_A
+		!c------------------------------------------------bilan:
+						! if ((xdc.le.x).and.(xdc.le.cens)) then !deces
+						!    deltadc = 1
+						!    delta = 0
+						!    temps1 = xdc
+						!    nb_dc =nb_dc + 1
+						! endif
+						
+						if(xdc.le.cens)then ! patient decede
+							deltadc=1.d0
+							temps1 = xdc
+							nb_dc =nb_dc + 1
+						else    !patient censuree administrativement
+							deltadc=0.d0
+							temps1 = cens
+							nb_cens =nb_cens + 1
+						endif
+						 
+				
+				!on construit les temps de progression
+				if(x < temps1)then ! evenement avant la censure
+					delta=1.d0
+					temps1_S = x
+					nb_recur =nb_recur + 1
+					nig(ig) = nig(ig)+1 !nb events recurrents
+				else
+					if((x.eq.cens).and.(deltadc==0.d0)) then !evenement a la date de censure et patient vivant
+						delta=1.d0
+						temps1_S = x
+						nb_recur =nb_recur + 1
+						nig(ig) = nig(ig)+1 !nb events recurrents
+					else ! progression le meme jour que le deces ou sans progression
+						delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+						temps1_S=temps1! et on censure a la date de deces(ou censure)
+					endif
+				endif
+				
+				
 
+		!c****** for gap time :         
+					   t0(nobs) = 0.d0
+		!c fin gap
+					   t1(nobs) = temps1
+					   t1_S(nobs) = temps1_S
+					   c(nobs) = delta
+					   cdc(nobs) = deltadc
+					   g(nobs)= ig
+					   iii = 0
+					   iii2 = 0
+					   do 110 ii = 1,ver
+						  if(filtre(ii).eq.1)then
+							 iii = iii + 1
+							 ve(nobs,iii) = dble(v1(ii))
+						  endif
+						  if(filtre2(ii).eq.1)then
+							 iii2 = iii2 + 1
+							 ve2(nobs,iii2) = dble(v1(ii))
+						  endif
+		 110           continue
+	           !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
+				don_simulS1(ig,initTime1)=t0(nobs)
+				don_simulS1(ig,timeS1)=t1_S(nobs)
+				don_simulS1(ig,statusS1)=c(nobs)
+				don_simulS1(ig,Patienref1)=g(nobs)
+                don_simulS1(ig,trt1)=ve2(nobs,1)
+				don_simulS1(ig,w_ij1)=ui		   
+				   
+                don_simul(ig,initTime1)=t0(nobs)
+				don_simul(ig,timeT1)=t1(nobs)
+				don_simul(ig,statusT1)=cdc(nobs)
+				don_simul(ig,Patienref1)=g(nobs)
+				don_simul(ig,trt1)=ve2(nobs,1)
+				don_simul(ig,w_ij1)=ui            
 
-                ! if ((cens.le.x).and.(cens.le.xdc)) then ! censure
-                !    deltadc = 0
-                !    delta = 0
-                 !   temps1 = cens
-                 !   nb_cens =nb_cens + 1
-                ! endif
+				!c****************************************************
+				!c******** FIN generation des donnees****************
+				!c****************************************************
+          
+				if (maxtemps.lt.t1(nobs))then
+				   maxtemps = t1(nobs)
+				endif  
 
-                ! if ((x.le.cens).and.(x.le.xdc)) then ! recurrent event
-                !    deltadc = 0
-                !    delta = 1
-                !   temps1 = x
-                !    nb_recur =nb_recur + 1
-                !    nig(ig) = nig(ig)+1 !nb events recurrents
-                ! endif  
-                 
-        
-        !on construit les temps de progression
-        if(x < temps1)then ! evenement avant la censure
-            delta=1.d0
-            temps1_S = x
-            nb_recur =nb_recur + 1
-            nig(ig) = nig(ig)+1 !nb events recurrents
-        else
-            if((x.eq.cens).and.(deltadc==0.d0)) then !evenement a la date de censure et patient vivant
-                delta=1.d0
-                temps1_S = x
-                nb_recur =nb_recur + 1
-                nig(ig) = nig(ig)+1 !nb events recurrents
-            else ! progression le meme jour que le deces ou sans progression
-                delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
-                temps1_S=temps1! et on censure a la date de deces(ou censure)
-            endif
-        endif
-        
-        
+				if (delta.eq.0.d0)then ! deces ou censure
+				   goto 30          ! on change de sujet
+				endif				   
+		   10      continue                   !observations par sujet
+		   30   continue                  !sujets=groupes		   
+			  if(ibou.eq.Aretenir)then
+					if(affiche_stat==1)then
+						!write(*,*)'** nombre total d observations',nobs
+						!write(*,*)"** nb d'evenements surrogate",nb_recur
+						!write(*,*)'** nb donnees censurees ',nb_cens
+						!write(*,*)'** nb deces ',nb_dc
 
-!c****** for gap time :         
-               t0(nobs) = 0.d0
-!c fin gap
-               t1(nobs) = temps1
-               t1_S(nobs) = temps1_S
-               c(nobs) = delta
-               cdc(nobs) = deltadc
-               g(nobs)= ig
-               iii = 0
-               iii2 = 0
-               do 110 ii = 1,ver
-                  if(filtre(ii).eq.1)then
-                     iii = iii + 1
-                     ve(nobs,iii) = dble(v1(ii))
-                  endif
-                  if(filtre2(ii).eq.1)then
-                     iii2 = iii2 + 1
-                     ve2(nobs,iii2) = dble(v1(ii))
-                  endif
- 110           continue
-
-!c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
-            don_simulS1(ig,initTime1)=t0(nobs)
-            don_simulS1(ig,timeS1)=t1_S(nobs)
-            don_simulS1(ig,statusS1)=c(nobs)
-            don_simulS1(ig,Patienref1)=g(nobs)
-            don_simulS1(ig,trt1)=ve2(nobs,1)
-            don_simulS1(ig,w_ij1)=ui
-            
-            don_simul(ig,initTime1)=t0(nobs)
-            don_simul(ig,timeT1)=t1(nobs)
-            don_simul(ig,statusT1)=cdc(nobs)
-            don_simul(ig,Patienref1)=g(nobs)
-            don_simul(ig,trt1)=ve2(nobs,1)
-            don_simul(ig,w_ij1)=ui
-            
-            ! if(ibou.eq.Aretenir)then
-            !    open(9,file="parametres.txt")
-            !    !write(9,112)(t0(nobs)),t1_S(nobs),c(nobs),t1(nobs),cdc(nobs)&
-            !       ,g(nobs),int(ve(nobs,1))&
-            !        ,int(ve(nobs,2)),int(ve2(nobs,1))
-! 112                 format(f7.1,f7.1,I2,f7.1,I2,I5,I2,I2,I2)
-               !!print*,"size(g)",size(g)
-            !    open(13,file="gastadv_T.txt")
-            !    !write(13,113)1,g(nobs),int(ve2(nobs,1)),int(t0(nobs)),t1(nobs),cdc(nobs)
-                    
-! 113            format(I5,I5,I2,I2,f7.1,I2)
-            !    open(8,file="gastadv_S.txt")
-            !    !write(8,1131)1,g(nobs),int(ve(nobs,1)),int(t0(nobs)),t1_S(nobs),c(nobs)!&
-                    !,int(ve(nobs,2))
- !1131           format(I5,I5,I2,I2,f7.1,I2)
-            ! endif
-!c******************************************************************
-!c            
-            if (maxtemps.lt.t1(nobs))then
-               maxtemps = t1(nobs)
-            endif  
-!c         !write(*,*)'*données**',t0(ig),t1(ig),c(ig),ve(ig,1),ve(ig,2),ig
-
-            if (delta.eq.0.d0)then ! deces ou censure
-               goto 30          ! on change de sujet
-            endif
- 10      continue                   !observations par sujet
- 30   continue                  !sujets=groupes
- !                         !print*,"suis la"
-      if(ibou.eq.Aretenir)then
-        if(affiche_stat==1)then
-            !write(*,*)'** nombre total d observations',nobs
-            !write(*,*)"** nb d'evenements surrogate",nb_recur
-            !write(*,*)'** nb donnees censurees ',nb_cens
-            !write(*,*)'** nb deces ',nb_dc
-
-            !write(*,*)'** proportion de deces (en %) ',nb_dc*100.d0/nobs
-            !write(*,*)'** proportion de surrogate (en %) ',nb_recur*100.d0/nobs     
-            !write(4,*)'** nombre total d observations',nobs
-            !write(4,*)"** nb d'evenements surrogate",nb_recur
-            !write(4,*)'** nb donnees censurees ',nb_cens
-            !write(4,*)'** nb deces ',nb_dc
-            !write(4,*)'** proportion de surrogate (en %) ',nb_recur*100.d0/nobs
-            !write(4,*)'** proportion de deces (en %) ',nb_dc*100.d0/nobs
-        endif
-      moy_idnum=0
-      do 444 jj=1,ng
-         moy_idnum =moy_idnum + idnum(jj)
- 444     continue
-          moy_idnum =moy_idnum / ng
-    !  !write(*,*)'** nb moyen d observations par sujet ',moy_idnum,ng
-    !  !write(4,*)'** nb moyen d observations par sujet ',moy_idnum
-      
-      endif
-!c****************************************************
-!c******** FIN generation des donnees****************
-!c****************************************************
-
-!c=========     on retourne a l'iteration suivante
- 1000 continue
-    ! scl============censure conseillee pour la proportion souhaitee de censure==
-        !!print*,tempsD
-        call percentile_scl(tempsD,ng,1.d0-propC,cens)
+						!write(*,*)'** proportion de deces (en %) ',nb_dc*100.d0/nobs
+						!write(*,*)'** proportion de surrogate (en %) ',nb_recur*100.d0/nobs     
+						!write(4,*)'** nombre total d observations',nobs
+						!write(4,*)"** nb d'evenements surrogate",nb_recur
+						!write(4,*)'** nb donnees censurees ',nb_cens
+						!write(4,*)'** nb deces ',nb_dc
+						!write(4,*)'** proportion de surrogate (en %) ',nb_recur*100.d0/nobs
+						!write(4,*)'** proportion de deces (en %) ',nb_dc*100.d0/nobs
+					endif
+				  moy_idnum=0
+				  do 444 jj=1,ng
+					 moy_idnum =moy_idnum + idnum(jj)
+				  444     continue
+					  moy_idnum =moy_idnum / ng
+				!  !write(*,*)'** nb moyen d observations par sujet ',moy_idnum,ng
+				!  !write(4,*)'** nb moyen d observations par sujet ',moy_idnum	  
+			  endif		   		   
+	!c=========     on retourne a l'iteration suivante
+	 1000 continue
+     ! scl============censure conseillee pour la proportion souhaitee de censure==
+     call percentile_scl(tempsD,ng,1.d0-propC,cens)
         if(affiche_stat==1)then
             !print*,"la censure conseillée pour avoir:",propC*100,"% de personnes censurée vaut:",cens
             !print*,"la max de temps de deces vaux:",maxval(tempsD)
@@ -2362,6 +2310,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
     deallocate(tempsD,sigma,mu,x_)
     !close(2)
     !close(4)
+ 
 endsubroutine Generation_surrogate !FIN prog principal
 
 !==============================================================================================================================
@@ -3275,6 +3224,7 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     deallocate(vi,usim,vc)
     return
 end subroutine rmvnorm
+
 !subroutine pour la factorisation de cholesky 
 
 subroutine Cholesky_Factorisation(vc)
@@ -3306,12 +3256,12 @@ subroutine Cholesky_Factorisation(vc)
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
         ! stop
     else ! on retourne un vecteur de 0 car pas possible de transformer
-    do j=1,maxmes
-    do k=1,j
-    VC(j,k)=Vi(k+j*(j-1)/2)
-    end do
-    end do
-    end if
+		do j=1,maxmes
+			do k=1,j
+				VC(j,k)=Vi(k+j*(j-1)/2)
+			end do
+		end do    
+	end if
     
 end subroutine Cholesky_Factorisation
 
