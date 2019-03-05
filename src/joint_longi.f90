@@ -4710,7 +4710,7 @@ subroutine rmvnorm2(mu,vc1,nsim,nb1,vcdiag,ysim)
     !=============debut de la fonction=============================
     !!print*,vc
     !stop
-
+    ier=0
     x22=0.d0
     maxmes=size(vc1,2)
     allocate(vi(maxmes*(maxmes+1)/2),usim((size(vc1,2))),vc(size(vc1,1),size(vc1,2)))
@@ -4729,6 +4729,8 @@ subroutine rmvnorm2(mu,vc1,nsim,nb1,vcdiag,ysim)
         CALL DMFSD(Vi,maxmes,eps,ier) ! si matice diagonale on na pas besoin de ceci
     end if
     !!print*,vi
+   
+    
     if (ier.eq.-1) then
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
         !stop
@@ -4819,7 +4821,15 @@ end subroutine rmvnorm2
       dpiv=0.d0
       if (n-1.lt.0) goto 12
       if (n-1.ge.0) ier=0
-!
+
+       open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+         write(2,*)' ier', ier
+    !       write(2,*)'ysim',ysim
+   !        write(2,*)'nsim',nsim
+    !    write(2,*)'int',int
+    !       write(2,*)'fraili',fraili
+            close(2)
+      !
 !   INITIALIZE DIAGONAL-LOOP
 !
       kpiv=0
