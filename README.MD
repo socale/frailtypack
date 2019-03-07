@@ -1,7 +1,7 @@
 General Frailty Models: Shared, Joint and Nested Frailty Models with Prediction, Evaluation of Failure-Time Surrogate Endpoints
 ================
 Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, Agnieszka Krol and Casimir L. Sofeu
-10 dec 2018
+07 mars 2019
 
 Description:
 ============
@@ -64,10 +64,3 @@ Check resullt on branch Master
 Travis [![Travis-CI Build Status](https://travis-ci.org/socale/frailtypack.svg?branch=master)](https://travis-ci.org/socale/frailtypack)
 
 AppVeyor [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/socale/frailtypack?branch=master&svg=true)](https://ci.appveyor.com/project/socale/frailtypack)
-
-Check resullt on branch surrogacy\_submetted\_3-0-3
----------------------------------------------------
-
-Travis [![Travis-CI Build Status](https://travis-ci.org/socale/frailtypack.svg?branch=surrogacy_submetted_3-0-3)](https://travis-ci.org/socale/frailtypack)
-
-AppVeyor [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/socale/frailtypack?branch=surrogacy_submetted_3-0-3&svg=true)](https://ci.appveyor.com/project/socale/frailtypack)
