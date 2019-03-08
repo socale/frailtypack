@@ -37,7 +37,7 @@
   #    }
   #  }
   #}
-
+  
   if (!is.null(cl <- x$call)){
     cat("Call:\n")
     dput(cl)
@@ -261,8 +261,8 @@
 
 
     cat("Association parameters: \n")
-    if(x$link=='Random-effects'){
-      tab.Asso <- cbind(x$eta, x$se.eta, x$eta/x$se.eta, ifelse(signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1)))
+    if(x$link=='Random-effects'){ # modif next line because bug when highly significant association
+      tab.Asso <- cbind(x$eta, x$se.eta, x$eta/x$se.eta, ifelse(signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1) == 0, 0, signif(1 - pchisq((x$eta/x$se.eta)^2, 1), digits - 1)))
 
       if(sum(tab.Asso[,4]<1e-16)>1){
         d1 <- dim(tab.Asso)[1]

@@ -1800,7 +1800,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     size2 <- mt1
     
-
+if(link0==2){
 # Current-level association structure:
 # we need to evaluate the biomarker value at multiple time-points to approximate the cumulative hazard
 # time-interactions are particularly tricky to handle (especially in case of non-linear time trend)
@@ -1911,7 +1911,10 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }else{
     numInteracB=0
     }
-    
+}else{
+  numInteracB=0
+  numInterac=0
+}
     
     if(numInterac+numInteracB==0){
     numInterac=1
@@ -1973,7 +1976,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
   # EPS=c(LIMparam,LIMlogl,LIMderiv) = convergence threshold for Marquardt
   # GH=c(as.integer(GH),as.integer(n.nodes)) = indicator of gauss-hermite (0=standard,1=PA,2=hrmsym) and nodes number
   # paGH=cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)) = matrix of pseudo-adaptive gauss-hermite initialization from LME
-  
 
         ans <- .Fortran(C_joint_longi,
 			VectNsujet = as.integer(c(1,nsujety, nsujetB)),

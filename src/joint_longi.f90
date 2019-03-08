@@ -1593,7 +1593,7 @@
                             end do
                     else
                         do i=1,ng
-                            linearpreddc(i)=Xbetadc(1,i)+dot_product(etaydc,re_pred(i,1:nb1))
+                            linearpreddc(i)=Xbetadc(1,i)+dot_product(etaydc,re_pred(i,1:nb1)) ! invalid read of size 8
                         end do
                     end if
                 endif
