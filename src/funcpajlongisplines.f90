@@ -8,8 +8,8 @@
         use lois_normales
         use tailles
         use comon
-           ! use Autres_fonctions, only:rmvnorm!add Monte-carlo
-        use var_surrogate, only: a_deja_simul,nbre_sim,Chol,Vect_sim_MC!,frailt_base,nb_procs
+    use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran! Monte-carlo random generation
+        use var_surrogate, only: a_deja_simul,nbre_sim,Chol,Vect_sim_MC,graine,aleatoire!,frailt_base,nb_procs
         !use ParametresPourParallelisation
             use residusM
             use optim
@@ -61,6 +61,8 @@
         double precision,dimension(nb1)::mu_mc
     double precision,dimension(nb1,nb1)::vcjm
     double precision,dimension(nodes_number,nb1)::fraili
+    double precision::SX,xMC ! for random generation
+    integer::m
             npp = np
         eps_s = 1.d-7
     !    print*,'debut funcpa'
@@ -356,7 +358,7 @@
             Chol(2,1)=bh(np-nva-nb_re+2)
             !Chol(1,2)=bh(np-nva-nb_re+2)
             Chol(2,2)=bh(np-nva-nb_re+3)
-            else if(nb1.eq.2) then
+            else if(nb1.eq.3) then
             Chol=0.d0 
             Chol(1,1)=bh(np-nva-nb_re+1)
             Chol(2,1)=bh(np-nva-nb_re+2)
@@ -538,19 +540,7 @@
             end if
             xea = 0.d0
             
-  !         open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-  !      write(2,*)'nb1',nb1
-  !      write(2,*)'typeJoint',typeJoint
-  !      write(2,*)'element',element
-  !      write(2,*)'varcov_marg',varcov_marg
-  !      write(2,*)'X2',X2
-  !      write(2,*)'bh',bh
-  !      write(2,*)'mu',mu
-  !      write(2,*)' ut1', ut1
-  !      write(2,*)'dut1',dut1
-  !      write(2,*)'ut2',ut2
-  !      write(2,*)'dut2',dut2
-  !     close(2)
+
 
 
     if(TwoPart.eq.1) then
@@ -645,20 +635,49 @@
        !    write(2,*)'fraili',fraili
        !      close(2)
         if(a_deja_simul.eq.0) then
-            call rmvnorm2(mu_mc,vcjm,nbre_sim,nb1,1,fraili)
-            a_deja_simul=1 ! pour dire qu'on ne simule plus
-            
-            allocate(Vect_sim_MC(nodes_number,nb1))
-            Vect_sim_MC=fraili
+          aleatoire=1 ! 1=full random / 0=seed
+          graine=0 !seed
+          l=1
+        allocate(Vect_sim_MC(nodes_number,nb1))
+            call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation pour le seed
+            do while(l.le.nbre_sim)
+                SX=1.d0
+                xMC=0.d0
+                call bgos(SX,0,Vect_sim_MC(l,1),xMC,0.d0)
+        if(nb1.gt.1) then
+            do m=2,nb1
+                 SX=1.d0
+                 call bgos(SX,0,Vect_sim_MC(l,m),xMC,0.d0)
+             end do
+        endif
+                l=l+1
+            end do    
+        a_deja_simul=1 ! pour dire qu'on ne simule plus
         endif            
-        
+
+        l=1
+    do while(l.le.nbre_sim) ! uniform random multiplied by variance
+!        if(nb1.eq.1)then
+!            fraili(l,1)=0.d0+MATMUL(vcjm,Vect_sim_MC(l,1)) 
+!        else
+            fraili(l,:)=0.d0+MATMUL(vcjm,Vect_sim_MC(l,1:nb1))
+!        endif
+        l=l+1
+    end do
+
         !calcul de l'integrale par monte carlo pour l'integrale multiple
         if(typeJoint.eq.2.and.nb1.eq.1) then
-            call MC_JointModels(int, funcG, nb1,Vect_sim_MC)
+            call MC_JointModels(int, funcG, nb1,fraili)
         else if(typeJoint.eq.2.and.nb1.eq.2) then
-            call MC_JointModels(int, funcG, nb1,Vect_sim_MC)
+            call MC_JointModels(int, funcG, nb1,fraili)
         end if
-
+ !         open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+ !        write(2,*)' Vect_sim_MC(l,1)', Vect_sim_MC(:,1)
+ !         write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,2)
+ !           write(2,*)'fraili1',fraili(:,1)
+ !           write(2,*)'fraili2',fraili(:,2)
+ !            write(2,*)'int',int
+ !    close(2)
         if(int.eq.0.d0) then
             integrale4(ig)=0.1d-300
         else
@@ -668,13 +687,7 @@
     
     
     
-    !                        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-   !      write(2,*)' vcdiag', vcdiag
-   !        write(2,*)'ysim',ysim
-   !        write(2,*)'nsim',nsim
-    !    write(2,*)'int',int
-    !       write(2,*)'fraili',fraili
-    !         close(2)
+
 
             
           
