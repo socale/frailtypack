@@ -4568,7 +4568,7 @@ end if
         end do
     end if
        
-       if (methodGH.ne.5) then
+       if (methodGH.ne.3) then
     if(nb1.eq.1) then
             if(link.eq.1) then
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)& !longi part
