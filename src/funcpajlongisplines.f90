@@ -635,8 +635,8 @@
        !    write(2,*)'fraili',fraili
        !      close(2)
         if(a_deja_simul.eq.0) then
-          aleatoire=1 ! 1=full random / 0=seed
-          graine=0 !seed
+          aleatoire=0 ! 1=full random / 0=seed
+          graine=1234 !seed
           l=1
         allocate(Vect_sim_MC(nodes_number,nb1))
             call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation pour le seed
@@ -671,13 +671,14 @@
         else if(typeJoint.eq.2.and.nb1.eq.2) then
             call MC_JointModels(int, funcG, nb1,fraili)
         end if
- !         open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
- !        write(2,*)' Vect_sim_MC(l,1)', Vect_sim_MC(:,1)
- !         write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,2)
- !           write(2,*)'fraili1',fraili(:,1)
- !           write(2,*)'fraili2',fraili(:,2)
- !            write(2,*)'int',int
- !    close(2)
+!          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+!        write(2,*)' Vect_sim_MC(l,1)', Vect_sim_MC(:,1)
+!          write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,2)
+!            write(2,*)'fraili1',fraili(:,1)
+!            write(2,*)'fraili2',fraili(:,2)
+!            write(2,*)'vcjm',vcjm
+!             write(2,*)'int',int
+!     close(2)
         if(int.eq.0.d0) then
             integrale4(ig)=0.1d-300
         else

@@ -4568,13 +4568,13 @@ end if
         end do
     end if
        
-       if (methodGH.ne.2) then
+       if (methodGH.ne.5) then
     if(nb1.eq.1) then
             if(link.eq.1) then
-        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                    - (Xea**2.d0)/(2.d0*ut(1,1)**2) &
-                    - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
-                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea
+        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)& !longi part
+                    - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
+                    - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
+                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
         else
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
@@ -4605,13 +4605,13 @@ end if
         if(link.eq.1) then
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                   -uiiui(1)/2.d0-0.5d0*dlog(det)&
-                        -real(nb1)/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
+                        -dble(nb1)/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
                      +Bscalar& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
         else
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                        -uiiui(1)/2.d0-(real(nb1)/2.d0)*dlog(det*2.d0*pi)&
+                        -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
@@ -4620,12 +4620,14 @@ end if
         else ! Monte-carlo
             if(nb1.eq.1) then
             if(link.eq.1) then
-        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                    -dlog(2.d0*pi)/2.d0&
-                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea
+        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)& !longi part
+                   ! - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
+                   ! - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
+                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
         else
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                    -dlog(2.d0*pi)/2.d0&
+                    !    - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
+                    !- dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
                         + cdc(i)*etaydc(1)*current_meanG(1)
     
@@ -4634,14 +4636,16 @@ end if
         else if(nb1.eq.2) then
         if(link.eq.1) then
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                        -dlog(2.d0*pi)&
+                    !-uiiui(1)/2.d0-0.5d0*dlog(det)&
+                    !    -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
                         + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
         else
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                        -dlog(2.d0*pi)&
+                        !-uiiui(1)/2.d0-0.5d0*dlog(det)&
+                        !-dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
@@ -4649,13 +4653,11 @@ end if
         else if(nb1.eq.3) then
         if(link.eq.1) then
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                        -real(nb1)/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
                      +Bscalar& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
         else
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
--(real(nb1)/2.d0)*dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
@@ -4730,11 +4732,11 @@ end if
          !$OMP END PARALLEL DO
     end select
     ss=ss/dble(nsimu) 
-!          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
-!         write(2,*)' intpoints(l,1)', intpoints(:,1)
-!          write(2,*)'intpoints(l,2)',intpoints(:,2)
-!            write(2,*)'ss',ss
-!     close(2)
+    !      open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+    !     write(2,*)' intpoints(l,1)', intpoints(:,1)
+    !      write(2,*)'intpoints(l,2)',intpoints(:,2)
+    !        write(2,*)'ss',ss
+    ! close(2)
     return 
   end subroutine MC_JointModels
   
