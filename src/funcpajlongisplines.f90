@@ -627,13 +627,13 @@
         vcjm=0.d0
         nbre_sim=nodes_number
         vcjm = Chol
-       ! open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-       !  write(2,*)' vcjm', vcjm
-       !   write(2,*)'mu_mc',mu_mc
-       !    write(2,*)'a_deja_simul',a_deja_simul
-       !    write(2,*)'nbre_sim',nbre_sim
-       !    write(2,*)'fraili',fraili
-       !      close(2)
+     !   open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+     !    write(2,*)' vcjm', vcjm
+     !     write(2,*)'mu_mc',mu_mc
+     !      write(2,*)'a_deja_simul',a_deja_simul
+     !      write(2,*)'nbre_sim',nbre_sim
+     !      write(2,*)'fraili',fraili
+     !        close(2)
         if(a_deja_simul.eq.0) then
           aleatoire=0 ! 1=full random / 0=seed
           graine=1234 !seed
@@ -666,18 +666,16 @@
     end do
 
         !calcul de l'integrale par monte carlo pour l'integrale multiple
-        if(typeJoint.eq.2.and.nb1.eq.1) then
-            call MC_JointModels(int, funcG, nb1,fraili)
-        else if(typeJoint.eq.2.and.nb1.eq.2) then
-            call MC_JointModels(int, funcG, nb1,fraili)
-        end if
+ call MC_JointModels(int, funcG, nb1,fraili)
 !          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
 !        write(2,*)' Vect_sim_MC(l,1)', Vect_sim_MC(:,1)
 !          write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,2)
+!          write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,3)
 !            write(2,*)'fraili1',fraili(:,1)
 !            write(2,*)'fraili2',fraili(:,2)
+!            write(2,*)'fraili2',fraili(:,3)
 !            write(2,*)'vcjm',vcjm
-!             write(2,*)'int',int
+!             write(2,*)'nb1',nb1
 !     close(2)
         if(int.eq.0.d0) then
             integrale4(ig)=0.1d-300
@@ -685,9 +683,7 @@
             integrale4(ig) =int !result(1) !
         end if
     end if    
-    
-    
-    
+
 
 
             

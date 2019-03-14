@@ -4516,6 +4516,7 @@ else if(nb1.eq.3) then
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
 end if
+
                         Bcurrentvalue=0.d0
                         Bcv=0.d0
 
@@ -4568,6 +4569,16 @@ end if
         end do
     end if
        
+  !  open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+  !       write(2,*)' z1curG', z1curG
+  !        write(2,*)'z1BcurG',z1BcurG
+  !        write(2,*)'x2curG',x2curG
+  !        write(2,*)'X2BcurG',X2BcurG
+  !          write(2,*)'positionVarT',positionVarT
+  !           write(2,*)'yscalar',yscalar
+  !          write(2,*)'Bscalar',Bscalar
+  !  close(2)
+
        if (methodGH.ne.3) then
     if(nb1.eq.1) then
             if(link.eq.1) then
@@ -4650,7 +4661,7 @@ end if
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         end if
-        else if(nb1.eq.3) then
+        else if(nb1.gt.2) then
         if(link.eq.1) then
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                      +Bscalar& ! add TwoPart
@@ -4730,13 +4741,27 @@ end if
                 ss=ss+auxfunca
             end do
          !$OMP END PARALLEL DO
+         
+       case(3)
+
+        ii=0
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+            do ii=1,nsimu
+                auxfunca=func2(intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
+                ss=ss+auxfunca
+            end do
+         !$OMP END PARALLEL DO
     end select
     ss=ss/dble(nsimu) 
-    !      open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
-    !     write(2,*)' intpoints(l,1)', intpoints(:,1)
-    !      write(2,*)'intpoints(l,2)',intpoints(:,2)
-    !        write(2,*)'ss',ss
-    ! close(2)
+!          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+!         write(2,*)' intpoints(l,1)', intpoints(:,1)
+!          write(2,*)'intpoints(l,2)',intpoints(:,2)
+!          write(2,*)'intpoints(l,2)',intpoints(:,3)
+!            write(2,*)'ss',ss
+!            write(2,*)'nsimu',nsimu
+!            write(2,*)'ss',ss
+!     close(2)
     return 
   end subroutine MC_JointModels
   
