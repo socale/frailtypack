@@ -1946,11 +1946,11 @@ end if
             do j=1,nnodes
                 if (choix.eq.3) then
                         if(typeJoint.eq.2.and.nb1.eq.1) then
-                            auxfunca=funcG(0.d0,0.d0,xx1(j))
+                            auxfunca=funcG(0.d0,0.d0,0.d0,0.d0,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.2) then
-                            auxfunca = funcG(0.d0,frailpol,xx1(j))
+                            auxfunca = funcG(0.d0,0.d0,0.d0,frailpol,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.3) then
-                            auxfunca = funcG(frailpol2,frailpol,xx1(j))
+                            auxfunca = funcG(0.d0,0.d0,frailpol2,frailpol,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.4) then
                             auxfunca = funcTP4J(frailpol3,frailpol2,frailpol,xx1(j)) ! add TwoPart
                     else if(typeJoint.eq.3.and.nea.eq.2) then
@@ -1970,11 +1970,11 @@ end if
                         do j=1,nnodes
                 if (choix.eq.3) then
                         if(typeJoint.eq.2.and.nb1.eq.1) then
-                            auxfunca=funcG(0.d0,0.d0,xx1(j))
+                            auxfunca=funcG(0.d0,0.d0,0.d0,0.d0,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.2) then
-                            auxfunca = funcG(0.d0,frailpol,xx1(j))
+                            auxfunca = funcG(0.d0,0.d0,0.d0,frailpol,xx1(j))
                     else if(typeJoint.eq.2.and.nb1.eq.3) then
-                            auxfunca = funcG(frailpol2,frailpol,xx1(j))
+                            auxfunca = funcG(0.d0,0.d0,frailpol2,frailpol,xx1(j))
                     else if(typeJoint.eq.3.and.nea.eq.2) then
                             auxfunca = func8J(frailpol,xx1(j))
                     else if(typeJoint.eq.3.and.nea.eq.3) then
@@ -4177,24 +4177,45 @@ x2curG=0.d0
 end if
 end if
 
-        Z1curG(1,1) = 1.d0
-        if(nb1.eq.2)  Z1curG(1,2) =tps
+        z1YcurG(1,1) = 1.d0
+        if(nb1.eq.2)  z1YcurG(1,2) =tps
      
             current_meanG = 0.d0
                     if(TwoPart.eq.1) then
-                        if(nb1.eq.2) then
-                            z1YcurG(1,1) = 1.d0
-                            z1YcurG(1,2) = 0.d0
-                            z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
-                            z1BcurG(1,2) = 1.d0
-                        else if(nb1.eq.3) then
-                            z1YcurG(1,1) = 1.d0 !
-    z1YcurG(1,2) = tps
+if(nb1.eq.2) then
+    z1YcurG(1,1) = 1.d0 ! random intercept only for now
+    z1YcurG(1,2) = 0.d0!z1Ycur(1,2) = t1dc(i)
+    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1BcurG(1,2) = 1.d0
+else if(nb1.eq.3) then
+    z1YcurG(1,1) = 1.d0 !
+    z1YcurG(1,2) = t1dc(i)
     z1YcurG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
-                        end if
+else if(nb1.eq.4) then
+    z1YcurG(1,1) = 1.d0 !
+    z1YcurG(1,2) = t1dc(i)
+    z1YcurG(1,3) = 0.d0
+    z1YcurG(1,4) = 0.d0
+    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1BcurG(1,2) = 0.d0
+    z1BcurG(1,3) = 1.d0
+    z1BcurG(1,4) = t1dc(i)
+else if(nb1.eq.5) then
+    z1YcurG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
+    z1YcurG(1,2) = 0.d0!f1(t)
+    z1YcurG(1,3) = 0.d0 !f2(t)
+    z1YcurG(1,4) = 0.d0 
+    z1YcurG(1,5) = 0.d0
+    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1BcurG(1,2) = 0.d0
+    z1BcurG(1,3) = 0.d0
+    z1BcurG(1,3) = 1.d0
+    z1BcurG(1,3) = t1dc(i)
+
+end if
                         
 Bcurrentvalue=0.d0
 Bcv=0.d0
@@ -4211,9 +4232,9 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
                     else if(TwoPart.eq.0) then
             if(nea.gt.1) then
                 current_meanG =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
-                                            +dot_product(Z1curG(1,1:nb1),frail(1:nb1))
+                                            +dot_product(z1YcurG(1,1:nb1),frail(1:nb1))
             else
-                current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+Z1curG(1,1:nb1)*frail(1:nb1)
+                current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1YcurG(1,1:nb1)*frail(1:nb1)
             end if
                     end if
 
@@ -4269,7 +4290,7 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
     
     
     
-            double precision function funcG(frail3,frail2,frail)
+            double precision function funcG(frail5,frail4,frail3,frail2,frail)
     
         use tailles
         !use comongroup,only:vet2!vet
@@ -4282,7 +4303,7 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
         use donnees_indiv
         IMPLICIT NONE
     
-        double precision,intent(in)::frail,frail2,frail3
+        double precision,intent(in)::frail,frail2,frail3,frail4,frail5
         double precision, dimension(numpat)::auxG
         double precision, dimension(1,nva3)::x2curG
         double precision, dimension(1,nvaB)::x2BcurG
@@ -4359,7 +4380,78 @@ else if(nb1.eq.3) then
         Xea22(2) = frail2
         Xea22(3) = frail3
             end if
-end if            
+else if(nb1.eq.4) then
+
+        matb_chol = 0.d0
+            matb_chol(1,1) = invBi_chol(i,1)
+            matb_chol(2,1) =  invBi_chol(i,2)
+            matb_chol(2,2) =  invBi_chol(i,3)
+            matb_chol(3,1) =  invBi_chol(i,4)
+            matb_chol(3,2) =  invBi_chol(i,5)
+            matb_chol(3,3) =  invBi_chol(i,6)
+            matb_chol(4,1) =  invBi_chol(i,7)
+            matb_chol(4,2) =  invBi_chol(i,8)
+            matb_chol(4,3) =  invBi_chol(i,9)
+            matb_chol(4,4) =  invBi_chol(i,10)
+        if(methodGH.eq.1) then
+            XeaG(1) = frail
+            XeaG(2) = frail2
+            XeaG(3) = frail3
+            XeaG(4) = frail4
+            Xea22(1:nb1) = b_lme(i,1:nb1) +  Matmul(matb_chol,XeaG)*sqrt(2.d0)
+            Xea2(1:nb1,1) = Xea22(1:nb1)
+    
+            else
+            Xea2(1,1) = frail!
+        Xea2(2,1) = frail2!
+        Xea2(3,1) = frail3!
+        Xea2(4,1) = frail4!
+        Xea22(1) = frail!
+        Xea22(2) = frail2
+        Xea22(3) = frail3
+        Xea22(4) = frail4
+            end if
+else if(nb1.eq.5) then
+
+        matb_chol = 0.d0
+            matb_chol(1,1) = invBi_chol(i,1)
+            matb_chol(2,1) =  invBi_chol(i,2)
+            matb_chol(2,2) =  invBi_chol(i,3)
+            matb_chol(3,1) =  invBi_chol(i,4)
+            matb_chol(3,2) =  invBi_chol(i,5)
+            matb_chol(3,3) =  invBi_chol(i,6)
+            matb_chol(4,1) =  invBi_chol(i,7)
+            matb_chol(4,2) =  invBi_chol(i,8)
+            matb_chol(4,3) =  invBi_chol(i,9)
+            matb_chol(4,4) =  invBi_chol(i,10)
+            matb_chol(5,1) =  invBi_chol(i,11)
+            matb_chol(5,2) =  invBi_chol(i,12)
+            matb_chol(5,3) =  invBi_chol(i,13)
+            matb_chol(5,4) =  invBi_chol(i,14)
+            matb_chol(5,5) =  invBi_chol(i,15)
+
+        if(methodGH.eq.1) then
+            XeaG(1) = frail
+            XeaG(2) = frail2
+            XeaG(3) = frail3
+            XeaG(4) = frail4
+            XeaG(5) = frail5
+            Xea22(1:nb1) = b_lme(i,1:nb1) +  Matmul(matb_chol,XeaG)*sqrt(2.d0)
+            Xea2(1:nb1,1) = Xea22(1:nb1)
+    
+            else
+            Xea2(1,1) = frail!
+        Xea2(2,1) = frail2!
+        Xea2(3,1) = frail3!
+        Xea2(4,1) = frail4!
+        Xea2(5,1) = frail5!
+        Xea22(1) = frail!
+        Xea22(2) = frail2
+        Xea22(3) = frail3
+        Xea22(4) = frail4
+        Xea22(5) = frail5
+            end if
+            end if            
             
         mat = matmul(ut,utt)
 
@@ -4515,6 +4607,27 @@ else if(nb1.eq.3) then
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
+else if(nb1.eq.4) then
+    z1curG(1,1) = 1.d0 !
+    z1curG(1,2) = t1dc(i)
+    z1curG(1,3) = 0.d0
+    z1curG(1,4) = 0.d0
+    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1BcurG(1,2) = 0.d0
+    z1BcurG(1,3) = 1.d0
+    z1BcurG(1,4) = t1dc(i)
+else if(nb1.eq.5) then
+    z1curG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
+    z1curG(1,2) = 0.d0!f1(t)
+    z1curG(1,3) = 0.d0 !f2(t)
+    z1curG(1,4) = 0.d0 
+    z1curG(1,5) = 0.d0
+    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1BcurG(1,2) = 0.d0
+    z1BcurG(1,3) = 0.d0
+    z1BcurG(1,3) = 1.d0
+    z1BcurG(1,3) = t1dc(i)
+
 end if
 
                         Bcurrentvalue=0.d0
@@ -4569,15 +4682,15 @@ end if
         end do
     end if
        
-  !  open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
-  !       write(2,*)' z1curG', z1curG
-  !        write(2,*)'z1BcurG',z1BcurG
-  !        write(2,*)'x2curG',x2curG
-  !        write(2,*)'X2BcurG',X2BcurG
-  !          write(2,*)'positionVarT',positionVarT
-  !           write(2,*)'yscalar',yscalar
-  !          write(2,*)'Bscalar',Bscalar
-  !  close(2)
+!    open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+!         write(2,*)' z1curG', z1curG
+!          write(2,*)'z1BcurG',z1BcurG
+!          write(2,*)'x2curG',x2curG
+!          write(2,*)'X2BcurG',X2BcurG
+!            write(2,*)'positionVarT',positionVarT
+!             write(2,*)'yscalar',yscalar
+!            write(2,*)'Bscalar',Bscalar
+!    close(2)
 
        if (methodGH.ne.3) then
     if(nb1.eq.1) then
@@ -4727,7 +4840,7 @@ end if
          !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
          !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
-                auxfunca=func2(0.d0,0.d0,intpoints(ii,1))
+                auxfunca=func2(0.d0,0.d0,0.d0,0.d0,intpoints(ii,1))
                 ss=ss+auxfunca
             end do
          !$OMP END PARALLEL DO
@@ -4737,7 +4850,7 @@ end if
          !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
          !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
-                auxfunca=func2(0.d0,intpoints(ii,2),intpoints(ii,1))
+                auxfunca=func2(0.d0,0.d0,0.d0,intpoints(ii,2),intpoints(ii,1))
                 ss=ss+auxfunca
             end do
          !$OMP END PARALLEL DO
@@ -4748,17 +4861,41 @@ end if
          !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
          !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
-                auxfunca=func2(intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
+                auxfunca=func2(0.d0,0.d0,intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss=ss+auxfunca
             end do
          !$OMP END PARALLEL DO
+         
+               case(4)
+
+        ii=0
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+            do ii=1,nsimu
+                auxfunca=func2(0.d0,intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
+                ss=ss+auxfunca
+            end do
+         !$OMP END PARALLEL DO
+          
+                 case(5)
+
+        ii=0
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+            do ii=1,nsimu
+                auxfunca=func2(intpoints(ii,5),intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
+                ss=ss+auxfunca
+            end do
+         !$OMP END PARALLEL DO
+                  
     end select
     ss=ss/dble(nsimu) 
 !          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
 !         write(2,*)' intpoints(l,1)', intpoints(:,1)
-!          write(2,*)'intpoints(l,2)',intpoints(:,2)
-!          write(2,*)'intpoints(l,2)',intpoints(:,3)
-!            write(2,*)'ss',ss
+!         write(2,*)'intpoints(l,2)',intpoints(:,2)
+!          write(2,*)'intpoints(l,3)',intpoints(:,3)
+!           write(2,*)'intpoints(l,4)',intpoints(:,4)
+!           write(2,*)'ss',ss
 !            write(2,*)'nsimu',nsimu
 !            write(2,*)'ss',ss
 !     close(2)

@@ -366,6 +366,35 @@
             Chol(2,2)=bh(np-nva-nb_re+4)
             Chol(3,2)=bh(np-nva-nb_re+5)
             Chol(3,3)=bh(np-nva-nb_re+6)
+            else if(nb1.eq.4) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            Chol(3,1)=bh(np-nva-nb_re+3)
+            Chol(4,1)=bh(np-nva-nb_re+4)
+            Chol(2,2)=bh(np-nva-nb_re+5)
+            Chol(3,2)=bh(np-nva-nb_re+6)
+            Chol(4,2)=bh(np-nva-nb_re+7)
+            Chol(3,3)=bh(np-nva-nb_re+8)
+            Chol(4,3)=bh(np-nva-nb_re+9)
+            Chol(4,4)=bh(np-nva-nb_re+10)
+            else if(nb1.eq.5) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            Chol(3,1)=bh(np-nva-nb_re+3)
+            Chol(4,1)=bh(np-nva-nb_re+4)
+            Chol(5,1)=bh(np-nva-nb_re+5)
+            Chol(2,2)=bh(np-nva-nb_re+6)
+            Chol(3,2)=bh(np-nva-nb_re+7)
+            Chol(4,2)=bh(np-nva-nb_re+8)
+            Chol(5,2)=bh(np-nva-nb_re+9)
+            Chol(3,3)=bh(np-nva-nb_re+10)
+            Chol(4,3)=bh(np-nva-nb_re+11)
+            Chol(5,3)=bh(np-nva-nb_re+12)
+            Chol(4,4)=bh(np-nva-nb_re+13)
+            Chol(5,4)=bh(np-nva-nb_re+14)
+            Chol(5,5)=bh(np-nva-nb_re+15)
             end if  
 
             do ig=1,ng
@@ -667,27 +696,26 @@
 
         !calcul de l'integrale par monte carlo pour l'integrale multiple
  call MC_JointModels(int, funcG, nb1,fraili)
-!          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
-!        write(2,*)' Vect_sim_MC(l,1)', Vect_sim_MC(:,1)
-!          write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,2)
-!          write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,3)
-!            write(2,*)'fraili1',fraili(:,1)
-!            write(2,*)'fraili2',fraili(:,2)
-!            write(2,*)'fraili2',fraili(:,3)
-!            write(2,*)'vcjm',vcjm
-!             write(2,*)'nb1',nb1
-!     close(2)
+ 
         if(int.eq.0.d0) then
             integrale4(ig)=0.1d-300
         else
             integrale4(ig) =int !result(1) !
         end if
     end if    
-
-
-
             
-          
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+!       write(2,*)' Vect_sim_MC(l,1)', Vect_sim_MC(:,1)
+!        write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,2)
+!          write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,3)
+!            write(2,*)'fraili1',fraili(:,1)
+!            write(2,*)'fraili2',fraili(:,2)
+!            write(2,*)'fraili2',fraili(:,3)
+!            write(2,*)'vcjm',vcjm
+!             write(2,*)'nb1',nb1
+!              write(2,*)'int',int
+!    close(2)
+ 
             it_rec = it_rec + nmescurr
             it = it + nmescur
             if(TwoPart.eq.1) then
@@ -732,7 +760,6 @@
             deallocate(mat_sigmaB)
         end if
         end do
-
 
 
     !************* FIN INTEGRALES **************************
@@ -825,7 +852,7 @@
         resnonpen = res
     
         res = res - pe 
-    
+
         if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
             funcpajLongisplines=-1.d9
         if(typeJoint.eq.3)    Rrec = 0.d0
@@ -845,6 +872,7 @@
                 Ndc(k)=cdc(k)
             end do
         end if
+
 
                     
     !Ad:
