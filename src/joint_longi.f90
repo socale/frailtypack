@@ -1574,7 +1574,7 @@
 !     close(2)
         !    write(*,*)'ok4'
                 ! re_pred = 0.d0
-                re_pred(:,nby+1) = 0.d0 ! modified (binary part not included yet)
+                re_pred(:,nb1+1) = 0.d0 ! modified (binary part not included yet)
                 else
                 Call Residusj_tri(b,np,funcpajres_tri,Resmartingale,Resmartingaledc,ResLongi_cond0,ResLongi_cond_st0,&
                                                                                     ResLongi_marg0,ResLongi_chol0,Pred_y0,re_pred)
@@ -1593,7 +1593,7 @@
                             end do
                     else
                         do i=1,ng
-                            linearpreddc(i)=Xbetadc(1,i)+dot_product(etaydc,re_pred(i,1:nby)) ! invalid read of size 8 ! removed binary part for now
+                            linearpreddc(i)=Xbetadc(1,i)+dot_product(etaydc,re_pred(i,1:nb1)) ! invalid read of size 8 ! removed binary part for now
                         end do
                     end if
                 endif
@@ -1601,7 +1601,7 @@
                 MartinGales(:,1)=Resmartingale
                MartinGales(:,2)=Resmartingaledc
         
-                MartinGales(:,3:(3+nby))=re_pred ! modified (binary not included yet)
+                MartinGales(:,3:(3+nb1))=re_pred ! modified (binary not included yet)
                          ResLongi(1:nsujety,1) = ResLongi_cond0(1:nsujety)
                          ResLongi(1:nsujety,2) = ResLongi_cond_st0(1:nsujety)
                          ResLongi(1:nsujety,3) = ResLongi_marg0(1:nsujety)
@@ -4336,8 +4336,10 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         upper = .false.
         i = numpat
 
-! uiiui=0.d0
-! funcG=0.d0
+ uiiui=0.d0
+ funcG=0.d0
+ current_meanG = 0.d0
+ det=0.d0
 
 resultf1=0.d0
 resultf2=0.d0
@@ -4597,7 +4599,6 @@ end if
                 z1YcurG(1,2) = t1dc(i)
             end if  
             
-  current_meanG = 0.d0
 
     if(nb1.eq.1) then
             current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1YcurG(1,1)*Xea
@@ -4825,7 +4826,7 @@ end if
     subroutine MC_JointModels(ss,func2,ndim,intpoints)
     use var_surrogate, only: nbre_sim
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
-    use comon, only:nb1,nodes_number,typeJoint,invBi_cholDet
+    use comon, only:nb1,nodes_number
     use donnees_indiv
     !use mpi
     !$ use OMP_LIB

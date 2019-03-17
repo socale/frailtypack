@@ -868,20 +868,20 @@
         end if
 
         
-if(item.eq.0) then
-open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!if(item.eq.0) then
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
 ! !      write(2,*)'integrale4(ig)',integrale4(ig)
 ! !write(2,*)'int',int
- write(2,*)'vraisemblance', funcpajLongisplines
-     close(2)
-item=1
-     end if
+! write(2,*)'vraisemblance', funcpajLongisplines
+!     close(2)
+!item=1
+!     end if
 
         
     !Ad:
-        123     continue       
-        return
+        123     continue
     
+        return
 
        
         end function funcpajlongisplines
