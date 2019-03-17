@@ -1418,7 +1418,9 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     
     if(!intercept && 1%in%random) matzy <- as.matrix(cbind(rep(1,nsujety),matzy))
-    if(dim(matzy)[2]>=3 && link0 == 2)stop("The current-level link can be chosen only if the biomarker random effects are associated with the intercept and time.")
+    
+    # next control is not relevant with multiple functions of time, removed for now
+    #if(dim(matzy)[2]>=3 && link0 == 2)stop("The current-level link can be chosen only if the biomarker random effects are associated with the intercept and time.")
     
     if(link0==1)netadc <- ncol(matzy)
     if(link0==1)if(TwoPart) netadc <- netadc+ncol(matzB) #add TwoPart
@@ -1800,6 +1802,9 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     size2 <- mt1
     
+     #       browser()
+
+    
 if(link0==2){
 # Current-level association structure:
 # we need to evaluate the biomarker value at multiple time-points to approximate the cumulative hazard
@@ -1822,6 +1827,7 @@ if(link0==2){
       }
       }}
 
+      
     if(!is.null(interact)){ # continuous
 
     count=0 
@@ -1977,6 +1983,7 @@ if(link0==2){
   # GH=c(as.integer(GH),as.integer(n.nodes)) = indicator of gauss-hermite (0=standard,1=PA,2=hrmsym) and nodes number
   # paGH=cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)) = matrix of pseudo-adaptive gauss-hermite initialization from LME
 
+  
         ans <- .Fortran(C_joint_longi,
 			VectNsujet = as.integer(c(1,nsujety, nsujetB)),
             ngnzag=as.integer(c(ng, n.knots, 1)),

@@ -149,7 +149,7 @@
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
       
    a_deja_simul=0 ! add Monte-carlo
-   
+   item=0
    ng0=ngnzag(1)
    nz0=ngnzag(2)
    ag0=ngnzag(3)
@@ -1574,7 +1574,7 @@
 !     close(2)
         !    write(*,*)'ok4'
                 ! re_pred = 0.d0
-                re_pred(:,nb1+1) = 0.d0
+                re_pred(:,nby+1) = 0.d0 ! modified (binary part not included yet)
                 else
                 Call Residusj_tri(b,np,funcpajres_tri,Resmartingale,Resmartingaledc,ResLongi_cond0,ResLongi_cond_st0,&
                                                                                     ResLongi_marg0,ResLongi_chol0,Pred_y0,re_pred)
@@ -1593,7 +1593,7 @@
                             end do
                     else
                         do i=1,ng
-                            linearpreddc(i)=Xbetadc(1,i)+dot_product(etaydc,re_pred(i,1:nb1)) ! invalid read of size 8
+                            linearpreddc(i)=Xbetadc(1,i)+dot_product(etaydc,re_pred(i,1:nby)) ! invalid read of size 8 ! removed binary part for now
                         end do
                     end if
                 endif
@@ -1601,7 +1601,7 @@
                 MartinGales(:,1)=Resmartingale
                MartinGales(:,2)=Resmartingaledc
         
-                MartinGales(:,3:(3+nb1))=re_pred
+                MartinGales(:,3:(3+nby))=re_pred ! modified (binary not included yet)
                          ResLongi(1:nsujety,1) = ResLongi_cond0(1:nsujety)
                          ResLongi(1:nsujety,2) = ResLongi_cond_st0(1:nsujety)
                          ResLongi(1:nsujety,3) = ResLongi_marg0(1:nsujety)
@@ -4110,7 +4110,7 @@ end if
     
         double precision, dimension(1,nva3)::x2curG
         double precision, dimension(1,nb1)::z1curG
-        double precision, dimension(1,nb1)::z1YcurG
+    !    double precision, dimension(1,nb1)::z1YcurG
         double precision, dimension(1,nb1)::z1BcurG
         double precision, dimension(1)::current_meanG
         integer::j,i,np,k,n
@@ -4122,6 +4122,10 @@ end if
             double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY ! add TwoPart
     integer::counter, counter2
             double precision, dimension(1,nvaB)::x2BcurG
+    double precision::resultf1, resultf2,f1,f2 !add TwoPart
+
+resultf1=0.d0
+resultf2=0.d0
 
         k=0
         j=0
@@ -4177,43 +4181,45 @@ x2curG=0.d0
 end if
 end if
 
-        z1YcurG(1,1) = 1.d0
-        if(nb1.eq.2)  z1YcurG(1,2) =tps
+        z1curG(1,1) = 1.d0
+        if(nb1.eq.2)  z1curG(1,2) =tps
      
             current_meanG = 0.d0
                     if(TwoPart.eq.1) then
 if(nb1.eq.2) then
-    z1YcurG(1,1) = 1.d0 ! random intercept only for now
-    z1YcurG(1,2) = 0.d0!z1Ycur(1,2) = t1dc(i)
+    z1curG(1,1) = 1.d0 ! random intercept only for now
+    z1curG(1,2) = 0.d0!z1Ycur(1,2) = tps
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 1.d0
 else if(nb1.eq.3) then
-    z1YcurG(1,1) = 1.d0 !
-    z1YcurG(1,2) = t1dc(i)
-    z1YcurG(1,3) = 0.d0
+    z1curG(1,1) = 1.d0 !
+    z1curG(1,2) = tps
+    z1curG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
 else if(nb1.eq.4) then
-    z1YcurG(1,1) = 1.d0 !
-    z1YcurG(1,2) = t1dc(i)
-    z1YcurG(1,3) = 0.d0
-    z1YcurG(1,4) = 0.d0
+            resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
+            resultf2=f2(tps)
+    z1curG(1,1) = 1.d0 !
+    z1curG(1,2) = resultf1
+    z1curG(1,3) = resultf2
+    z1curG(1,4) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 1.d0
-    z1BcurG(1,4) = t1dc(i)
+    z1BcurG(1,3) = 0.d0
+    z1BcurG(1,4) = 1.d0
 else if(nb1.eq.5) then
-    z1YcurG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
-    z1YcurG(1,2) = 0.d0!f1(t)
-    z1YcurG(1,3) = 0.d0 !f2(t)
-    z1YcurG(1,4) = 0.d0 
-    z1YcurG(1,5) = 0.d0
+    z1curG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
+    z1curG(1,2) = 0.d0!f1(t)
+    z1curG(1,3) = 0.d0 !f2(t)
+    z1curG(1,4) = 0.d0 
+    z1curG(1,5) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 0.d0
     z1BcurG(1,3) = 1.d0
-    z1BcurG(1,3) = t1dc(i)
+    z1BcurG(1,3) = tps
 
 end if
                         
@@ -4222,7 +4228,7 @@ Bcv=0.d0
 Bcv=dot_product(X2BcurG(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1BcurG(1,1:nb1),frail(1:nb1))
 Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
                     
-cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1YcurG(1, 1:nb1),frail(1:nb1)))
+cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1curG(1, 1:nb1),frail(1:nb1)))
 
 
         current_meanG = cmY*Bcurrentvalue
@@ -4232,9 +4238,9 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
                     else if(TwoPart.eq.0) then
             if(nea.gt.1) then
                 current_meanG =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
-                                            +dot_product(z1YcurG(1,1:nb1),frail(1:nb1))
+                                            +dot_product(z1curG(1,1:nb1),frail(1:nb1))
             else
-                current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1YcurG(1,1:nb1)*frail(1:nb1)
+                current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
             end if
                     end if
 
@@ -4307,8 +4313,8 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
         double precision, dimension(numpat)::auxG
         double precision, dimension(1,nva3)::x2curG
         double precision, dimension(1,nvaB)::x2BcurG
-        double precision, dimension(1,nb1)::z1curG
-    !    double precision, dimension(1,nb1)::z1YcurG
+    !    double precision, dimension(1,nb1)::z1curG
+        double precision, dimension(1,nb1)::z1YcurG
         double precision, dimension(1,nb1)::z1BcurG
 double precision, dimension(nmesy(numpat),1):: mu1G
 double precision, dimension(nmesB(numpat),1):: mu1BG
@@ -4324,7 +4330,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,external::survdcCM
         double precision :: resultdc,abserr,resabs,resasc,Xea,vet2
         double precision,parameter::pi=3.141592653589793d0
-        double precision :: Bscalar!, resultf1, resultf2, f1, f2 ! add TwoPart
+        double precision :: Bscalar, resultf1, resultf2, f1, f2 ! add TwoPart
         double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
         integer :: counter, counter2 ! add for current-level interaction
         upper = .false.
@@ -4332,6 +4338,9 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
 
 ! uiiui=0.d0
 ! funcG=0.d0
+
+resultf1=0.d0
+resultf2=0.d0
 
     if(nb1.eq.1) then
             if(methodGH.eq.1) then
@@ -4583,45 +4592,48 @@ x2curG=0.d0
 end if
 end if
     
-            z1curG(1,1) = 1.d0
+            z1YcurG(1,1) = 1.d0
             if(nb1.eq.2) then
-                Z1curG(1,2) = t1dc(i)
+                z1YcurG(1,2) = t1dc(i)
             end if  
             
   current_meanG = 0.d0
 
     if(nb1.eq.1) then
-            current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1curG(1,1)*Xea
+            current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1YcurG(1,1)*Xea
     else if(nb1.gt.1) then
     
     if(TwoPart.eq.1) then
 if(nb1.eq.2) then
-    z1curG(1,1) = 1.d0 ! random intercept only for now
-    z1curG(1,2) = 0.d0!z1Ycur(1,2) = t1dc(i)
+    z1YcurG(1,1) = 1.d0 ! random intercept only for now
+    z1YcurG(1,2) = 0.d0!z1Ycur(1,2) = t1dc(i)
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 1.d0
 else if(nb1.eq.3) then
-    z1curG(1,1) = 1.d0 !
-    z1curG(1,2) = t1dc(i)
-    z1curG(1,3) = 0.d0
+    z1YcurG(1,1) = 1.d0 !
+    z1YcurG(1,2) = t1dc(i)
+    z1YcurG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
 else if(nb1.eq.4) then
-    z1curG(1,1) = 1.d0 !
-    z1curG(1,2) = t1dc(i)
-    z1curG(1,3) = 0.d0
-    z1curG(1,4) = 0.d0
+    resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
+    resultf2=f2(t1dc(i))
+    
+    z1YcurG(1,1) = 1.d0 !
+    z1YcurG(1,2) = resultf1
+    z1YcurG(1,3) = resultf2
+    z1YcurG(1,4) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 1.d0
-    z1BcurG(1,4) = t1dc(i)
+    z1BcurG(1,3) = 0.d0
+    z1BcurG(1,4) = 1.d0
 else if(nb1.eq.5) then
-    z1curG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
-    z1curG(1,2) = 0.d0!f1(t)
-    z1curG(1,3) = 0.d0 !f2(t)
-    z1curG(1,4) = 0.d0 
-    z1curG(1,5) = 0.d0
+    z1YcurG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
+    z1YcurG(1,2) = 0.d0!f1(t)
+    z1YcurG(1,3) = 0.d0 !f2(t)
+    z1YcurG(1,4) = 0.d0 
+    z1YcurG(1,5) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 0.d0
@@ -4637,12 +4649,12 @@ end if
                         Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
                     
 
-        cmY = (MATMUL(x2curG,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1curG,Xea22))
+        cmY = (MATMUL(x2curG,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1YcurG,Xea22))
 
         current_meanG = cmY*Bcurrentvalue
         
                     else if(TwoPart.eq.0) then
-                            current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(Z1curG,Xea22)
+                            current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
 
                     end if    
             end if
@@ -4683,7 +4695,7 @@ end if
     end if
        
 !    open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
-!         write(2,*)' z1curG', z1curG
+!         write(2,*)' z1YcurG', z1YcurG
 !          write(2,*)'z1BcurG',z1BcurG
 !          write(2,*)'x2curG',x2curG
 !          write(2,*)'X2BcurG',X2BcurG
@@ -4901,5 +4913,25 @@ end if
 !     close(2)
     return 
   end subroutine MC_JointModels
+  
+  
+
+  ! convert these fonctions to make them arguments in the R function so the user can define specific functions.
+  ! conversion can be achieved by using a C-wrapper to call the R function directly from FORTRAN 
+  !f1
+    function f1(t) result(res)
+       double precision, intent(in) :: t !input
+       double precision :: res! output
+       res = dexp(-4.7d0*t)
+    end function f1
+
+!f2
+     function f2(t) result(res)
+       double precision, intent(in) :: t !input
+       double precision :: res! output
+       res = t**(2.7d0)/(1.0d0+t)**1.7d0
+    end function f2
+
+  
   
   

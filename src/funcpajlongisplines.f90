@@ -611,13 +611,7 @@
 
             ut2cur = ut2(nt1dc(ig))
             
-!if(ig.eq.2) then
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-! !      write(2,*)'integrale4(ig)',integrale4(ig)
-! !write(2,*)'int',int
-! write(2,*)'pint'
-!     close(2)
-!end if
+
        
 
                     choix = 3
@@ -672,11 +666,11 @@
             do while(l.le.nbre_sim)
                 SX=1.d0
                 xMC=0.d0
-                call bgos(SX,0,Vect_sim_MC(l,1),xMC,0.d0)
+                call bgos(SX,0,Vect_sim_MC(l,1),xMC,0.d0) ! random gaussian number N(0,1)
         if(nb1.gt.1) then
             do m=2,nb1
                  SX=1.d0
-                 call bgos(SX,0,Vect_sim_MC(l,m),xMC,0.d0)
+                 call bgos(SX,0,Vect_sim_MC(l,m),xMC,0.d0) ! random gaussian number N(0,1)
              end do
         endif
                 l=l+1
@@ -689,7 +683,7 @@
 !        if(nb1.eq.1)then
 !            fraili(l,1)=0.d0+MATMUL(vcjm,Vect_sim_MC(l,1)) 
 !        else
-            fraili(l,:)=0.d0+MATMUL(vcjm,Vect_sim_MC(l,1:nb1))
+            fraili(l,:)=0.d0+MATMUL(vcjm,Vect_sim_MC(l,1:nb1)) ! random numbers MVN(0,sigma)
 !        endif
         l=l+1
     end do
@@ -873,14 +867,23 @@
             end do
         end if
 
+        
+if(item.eq.0) then
+open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+! !      write(2,*)'integrale4(ig)',integrale4(ig)
+! !write(2,*)'int',int
+ write(2,*)'vraisemblance', funcpajLongisplines
+     close(2)
+item=1
+     end if
 
-                    
+        
     !Ad:
-        123     continue
-    
+        123     continue       
         return
     
-    
+
+       
         end function funcpajlongisplines
     
     !****************** for GENZ algorithm ********************

@@ -78,6 +78,7 @@
     double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,mu1B,x2Bcur,z1Bcur ! add TwoPart
     double precision,dimension(:),allocatable,save :: Bcurrent, current_meanRaw ! add TwoPart
     integer,save::nmescurB, it_curB !add TwoPart
+    integer, save::item ! remove this
     end module donnees_indiv
 
 
