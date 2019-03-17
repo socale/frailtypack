@@ -1543,7 +1543,7 @@
     
     
     
-        if(typeJoint.ge.2) then
+        if(typeJoint.ge.2.and.TwoPart.eq.0) then ! value should be 2, modified for TwoPart models
                 allocate(vecuiRes2(ng,nb1+1),&
                         vres(nea*(nea+3)/2),&
                         XbetaY_res(1,nsujety))
