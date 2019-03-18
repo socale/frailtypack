@@ -4210,16 +4210,18 @@ else if(nb1.eq.4) then
     z1BcurG(1,3) = 0.d0
     z1BcurG(1,4) = 1.d0
 else if(nb1.eq.5) then
+            resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
+            resultf2=f2(tps)
     z1curG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
-    z1curG(1,2) = 0.d0!f1(t)
-    z1curG(1,3) = 0.d0 !f2(t)
+    z1curG(1,2) = resultf1
+    z1curG(1,3) = resultf2
     z1curG(1,4) = 0.d0 
     z1curG(1,5) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 0.d0
-    z1BcurG(1,3) = 1.d0
-    z1BcurG(1,3) = tps
+    z1BcurG(1,4) = 1.d0
+    z1BcurG(1,5) = tps
 
 end if
                         
@@ -4630,16 +4632,18 @@ else if(nb1.eq.4) then
     z1BcurG(1,3) = 0.d0
     z1BcurG(1,4) = 1.d0
 else if(nb1.eq.5) then
+    resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
+    resultf2=f2(t1dc(i))
     z1YcurG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
-    z1YcurG(1,2) = 0.d0!f1(t)
-    z1YcurG(1,3) = 0.d0 !f2(t)
+    z1YcurG(1,2) = resultf1
+    z1YcurG(1,3) = resultf2
     z1YcurG(1,4) = 0.d0 
     z1YcurG(1,5) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 0.d0
-    z1BcurG(1,3) = 1.d0
-    z1BcurG(1,3) = t1dc(i)
+    z1BcurG(1,4) = 1.d0
+    z1BcurG(1,5) = t1dc(i)
 
 end if
 
