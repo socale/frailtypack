@@ -40,6 +40,7 @@
     double precision,external::fctnames
       end subroutine derivaJ
 
+
       !IJ 2018 NCC design
           subroutine derivaJindiv(b,m,vindiv,rl,k0,index,fctnamesindiv)
         integer,intent(in)::m,index
@@ -137,8 +138,7 @@
     !use comon,only: c,cdc,Hspl_hess,indic_eta,ndate,ndatedc,nst,nsujet,&
     !nt0,nt0dc,nt1,nt1dc,nva1,nva2,PEN_deri,t0,t0dc,t1,t1dc
     use comon,only:nva,model,I_hess,H_hess,hess,indic_ALPHA,&
-    typeof,vvv!,indic_tronc
-
+    typeof,vvv, switchMPI!,indic_tronc
 !add additive
     !use additiv,only:correl
 
@@ -164,7 +164,6 @@
     double precision::fctnames
 !---------- ajout
     integer::kkk
-    
     zero=0.d0
     id=0
     jd=0
@@ -186,7 +185,11 @@
     
     Main:Do       
         
+        if(switchMPI.eq.1) then
+        call derivaJJM(b,m,v,rl,k0,fctnames)         
+        else
         call derivaJ(b,m,v,rl,k0,fctnames)         
+        end if
         
     rl1=rl
     
@@ -406,8 +409,11 @@ call dblepr('b',-1,b(i),1)
 
 !================ pour les bandes de confiance
 !==== on ne retient que les para des splines
-        
+        if(switchMPI.eq.1) then
+    call derivaJJM(b,m,v,rl,k0,fctnames)
+    else
     call derivaJ(b,m,v,rl,k0,fctnames)
+    end if
      !print*,"dans aaOptim, appel de derivaJ  with GAP vec funcpa... "
     if(rl.eq.-1.D9) then
         istop=4
@@ -489,8 +495,11 @@ call dblepr('b',-1,b(i),1)
     endif
     
     ep=10.d-10
-    call derivaJ(b,m,vnonpen,rl,zero,fctnames)
-
+    if(switchMPI.eq.1) then
+    call derivaJJM(b,m,v,rl,k0,fctnames)
+    else
+    call derivaJ(b,m,v,rl,k0,fctnames)
+    end if
     do i=1,m
         do j=i,m
             I_hess(i,j)=vnonpen((j-1)*j/2+i)
@@ -628,6 +637,115 @@ call dblepr('b',-1,b(i),1)
     return
 
     end subroutine derivaJ
+    
+    
+    ! MPI version of derivaJ (switch to activate in marquardt algorithm
+        subroutine derivaJJM(b,m,v,rl,k0,fctnames)
+    !use comon,only:nst,k0T
+    use comon,only:model!,nstRec, indic_tronc
+    implicit none
+
+    integer,intent(in)::m
+    double precision,intent(inout)::rl
+    double precision,dimension(2)::k0
+    double precision,dimension(m),intent(in)::b
+    double precision,dimension((m*(m+3)/2)),intent(inout)::v
+    double precision,dimension(m)::fcith
+    integer ::i0,m1,ll,i,k,j,iun
+    double precision::fctnames,thn,th,z,vl,th2,vaux
+    external::fctnames
+    logical::endDeriva
+
+    endDeriva=.false.
+    
+    select case(model)
+    case(1,7)
+        th=1.d-3 !joint
+    case(5)
+        th=1.d-5 !joint general !cas supplementaire rajout?
+    case(2)
+        th=5.d-3 !additive
+    case(3)
+        th=1.d-5 !nested
+    case(4)
+        th=1.d-5 !shared
+    end select
+
+    thn=-th
+    th2=th*th
+    z=0.d0
+    i0=0
+    iun =1
+
+        !print *,"k0 = ",k0
+        !print *,"b = ", b
+        !size(b) =32 , m =32
+        !print *,"z = ", z            ! =0.000000000
+        !print *,"iun", iun           ! =1
+        !print *,"rl = ",rl           ! =0.000000000
+    
+    rl=fctnames(b,m,iun,z,iun,z,k0)
+    
+    if(rl.ne.-1.d9) then
+        do i=1,m
+            if(endDeriva.eqv..false.) then
+                fcith(i)=fctnames(b,m,i,th,i0,z,k0)
+                if(fcith(i).eq.-1.d9) then
+                    endDeriva=.true.
+                    fcith(i)=-1.d9
+                end if
+            else
+                rl=-1.d9
+                endDeriva=.true.
+            end if
+        end do
+            
+                
+        if (endDeriva.eqv..false.) then
+            k=0
+            m1= (m*(m+1)/2)
+            ll=m1
+
+            do i=1,m
+                !print*, "deuxieme boucle DERIVAj, tour",i," :"
+                ll=ll+1
+                !write(*,*) 'b', b
+                vaux=fctnames(b,m,i,thn,i0,z,k0)
+                !write(*,*) 'vaux', vaux
+                if(vaux.eq.-1.d9) then
+                    rl=-1.d9
+                    endDeriva=.true.
+                end if
+                if (endDeriva.eqv..false.) then
+                    vl=(fcith(i)-vaux)/(2.d0*th)
+                    v(ll)=vl
+                    do j=1,i
+                        k=k+1
+                        v(k)=-(fctnames(b,m,i,th,j,th,k0)-fcith(j)-fcith(i)+rl)/th2
+                !        write(*,*)k,fctnames(b,m,i,th,j,th,k0),b,m,i,th,j,k0
+                    end do
+                end if
+            end do
+        end if
+    end if
+        
+    !stop
+    return
+
+    end subroutine derivaJJM
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 !------------------------------------------------------------
 !                        SEARPAS
 !------------------------------------------------------------

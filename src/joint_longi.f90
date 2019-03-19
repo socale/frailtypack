@@ -149,7 +149,6 @@
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
       
    a_deja_simul=0 ! add Monte-carlo
-   item=0
    ng0=ngnzag(1)
    nz0=ngnzag(2)
    ag0=ngnzag(3)
@@ -1218,7 +1217,8 @@
 
      !       a_deja_simul=0 ! add Monte-carlo
               
-
+    switchMPI=0 ! 1=MPI, 0=sequential
+              
         if(typeJoint.ge.2) then
             select case(typeof)
                 case(0)
