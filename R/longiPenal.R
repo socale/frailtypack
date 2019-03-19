@@ -385,7 +385,7 @@
     }
     
     ### Time variable
-    if(link=="Current-level" & timevar==FALSE){
+    if(link=="Current-level" & FALSE %in% timevar){
       stop("You must indicate the time variable in 'timevar' argument in order to use the current-level association")
     }
     
@@ -1802,7 +1802,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     size2 <- mt1
     
-     #       browser()
+         #  browser()
 
     
 if(link0==2){
@@ -1810,30 +1810,26 @@ if(link0==2){
 # we need to evaluate the biomarker value at multiple time-points to approximate the cumulative hazard
 # time-interactions are particularly tricky to handle (especially in case of non-linear time trend)
       # position of time and interactions for current-level association
+for(i in 1:length(timevar)){
     interact <- NULL
-    interactB<-NULL
     columns <- names(X_L)
-    if(TwoPart) columnsB <- names(X_B)
     
-    if(timevar %in% columns){
+    if(timevar[i] %in% columns){
       if(length(grep(":", columns))>0){
-        interact <- grep(":", columns)
+        interactions <- grep(":", columns)
+        timevariable <- grep(timevar[i], columns)
+        interact <- intersect(interactions, timevariable)
       }
       }
-     if(TwoPart){
-     if(timevar %in% columnsB){
-      if(length(grep(":", columnsB))>0){
-        interactB <- grep(":", columnsB)
-      }
-      }}
 
-      
-    if(!is.null(interact)){ # continuous
 
     count=0 
-    count2=0
-    positionVarTime <- NULL
-    numInterac <- 0
+    if(i==1){
+      count2=0
+      positionVarTime <- NULL
+      numInterac <- 0
+    }
+    if(!is.null(interact)){ # continuous
     if(length(interact)==1){ # one time-interaction term in the model
 
       name_1 <- strsplit(as.character(columns[interact]),":")[[1]][1]
@@ -1842,42 +1838,61 @@ if(link0==2){
       # time-interaction terms / current-level association
       # PositionVarT contains: position of variable and time-variable for interaction and position of interaction 
       # (first continuous, and then binary part if two-part model)
-      if(timevar%in%columns & count<2){
+      if(timevar[i]%in%columns & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columns==ifelse(name_1==timevar, name_2, name_1))
-        positionVarTime[count2+2] <- which(columns==ifelse(name_1==timevar, name_1, name_2))
+        positionVarTime[count2+1] <- which(columns==ifelse(name_1==timevar[i], name_2, name_1))
+        positionVarTime[count2+2] <- which(columns==ifelse(name_1==timevar[i], name_1, name_2))
         positionVarTime[count2+3] <- interact
+        positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
-        count2=count2+3
-        numInterac=count
+        count2=count2+4
+        numInterac=numInterac+count
       }
       
     }else{ #
-      for(i in 1:length(interact)){
+      for(j in 1:length(interact)){
       
-      name_1 <- strsplit(as.character(columns[interact[i]]),":")[[1]][1]
-      name_2 <- strsplit(as.character(columns[interact[i]]),":")[[1]][2]
+      name_1 <- strsplit(as.character(columns[interact[j]]),":")[[1]][1]
+      name_2 <- strsplit(as.character(columns[interact[j]]),":")[[1]][2]
       
 
-      if(timevar%in%columns & count<2){
+      if(timevar[i]%in%columns & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columns==ifelse(name_1==timevar, name_2, name_1))
-        positionVarTime[count2+2] <- which(columns==ifelse(name_1==timevar, name_1, name_2))
-        positionVarTime[count2+3] <- interact[i]
+        positionVarTime[count2+1] <- which(columns==ifelse(name_1==timevar[i], name_2, name_1))
+        positionVarTime[count2+2] <- which(columns==ifelse(name_1==timevar[i], name_1, name_2))
+        positionVarTime[count2+3] <- interact[j]
+        positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
-        count2=count2+3
-        numInterac=count
+        count2=count2+4
+        numInterac=numInterac+count
     }}
     }}else{
+      if(is.null(positionVarTime)){
     positionVarTime=0
     numInterac=0
+      }
     }
-
+}
+  
+for(i in 1:length(timevar)){
+  interactB<-NULL
+  if(TwoPart) columnsB <- names(X_B)
+  
+  if(TwoPart){
+    if(timevar[i] %in% columnsB){
+      if(length(grep(":", columnsB))>0){
+        interactionsB <- grep(":", columnsB)
+        timevariableB <- grep(timevar[i], columnsB)
+        interactB <- intersect(interactionsB, timevariableB)
+      }
+    }}
+  
     count=0
     if(TwoPart){
         if(!is.null(interactB)){  # binary
-
+if(i==1){
     numInteracB <- 0
+}
         if(length(interactB)==1){
 
       name_1B <- strsplit(as.character(columnsB[interactB]),":")[[1]][1]
@@ -1885,38 +1900,43 @@ if(link0==2){
       
       # interaction terms / current-level association
       # PositionVarT contains: position of variable and time-variable for interaction and position of interaction (first continuous, and then binary)
-      if(timevar%in%columnsB & count<2){
+      if(timevar[i]%in%columnsB & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columnsB==ifelse(name_1B==timevar, name_2B, name_1B))
-        positionVarTime[count2+2] <- which(columnsB==ifelse(name_1B==timevar, name_1B, name_2B))
+        positionVarTime[count2+1] <- which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B))
+        positionVarTime[count2+2] <- which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B))
         positionVarTime[count2+3] <- interactB
+        positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
-        count2=count2+3
-        numInteracB=count
+        count2=count2+4
+        numInteracB=numInteracB+count
       }
       
     }else{
-      for(i in 1:length(interactB)){
+      for(j in 1:length(interactB)){
       
-      name_1B <- strsplit(as.character(columnsB[interactB[i]]),":")[[1]][1]
-      name_2B <- strsplit(as.character(columnsB[interactB[i]]),":")[[1]][2]
+      name_1B <- strsplit(as.character(columnsB[interactB[j]]),":")[[1]][1]
+      name_2B <- strsplit(as.character(columnsB[interactB[j]]),":")[[1]][2]
       
       # interaction terms / current-level association
 
-      if(timevar%in%columnsB & count<2){
+      if(timevar[i]%in%columnsB & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columnsB==ifelse(name_1B==timevar, name_2B, name_1B))
-        positionVarTime[count2+2] <- which(columnsB==ifelse(name_1B==timevar, name_1B, name_2B))
-        positionVarTime[count2+3] <- interactB[i]
+        positionVarTime[count2+1] <- which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B))
+        positionVarTime[count2+2] <- which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B))
+        positionVarTime[count2+3] <- interactB[j]
+        positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
-        count2=count2+3
-        numInteracB=count
+        count2=count2+4
+        numInteracB=numInteracB+count
     }}
     }
     }
     }else{
+      if(is.null(positionVarTime)){
     numInteracB=0
+      }
     }
+}
 }else{
   numInteracB=0
   numInterac=0
@@ -1924,7 +1944,7 @@ if(link0==2){
     
     if(numInterac+numInteracB==0){
     numInterac=1
-    positionVarTime=c(404,0,0) # 404 means there is no time-interaction
+    positionVarTime=c(404,0,0,0) # 404 means there is no time-interaction
     }
 
   if(!TwoPart){ # initialize TwoPart variables if not activated to avoid memory allocation problems

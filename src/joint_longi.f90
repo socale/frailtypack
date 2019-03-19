@@ -58,7 +58,7 @@
         
         !add for interaction terms in current-level association
         integer,dimension(2),intent(in):: numInterac
-        integer,dimension((numInterac(1)+numInterac(2))*3),intent(in) :: positionVarTime
+        integer,dimension((numInterac(1)+numInterac(2))*4),intent(in) :: positionVarTime
 
         integer::ng0,nz0,ag0
         
@@ -4149,15 +4149,23 @@ x2curG=0.d0
         do k=2,nva3
             x2curG(1,k) = dble(vey(it_cur+1,k))
         end do
-        if(numInter.eq.1) then! compute time and interactions at tps
-            x2curG(1,positionVarT(2)) =tps ! time effect
-            x2curG(1,positionVarT(3)) =tps*dble(vey(it_cur+1,positionVarT(1))) ! interaction
-                counter2=counter2+3
-        else if(numInter.gt.1)then
+        
+            resultf1=f1(tps) ! maybe remove this calculus if not needed (non-linear slopes)
+            resultf2=f2(tps)
+if(numInter.ge.1)then
+
             do counter = 1,numInter !in case of multiple interactions
+            if(positionVarT(counter2+3).eq.0) then ! linear
                 x2curG(1,positionVarT(counter2+1)) =tps
                 x2curG(1,positionVarT(counter2+2)) =tps*dble(vey(it_cur+1,positionVarT(counter2)))
-                counter2=counter2+3
+                else if(positionVarT(counter2+3).eq.1) then ! f1
+                x2curG(1,positionVarT(counter2+1)) =resultf1
+                x2curG(1,positionVarT(counter2+2)) =resultf1*dble(vey(it_cur+1,positionVarT(counter2))) 
+            else if(positionVarT(counter2+3).eq.2) then ! f2
+                x2curG(1,positionVarT(counter2+1)) =resultf2
+                x2curG(1,positionVarT(counter2+2)) =resultf2*dble(vey(it_cur+1,positionVarT(counter2))) 
+            end if
+                counter2=counter2+4
             end do
         end if
     end if
@@ -4173,9 +4181,17 @@ x2curG=0.d0
     end do
     if(numInterB.ge.1) then
     do counter = 1,numInterB ! compute time and interactions at tps
+    if(positionVarT(counter2+3).eq.0) then !linear
     X2BcurG(1,positionVarT(counter2+1)) =tps ! time effect
     X2BcurG(1,positionVarT(counter2+2)) =tps*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-    counter2=counter2+3    
+    else if(positionVarT(counter2+3).eq.1) then !f1
+    X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
+    X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    else if(positionVarT(counter2+3).eq.2) then !f2
+    X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
+    X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    end if
+    counter2=counter2+4  
     end do
     end if
 end if
@@ -4199,8 +4215,6 @@ else if(nb1.eq.3) then
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
 else if(nb1.eq.4) then
-            resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
-            resultf2=f2(tps)
     z1curG(1,1) = 1.d0 !
     z1curG(1,2) = resultf1
     z1curG(1,3) = resultf2
@@ -4558,21 +4572,30 @@ else if(nb1.eq.5) then
         call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,xea22)
     end if
         auxG(i) = resultdc
+        
 x2curG=0.d0
     if((nva3-1).gt.0) then ! set the value of covariates at time to event! (interaction must be computed accordingly)
         x2curG(1,1) = 1.d0
         do k=2,nva3
             x2curG(1,k) = dble(vey(it_cur+1,k))
         end do
-        if(numInter.eq.1) then! compute time and interactions at t1dc
-            x2curG(1,positionVarT(2)) =t1dc(i) ! time effect
-            x2curG(1,positionVarT(3)) =t1dc(i)*dble(vey(it_cur+1,positionVarT(1))) ! interaction
-                counter2=counter2+3
-        else if(numInter.gt.1)then
+        
+            resultf1=f1(t1dc(i)) ! maybe remove this calculus if not needed (non-linear slopes)
+            resultf2=f2(t1dc(i))
+if(numInter.ge.1)then
+
             do counter = 1,numInter !in case of multiple interactions
+            if(positionVarT(counter2+3).eq.0) then ! linear
                 x2curG(1,positionVarT(counter2+1)) =t1dc(i)
                 x2curG(1,positionVarT(counter2+2)) =t1dc(i)*dble(vey(it_cur+1,positionVarT(counter2)))
-                counter2=counter2+3
+                else if(positionVarT(counter2+3).eq.1) then ! f1
+                x2curG(1,positionVarT(counter2+1)) =resultf1
+                x2curG(1,positionVarT(counter2+2)) =resultf1*dble(vey(it_cur+1,positionVarT(counter2))) 
+            else if(positionVarT(counter2+3).eq.2) then ! f2
+                x2curG(1,positionVarT(counter2+1)) =resultf2
+                x2curG(1,positionVarT(counter2+2)) =resultf2*dble(vey(it_cur+1,positionVarT(counter2))) 
+            end if
+                counter2=counter2+4
             end do
         end if
     end if
@@ -4587,15 +4610,22 @@ x2curG=0.d0
     X2BcurG(1,k) = dble(veB(it_curB+1,k))
     end do
     if(numInterB.ge.1) then
-    do counter = 1,numInterB ! compute time and interactions at t1dc
-    X2BcurG(1,positionVarT(counter2+1)) =t1dc(i)! time effect
+    do counter = 1,numInterB ! compute time and interactions at t1dc(i)
+    if(positionVarT(counter2+3).eq.0) then !linear
+    X2BcurG(1,positionVarT(counter2+1)) =t1dc(i) ! time effect
     X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-    counter2=counter2+3    
+    else if(positionVarT(counter2+3).eq.1) then !f1
+    X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
+    X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    else if(positionVarT(counter2+3).eq.2) then !f2
+    X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
+    X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+    end if
+    counter2=counter2+4  
     end do
     end if
 end if
-end if
-    
+end if    
             z1YcurG(1,1) = 1.d0
             if(nb1.eq.2) then
                 z1YcurG(1,2) = t1dc(i)
@@ -4646,6 +4676,7 @@ else if(nb1.eq.5) then
     z1BcurG(1,5) = t1dc(i)
 
 end if
+
 
                         Bcurrentvalue=0.d0
                         Bcv=0.d0
@@ -4698,7 +4729,8 @@ end if
             Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
         end do
     end if
-       
+      
+      
 !    open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
 !         write(2,*)' z1YcurG', z1YcurG
 !          write(2,*)'z1BcurG',z1BcurG
@@ -4708,6 +4740,7 @@ end if
 !             write(2,*)'yscalar',yscalar
 !            write(2,*)'Bscalar',Bscalar
 !    close(2)
+
 
        if (methodGH.ne.3) then
     if(nb1.eq.1) then
