@@ -149,7 +149,6 @@
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
       
    a_deja_simul=0 ! add Monte-carlo
-   item=0
    ng0=ngnzag(1)
    nz0=ngnzag(2)
    ag0=ngnzag(3)
