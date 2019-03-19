@@ -1248,8 +1248,6 @@ end if
             k0T(jj)=xminT(jj)
         end do
     
-        switchMPI=0 ! 1=MPI, 2=sequential
-
         !write(2,*) 'joint: typeof', typeof,'b',b,'np',np, 'effet',effet
         select case(typeof)
             case(0)
