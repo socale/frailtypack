@@ -1802,7 +1802,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     size2 <- mt1
     
-         #  browser()
+           browser()
 
     
 if(link0==2){
@@ -1811,7 +1811,7 @@ if(link0==2){
 # time-interactions are particularly tricky to handle (especially in case of non-linear time trend)
       # position of time and interactions for current-level association
 for(i in 1:length(timevar)){
-    interact <- NULL
+    interact <- 0
     columns <- names(X_L)
     
     if(timevar[i] %in% columns){
@@ -1831,6 +1831,7 @@ for(i in 1:length(timevar)){
     }
     if(!is.null(interact)){ # continuous
     if(length(interact)==1){ # one time-interaction term in the model
+      if(interact!=0){
 
       name_1 <- strsplit(as.character(columns[interact]),":")[[1]][1]
       name_2 <- strsplit(as.character(columns[interact]),":")[[1]][2]
@@ -1848,7 +1849,7 @@ for(i in 1:length(timevar)){
         count2=count2+4
         numInterac=numInterac+count
       }
-      
+      }
     }else{ #
       for(j in 1:length(interact)){
       
@@ -1875,7 +1876,7 @@ for(i in 1:length(timevar)){
 }
   
 for(i in 1:length(timevar)){
-  interactB<-NULL
+  interactB<-0
   if(TwoPart) columnsB <- names(X_B)
   
   if(TwoPart){
@@ -1894,6 +1895,7 @@ if(i==1){
     numInteracB <- 0
 }
         if(length(interactB)==1){
+          if(interactB!=0){
 
       name_1B <- strsplit(as.character(columnsB[interactB]),":")[[1]][1]
       name_2B <- strsplit(as.character(columnsB[interactB]),":")[[1]][2]
@@ -1910,7 +1912,7 @@ if(i==1){
         count2=count2+4
         numInteracB=numInteracB+count
       }
-      
+          }
     }else{
       for(j in 1:length(interactB)){
       
