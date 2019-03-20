@@ -1830,7 +1830,7 @@ for(i in 1:length(timevar)){
       numInterac <- 0
     }
     if(!is.null(interact)){ # continuous
-    if(length(interact)==1){ # one time-interaction term in the model
+    if(interact!=0 & length(interact)==1){ # one time-interaction term in the model
 
       name_1 <- strsplit(as.character(columns[interact]),":")[[1]][1]
       name_2 <- strsplit(as.character(columns[interact]),":")[[1]][2]
@@ -1849,7 +1849,7 @@ for(i in 1:length(timevar)){
         numInterac=numInterac+count
       }
       
-    }else{ #
+    }else if(length(interact)>1){ #
       for(j in 1:length(interact)){
       
       name_1 <- strsplit(as.character(columns[interact[j]]),":")[[1]][1]
@@ -1893,7 +1893,7 @@ for(i in 1:length(timevar)){
 if(i==1){
     numInteracB <- 0
 }
-        if(length(interactB)==1){
+        if(interactB!=0 & length(interactB)==1){
 
       name_1B <- strsplit(as.character(columnsB[interactB]),":")[[1]][1]
       name_2B <- strsplit(as.character(columnsB[interactB]),":")[[1]][2]
@@ -1911,7 +1911,7 @@ if(i==1){
         numInteracB=numInteracB+count
       }
       
-    }else{
+    }else if (length(interactB)>1){
       for(j in 1:length(interactB)){
       
       name_1B <- strsplit(as.character(columnsB[interactB[j]]),":")[[1]][1]
