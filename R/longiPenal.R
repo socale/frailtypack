@@ -539,7 +539,7 @@
     OrderBinary <- data.Binary[, id]
     }
     
-    
+
     
     m2$formula <- TermsY
     
@@ -562,8 +562,7 @@
       uni.clusterY <- unique(clusterY)
     }
     
-    
-    
+
     if (NROW(m2) == 0)stop("No (non-missing) observations") #nombre ligne different de 0
     
     llY <- attr(TermsY, "term.labels")#liste des variables explicatives
@@ -718,7 +717,8 @@
     
     llY.fin <- llY.real.names
     llY <- llY.real.names
- 
+ j2<-0
+ j3<-0
     if(sum(ord)>length(ord)){
       for(i in 1:length(ord)){
         if(ord[i]>1){
@@ -752,13 +752,17 @@
             dummy <- model.matrix( ~ v2 - 1)
             #  if(length(levels(v2)>2))vec.factorY <- c(vec.factorY,paste(name_v1,":",name_v2,sep=""))
             for(j in 2:length(levels(v2))){
-              
               X_L <- cbind(X_L,dummy[,j]*v1)
+              ## add because bug when interaction 2 modalities X 2 modalities
+              if(j3==1) j4<-1 else j4<-0
+              if(j2==1) j3 <- 1 else j3 <- 0
+              if(j==3) j2<-1 else j2<-0
               
-              if(i>1 && i<length(llY.fin))llY.fin <- c(llY.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llY.fin[(i+1+j-2):length(llY.fin)])
+              if(i>1 && i<length(llY.fin) && j4==0)llY.fin <- c(llY.fin[1:(i-1+j+j3-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llY.fin[(i+1+j-j2-2):length(llY.fin)])
+              else if(j4==1)llY.fin <- c(llY.fin[1:(i-1+j-1)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""))
               else if(i==length(llY.fin))llY.fin <- c(llY.fin[1:(i-1+j-2)],paste(name_v1,":",name_v2,levels(v2)[j],sep=""))
               else llY.fin <- c(paste(name_v1,":",name_v2,levels(v2)[j],sep=""),llY.fin[(2+j-2):length(llY.fin)])
-            }
+              }
           }else if(is.factor(v1) && is.factor(v2)){
             
             
@@ -838,7 +842,6 @@
           llY.fin[i] <- paste(llY.fin[i],levels(data.Longi[,names(data.Longi)==llY.fin[i]])[2],sep="")}
       }
     }
-    
     #  llY <- llY.fin
     if(dim(X_L)[2]!=length(llY.fin))stop("The variables in the longitudinal part must be in the data.Longi")
     X_L <- as.data.frame(X_L)
@@ -1802,9 +1805,9 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     size2 <- mt1
     
-           #browser()
+          # browser()
 
-    
+
 if(link0==2){
 # Current-level association structure:
 # we need to evaluate the biomarker value at multiple time-points to approximate the cumulative hazard
@@ -1830,7 +1833,8 @@ for(i in 1:length(timevar)){
       numInterac <- 0
     }
     if(!is.null(interact)){ # continuous
-    if(interact!=0 & length(interact)==1){ # one time-interaction term in the model
+    if(length(interact)==1){ # one time-interaction term in the model
+      if(interact!=0){
 
       name_1 <- strsplit(as.character(columns[interact]),":")[[1]][1]
       name_2 <- strsplit(as.character(columns[interact]),":")[[1]][2]
@@ -1848,7 +1852,7 @@ for(i in 1:length(timevar)){
         count2=count2+4
         numInterac=numInterac+count
       }
-      
+      }
     }else if(length(interact)>1){ #
       for(j in 1:length(interact)){
       
@@ -1864,8 +1868,9 @@ for(i in 1:length(timevar)){
         positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
         count2=count2+4
-        numInterac=numInterac+count
-    }}
+      }}
+      numInterac=numInterac+count
+      
     }}else{
       if(is.null(positionVarTime)){
     positionVarTime=0
@@ -1873,7 +1878,6 @@ for(i in 1:length(timevar)){
       }
     }
 }
-  
 for(i in 1:length(timevar)){
   interactB<-0
   if(TwoPart) columnsB <- names(X_B)
@@ -1893,7 +1897,8 @@ for(i in 1:length(timevar)){
 if(i==1){
     numInteracB <- 0
 }
-        if(interactB!=0 & length(interactB)==1){
+        if(length(interactB)==1){
+          if(interactB!=0){
 
       name_1B <- strsplit(as.character(columnsB[interactB]),":")[[1]][1]
       name_2B <- strsplit(as.character(columnsB[interactB]),":")[[1]][2]
@@ -1910,7 +1915,7 @@ if(i==1){
         count2=count2+4
         numInteracB=numInteracB+count
       }
-      
+          }
     }else if (length(interactB)>1){
       for(j in 1:length(interactB)){
       
@@ -1927,14 +1932,13 @@ if(i==1){
         positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
         count2=count2+4
-        numInteracB=numInteracB+count
-    }}
+      }}
+      numInteracB=numInteracB+count
+      
     }
     }
     }else{
-      if(is.null(positionVarTime)){
     numInteracB=0
-      }
     }
 }
 }else{
@@ -1958,7 +1962,6 @@ if(i==1){
     noVarB <- 1
     numInteracB=0
   }
-    
       flush.console()
     if (print.times){
       ptm<-proc.time()

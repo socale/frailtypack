@@ -420,7 +420,14 @@
                 z1cur = 0.d0
                 current_mean = 0.d0
                             mat_sigma = 0.d0
-    
+   !                 open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+   !      write(2,*)'nmescur',nmescur
+   !  write(2,*)'ycurrent',ycurrent
+   !     write(2,*)'i',i
+   !      write(2,*)'TwoPart',TwoPart
+   !        write(2,*)'yy',yy
+   !        write(2,*)'it',it
+   !      close(2)
                 if(nmescur.gt.0) then
                     do i= 1,nmescur
                         ycurrent(i) = yy(it+i)
@@ -610,9 +617,7 @@
     end if    
 
             ut2cur = ut2(nt1dc(ig))
-            
-
-       
+                   
 
                     choix = 3
             if(methodGH.le.1) then

@@ -594,7 +594,7 @@ call dblepr('b',-1,b(i),1)
                 endDeriva=.true.
             end if
         end do
-            
+        
                 
         if (endDeriva.eqv..false.) then
             k=0
@@ -623,7 +623,14 @@ call dblepr('b',-1,b(i),1)
             end do
         end if
     end if
-        
+         
+  !  open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+  !       write(2,*)' v', v(:)
+  !       write(2,*)' th', th
+  !       write(2,*)' b', b
+  !       write(2,*)' rl', rl
+  !       
+  !  close(2)   
     !stop
     return
 

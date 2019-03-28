@@ -1903,7 +1903,6 @@ end if
         use donnees
         use comon,only:nb1,typeJoint,nea,methodGH,invBi_cholDet!auxig,typeof
         use donnees_indiv,only : frailpol,frailpol2,frailpol3,numpat
-! !$ use OMP_LIB
         Implicit none
     
         double precision,intent(out)::ss
@@ -1939,9 +1938,7 @@ end if
         ss=0.d0
             auxfunca = 0.d0
             if(methodGH.eq.0) then
-! !$OMP PARALLEL DO default(none) PRIVATE (j,auxfunca)& 
-! !$OMP  shared(nnodes,xx1,ww1,choix,frailpol,frailpol2,frailpol3,typeJoint,nb1,nea)&
-! !$OMP  REDUCTION(+:ss)  SCHEDULE(Dynamic,1)
+
             do j=1,nnodes
                 if (choix.eq.3) then
                         if(typeJoint.eq.2.and.nb1.eq.1) then
@@ -1963,7 +1960,6 @@ end if
                 endif
     
             end do
-! !$OMP END PARALLEL DO          
  else
             
                         do j=1,nnodes
@@ -2004,6 +2000,7 @@ end if
         use donnees
         use comon,only:methodGH,invBi_cholDet,nea,typeJoint!auxig,typeof,nb1,nea
         use donnees_indiv,only : frailpol,numpat
+   !      !$ use OMP_LIB
    Implicit none
     
         double precision,intent(out)::ss
@@ -2038,7 +2035,9 @@ end if
     
         ss=0.d0
             if(methodGH.eq.0) then
-
+!  !$OMP PARALLEL DO default(none) PRIVATE (j,auxfunca,frailpol)& 
+!  !$OMP  shared(nnodes,xx1,ww1,choix,typeJoint)&
+!   !$OMP  REDUCTION(+:ss)  SCHEDULE(Dynamic,1)
             do j=1,nnodes
             !  if (choix.eq.3) then
                 frailpol = xx1(j)
@@ -2046,16 +2045,22 @@ end if
                     ss = ss+ww1(j)*(auxfunca)
             !    endif
             end do
+!   !$OMP END PARALLEL DO          
 
     
             ss = ss
             else
+!  !$OMP PARALLEL DO default(none) PRIVATE (j,auxfunca,frailpol)& 
+!  !$OMP  shared(nnodes,xx1,ww1,choix,typeJoint)&
+!   !$OMP  REDUCTION(+:ss)  SCHEDULE(Dynamic,1)
                     do j=1,nnodes
             !  if (choix.eq.3) then
                     frailpol = xx1(j)
                     call gauherJ21(auxfunca,choix,nnodes)
                     ss = ss+ww1(j)*(auxfunca)
             end do
+!  !$OMP END PARALLEL DO          
+
             if(typeJoint.eq.2.and.nea.eq.2)ss = ss*invBi_cholDet(numpat) *2.d0**(nea/2.d0)
     
             end if
@@ -3003,39 +3008,7 @@ end if
                         -aux1(numpat)&
                         + cdc(numpat)*(etaydc(1)*current_mean(1))
         end if
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/frailtypack_TPJM/debug_funcpalongisplines_TP2.txt')
-!write(3,*)'matb_chol',matb_chol
-!write(3,*)'invBi_chol',invBi_chol
-!write(3,*)'vey',vey
-!write(3,*)'x2Bcur',x2Bcur
-!write(3,*)'nvaB',nvaB
-!write(3,*)'veB',veB
-!write(3,*)'nb1',nb1
-!write(3,*)'x2cur',x2cur
-!write(3,*)'Bcurrentvalue',Bcurrentvalue
-!write(3,*)'cmY',cmY
-!write(3,*)'current_mean',current_mean
-!write(3,*)'funcTP4J',funcTP4J
-!write(3,*)'yscalar',yscalar
-!write(3,*)'Bscalar',Bscalar
-!write(3,*)'mu1',mu1
-!write(3,*)'mu1B',mu1B
-!write(3,*)'Xea2',Xea2
-!write(3,*)'Xea22',Xea22
-!write(3,*)'b_lme',b_lme
-!write(3,*)'Xea',Xea
-!write(3,*)'mat',mat
-!write(3,*)'det',det
-!write(3,*)'uiiui',uiiui
-!write(3,*)'mu',mu
-!write(3,*)'Z1',Z1
-!write(3,*)'nmescur',nmescur
-!write(3,*)'muB',muB
-!write(3,*)'Z1B',Z1B
-!write(3,*)'nmescurB',nmescurB
-!write(3,*)'vet2',vet2
-!write(3,*)'b1',b1
-!close(3)
+
         funcTP4J = dexp(funcTP4J)
    
         deallocate(mu1)
@@ -4132,7 +4105,7 @@ resultf2=0.d0
         bbb=0.d0
     counter=0
     counter2=1
-    
+
         if(nva2.gt.0)then
                 vet2 = 0.d0
                 do j=1,nva2
@@ -4169,7 +4142,16 @@ if(numInter.ge.1)then
         end if
     end if
 
-    
+ !               open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+ !!        write(2,*)'X2BcurG',X2BcurG
+ !    write(2,*)'nvaB',nvaB
+ !       write(2,*)'veB',veB
+ !         write(2,*)'positionVarT',positionVarT
+ !        write(2,*)'TwoPart',TwoPart
+ !        write(2,*)'resultf1',resultf1
+ !         write(2,*)'resultf2',resultf2
+ !          write(2,*)'counter2',counter2
+ !         close(2)
     
     if(TwoPart.eq.1) then
     X2BcurG=0.d0
@@ -4195,6 +4177,7 @@ if(numInter.ge.1)then
     end if
 end if
 end if
+
 
         z1curG(1,1) = 1.d0
         if(nb1.eq.2)  z1curG(1,2) =tps
@@ -4562,7 +4545,6 @@ else if(nb1.eq.5) then
             end if
         !end if
         else !********** Current Mean ****************
-
         counter=0
         counter2=1
       if(nb1.eq.1) then
@@ -4625,6 +4607,9 @@ if(numInter.ge.1)then
     end if
 end if
 end if    
+
+! no ping here             
+             
             z1YcurG(1,1) = 1.d0
             if(nb1.eq.2) then
                 z1YcurG(1,2) = t1dc(i)
