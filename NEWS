@@ -1,5 +1,9 @@
+Changes in Version 3.0.4 march 2019
+o New model added: Joint frailty-copula models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints (vignettes file updated)
+
+
 Changes in Version 3.0.3.1 march 2019
-o Bug fixed in subroutines Fortran for the computation of integrals using the Pseudo-adaptive Gaussian Hermite quadrature. Due to incorrect assignment of memory (variable V_i and V in the subroutines funcpajsplines_surrogate, funcpafrailtyPred_Essai and MC_Gauss_MultInd_Essai), the program encountered in the previous version a fatal error with Windows OS. However, this problem did not impact model estimates based on other OS. 
+o Bug fixed in subroutines Fortran for the computation of integrals using the Pseudo-adaptive Gaussian Hermite quadrature. Due to incorrect assignment of memory (variable V_i and V in the subroutines funcpajsplines_surrogate, funcpafrailtyPred_Essai and MC_Gauss_MultInd_Essai), the program encountered in the previous version a fatal error with Windows OS. However, this problem did not impact model estimates based on other OS.
 
 o Add of the R function loocv() for the leave-one-out crossvalidation to evaluate the joint surrogate model
 
