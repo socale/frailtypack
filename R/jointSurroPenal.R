@@ -524,6 +524,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   one.dataset <- 1
   real.data <- 1
   gener.only <- 0
+  theta.copule <- 0.5
   
   # end initialization
   
@@ -724,7 +725,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   logNormal <- 1 #lognormal: indique si on a une distribution lognormale des effets aleatoires (1) ou Gamma (0)
   
   # Parametres d'integration
-  nsim_node <- rep(NA,10)
+  nsim_node <- rep(NA,11)
   nsim_node[1] <- nb.mc # nombre de simulation pour l'integration par Monte carlo, vaut 0 si on ne veut pas faire du MC
   nsim_node[2] <- nb.gh # nombre de points de quadrature a utiliser (preference 5 points pour l'adaptatice et 32 poits pour la non adaptatice)
   nsim_node[3] <- adaptatif # doit-on faire de l'adaptative(1) ou de la non-adaptative(0)
@@ -732,12 +733,13 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   nsim_node[5] <- nparamfrail
   nsim_node[6] <- 1 # indique si lon fait de la vectorisation dans le calcul integral (1) ou non (0). rmq: la vectorisation permet de reduire le temps de calcul
   nsim_node[7] <- nb.frailty # indique le nombre d'effet aleatoire cas quadrature adaptative
-  type.joint <- 1 # type de modele a estimer: 0=joint classique avec un effet aleatoire partage au niveau individuel,1=joint surrogate avec 1 frailty partage indiv et 2 frailties correles essai,
+  type.joint <- 1 # type de modele a estimer: 0=joint classique avec un effet aleatoire partage au niveau individuel,1=joint surrogate avec 1 frailty partage indiv et 2 frailties correles essai
   # 2=joint surrogate sans effet aleatoire partage donc deux effets aleatoires a chaque fois"
   nsim_node[8] <- type.joint 
   nsim_node[9] <- nb.gh2 # nombre de point de quadrature a utiliser en cas de non convergence de prefenrence 7 ou 9 pour la pseudo adaptative et 32 pour la non adaptative
   nsim_node[10] <- nb.iterPGH # nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
-  
+  nsim_node[11] <- 1 # model a utiliser pour la generation des donnee en cas de simulation: 1=joint surrogate avec 1 frailty partage indiv, 3=joint frailty copula model
+    
   # Parametres associes au taux de kendall et au bootstrap
   meth.int.kendal <- 4
   method_int_kendal <- meth.int.kendal# methode d'integration pour le taux de kendall: 0= montecarle, 1= quadrature quaussienne classique, 2= approximation de Laplace
@@ -769,6 +771,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   #zeta.init  # valeur initiale de zeta_wij
   #betas.init  # valeur initiale de betas
   #betat.init  # valeur initiale de betat
+  vbetast = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
   
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
@@ -886,7 +889,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   # sigma.t <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au true
   paramSimul <- c(gamma1, gamma2, theta2, eta, gamma.ui, alpha.ui, theta2_t, rsqrt_theta, gamma.uit,
                   rsqrt_gamma.ui, betas, betat, lambdas, nus, lambdat,nut, mode_cens, temps_cens,
-                  cens0, rsqrt, sigma.s, sigma.t)
+                  cens0, rsqrt, sigma.s, sigma.t, theta.copule)
   
   # Autres parametres de simulation
   weib <- 1# 0= on simule les temps par une loi exponentielle, 1= on simule par une weibull
@@ -1031,6 +1034,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                   dataHessian = matrix(0, nrow = np, ncol = np),
                   dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
                   datab = matrix(0, nrow = 1, ncol = np),
+                  as.double(vbetast),
                   PACKAGE="frailtypack"
   )
   

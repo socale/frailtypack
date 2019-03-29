@@ -7,7 +7,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
-						  dataHessian,dataHessianIH,datab)
+						  dataHessian,dataHessianIH,datab,vbetast)
                           
     ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
@@ -25,7 +25,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     
     ! =====Parametres prises en entree de la subroutine=====
     integer, dimension(3),intent(in)::nbrevar
-    integer,dimension(10), intent(inout)::nsim_node
+    integer,dimension(11), intent(inout)::nsim_node
     integer,intent(in)::nsujet1,ng,ntrials1,nst,maxiter,nparamfrail,n_sim1,logNormal,vrai_val_init,random_generator0,sujet_equi,&
                         affiche_itter
                         
@@ -38,13 +38,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(ng,5+nbrevar(2)), intent(in):: death
     double precision,dimension(2), intent(in):: kappa0
     double precision,dimension(9), intent(in):: param_init
-    double precision,dimension(22), intent(in):: paramSimul
+    double precision,dimension(23), intent(in):: paramSimul
     double precision,dimension(3), intent(inout)::EPS2
     character(len=30),dimension(5)::NomFichier
     double precision, intent(in)::prop_trait,revision_echelle
     integer, dimension(5), intent(in)::sizeVect
     double precision, dimension(ntrials1), intent(in)::p,prop_i
     double precision,dimension(n_sim1,2), intent(in):: vect_kappa
+	double precision, dimension(nbrevar(3),2), intent(in)::vbetast
     
     ! ! =====Parametres fournies en sortie par la subroutine=====
     integer, intent(out):: ni, istop, ier
@@ -98,7 +99,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(:),allocatable::linearpred,vect_kendall_tau,t_chap_kendall,t_chap_R2,vect_kendall_tau_temp,vect_R2
     double precision,dimension(:),allocatable::linearpreddc
     double precision,dimension(:),allocatable::time
-    double precision,dimension(:),allocatable::timedc
+    double precision,dimension(:),allocatable::timedc,vbetas,vbetat
     integer,dimension(4)::mtaille
     double precision,dimension(4)::paraweib
     double precision,dimension(3)::paratps,descripSurr,descripDeces
@@ -154,7 +155,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         moy_kendal_10,tau_kendal_10,moy_kendal_01,tau_kendal_01,moy_kendal_00,tau_kendal_00,se_kendal_11,&
                         se_kendal_01,se_kendal_00,moy_tau_boots,IC_Inf,IC_sup,zeta_init,moy_R2_boots,IC_Inf_R2,IC_sup_R2,&
                         CP_R2_boot,CP_ktau_boot,moy_R2_boots_test,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,&
-                        bi_R2_trial,bs_R2_trial
+                        bi_R2_trial,bs_R2_trial,thetacopule
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS,don_simulS1,parametre_empirique,&
                         parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,parametre_estimes_MPI_T,result_bootstrap
@@ -211,7 +212,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     frailt_base=indice_a_estime(5) !dit si l'on prend en compte l'heterogeneite sur le risque de base aussi bien dans la generation des donnes que dans l'estimation(1) ou non (0)
     !call intpr("I'm there scl 13:", -1, code_print, 1)
     ver=nbrevar(3) ! nombre total de variables explicatives
-
+    allocate(vbetas(ver),vbetat(ver))
     
     AG=0 ! andersen-gill approach(1=oui) 
     
@@ -266,7 +267,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     rsqrt = paramSimul(20)
     sigma_s = paramSimul(21)
     sigma_t = paramSimul(22)
-
+	thetacopule = paramSimul(23)
+    if(nsim_node(11) = 3) then ! joint frailty copula, remplissage des vecteurs des variables explicatives
+		do i = 1, size(vbetast,1)
+			vbetas(i) = vbetast(i,1) ! beta_s
+			vbetat(i) = vbetast(i,2) ! beta_t
+		enddo
+	endif
+	
     ! autres parametres de simulation
     weib = autreParamSim(1)
     param_weibull = autreParamSim(2)
@@ -569,71 +577,18 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     allocate(vect_kendall_tau(nboot_kendal),v_chap_kendall(nparam_kendall,nparam_kendall),vect_R2(nboot_kendal),&
             theta_chap_kendall(1,nparam_kendall),t_chap_kendall(nparam_kendall),v_chap_R2(3,3),t_chap_R2(3),&
             theta_chap_R2(1,3),result_bootstrap(n_sim,6))
-   ! open(3,file="Taux_kendall_bootst.txt")
-    ! fichier dans lequel saugarder les R2 pour l'IC par bootstrap
-    !open(18,file="R2_bootstrap.txt")
 
-    !******************************************************************
-    !*************Donnees simulees**********************
-    !******************************************************************
-    !parametres de simulation
-    ! read(2,*)param_estime    !"fichier des parametres estimes"
-    ! read(2,*)param_empirique    !"fichier des parametres empiriques desndonnees qui ont pas converges"
-    ! read(2,*)param_empirique_NC    !"fichier des parametres empiriques des donnees qui n'ont pas converges"
-    ! read(2,*)tableau_rejet    !"pour contenir les rangs des donnees qui n'ont pas convergees"
-    !read(2,*)vrai_val_init    !dit si on initialise les parametres avec les vraies(1) valeurs, a defaut(0) avec 0.5
-    ! read(2,*)theta_init        !valeur initiale de theta2
-    ! read(2,*)sigma_ss_init    !valeur initiale de sigma ss
-    ! read(2,*)sigma_tt_init    !valeur initiale de sigma tt
-    ! read(2,*)sigma_st_init    !valeur initiale de sigma st
-    ! read(2,*)gamma_init        ! valeur initiale de gamma_ui
-    ! read(2,*)alpha_init        ! valeur initiale de alpha_ui
-    ! read(2,*)zeta_init        ! valeur initiale de zeta_wij
-    ! read(2,*)betas_init        !valeur initiale de betas
-    ! read(2,*)betat_init        !valeur initiale de betat
-    ! read(2,*)revision_echelle ! coefficient pour la division des temps de suivi. permet de reduire l'echelle des temps pour evitr les problemes numeriques en cas d'un nombre eleve de sujet pour certains cluster
-    ! read(2,*)random_generator ! generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
-    ! read(2,*)sujet_equi ! dit si on considere la meme proportion de sujet par essai au moment de la generation des donnee (1) ou non (0). dans ce dernier cas remplir les proportion des sujets par essai dansle fichier dedie
-    ! allocate(p(ntrials))
-    ! p(1)=prop_trait ! proportion des patients traites par esssai. si 0 alors on a des proportions variables suivant les essai, remplir le fichier dedie. si non on aura le meme proportion des traites par essai
-    
-    ! do i=2,ntrials
-        ! p(i)=p(1)
-    ! enddo
-    
-    ! open(5,file='param_simul.txt') ! ouverture du fichier des parametres de simulation
-    !open(11,file=param_estime) ! ouverture du fichier des parametres estimes
-    !open(20,file="param_estime_scl.txt",status="unknown") ! ouverture dun second fichier des parametres estimes
-    ! open(7,file=Param_empirique) ! ouverture du fichier des parametres empiriques des donnees qui ont convergees
-    ! open(12,file=Param_empirique_NC) ! ouverture du fichier des parametres empiriques des donnees qui n'ont pas converges
-    ! open(8,file=tableau_rejet) ! pour contenir les rangs des donnees qui n'ont pas convergees
-    ! open(13,file=donnees)
-    ! open(14,file=death)
-    !open(15,file=kapa) ! fichier qui contient les kappa issus de la validation croisee
     indice_kapa = 1    
     n_essai=ntrials
     n_obs=nsujet
     ! le jeu de donnee doit contenir 13 ou 17 colonnes
     !read(5,*)n_col    ! je ne lis plus cette variable
     if(nsim_node(8)==2)then
-        n_col=15
+        n_col=15 + nbrevar(3)-1 ! j'ajoute le surplus des covariables, -1 pour le traitement qui est deja pris en compte
     else
-        n_col=13
+        n_col=13 + nbrevar(3)-1 ! j'ajoute le surplus des covariables
     endif
-    ! read(5,*)gamma1 ! parametre de la loi gamma des frailties 
-    ! read(5,*)gamma2 ! parametre de la loi gamma des frailties 
-    ! read(5,*)theta2 ! variance des frailties  w_ij S
-    ! read(5,*)eta    ! Zeta associe a w_ij chez les deces
     alpha = eta    ! alpha associe a u_i chez les deces
-    ! read(5,*)gamma_ui ! variance des frailties associees au risque de base
-    ! read(5,*)alpha_ui !parametre de puissance associe a u_i chez les deces
-    ! read(5,*)theta2_t ! variance des frailties  w_ij T
-    ! read(5,*)rsqrt_theta !niveau de correlation entre wij_s et wij_t
-    ! read(5,*)gamma_uit ! variance des frailties associees au risque de base true
-    ! read(5,*)rsqrt_gamma_ui ! niveau de correlation entre us_i et ut_i
-    ! read(5,*)betas  ! exp=0.7788008
-    ! read(5,*)betat  ! exp=0.7408182
-    ! allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col),prop_i(n_essai))
     allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col))
     
     if(nsim_node(8)==2)then
@@ -643,50 +598,6 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     endif
     
     don_simul=0.d0
-
-    ! p=(/0.5000000d0,0.5322581d0,0.4873950d0,0.7187500d0,0.4915254d0,0.5344828d0,0.6602564d0,&
-        ! 0.5000000d0,0.6589147d0,0.5097087d0,0.6666667d0,0.6236559d0,0.5103858d0,0.5067568d0,&
-        ! 0.4967177d0,0.5000000d0,0.5000000d0,0.6676136d0,0.6833333d0,0.6541353d0/) ! proportion patients traites par essai
-        
-    ! prop_i=(/0.01474564d0,0.01523716d0,0.02924551d0,0.06291472d0,0.02899975d0,0.01425412d0,&
-            ! 0.03833866d0,0.02211846d0,0.09510936d0,0.05062669d0,0.03317768d0,0.06856722d0,&
-            ! 0.08282133d0,0.03637257d0,0.11231261d0,0.03883018d0,0.02113541d0,0.17301548d0,&
-            ! 0.02949128d0,0.03268616d0/) ! proportion de sujets par essai
-    
-    ! definition de la proportion des sujets par essai
-    ! if(sujet_equi==1) then
-        ! prop_i=1.d0/n_essai
-    ! else
-        ! open(27,file='subject_per_trial.txt')
-        ! do i=1,n_essai
-            ! read(27,*)prop_i(i)
-        ! enddo
-        ! close(27)
-    ! endif
-    
-    ! definition de la proportion des sujets traites par essai
-    !!print*,"suis la p(1)=",p(1)
-    ! if(p(1)==0.d0) then
-        ! ! !print*,"suis la p(1)=",p(1)
-        ! ! stop
-        ! open(28,file='treat_subject_per_trial.txt')
-        ! do i=1,n_essai
-            ! read(28,*)p(i)
-        ! enddo
-        ! close(28)
-    ! endif
-
-    ! p=.05d0
-    ! read(5,*)lambdas
-    ! read(5,*)nus
-    ! read(5,*)lambdat
-    ! read(5,*)nut
-    ! read(5,*)mode_cens !1= quantille et 2= date fixe
-    ! read(5,*)temps_cens
-    ! read(5,*)cens0 ! proportion des patients censures
-    ! read(5,*)rsqrt ! niveau de correlation souhaite pour les frailties niveau essai
-    ! read(5,*)sigma_s
-    ! read(5,*)sigma_t
     ! read(5,*)weib ! 0= on simule les temps par une loi exponentielle, 1= on simule par une weibull
     ! read(5,*)param_weibull ! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation a l'aide de la fonction de weibull donnee dans le cous de Pierre
 	! read(5,*)frailty_cor ! indique si l'on considere pour le modele de simulation deux effets aleatoire correles au niveau essai(=1) ou un effet aleatoire partage(=0) ou encore on simule sans effet aleatoire au niveau essai(=2, model conjoint classique)
@@ -702,29 +613,23 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! read(5,*)aleatoire    ! dit si on reinitialise la generation des nombre aleatoire avec un environnement different a chaque appel (1) ou non(O).En cas de generation differente, on utilise l'horloge (heure) de l'ordinateur comme graine. Dans ce cas, il n'est pas possible de reproduire les donnees simulees
     ! read(5,*)nbre_sim    ! dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
     ! read(5,*)graine    ! dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
-    ! close(5) ! fermeture du fichier des parametres
-    ! open(9,file="surrogate.txt")
-    ! open(16,file="true.txt")
 
     sigmast_vrai=rsqrt*dsqrt(sigma_s)*dsqrt(sigma_t)
     thetast_vrai=rsqrt_theta*dsqrt(theta2)*dsqrt(theta2_t)
     gammast_vrai=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
     
-    allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6))   
+	if(nsim_node(11) = 3) ! si joint frailty copula, alors on ajout les covariable aux jeux de donnees
+	  allocate(d_S(nsujet*n_sim,6 +size(vbetast,1)-1),d_T(ng*n_sim,6+size(vbetast,1)-1))) 
+	else
+	  allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6)) 
+	endif
+	
     if(une_donnee==1) then
         ! on recupere le jeu de donnees reelles
-        ! do i=1,size(d_S,1)
-            ! read(13,*)(d_S(i,j),j=1,6) 
-            ! read(14,*)(d_T(i,j),j=1,6) 
-        ! enddo
         d_S=donnees
         d_T=death
     else
         ! on recupere le jeu de donnees reelles
-        !do i=1,size(d_S,1)
-        !    read(13,*)(d_S(i,j),j=1,6) 
-        !    read(14,*)(d_T(i,j),j=1,6) 
-        !enddo
     endif
     
     moy_theta=0.d0
@@ -892,7 +797,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 don_simul(:,statusT1)=d_T(i_min_t:i_max_t,6)
                 don_simul(:,trialref1)=d_T(i_min_t:i_max_t,1)
                 don_simul(:,Patienref1)=d_T(i_min_t:i_max_t,2)
-                don_simul(:,trt1)=d_T(i_min_t:i_max_t,3)
+                don_simul(:,trt1)=d_T(i_min_t:i_max_t,3)	
             else ! alors la position des variables n'est plus la meme
                 don_simulS1(:,initTime1)=d_S(i_min:i_max,1)
                 don_simulS1(:,timeS1)=d_S(i_min:i_max,2)
@@ -907,6 +812,16 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 don_simul(:,Patienref1)=d_T(i_min_t:i_max_t,5)
                 don_simul(:,trt1)=d_T(i_min_t:i_max_t,6)
             endif
+			
+			! j'ajoute les autres variables a la fin
+            do i = 2,nbrevar(3)
+				if(filtre(i).eq.1)then
+					don_simulS1(:,size(don_simulS1,2) - nbrevar(3) + i - 1)=d_S(i_min:i_max,size(don_simulS1,2) - nbrevar(3) + i - 1)
+				endif
+				if(filtre2(i).eq.1)then
+					don_simul(:,size(don_simul,2)- nbrevar(3) + i - 1)=d_T(i_min_t:i_max_t,size(don_simul,2)- nbrevar(3) + i - 1)
+				endif
+		    enddo
             ! on met à jour le nombre d'essais
             
             20041 continue
@@ -946,35 +861,6 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             !stop
         else            
             theta=0.d0
-            ! !print*,ng
-            ! !print*,n_col
-            ! !print*,logNormal
-            ! !print*,affiche_stat
-            ! !print*,"theta",theta
-            ! !print*,"theta2",theta2
-            ! !print*,"theta2_t",theta2_t
-            ! !print*,"rsqrt_theta",rsqrt_theta
-            ! ! !print*,ng
-            ! ! !print*,ver
-            ! ! !print*,alpha
-            ! ! !print*,cens0
-            ! ! !print*,temps_cens
-            ! !print*,"gamma_ui",gamma_ui
-            ! !print*,"gamma_uit",gamma_uit
-            ! !print*,"rsqrt_gamma_ui",rsqrt_gamma_ui
-            ! !print*,"gamma1",gamma1
-            ! !print*,"gamma2",gamma2
-            ! ! !print*,theta2
-            ! ! !print*,lambdas
-            ! ! !print*,nus
-            ! ! !print*,lambdat
-            ! ! !print*,nut
-            ! !print*,"sigma_s",sigma_s
-            ! !print*,"sigma_t",sigma_t
-            ! !print*,"rsqrt",rsqrt
-            ! !print*,"betas",betas
-            ! !print*,"betat",betat
-            !stop
             if(nsim_node(8)==0) then
                 indice_seed=0
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
@@ -997,13 +883,20 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
                 11 continue
                     
-                if(nsim_node(8)==1) then !modele avec effets aleatoires partages
+                if(nsim_node(11)==1) then !modele avec effets aleatoires partages
                     call Generation_surrogate(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,betas,betat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base)    
                 endif
+				
+				if(nsim_node(11)==3) then ! joint frailty copula model
+                    call Generation_surrogate(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
+                        ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
+                        n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
+						filtre2)    
+                endif
                 
-                if(nsim_node(8)==2) then ! modele complet avec effets aleatoires correles
+                if(nsim_node(11)==2) then ! modele complet avec effets aleatoires correles
                     ! call Generation_surrogate_complet(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
                         ! ng,ver,alpha,cens0,temps_cens,gamma1,theta2,lambdas,nus,lambdat,nut,betas,betat,&
                         ! n_essai,rsqrt,sigma_s,sigma_t,prop_i,gamma_ui,theta2_t,rsqrt_theta,&
@@ -3941,7 +3834,7 @@ end do
     ! deallocate(kappa,tab_var_theta,donnee_essai,tableNsim,parametre_estimes_MPI,parametre_estimes_MPI_T)
     ! deallocate(vect_kendall_tau,v_chap_kendall,theta_chap_kendall,t_chap_kendall,v_chap_R2,theta_chap_R2,t_chap_R2,result_bootstrap)
     ! !deallocate(Vect_sim_MC)
-    deallocate(d_S,d_T)
+    deallocate(d_S,d_T,vbetas,vbetat)
     endsubroutine jointsurrogate
     !complilation:
     !mpif90 -fopenmp -O3 -o exe_joint_surr_MPI_OMP  Adonnees.f90 Aparameters.f90 autres_fonctions.f90 Integrant_scl.f90 aaOptim_New_scl.f90 aaOptim_New_scl2.f90 funcpa_laplace.f90 aaOptim.f90 aaOptim_SCL_0.f90 aaOptimres.f90 funcpa_adaptative.f90 Integrale_mult_scl.f90 Pour_Adaptative.f90 aaUseFunction.f90 funcpajsplines_surrogate_scl_1.f90 funcpajsplines_surrogate_scl_2.f90 afuncpasres.f90 aresidusMartingale.f90 distance.f90 joint_surrogate.f90 main_Surr_simulation.f90

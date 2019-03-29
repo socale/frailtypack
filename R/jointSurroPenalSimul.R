@@ -63,6 +63,7 @@
 #'    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, 
+#'    type.joint.simul = 1, mbetast =NULL, theta.copule = 3, 
 #'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
@@ -203,6 +204,15 @@
 #' The default is \code{0}.
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
+#' @param type.joint.simul # Model to considered for data generation. If this argument is set to \code{1}, the joint surrogate model
+#' is used, the default (see \link{joinSurroPenal}). If set to \code{3}, data are generated following the joint frailty-copula model
+#' for surrogacy.
+#' @param mbetast Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix include 
+#' two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
+#' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The defaul 
+#' is NULL and assume only the treatment effect
+#' @param theta.copule The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{3}, for an individual-level
+#' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
 #' is TRUE.
@@ -287,7 +297,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                       gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL,
-                      nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
+                      type.joint.simul = 1, mbetast = NULL, theta.copule = 3, nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL
   scale <- 1
@@ -296,7 +306,8 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   gener.only <- 0
   param.weibull <- 0
   
-  # ==============parameters checking======================
+  # ==============parameters checking=====================
+  
   if(!(indicator.zeta %in% c(0,1)) | !(indicator.alpha %in% c(0,1)) | !(frail.base %in% c(0,1))){
     stop("model options indicator.zeta, indicator.alpha and frail.base must be set to 0 or 1")
   }
@@ -322,8 +333,17 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
     stop("The argument 'param.weibull' must be set to 0 or 1")
   }
   
+  if((type.joint.simul == 1) & !is.null(mbetast)){
+    stop("argument mbetast is required only if the argument type.joint.simul is set to 3")
+  }
+  
+  if(!(length(dim(mbetast)) ==2)| !(dim(mbetast)[2] == 2)){
+    stop("argument mbetast should be a matrix or a dataframe with 2 columns")
+  }
+  
   # ============End parameters checking====================
   
+  vbetast = mbetast
   nsujet1 <- nbSubSimul
   ng <- nbSubSimul
   ntrials1 <- ntrialSimul
@@ -364,6 +384,10 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   ved <- 1 # nombre variables explicative deces/evenement terminal
   ver <- 1 # nombre total de variables explicative
   nbrevar <- c(ves,ved,ver) 
+  if(!is.null(mbetast)){
+     if(!(dim(mbetast)[1] == ver))
+      stop(" The number of rows of the matrix mbetast must be equal to the number of covariates ")
+  }
   
   # vecteur des noms de variables
   nomvarl<- "trt"
@@ -426,7 +450,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   logNormal <- 1 #lognormal: indique si on a une distribution lognormale des effets aleatoires (1) ou Gamma (0)
   
   # Parametres d'integration
-  nsim_node <- rep(NA,10)
+  nsim_node <- rep(NA,11)
   nsim_node[1] <- nb.mc # nombre de simulation pour l'integration par Monte carlo, vaut 0 si on ne veut pas faire du MC
   nsim_node[2] <- nb.gh # nombre de points de quadrature a utiliser (preference 5 points pour l'adaptatice et 32 poits pour la non adaptatice)
   nsim_node[3] <- adaptatif # doit-on faire de l'adaptative(1) ou de la non-adaptative(0)
@@ -435,10 +459,11 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   nsim_node[6] <- 1 # indique si lon fait de la vectorisation dans le calcul integral (1) ou non (0). rmq: la vectorisation permet de reduire le temps de calcul
   nsim_node[7] <- nb.frailty # indique le nombre d'effet aleatoire cas quadrature adaptative
   type.joint <- 1 # type de modele a estimer: 0=joint classique avec un effet aleatoire partage au niveau individuel,1=joint surrogate avec 1 frailty partage indiv et 2 frailties correles essai,
-  # 2=joint surrogate sans effet aleatoire partage donc deux effets aleatoires a chaque fois"
+  # 2=joint surrogate sans effet aleatoire partage donc deux effets aleatoires a chaque fois", 3= joint frailty copula model
   nsim_node[8] <- type.joint 
   nsim_node[9] <- nb.gh2 # nombre de point de quadrature a utiliser en cas de non convergence de prefenrence 7 ou 9 pour la pseudo adaptative et 32 pour la non adaptative
   nsim_node[10] <- nb.iterPGH # nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
+  nsim_node[11] <- type.joint.simul # model a utiliser pour la generation des donnee en cas de simulation: 1=joint surrogate avec 1 frailty partage indiv, 3=joint frailty copula model
   
   # Parametres associes au taux de kendall et au bootstrap
   meth.int.kendal <- 4
@@ -475,6 +500,10 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   param_init <- c(theta.init,sigma.ss.init,sigma.tt.init,sigma.st.init,gamma.init,alpha.init,
                   zeta.init,betas.init,betat.init)
   
+  if(is.null(vbetast)){ # joint surrogate or joint copula with 1 covariate
+    vbetast = matrix(c(betas.init,betat.init),nrow = 1, ncol = 2)
+  }
+  
   revision_echelle <- scale # coefficient pour la division des temps de suivi. permet de reduire l'echelle des temps pour eviter les problemes numeriques en cas d'un nombre eleve de sujet pour certains cluster
   # random.generator <- # generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
   sujet_equi <- equi.subj.trial # dit si on considere la meme proportion de sujet par essai au moment de la generation des donnee (1) ou non (0). dans ce dernier cas remplir les proportion des sujets par essai dansle fichier dedie
@@ -509,7 +538,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   # sigma.t <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au true
   paramSimul <- c(gamma1, gamma2, theta2, eta, gamma.ui, alpha.ui, theta2_t, rsqrt_theta, gamma.uit,
                   rsqrt_gamma.ui, betas, betat, lambdas, nus, lambdat,nut, mode_cens, temps_cens,
-                  cens0, rsqrt, sigma.s, sigma.t)
+                  cens0, rsqrt, sigma.s, sigma.t, theta.copule)
   
   # Autres parametres de simulation
   weib <- 1# 0= on simule les temps par une loi exponentielle, 1= on simule par une weibull
@@ -661,6 +690,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                   dataHessian = matrix(0, nrow = np*n_sim1, ncol = np),
                   dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
                   datab = matrix(0, nrow = n_sim1, ncol = np),
+                  as.double(vbetast),
                   PACKAGE="frailtypack"
   )
   
