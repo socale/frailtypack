@@ -194,7 +194,7 @@
      
     if(link0(1).eq.2) then
     if(positionVarTime(1).ne.404) then
-    allocate(positionVarT((numInterac(1)+numInterac(2))*3))
+    allocate(positionVarT((numInterac(1)+numInterac(2))*4))
     positionVarT = positionVarTime
     end if
     end if
@@ -374,7 +374,7 @@
         allocate(nmesB(ng))
         nmesB = 0
 
-        if(TwoPart.eq.1) allocate(groupeeB(nsujetB),nmes_oB(ng)) !add TwoPart
+        if(TwoPart.eq.1) allocate(groupeeB(nsujetB),nmes_oB(ng)) !add TwoPart // nmes_oB useless ?
         if(TwoPart.eq.1) groupeeB = groupeB0 !add TwoPart
     
     
@@ -396,13 +396,27 @@
             end do
         end if
     
+
         i = 1
         do j=2,nsujety
+        if(groupeey(j-1).eq.i) then
             if(groupeey(j).eq.groupeey(j-1))then
                 nmesy(i)=nmesy(i)+1
             else
                 i = i+1
             end if
+            else
+            nmesy(i)=0
+            if(groupeey(j).eq.groupeey(j-1))then
+            nmesy(i+1)=2
+            end if
+            i=i+1
+            end if
+      !              call intpr('j',-1,j,1)
+     !   call intpr('nsujety',-1,nsujety,1)
+     !   call intpr('groupeey(j-1)',-1,groupeey(j-1),1)
+     !   call intpr('groupeey(j)',-1,groupeey(j),1)
+     !   call intpr('nmesy(i)',-1,nmesy(i),1)
         end do
     
         maxmesy=0
@@ -425,10 +439,18 @@
         nmesB = 1
         i = 1
         do j=2,nsujetB
+        if(groupeeB(j-1).eq.i) then
             if(groupeeB(j).eq.groupeeB(j-1))then
                 nmesB(i)=nmesB(i)+1 ! number of observations per individual (length=ng)
             else
                 i = i+1
+            end if
+            else
+            nmesB(i)=0
+            if(groupeeB(j).eq.groupeeB(j-1))then
+           nmesB(i+1)=2
+           end if
+            i=i+1
             end if
         end do
         maxmesB=0
@@ -438,6 +460,8 @@
             end if
         end do
     end if
+    
+
     
         if(TwoPart.eq.1) allocate(mu1_resB(maxmesB), varcov_margB(nsujetB,maxmesB))
 
@@ -4608,6 +4632,18 @@ if(numInter.ge.1)then
 end if
 end if    
 
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!         write(2,*)' positionVarT', positionVarT
+!         write(2,*)' numInter', numInter
+!          write(2,*)'x2curG',x2curG
+!         write(2,*)' numInterB', numInterB
+!         write(2,*)' X2BcurG', X2BcurG
+     !     write(2,*)'nmescur',nmescur
+     !     write(2,*)'ycurrent',ycurrent
+     !     write(2,*)'yy',yy
+     !     write(2,*)'Bcurrent',Bcurrent
+     !     write(2,*)'bb',bb
+!             close(2)
 ! no ping here             
              
             z1YcurG(1,1) = 1.d0
