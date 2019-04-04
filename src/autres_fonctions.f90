@@ -947,34 +947,37 @@ end function table_essai
 	
 	subroutine weiguicopule(a,at,b,bt,betau,betaut,theta,Sij,Tij)
 	!theta : parametre de copula
-    ! fonction de densité de la loi de weibull = f(x)=b**a . a . x**(a-1) . exp(-(bx)**a) (voir cours de Piere Jolie page 41)
+    ! fonction de densité de la loi de weibull = f(x)=b.a. x**(a-1)
+	! a, at parametres d'echelle, b, bt : parametres de forme
     ! generation du temps de deces conditionnellement au surrogate: T_ij|S_ij
         use var_surrogate, only:param_weibull
         use var_surrogate, only: random_generator
-        double precision ::a,b,at,bt,Sij,Tij,u,ut,v,betau,betaut,vt,utij,vtij,theta
+        double precision ::a,b,at,bt,Sij,Tij,u,ut,v,betau,betaut,vt,utij,vtij,theta,wij
         double precision ::uniran
         real ::ran2
         if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
             u = uniran()
 			ut = uniran()
-			utij = ((ut**(-theta/(1.d0 + theta)) - 1.d0) * u**(- theta) + 1.d0)**(-1.d0 / theta)
         else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)    
             CALL RANDOM_NUMBER(u)
+			CALL RANDOM_NUMBER(ut)
         endif
         v = (1.d0-u)
 		vt = (1.d0-ut)
-		vtij = ((vt**(-theta/(1.d0 + theta)) - 1.d0) * v**(- theta) + 1.d0)**(-1.d0 / theta)
+		wij = (1.d0 - u)**(- theta)
+		vtij = 1.d0 - wij + wij * vt**(-theta/(1.d0 + theta))
 		
-        if(param_weibull==0)then !parametrisation de weibull par defaut dans le programme de Virginie: fonction de densite differente de celle donnee ci-dessus
-            Sij = (1.d0/b)*((-dexp(-betau)*dlog(v))**(1.d0/a))
-			Tij = (1.d0/bt)*((-dexp(-betaut)*dlog(vtij))**(1.d0/at))
-        else 
-            ! parametrisation de la weibull donnee par la fonction de densite ci-dessus
-            ! F^-1(t)=1/b*(-log(1-t))**(1/a)
-            Sij=    (1.d0/b)*((-dlog(1+ dlog(u)*dexp(-betau)))**(1.d0/a))
-			Tij=    (1.d0/bt)*((-dlog(1+ dlog(utij)*dexp(-betaut)))**(1.d0/at))
-        endif
-
+       !parametrisation de weibull par defaut dans le programme de Virginie: fonction de densite differente de celle donnee ci-dessus, idem a Takeshi
+        Sij = ((1.d0/b)*(-dexp(-betau)*dlog(v)))**(1.d0/a)
+	    Tij = ((1.d0/(theta *bt))*dexp(-betaut)*dlog(vtij))**(1.d0/at)
+		
+		! call dblepr("theta", -1, theta, 1)
+		! call dblepr("bt", -1, bt, 1)
+		! call dblepr("at", -1, at, 1)
+		! call dblepr("vtij", -1, vtij, 1)
+		! call dblepr("betaut", -1, betaut, 1)
+		! call dblepr("Sij", -1, Sij, 1)
+		! call dblepr("Tij", -1, Tij, 1)
     return
     endsubroutine weiguicopule
 	
@@ -1686,7 +1689,8 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
 
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
-                                    lambda_S,nu_S,lambda_T,nu_T,betas,betat,rsqrt,sigma_s,sigma_t
+                                    lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t
+	  double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
       double precision,dimension(n_essai),intent(in)::prop_i,p      
       double precision,intent(out)::vrai_theta
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
@@ -1857,8 +1861,8 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
          bw2(2)=nu_T
 
          demi = 0.5             ! pour var expli
-         cbeta1=betas          
-         cbeta3=betat        
+         cbeta1=betas(1)         
+         cbeta3=betat(1)     
          nb_recur = 0           ! nb de temps 
          nb_dc = 0              ! nb de dc
          nb_cens = 0            ! nb de cens
@@ -1866,7 +1870,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
          max_recu= 1
          moyui = 0.d0
         !close(10)
-    do 30 ig=1,ng ! sur les groupes
+    do ig=1,ng ! sur les groupes
             
         if (lognormal==0)then ! Gamma    
             call gamgui(bg1(1),ui) !genere gamma pour zi
@@ -1910,18 +1914,24 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
 !c-----------RECURRENT --------------------------------------------
 !c---  genere temps recurrents a partir 2 var explic :
 			if (lognormal==0)then ! Gamma
-
-			else ! lognormale
-				!ui represente les w_ij dans cette expression
-				if (lognormal==1)then !joint surrogate
-					if(frailt_base==1) then ! on tient compte des u_i
-						auxbeta1=don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) 
-						auxbeta2=alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-					else ! on ne tient pas compte des u_i dans la generation des temps de survie
-						auxbeta1=don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) 
-						auxbeta2=don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-					endif
-			endif
+                !print*,"generation gamma avec 2 effets aleatoires correles au niveau essai non encore", &
+                !      "implementee suis au probleme de la loi gamma multivariee"
+            else ! lognormale
+                !ui represente les w_ij dans cette expression
+                if (lognormal==1)then !joint surrogate
+                    if(frailt_base==1) then ! on tient compte des u_i
+                        auxbeta1=ui+don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+                        auxbeta2=truealpha*ui+alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+                    else ! on ne tient pas compte des u_i dans la generation des temps de survie
+                        auxbeta1=ui+don_simul(ig,v_s1)*dble(v1(1))+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+                        auxbeta2=truealpha*ui+don_simul(ig,v_t1)*dble(v1(1))+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+                    endif
+                else !(2)joint classique, 2007
+                    ! on ne tient pas compte des u_i dans la generation des temps de survie
+                    auxbeta1=ui+cbeta1*dble(v1(1))!+cbeta2*dble(v1(2)) ! scl je considere uniquement le traitement
+                    auxbeta2=truealpha*ui+cbeta3*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+                endif
+            endif
             
 			call weigui2(bw1(1),bw1(2),auxbeta1,gapx)
 				x=gapx
@@ -1963,7 +1973,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
 					endif
 				endif
 		!c****** for gap time :         
-					   t0(nobs) = 0.d0
+				 t0(nobs) = 0.d0
 		!c fin gap
 					   t1(nobs) = temps1
 					   t1_S(nobs) = temps1_S
@@ -1972,7 +1982,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
 					   g(nobs)= ig
 					   iii = 0
 					   iii2 = 0
-					   do 110 ii = 1,ver
+					   do ii = 1,ver
 						  if(filtre(ii).eq.1)then
 							 iii = iii + 1
 							 ve(nobs,iii) = dble(v1(ii))
@@ -1981,7 +1991,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
 							 iii2 = iii2 + 1
 							 ve2(nobs,iii2) = dble(v1(ii))
 						  endif
-		 110           continue
+		                enddo
 	           !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
 				don_simulS1(ig,initTime1)=t0(nobs)
 				don_simulS1(ig,timeS1)=t1_S(nobs)
@@ -2008,8 +2018,10 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
 				if (delta.eq.0.d0)then ! deces ou censure
 				   goto 30          ! on change de sujet
 				endif				   
-		   10      continue                   !observations par sujet
-		   30   continue                  !sujets=groupes		   
+		    10      continue          !observations par sujet
+		   30   continue                  !sujets=groupes	
+            enddo		
+			
 			  if(ibou.eq.Aretenir)then
 				  moy_idnum=0
 				  do 444 jj=1,ng
@@ -2058,7 +2070,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t,&
 									thetacopule
-	  double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients du model. contiont le meme nombre d'element, et donc doit etre bien rempli
+	  double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
       double precision,dimension(n_essai),intent(in)::prop_i,p      
       double precision,intent(out)::vrai_theta
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
@@ -2076,8 +2088,8 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       integer :: nb_recur,nb_dc,nb_cens,delta,deltadc,jj,ig,nrecurr,nobs,max_recu
       real , dimension(:), allocatable:: v1
       real :: piece,demi
-      double precision :: ui,temps1,temps1_S,gapx,gapdc,moy_idnum,x,xdc,cens,cbeta1,cbeta2,cbeta3,&
-      auxbeta1,auxbeta2,uniran,moyui, cbeta2, cbeta4
+      double precision :: ui,temps1,temps1_S,gapx,gapdc,moy_idnum,x,xdc,cens,cbeta2,&
+      auxbeta1,auxbeta2,uniran,moyui, cbeta4
       double precision, dimension(2):: bg1,bw1,bw2
       integer, dimension(ngmax):: idnum
       double precision, dimension(ngmax):: vecui
@@ -2093,8 +2105,8 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       double precision::x22,sigma_st,u_i,tempon
       double precision,dimension(:),allocatable::tempsD,mu
       integer::Aretenir
-      integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
-                      timeC1=8,statusS1=9,statusT1=10,initTime1=11,Patienref1=12,u_i1=13 ! definissent les indices du tableau de donnee simulees
+      integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,timeS1=5,timeT1=6,&
+                      timeC1=7,statusS1=8,statusT1=9,initTime1=10,Patienref1=11,u_i1=12 ! definissent les indices du tableau de donnee simulees
       double precision,dimension(n_essai)::n_i
       double precision,dimension(:,:),allocatable::sigma,x_ 
     
@@ -2180,7 +2192,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     enddo
     
     don_simulS1=don_simul
-    do 1000 ibou=1,nbou 
+        ibou=1 
         ind(ibou)=0
         nig = 0
         g=0
@@ -2208,9 +2220,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
          bw2(1)=lambda_T
          bw2(2)=nu_T
 
-         demi = 0.5             ! pour var expli
-         cbeta1=betas          
-         cbeta3=betat        
+         demi = 0.5             ! pour var expli       
          nb_recur = 0           ! nb de temps 
          nb_dc = 0              ! nb de dc
          nb_cens = 0            ! nb de cens
@@ -2218,42 +2228,50 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
          max_recu= 1
          moyui = 0.d0
         !close(10)
-    do 30 ig=1,ng ! sur les groupes
+    do ig=1,ng ! sur les groupes
             
-        if (lognormal==0)then ! Gamma    
-            call gamgui(bg1(1),ui) !genere gamma pour zi
-            ui = ui/bg1(2)
-!c     verification des ui
-            vecui(ig) = ui
-            moyui = moyui + ui
-        else !lognormale
-            x22=0.d0
-            !bg1(1)= variance des wij
-            call bgos(sqrt(theta2),0,ui,x22,0.d0) !on simule les w_ij suivant une normale
-            !verification des ui
-            vecui(ig) = ui
-            moyui = moyui + ui
-        endif
+        ! if (lognormal==0)then ! Gamma    
+            ! ! call gamgui(bg1(1),ui) !genere gamma pour zi
+            ! ! ui = ui/bg1(2)
+           ! ! ! c     verification des ui
+            ! ! vecui(ig) = ui
+            ! ! moyui = moyui + ui
+        ! else !lognormale
+            ! x22=0.d0
+            ! call bgos(sqrt(theta2),0,ui,x22,0.d0) !on simule les w_ij suivant une normale
+            ! !verification des ui
+            ! vecui(ig) = ui
+            ! moyui = moyui + ui
+        ! endif
         
 !!c---  variables explicatives par sujet
+        !call intpr("voile ver", -1, ver, 1)
          do 111 j=1,ver
-                if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
-                    tempon= uniran()
-                else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
-                    CALL RANDOM_NUMBER(tempon)
-                endif
-               piece=real(tempon)
-               if (piece.le.demi) then
-                  v1(j) = 0.
-               else
-                  v1(j) = 1.
-               endif
-         111        continue		   
+            if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
+                tempon= uniran()
+            else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
+                CALL RANDOM_NUMBER(tempon)
+            endif
+			
+            piece = real(tempon)
+            if (piece.le.demi) then
+                v1(j) = 0.
+            else
+                v1(j) = 1.
+            endif
+         111        continue
+		 
+		! if(ig==1) then 
+		   ! call realpr("voile v1", -1, v1, ver)
+		   ! call realpr("voile piece", -1, piece, 1)
+		   ! call dblepr("voile tempon", -1, tempon, 1)
+		! endif
+		
          x=0.d0
          xdc=0.d0
          cens=0.d0
 
-         do 10 k=1,nrecurr ! observations max / sujet
+         do k=1,nrecurr ! observations max / sujet
 			 if(k.gt.max_recu)then
 				max_recu=k 
 			 endif
@@ -2268,25 +2286,29 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 					if(frailt_base==1) then ! on tient compte des u_i
 						auxbeta1=don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
 						auxbeta2=alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-					    do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
-						  if(filtre(ii).eq.1)then
-						    auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
-						  endif
-						  if(filtre2(ii).eq.1)then
-							auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
-						  endif
-                        enddo
+					    if(ver > 1) then
+							do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
+							  if(filtre(ii).eq.1)then
+								auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
+							  endif
+							  if(filtre2(ii).eq.1)then
+								auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
+							  endif
+							enddo
+						endif
 					else ! on ne tient pas compte des u_i dans la generation des temps de survie
 						auxbeta1=don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
 						auxbeta2=don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-					    do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
-						  if(filtre(ii).eq.1)then
-						    auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
-						  endif
-						  if(filtre2(ii).eq.1)then
-							auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
-						  endif
-                        enddo
+					    if(ver > 1) then
+							do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
+							  if(filtre(ii).eq.1)then
+								auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
+							  endif
+							  if(filtre2(ii).eq.1)then
+								auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
+							  endif
+							enddo
+						endif
 					endif
 				endif
 			endif
@@ -2295,6 +2317,10 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 			x=gapx ! temps de progression
 			xdc=gapdc ! temps de deces
 			tempsD(ig)=xdc
+			if(ig == 1) then
+				call dblepr("gapx", -1, gapx, 1)
+				call dblepr("gapdc", -1, gapdc, 1)
+			endif
 
 		! scl============censure====================
 				cens=cens_A
@@ -2336,7 +2362,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 					   g(nobs)= ig
 					   iii = 0
 					   iii2 = 0
-					   do 110 ii = 1,ver
+					   do ii = 1,ver
 						  if(filtre(ii).eq.1)then
 							 iii = iii + 1
 							 ve(nobs,iii) = dble(v1(ii))
@@ -2344,32 +2370,42 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 						  if(filtre2(ii).eq.1)then
 							 iii2 = iii2 + 1
 							 ve2(nobs,iii2) = dble(v1(ii))
+							! if(ig==1) then 
+							   ! call realpr("v1", -1, v1, ver)
+							   ! call dblepr("dble(v1)", -1, dble(v1), ver)
+							   ! call dblepr("ve2(nobs,iii2)", -1, ve2(nobs,iii2), 1)
+							! endif	
 						  endif
-		 110           continue
+		               enddo
 	           !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
 				don_simulS1(ig,initTime1)=t0(nobs)
 				don_simulS1(ig,timeS1)=t1_S(nobs)
 				don_simulS1(ig,statusS1)=c(nobs)
 				don_simulS1(ig,Patienref1)=g(nobs)
                 don_simulS1(ig,trt1)=ve2(nobs,1)
-				don_simulS1(ig,w_ij1)=ui		
+				!don_simulS1(ig,w_ij1)=ui		
 				   
                 don_simul(ig,initTime1)=t0(nobs)
 				don_simul(ig,timeT1)=t1(nobs)
 				don_simul(ig,statusT1)=cdc(nobs)
 				don_simul(ig,Patienref1)=g(nobs)
 				don_simul(ig,trt1)=ve2(nobs,1)
-				don_simul(ig,w_ij1)=ui       
+				!don_simul(ig,w_ij1)=ui    
+				if(ig==1) then 
+				   call dblepr("don_simulS1(nobs,trt1)", -1, don_simulS1(nobs,trt1), 1)
+				endif				
                 
 			   ! j'ajoute les autres variables a la fin
-               do ii = 2,ver
-					if(filtre(ii).eq.1)then
-					  don_simulS1(ig,size(don_simulS1,2) - ver + ii - 1)=ve2(nobs,ii)
-					endif
-					if(filtre2(ii).eq.1)then
-					  don_simul(ig,size(don_simul,2)- ver + ii - 1)=ve2(nobs,ii)
-					endif
-		        enddo				
+			   if(ver > 1) then
+				   do ii = 2,ver
+						if(filtre(ii).eq.1)then
+						  don_simulS1(ig,size(don_simulS1,2) - ver + ii - 1)=ve(nobs,ii)
+						endif
+						if(filtre2(ii).eq.1)then
+						  don_simul(ig,size(don_simul,2)- ver + ii - 1)=ve2(nobs,ii)
+						endif
+					enddo	
+                endif					
 
 				!c****************************************************
 				!c******** FIN generation des donnees****************
@@ -2382,21 +2418,16 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 				if (delta.eq.0.d0)then ! deces ou censure
 				   goto 30          ! on change de sujet
 				endif				   
-		   10      continue                   !observations par sujet
-		   30   continue                  !sujets=groupes		   
-			  if(ibou.eq.Aretenir)then
-				  moy_idnum=0
-				  do 444 jj=1,ng
-					 moy_idnum =moy_idnum + idnum(jj)
-				  444     continue
-					  moy_idnum =moy_idnum / ng 
-			  endif		   		   
-	!c=========     on retourne a l'iteration suivante
-	 1000 continue
+		   enddo                  !observations par sujet
+		   30   continue                  !sujets=groupes
+        enddo		   	  
      ! scl============censure conseillee pour la proportion souhaitee de censure==
      call percentile_scl(tempsD,ng,1.d0-propC,cens)
     deallocate(tempsD,sigma,mu,x_,v1)
- 
+	! call dblepr("betas", -1, betas, ver)
+	! call dblepr("betat", -1, betat, ver)
+	! call dblepr("voile don_simul", -1, don_simul(1,:), size(don_simul,2))
+	! call dblepr("voile don_simul", -1, don_simul(2,:), size(don_simul,2))
 endsubroutine Generation_surrogate_copula
 
 !==============================================================================================================================

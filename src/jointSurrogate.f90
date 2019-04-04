@@ -268,11 +268,16 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     sigma_s = paramSimul(21)
     sigma_t = paramSimul(22)
 	thetacopule = paramSimul(23)
-    if(nsim_node(11) = 3) then ! joint frailty copula, remplissage des vecteurs des variables explicatives
+    if(nsim_node(11) == 3) then ! joint frailty copula, remplissage des vecteurs des variables explicatives
 		do i = 1, size(vbetast,1)
 			vbetas(i) = vbetast(i,1) ! beta_s
 			vbetat(i) = vbetast(i,2) ! beta_t
 		enddo
+	endif
+	
+	if(nsim_node(11) == 1) then ! joint surrogate, remplissage des vecteurs des variables explicatives
+		vbetas(1) = betas ! beta_s
+		vbetat(1) = betat ! beta_t
 	endif
 	
     ! autres parametres de simulation
@@ -618,8 +623,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     thetast_vrai=rsqrt_theta*dsqrt(theta2)*dsqrt(theta2_t)
     gammast_vrai=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
     
-	if(nsim_node(11) = 3) ! si joint frailty copula, alors on ajout les covariable aux jeux de donnees
-	  allocate(d_S(nsujet*n_sim,6 +size(vbetast,1)-1),d_T(ng*n_sim,6+size(vbetast,1)-1))) 
+	if(nsim_node(11) == 3) then ! si joint frailty copula, alors on ajout les covariable aux jeux de donnees
+	  allocate(d_S(nsujet*n_sim,6 +size(vbetast,1)-1),d_T(ng*n_sim,6+size(vbetast,1)-1)) 
 	else
 	  allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6)) 
 	endif
@@ -882,15 +887,16 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 indice_seed=0
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
                 11 continue
-                    
+                			
                 if(nsim_node(11)==1) then !modele avec effets aleatoires partages
+				   
                     call Generation_surrogate(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
-                        ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,betas,betat,&
+                        ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base)    
                 endif
 				
 				if(nsim_node(11)==3) then ! joint frailty copula model
-                    call Generation_surrogate(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
+                    call Generation_surrogate_copula(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
 						filtre2)    

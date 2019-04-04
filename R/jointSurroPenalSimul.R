@@ -63,7 +63,7 @@
 #'    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, 
-#'    type.joint.simul = 1, mbetast =NULL, theta.copule = 3, 
+#'    type.joint.simul = 1, mbetast =NULL, theta.copule = 6, 
 #'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
@@ -211,7 +211,7 @@
 #' two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
 #' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The defaul 
 #' is NULL and assume only the treatment effect
-#' @param theta.copule The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{3}, for an individual-level
+#' @param theta.copule The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 #' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
@@ -297,7 +297,8 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                       gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL,
-                      type.joint.simul = 1, mbetast = NULL, theta.copule = 3, nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
+                      type.joint.simul = 1, mbetast = NULL, theta.copule = 6, nb.decimal = 4, print.times = TRUE, 
+                      print.iter = FALSE){
   
   data <- NULL
   scale <- 1

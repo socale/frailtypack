@@ -1,13 +1,14 @@
-#'Generate survival times for two endpoints using the joint frailty surrogate model
+#'Generate survival times for two endpoints using the joint frailty-copula model for surrogacy
 #'
-#'Date are generated from the one-step joint surrogate model (see \code{\link{jointSurroPenal}} for more details)
+#'Date are generated from the one-step joint frailty-copula model, under the Claton 
+#'copula function (see \code{\link{jointSurroCopPenal}} for more details)
 #'
 #'We just considered in this generation, the Gaussian random effects. If the parameter \code{full.data} is set to 1,
 #'this function  return a list containning severals parameters, including the generated random effects. 
-#'the desired individual level correlation (Kendall's \eqn{\tau}) depend on the values of 
-#'\eqn{\alpha}, \eqn{\theta}, \eqn{\gamma} and \eqn{\zeta}.
+#'the desired individual level correlation (Kendall's \eqn{\tau}) depend on the values of parameter copula
+#'\eqn{\theta}, given that \eqn{\tau = \theta /(\theta + 2)} under the clayton copula model.
 #'
-#' @aliases jointSurrSimul
+#' @aliases jointSurrCopSimul
 #' @param n.obs Number of considered  subjects. The default is \code{600}.
 #' @param n.trial Number of considered  trials. The default is \code{30}.
 #' @param cens.adm censorship time. The default is \code{549}, for about \code{40\%} of censored subjects.
@@ -19,8 +20,10 @@
 #' @param sigma.t Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.
 #' @param rsqrt Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=rsqrt^2}. 
 #' The default is \code{0.8}.
-#' @param betas Fixed value for \eqn{\beta_S}. The default is \code{-1.25}.
-#' @param betat Fixed value for \eqn{\beta_T}. The default is \code{-1.25}.
+#' @param betas Vector of the fixed effects for \eqn{\beta_S}. The size must be equal to \code{ver} 
+#' The default is \code{c(-1.25,0.5)}.
+#' @param betat Vector of the fixed effects for for \eqn{\beta_T}. The size must be equal to \code{ver}
+#' The default is \code{c(-1.25,0.5)}.
 #' @param frailt.base considered the heterogeneity on the baseline risk \code{(1)} or not \code{(0)}. 
 #' The default is \code{1}.
 #' @param lambda.S Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
@@ -58,6 +61,14 @@
 #' when data generation is for simulation. With a fixed parameter and \code{random.generator} set to 1,
 #' all ganerated data are the same. By varying this parameter, different datasets are obtained during data genarations. The default value is 0, 
 #' in case of one dataset.
+#' @param theta.copule The copula parameter. The default is \code{6}, for an individual-level
+#' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
+#' @param filter.surr Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
+#' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.
+#' @param filter.true Vector defines as \code{filter.surr}, for the true endpoint. \code{filter.true} and \code{filter.surr}
+#' should have the same size
+#' @param covar.names Vector of the names of covariables. By default it contains "trt" for the 
+#' tratment arm. Should contains the names of all covarites wished in the generated dataset.
 # @param param.weibull A binary for the Weibull parametrization used. The default is \code{0}, as in 
 # the frailtypack package. If \code{1} the function 
 # \eqn{f(x)=\nu^\lambda . \lambda . x^{\lambda-1} . \exp(-(\nu x)^\lambda)} is used.
@@ -97,20 +108,23 @@
 #'
 #' @examples
 #' 
-#' data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
+#' # dataset with 2 covariates
+#' data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
 #'             alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
-#'             zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, 
-#'             betat = -1.25, full.data = 0, random.generator = 1, 
-#'             seed = 0, nb.reject.data = 0)
+#'             zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = c(-1.25, 0.5), 
+#'             betat = c(-1.25, 0.5), full.data = 0, random.generator = 1,
+#'             ver = 2, covar.names = "trt", nb.reject.data = 0, 
+#'             thetacopule = 6, filter.surr = c(1,1), filter.true = c(1,1),
+#'             seed = 0)
 #' 
-jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, 
-                           sigma.s = 0.7, sigma.t = 0.7,rsqrt = 0.8, betas = -1.25, betat = -1.25, frailt.base = 1,
-                           lambda.S = 1.8, nu.S = 0.0045,lambda.T = 3, nu.T = 0.0025, ver = 1, typeOf = 1,
+jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, 
+                           sigma.s = 0.7, sigma.t = 0.7,rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
+                           frailt.base = 1, lambda.S = 1.8, nu.S = 0.0045,lambda.T = 3, nu.T = 0.0025, ver = 2, typeOf = 1,
                            equi.subj.trial = 1 ,equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
-                           full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, nb.reject.data = 0){
+                           full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, nb.reject.data = 0,
+                           thetacopule = 6, filter.surr = c(1,1), filter.true = c(1,1), covar.names = "trt"){
   
   param.weibull <- 0
-  n.col <- 13 #Number of columns of the simulated dataset. The required number is 13.
   
   # ==============parameters checking======================
   if(!(equi.subj.trt %in% c(0,1)) | !(equi.subj.trial %in% c(0,1))){
@@ -123,11 +137,31 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
          model's parameters equi.subj.trt and equi.subj.trial must be set to 0 or 1")
   }
   
+  if(is.null(filter.surr) | is.null(filter.true)){
+    stop("The vectors filter.surr and filter.true must contain at least one element corresponding to the effect of the treatment")
+  }
+  
+  if(!(length(betas) == ver) | !(length(betat)==ver)){
+    stop("The vectors betas and betat must contain a number of elements corresponding to ver")
+  }
+  
+  if(!(length(filter.surr) == ver) | !(length(filter.true)==ver)){
+    stop("The vectors filter.surr and filter.true must contain a number of elements corresponding to ver")
+  }
+  
+  if(!(length(filter.surr) == length(filter.true))){
+    stop("The vectors filter.surr and filter.true should have the same size")
+  }
   # ============end parameters checking====================
   
-  data.sim=NULL
+  if(length(filter.surr) > length(covar.names)){
+    # si plus d'une variable explicatives avec des noms pas preciser, je les nome par var[numero], 
+    covar.names = c(covar.names,paste("var",seq(2:length(filter.surr)), sep = ""))
+  }
+  n.col <- 13 + length(filter.surr) -1 #Number of columns of the simulated dataset. The required number is 13 when just the treatment effect is considered as covariate.
+  data.sim <- NULL
   
-  if(typeOf==1){ 
+  if(typeOf == 1){ 
     # joint surrogate model with shared frailty u_i and omega_ij
     lognormal <- 1
   }else{
@@ -149,14 +183,12 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
     don_simul <- as.double(matrix(0, nrow = n.obs , ncol = n.col))
     don_simulS1 <- as.double(matrix(0, nrow = n.obs , ncol = n.col))
     
-    # == initialisation sans utilisation ==
-    thetacopule <- 0
-    filtre <- 1
-    filtre2 <- 1
-    # == Fin initialisation sans utilisation ==
-    type.joint.simul <- 1
-
-      
+    type.joint.simul = 2
+    filtre <- filter.surr
+    filtre2 <- filter.true
+    # filtre <- matrix(filter.surr, nrow = 1, ncol = ver)
+    # filtre2 <- matrix(filter.true, nrow = 1, ncol = ver)
+    
     ans <- .Fortran(C_surrosim,
                     don_simul = as.double(matrix(0, nrow = n.obs , ncol = n.col)),
                     don_simulS1 = as.double(matrix(0, nrow = n.obs , ncol = n.col)),
@@ -195,8 +227,8 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
                     as.integer(nb.reject.data),
                     as.integer(param.weibull),
                     as.double(thetacopule),
-                    as.double(filtre), 
-                    as.double(filtre2),
+                    as.integer(filtre), 
+                    as.integer(filtre2),
                     as.integer(type.joint.simul),
                     PACKAGE="frailtypack"
                     )
@@ -207,24 +239,44 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
     ans$don_simul <- data.frame(matrix(ans$don_simul,nrow = n.obs , ncol = n.col))
     ans$don_simulS1 <- data.frame(matrix(ans$don_simulS1,nrow = n.obs , ncol = n.col))
 
-    names(ans$don_simul) <- c("trt1","v_s1","v_t1","trialref1","w_ij1","timeS1","timeT1",
-                              "timeC1","statusS1","statusT1","initTime1","Patienref1","u_i1")
-    names(ans$don_simulS1) <- c("trt1","v_s1","v_t1","trialref1","w_ij1","timeS1","timeT1",
-                                "timeC1","statusS1","statusT1","initTime1","Patienref1","u_i1")
+    names(ans$don_simul) <- c("trt1","v_s1","v_t1","trialref1","timeS1","timeT1",
+                              "timeC1","statusS1","statusT1","initTime1","Patienref1","u_i1", 
+                              covar.names[-1])
+    names(ans$don_simulS1) <- c("trt1","v_s1","v_t1","trialref1","timeS1","timeT1",
+                                "timeC1","statusS1","statusT1","initTime1","Patienref1","u_i1", 
+                                covar.names[-1])
     
-    data.sim <- ans$don_simulS1[,c(4, 12, 1, 6, 9)] # donnees sans le true
-    data.sim <- merge(data.sim,ans$don_simul[,c(12, 7, 10)], by="Patienref1") # on ajoute les donnees sur le True
+    data.sim <- ans$don_simulS1[,c(4, 11, 1, 5, 8)] # donnees sans le true
+    data.sim <- merge(data.sim,ans$don_simul[,c(11, 6, 9)], by="Patienref1") # on ajoute les donnees sur le True
+    if(length(covar.names)>1)
+      data.sim <- merge(data.sim,ans$don_simul[,c(11,12-1+seq(1,length(covar.names))[-1])], by="Patienref1") # on ajoute les donnees sur le True
     
-    names(data.sim) <- c("patienID", "trialID", "trt", "timeS", "statusS", "timeT", "statusT")
-  
-  if(full.data == 1){
-    data.comp <- merge(ans$don_simulS1[,c(12, 4, 1, 5, 13, 2, 3, 6, 9)],
-                       ans$don_simul[,c(12, 7, 10)],
-                       by="Patienref1")
-    names(data.comp) <- c("patienID", "trialID", "trt","w_ij","u_i","v_Si","v_Ti", "timeS", "statusS", "timeT", "statusT")
-    if(typeOf == 1) data.comp <- data.comp[c(1:3,8:11,4:7)]
-    if(typeOf == 0) data.comp <- data.comp[c(1:3,8:11,4)]
-    return(data.comp)
+    names(data.sim) <- c("patienID", "trialID", "trt", "timeS", "statusS", "timeT", "statusT", covar.names[-1])
+    
+    if(full.data == 1){
+      data.comp <- merge(ans$don_simulS1[,c(11, 4, 1, 12, 2, 3, 5, 8)],
+                         ans$don_simul[,c(11, 6, 9,12-1+seq(1,length(covar.names))[-1])],
+                         by="Patienref1")
+      
+      names(data.comp) <- c("patienID", "trialID", "trt","u_i","v_Si","v_Ti", "timeS", "statusS", "timeT", "statusT", covar.names[-1])
+      
+      if(typeOf == 1) {
+        if(length(covar.names) == 1) 
+          data.comp <- data.comp[c(1:2,7:10,3:6)]
+        else # ajout des autres covariables
+          data.comp <- data.comp[c(1:2,7:10,3:6,(ncol(data.comp)-length(covar.names)+2):ncol(data.comp))]
+        }
+      if(typeOf == 0) {
+        if(length(covar.names) == 1) 
+          data.comp <- data.comp[c(1:2,7:10,3)]
+        else # ajout des autres covariables
+          data.comp <- data.comp[c(1:2,7:10,3, (ncol(data.comp)-length(covar.names)+2):ncol(data.comp))]
+      }
+      #return(ans)
+      return(data.comp)
   }
-  if(full.data == 0) return(data.sim)
+  if(full.data == 0) {
+    return(data.sim)
+    #return(ans)
+  }
 }

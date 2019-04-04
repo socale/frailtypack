@@ -21,6 +21,7 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
    random.nb.sim = 0, seed = 0, init.kappa = NULL, 
+   type.joint.simul = 1, mbetast =NULL, theta.copule = 6, 
    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
@@ -211,6 +212,18 @@ The default is \code{0}.}
 
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 are obtain by cross-validation.}
+
+\item{type.joint.simul}{# Model to considered for data generation. If this argument is set to \code{1}, the joint surrogate model
+is used, the default (see \link{joinSurroPenal}). If set to \code{3}, data are generated following the joint frailty-copula model
+for surrogacy.}
+
+\item{mbetast}{Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix include 
+two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
+to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The defaul 
+is NULL and assume only the treatment effect}
+
+\item{theta.copule}{The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
+association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula}
 
 \item{nb.decimal}{Number of decimal required for results presentation.}
 
