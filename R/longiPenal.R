@@ -358,8 +358,7 @@
     m2 <- match.call()
     m2$formula <-  m2$data <- m2$random <- m2$random.Binary  <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
     Names.data.Longi <- m2$data.Longi
-    
-    
+
     # TWO-PART indicator
     TwoPart <- ifelse(formula.Binary==FALSE, FALSE, TRUE) # true if two-part activated
     # more generally, variables related to the two-part model systematically contains the 
@@ -567,7 +566,6 @@
     
     llY <- attr(TermsY, "term.labels")#liste des variables explicatives
     
-    
     #=========================================================>
     
     name.Y <- as.character(attr(TermsY, "variables")[[2]])
@@ -691,7 +689,7 @@
       }else{
         return(x)
       }})
-    
+
     llY.real.names <- llY3  
     llY3 <- llY3[!llY2%in%llY]
     
@@ -700,7 +698,6 @@
       X_L<- as.numeric(data.Longi[,names(data.Longi)==llY.real.names[1]])-1
     }
     else X_L <- data.Longi[,names(data.Longi)==llY.real.names[1]]
-    
     
     
     if(length(llY)>1){
@@ -839,7 +836,14 @@
       
       if(sum(names(data.Longi)==llY.fin[i])>0){
         if(is.factor(data.Longi[,names(data.Longi)==llY.fin[i]]) && length(levels(data.Longi[,names(data.Longi)==llY.fin[i]]))==2){
-          llY.fin[i] <- paste(llY.fin[i],levels(data.Longi[,names(data.Longi)==llY.fin[i]])[2],sep="")}
+          llY.fin[i] <- paste(llY.fin[i],levels(data.Longi[,names(data.Longi)==llY.fin[i]])[2],sep="")
+        }
+        #else if(is.factor(data.Longi[,names(data.Longi)==llY.fin[i]]) && length(levels(data.Longi[,names(data.Longi)==llY.fin[i]]))==3){
+        #  llY.fin[j] <- paste(llY.fin[i],levels(data.Longi[,names(data.Longi)==llY.fin[i]])[2],sep="")
+        #  llY.fin[j+1] <- paste(llY.fin[i],levels(data.Longi[,names(data.Longi)==llY.fin[i]])[3],sep="")
+        #  j=j+2
+        #}
+        
       }
     }
     #  llY <- llY.fin
@@ -861,10 +865,10 @@
         if(length(grep(":",vec.factorY[i]))==0){
           
           factor.spot <- which(names(X_L)==vec.factorY[i])
-          
+          if(length(factor.spot)>0){
           if(factor.spot<ncol(X_L))  X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorY[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1],X_L[(factor.spot+1):ncol(X_L)])
           else X_L <- cbind(X_L[1:(factor.spot-1)],model.matrix(as.formula("~"%+%0%+%"+"%+%paste(vec.factorY[i], collapse= "+")), model.frame(~.,data.Longi,na.action=na.pass))[,-1])
-          
+          }
         } }
       
       
@@ -930,7 +934,6 @@
 ################
   ### ADD TWO-PART
 #========= (longitudinal) Binary Data preparation =========================
-        
     if(TwoPart){
         TermsB <- if (missing(data.Binary)){
                 terms(formula.Binary, special)
@@ -1211,8 +1214,14 @@ for(i in 1:length(llB.fin)){
   
   if(sum(names(data.Binary)==llB.fin[i])>0){
   if(is.factor(data.Binary[,names(data.Binary)==llB.fin[i]]) && length(levels(data.Binary[,names(data.Binary)==llB.fin[i]]))==2){
-    llB.fin[i] <- paste(llB.fin[i],levels(data.Binary[,names(data.Binary)==llB.fin[i]])[2],sep="")}
-     }
+    llB.fin[i] <- paste(llB.fin[i],levels(data.Binary[,names(data.Binary)==llB.fin[i]])[2],sep="")
+  }
+    #else if(is.factor(data.Binary[,names(data.Binary)==llB.fin[i]]) && length(levels(data.Binary[,names(data.Binary)==llB.fin[i]]))==3){
+    #llB.fin[j] <- paste(llB.fin[i],levels(data.Binary[,names(data.Binary)==llB.fin[i]])[2],sep="")
+    #llB.fin[j+1] <- paste(llB.fin[i],levels(data.Binary[,names(data.Binary)==llB.fin[i]])[3],sep="")
+    #j=j+2
+    #}
+  }
 }
 
 #  llB <- llB.fin
@@ -1780,7 +1789,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
                  "2"=(2 + nvar + 1  + ne_re + netadc ))
     
     # traitement de l'initialisation du Beta rentre par l'utilisateur
-    
     Beta <- rep(0.5,np)
     if (!missing(init.B)) {
       if (length(init.B) != nvar) stop("Wrong number of regression coefficients in init.B")
@@ -1813,6 +1821,10 @@ if(link0==2){
 # we need to evaluate the biomarker value at multiple time-points to approximate the cumulative hazard
 # time-interactions are particularly tricky to handle (especially in case of non-linear time trend)
       # position of time and interactions for current-level association
+  
+  # if interaction terms are not included, get them from survival data:
+  columnsT <- colnames(X_T)
+  
 for(i in 1:length(timevar)){
     interact <- 0
     columns <- names(X_L)
@@ -1844,8 +1856,8 @@ for(i in 1:length(timevar)){
       # (first continuous, and then binary part if two-part model)
       if(timevar[i]%in%columns & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columns==ifelse(name_1==timevar[i], name_2, name_1))
-        positionVarTime[count2+2] <- which(columns==ifelse(name_1==timevar[i], name_1, name_2))
+        positionVarTime[count2+1] <- ifelse(length(which(columns==ifelse(name_1==timevar[i], name_2, name_1)))==0,which(columnsT==ifelse(name_1==timevar[i], name_2, name_1))+100,which(columns==ifelse(name_1==timevar[i], name_2, name_1)))
+        positionVarTime[count2+2] <- ifelse(length(which(columns==ifelse(name_1==timevar[i], name_1, name_2)))==0,which(columnsT==ifelse(name_1==timevar[i], name_1, name_2))+100,which(columns==ifelse(name_1==timevar[i], name_1, name_2)))
         positionVarTime[count2+3] <- interact
         positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
@@ -1862,8 +1874,8 @@ for(i in 1:length(timevar)){
 
       if(timevar[i]%in%columns & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columns==ifelse(name_1==timevar[i], name_2, name_1))
-        positionVarTime[count2+2] <- which(columns==ifelse(name_1==timevar[i], name_1, name_2))
+        positionVarTime[count2+1] <- ifelse(length(which(columns==ifelse(name_1==timevar[i], name_2, name_1)))==0,which(columnsT==ifelse(name_1==timevar[i], name_2, name_1))+100,which(columns==ifelse(name_1==timevar[i], name_2, name_1)))
+        positionVarTime[count2+2] <- ifelse(length(which(columns==ifelse(name_1==timevar[i], name_1, name_2)))==0,which(columnsT==ifelse(name_1==timevar[i], name_1, name_2))+100,which(columns==ifelse(name_1==timevar[i], name_1, name_2)))
         positionVarTime[count2+3] <- interact[j]
         positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
@@ -1907,8 +1919,8 @@ if(i==1){
       # PositionVarT contains: position of variable and time-variable for interaction and position of interaction (first continuous, and then binary)
       if(timevar[i]%in%columnsB & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B))
-        positionVarTime[count2+2] <- which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B))
+        positionVarTime[count2+1] <- ifelse(length(which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B)))==0,which(columnsT==ifelse(name_1B==timevar[i], name_2B, name_1B))+100,which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B)))
+        positionVarTime[count2+2] <- ifelse(length(which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B)))==0,which(columnsT==ifelse(name_1B==timevar[i], name_1B, name_2B))+100,which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B)))
         positionVarTime[count2+3] <- interactB
         positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
@@ -1923,11 +1935,10 @@ if(i==1){
       name_2B <- strsplit(as.character(columnsB[interactB[j]]),":")[[1]][2]
       
       # interaction terms / current-level association
-
       if(timevar[i]%in%columnsB & count<2){
         # save positions of interaction with time for current-level association
-        positionVarTime[count2+1] <- which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B))
-        positionVarTime[count2+2] <- which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B))
+        positionVarTime[count2+1] <- ifelse(length(which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B)))==0,which(columnsT==ifelse(name_1B==timevar[i], name_2B, name_1B))+100,which(columnsB==ifelse(name_1B==timevar[i], name_2B, name_1B)))
+        positionVarTime[count2+2] <- ifelse(length(which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B)))==0,which(columnsT==ifelse(name_1B==timevar[i], name_1B, name_2B))+100,which(columnsB==ifelse(name_1B==timevar[i], name_1B, name_2B)))
         positionVarTime[count2+3] <- interactB[j]
         positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
         count=count+1
@@ -2005,6 +2016,7 @@ if(i==1){
   # EPS=c(LIMparam,LIMlogl,LIMderiv) = convergence threshold for Marquardt
   # GH=c(as.integer(GH),as.integer(n.nodes)) = indicator of gauss-hermite (0=standard,1=PA,2=hrmsym) and nodes number
   # paGH=cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)) = matrix of pseudo-adaptive gauss-hermite initialization from LME
+
 
   
         ans <- .Fortran(C_joint_longi,
