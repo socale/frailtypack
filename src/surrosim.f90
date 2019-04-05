@@ -38,7 +38,7 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
 	  
 	  if(type_joint_simul .eq. 1) then ! joint surrogate model
 		  if(nbre_don_non_cons > 0) then
-			 do i = 1, nbre_don_non_cons
+		     do i = 1, nbre_don_non_cons
 				call Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
 					 ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
 					 betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
@@ -50,7 +50,7 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
 				betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
 	  else ! joint frailty copula model
 	     if(nbre_don_non_cons > 0) then
-			 do i = 1, nbre_don_non_cons
+		     do i = 1, nbre_don_non_cons
 				call Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
 					 ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
 					 betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,thetacopule, filtre,&

@@ -13,9 +13,7 @@
 #' @param n.trial Number of considered  trials. The default is \code{30}.
 #' @param cens.adm censorship time. The default is \code{549}, for about \code{40\%} of censored subjects.
 #' @param alpha Fixed value for \eqn{\alpha}. The default is \code{1.5}.
-#' @param theta Fixed value for \eqn{\theta}. The default is \code{3.5}.
 #' @param gamma Fixed value for \eqn{\gamma}. The default is \code{2.5}.
-#' @param zeta Fixed value for \eqn{\zeta}. The default is \code{1}.
 #' @param sigma.s Fixed value for \eqn{\sigma^2_S}. The default is \code{0.7}.
 #' @param sigma.t Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.
 #' @param rsqrt Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=rsqrt^2}. 
@@ -109,23 +107,23 @@
 #' @examples
 #' 
 #' # dataset with 2 covariates
-#' data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
-#'             alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
-#'             zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = c(-1.25, 0.5), 
-#'             betat = c(-1.25, 0.5), full.data = 0, random.generator = 1,
-#'             ver = 2, covar.names = "trt", nb.reject.data = 0, 
-#'             thetacopule = 6, filter.surr = c(1,1), filter.true = c(1,1),
-#'             seed = 0)
+#' data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30,cens.adm=549, 
+#'             alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, 
+#'             rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
+#'             full.data = 0, random.generator = 1,ver = 2, covar.names = "trt", 
+#'             nb.reject.data = 0, thetacopule = 6, filter.surr = c(1,1), 
+#'             filter.true = c(1,1), seed = 0)
 #' 
-jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, 
+jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549, alpha = 1.5, gamma = 2.5, 
                            sigma.s = 0.7, sigma.t = 0.7,rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
-                           frailt.base = 1, lambda.S = 1.8, nu.S = 0.0045,lambda.T = 3, nu.T = 0.0025, ver = 2, typeOf = 1,
+                           frailt.base = 1, lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, ver = 2, typeOf = 1,
                            equi.subj.trial = 1 ,equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
                            full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, nb.reject.data = 0,
                            thetacopule = 6, filter.surr = c(1,1), filter.true = c(1,1), covar.names = "trt"){
   
   param.weibull <- 0
-  
+  theta <- 3.5
+  zeta = 1
   # ==============parameters checking======================
   if(!(equi.subj.trt %in% c(0,1)) | !(equi.subj.trial %in% c(0,1))){
     stop("Model's parameters equi.subj.trt and equi.subj.trial must be set to 0 or 1")
@@ -156,7 +154,7 @@ jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alph
   
   if(length(filter.surr) > length(covar.names)){
     # si plus d'une variable explicatives avec des noms pas preciser, je les nome par var[numero], 
-    covar.names = c(covar.names,paste("var",seq(2:length(filter.surr)), sep = ""))
+    covar.names = c(covar.names,paste("var",seq(2,length(filter.surr)), sep = ""))
   }
   n.col <- 13 + length(filter.surr) -1 #Number of columns of the simulated dataset. The required number is 13 when just the treatment effect is considered as covariate.
   data.sim <- NULL

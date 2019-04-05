@@ -2317,10 +2317,10 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 			x=gapx ! temps de progression
 			xdc=gapdc ! temps de deces
 			tempsD(ig)=xdc
-			if(ig == 1) then
-				call dblepr("gapx", -1, gapx, 1)
-				call dblepr("gapdc", -1, gapdc, 1)
-			endif
+			! if(ig == 1) then
+				! call dblepr("gapx", -1, gapx, 1)
+				! call dblepr("gapdc", -1, gapdc, 1)
+			! endif
 
 		! scl============censure====================
 				cens=cens_A
@@ -2391,9 +2391,9 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 				don_simul(ig,Patienref1)=g(nobs)
 				don_simul(ig,trt1)=ve2(nobs,1)
 				!don_simul(ig,w_ij1)=ui    
-				if(ig==1) then 
-				   call dblepr("don_simulS1(nobs,trt1)", -1, don_simulS1(nobs,trt1), 1)
-				endif				
+				! if(ig==1) then 
+				   ! call dblepr("don_simulS1(nobs,trt1)", -1, don_simulS1(nobs,trt1), 1)
+				! endif				
                 
 			   ! j'ajoute les autres variables a la fin
 			   if(ver > 1) then
