@@ -1,15 +1,16 @@
 # autres fonctions
-param.empirique = function(nsim = 100, nbre.covar = 2, dec = 2, variatio.seed = 1,
+param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
                            n.obs = 600, n.trial = 30, cens.adm=549, lambda.S = 1.3,
                            nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
                            seed = 0,alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7,
                            rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
                            filter.surr = c(1,1), filter.true = c(1,1), frailt.base = 1,
-                           thetacopule = 6, ver =2){
+                           thetacopule = 6){
   # variatio.seed : si = 1, je fais varier le seed, seulement pour des fins de verification des statistiques empirique.
   # afin de reproduire les jeux de donnees utilisees dans le simulations, il faut plutot faire varier nb.reject.data et fixer le seed, 
   # et par consedent cet argument doit prendre pour valeur 0. Toutefois on retient que les stat empirique sont meilleures
   # lorque cet argumet est fixe a 0
+  nbre.covar = ver
   full.data = 1
   np = 11 + nbre.covar
   d = data.frame(matrix(0, nrow = nsim, ncol = np))
