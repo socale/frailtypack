@@ -219,7 +219,7 @@ for surrogacy.}
 
 \item{mbetast}{Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix include 
 two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
-to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The defaul 
+to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 is NULL and assume only the treatment effect}
 
 \item{theta.copule}{The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level

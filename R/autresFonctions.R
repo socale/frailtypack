@@ -5,7 +5,7 @@ param.empirique = function(nsim = 100, nbre.covar = 2, dec = 2, variatio.seed = 
                            seed = 0,alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7,
                            rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
                            filter.surr = c(1,1), filter.true = c(1,1), frailt.base = 1,
-                           thetacopule = 6){
+                           thetacopule = 6, ver =2){
   # variatio.seed : si = 1, je fais varier le seed, seulement pour des fins de verification des statistiques empirique.
   # afin de reproduire les jeux de donnees utilisees dans le simulations, il faut plutot faire varier nb.reject.data et fixer le seed, 
   # et par consedent cet argument doit prendre pour valeur 0. Toutefois on retient que les stat empirique sont meilleures
@@ -35,7 +35,7 @@ param.empirique = function(nsim = 100, nbre.covar = 2, dec = 2, variatio.seed = 
                                   seed = seed1, nb.reject.data = nb.reject.data1, alpha = alpha, gamma = gamma, 
                                   sigma.s = sigma.s, sigma.t = sigma.t, filter.surr = filter.surr,
                                   rsqrt = rsqrt, betas = betas, betat = betat, filter.true= filter.true,
-                                  frailt.base = frailt.base, thetacopule = thetacopule)
+                                  frailt.base = frailt.base, thetacopule = thetacopule, ver = ver)
     d[i,1] <- mean(data.sim$v_Si)
     d[i,2] <- (sd(data.sim$v_Si))**2
     d[i,3] <- mean(data.sim$v_Ti)

@@ -4,14 +4,14 @@
 \alias{jointSurrCopSimul}
 \title{Generate survival times for two endpoints using the joint frailty-copula model for surrogacy}
 \usage{
-jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
-  alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7,
-  sigma.t = 0.7, rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25,
-  0.5), frailt.base = 1, lambda.S = 1.8, nu.S = 0.0045, lambda.T = 3,
-  nu.T = 0.0025, ver = 2, typeOf = 1, equi.subj.trial = 1,
-  equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
-  full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
-  seed = 0, nb.reject.data = 0, thetacopule = 6, filter.surr = c(1, 1),
+jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549,
+  alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, rsqrt = 0.8,
+  betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), frailt.base = 1,
+  lambda.S = 1.3, nu.S = 0.0025, lambda.T = 1.1, nu.T = 0.0025,
+  ver = 2, typeOf = 1, equi.subj.trial = 1, equi.subj.trt = 1,
+  prop.subj.trial = NULL, prop.subj.trt = NULL, full.data = 0,
+  random.generator = 1, random = 0, random.nb.sim = 0, seed = 0,
+  nb.reject.data = 0, thetacopule = 6, filter.surr = c(1, 1),
   filter.true = c(1, 1), covar.names = "trt")
 }
 \arguments{
@@ -23,11 +23,7 @@ jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
 
 \item{alpha}{Fixed value for \eqn{\alpha}. The default is \code{1.5}.}
 
-\item{theta}{Fixed value for \eqn{\theta}. The default is \code{3.5}.}
-
 \item{gamma}{Fixed value for \eqn{\gamma}. The default is \code{2.5}.}
-
-\item{zeta}{Fixed value for \eqn{\zeta}. The default is \code{1}.}
 
 \item{sigma.s}{Fixed value for \eqn{\sigma^2_S}. The default is \code{0.7}.}
 
@@ -136,13 +132,12 @@ the desired individual level correlation (Kendall's \eqn{\tau}) depend on the va
 \examples{
 
 # dataset with 2 covariates
-data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
-            alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
-            zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = c(-1.25, 0.5), 
-            betat = c(-1.25, 0.5), full.data = 0, random.generator = 1,
-            ver = 2, covar.names = "trt", nb.reject.data = 0, 
-            thetacopule = 6, filter.surr = c(1,1), filter.true = c(1,1),
-            seed = 0)
+data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30,cens.adm=549, 
+            alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, 
+            rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
+            full.data = 0, random.generator = 1,ver = 2, covar.names = "trt", 
+            nb.reject.data = 0, thetacopule = 6, filter.surr = c(1,1), 
+            filter.true = c(1,1), seed = 0)
 
 }
 \references{
