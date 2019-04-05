@@ -901,7 +901,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 endif
 				
 				if(nsim_node(11)==3) then ! joint frailty copula model
-                    call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col,logNormal,affiche_stat,theta,&
+                    call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col-1,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
 						filtre2)    
