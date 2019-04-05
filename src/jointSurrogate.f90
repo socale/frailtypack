@@ -157,8 +157,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         CP_R2_boot,CP_ktau_boot,moy_R2_boots_test,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,&
                         bi_R2_trial,bs_R2_trial,thetacopule
                         
-    double precision, dimension(:,:),allocatable::don_simul,don_simulS,don_simulS1,parametre_empirique,&
-                        parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,parametre_estimes_MPI_T,result_bootstrap
+    double precision, dimension(:,:),allocatable::don_simul,don_simulS, don_simultamp,don_simulStamp,don_simulS1,&
+	                    parametre_empirique, parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,&
+						parametre_estimes_MPI_T,result_bootstrap
     double precision, dimension(:),allocatable::tab_var_theta,tampon,tampon_all
     double precision, dimension(:,:),allocatable::tab_var_sigma
     integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
@@ -594,7 +595,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         n_col=13 + nbrevar(3)-1 ! j'ajoute le surplus des covariables
     endif
     alpha = eta    ! alpha associe a u_i chez les deces
-    allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col))
+	
+	!generation des donnees par joint failty-copula
+	if(nsim_node(11)==3) allocate(don_simultamp(n_obs,n_col-1),don_simulStamp(n_obs,n_col-1))
+		
+	allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col))
     
     if(nsim_node(8)==2)then
         allocate(donnee_essai(n_essai,5))
@@ -896,7 +901,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 endif
 				
 				if(nsim_node(11)==3) then ! joint frailty copula model
-                    call Generation_surrogate_copula(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
+                    call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
 						filtre2)    
@@ -954,6 +959,17 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !!print*,don_simul(:,:)    
         !!print*,don_simulS1(1:5,)        
         !stop        
+		
+		if(nsim_node(11)==3) then ! joint frailty copula model
+			don_simul(:,1:4) = don_simultamp(:,1:4)
+			don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
+			don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:size(don_simultamp,2))
+			don_simulS1(:,1:4) = don_simulStamp(:,1:4)
+			don_simulS1(:,5) = 0.d0
+			don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:size(don_simulStamp,2))
+		endif
+		
+		
         ind_temp=ng
         allocate(don_simulS(ind_temp,n_col))
         allocate(tableEssai(n_essai))
@@ -3840,6 +3856,10 @@ end do
     ! deallocate(kappa,tab_var_theta,donnee_essai,tableNsim,parametre_estimes_MPI,parametre_estimes_MPI_T)
     ! deallocate(vect_kendall_tau,v_chap_kendall,theta_chap_kendall,t_chap_kendall,v_chap_R2,theta_chap_R2,t_chap_R2,result_bootstrap)
     ! !deallocate(Vect_sim_MC)
+	
+	!generation des donnees par joint failty-copula 
+	if(nsim_node(11)==3) deallocate(don_simultamp,don_simulStamp)
+		
     deallocate(d_S,d_T,vbetas,vbetat)
     endsubroutine jointsurrogate
     !complilation:

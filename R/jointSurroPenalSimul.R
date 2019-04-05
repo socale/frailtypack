@@ -209,7 +209,7 @@
 #' for surrogacy.
 #' @param mbetast Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix include 
 #' two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
-#' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The defaul 
+#' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 #' is NULL and assume only the treatment effect
 #' @param theta.copule The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 #' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
@@ -338,9 +338,10 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
     stop("argument mbetast is required only if the argument type.joint.simul is set to 3")
   }
   
-  if(!(length(dim(mbetast)) ==2)| !(dim(mbetast)[2] == 2)){
-    stop("argument mbetast should be a matrix or a dataframe with 2 columns")
-  }
+  if(!is.null(mbetast))
+    if(!(length(dim(mbetast)) ==2)| !(dim(mbetast)[2] == 2)){
+      stop("argument mbetast should be a matrix or a dataframe with 2 columns")
+    }
   
   # ============End parameters checking====================
   
