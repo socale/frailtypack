@@ -155,7 +155,7 @@
                 end do    
             end do
     
-            ! les y jusqu'à predtimerec2
+            ! les y jusqu'? predtimerec2
             yy_matrice = 0.d0
             it = 1
             do k=1,npred0    
@@ -166,10 +166,10 @@
             end do    
     
             ! Calcul des risques de base
-            ! A chaque fois, calculé pour :
-            ! DC au temps de base (predtimerec2(1,1)) et à l'horizon (predtimerec2(1,nrec0+2))
-            ! Recurrence au temps de base et pour chaque temps de rechute entré (predtimerec2(i,ii))
-            ! pour chaque prediction demandée
+            ! A chaque fois, calcul? pour :
+            ! DC au temps de base (predtimerec2(1,1)) et ? l'horizon (predtimerec2(1,nrec0+2))
+            ! Recurrence au temps de base et pour chaque temps de rechute entr? (predtimerec2(i,ii))
+            ! pour chaque prediction demand?e
                         
             if(link.eq.1) then
                 select case (typeof)
@@ -245,8 +245,8 @@
     
             !=============================================
             ! Variabilite des proba predites
-            ! Creation d'un vecteur balea, qui correspond au vecteur b où chaque parametre
-            ! est tiré au sort selon sa loi
+            ! Creation d'un vecteur balea, qui correspond au vecteur b o? chaque parametre
+            ! est tir? au sort selon sa loi
     !        seProba1(:)=0.d0; seProba2(:)=0.d0; seProba3(:)=0.d0;seProba4(:)=0.d0;
     !        lowProba1(:)=0.d0; lowProba2(:)=0.d0; lowProba3(:)=0.d0;lowProba4(:)=0.d0;
     !        highProba1(:)=0.d0; highProba2(:)=0.d0; highProba3(:)=0.d0;highProba4(:)=0.d0;

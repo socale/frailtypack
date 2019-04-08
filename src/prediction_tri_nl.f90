@@ -9,7 +9,7 @@
             nsujet,predAll1,predAlllow1,predAllhigh1, &
         icproba,nsample,movingwindow,timeAll,s_cag_id0,s_cag0)
     !model - type of a model 0- recur/survie, 1- longi/survie, 2-longi/recur/survie
-            use donnees_indiv,only:nmescur,mu,ycurrent,z2,b1,it_cur,X2cur,Z1cur,nmescurr
+            use donnees_indiv,only:nmescur,mu,ycurrent,b1,X2cur,Z1cur,nmescurr !it_cur,z2
             use comon,only:etaydc,sigmae,netadc,s_cag_id,s_cag,ut,utt,nva,link,npp,&
             nea,vey,nb1,netar,indic_Alpha,nva1,nva2, nva3,nva4,effet,zi,nz1,typeof,nb_re,alpha,&
             etayr,typeJoint,it,K_G0,K_D0,lambda,y0,mat,det,ziy,which_random,box_cox1,box_cox_par
@@ -23,7 +23,7 @@
         integer::i,ii,iii,j,k,kk,jj
         integer,intent(in)::np,nz,nva10,nva20,nva30,nva40,nb_re0,nzyd,nzyr,nst,typeof0,ntimeAll,&
                                     icproba,movingwindow,nsujety,s_cag_id0,nsujet,link0,which_random0
-		integer::npred0,nrec0,nsample,nrecy0
+        integer::npred0,nrec0,nsample,nrecy0
             double precision,dimension(nsujety),intent(in)::yy0
             double precision,dimension(npred0,nsujety)::yy_matrice
             double precision,dimension(2)::box_cox0
@@ -213,7 +213,7 @@
     
             end do
         
-                    ! les y jusqu'à predtimerec2
+                    ! les y jusqu'? predtimerec2
                     yy_matrice = 0.d0
                     it = 1
                     do kk=1,npred0
@@ -231,10 +231,10 @@
     !               write(*,*)predtimerec2(i,1:nrec0+2)
     !       end do
     ! Calcul des risques de base
-            ! A chaque fois, calculé pour :
-            ! DC au temps de base (predtimerec2(1,1)) et à l'horizon (predtimerec2(1,nrec0+2))
-            ! Recurrence au temps de base et pour chaque temps de rechute entré (predtimerec2(i,ii))
-            ! pour chaque prediction demandée
+            ! A chaque fois, calcul? pour :
+            ! DC au temps de base (predtimerec2(1,1)) et ? l'horizon (predtimerec2(1,nrec0+2))
+            ! Recurrence au temps de base et pour chaque temps de rechute entr? (predtimerec2(i,ii))
+            ! pour chaque prediction demand?e
     
     
             select case (typeof)
@@ -417,8 +417,8 @@
    
             !=============================================
             ! Variabilite des proba predites
-            ! Creation d'un vecteur balea, qui correspond au vecteur b où chaque parametre
-            ! est tiré au sort selon sa loi
+            ! Creation d'un vecteur balea, qui correspond au vecteur b o? chaque parametre
+            ! est tir? au sort selon sa loi
     !        seProba1(:)=0.d0; seProba2(:)=0.d0; seProba3(:)=0.d0;seProba4(:)=0.d0;
     !        lowProba1(:)=0.d0; lowProba2(:)=0.d0; lowProba3(:)=0.d0;lowProba4(:)=0.d0;
     !        highProba1(:)=0.d0; highProba2(:)=0.d0; highProba3(:)=0.d0;highProba4(:)=0.d0;
@@ -632,15 +632,15 @@
     
     
                                !***********************************
-            !********* Gauss-Hermit pour la dimension 5 - modèle trviarie b_G0,b_D0, b_lambda, b_y0, v
+            !********* Gauss-Hermit pour la dimension 5 - mod?le trviarie b_G0,b_D0, b_lambda, b_y0, v
             !*************************************
     
             SUBROUTINE gauherPred_tri5_nl(ss,choix)
     
         use tailles
         use donnees,only:x2,w2,x3,w3
-        use comon,only:auxig,typeof,netadc
-            use donnees_indiv,only : frailpol4,numpat
+        use comon,only : typeof !auxig,netadc
+            use donnees_indiv,only : frailpol4 !numpat
         Implicit none
     
         double precision,intent(out)::ss
@@ -678,15 +678,15 @@
     
     
                                 !***********************************
-            !********* Gauss-Hermit pour la dimension 4 - modèle trviarie b_10,b_11, b_12, v
+            !********* Gauss-Hermit pour la dimension 4 - mod?le trviarie b_10,b_11, b_12, v
             !*************************************
     
             SUBROUTINE gauherPred_tri4_nl(ss,choix)
     
         use tailles
         use donnees,only:x2,w2,x3,w3
-        use comon,only:auxig,typeof,netadc
-            use donnees_indiv,only : frailpol3,numpat
+        use comon,only:typeof !auxig,netadc
+            use donnees_indiv,only : frailpol3 !numpat
         Implicit none
     
         double precision,intent(out)::ss
@@ -723,15 +723,15 @@
     
     
                                     !***********************************
-            !********* Gauss-Hermit pour la dimension 3 - modèle trviarie b_10,b_11, v
+            !********* Gauss-Hermit pour la dimension 3 - mod?le trviarie b_10,b_11, v
             !*************************************
     
             SUBROUTINE gauherPred_tri3_nl(ss,choix)
     
         use tailles
         use donnees,only:x2,w2,x3,w3
-        use comon,only:auxig,typeof,netadc
-            use donnees_indiv,only : frailpol2,numpat
+        use comon,only:typeof !auxig,netadc
+            use donnees_indiv,only : frailpol2 !numpat
         Implicit none
     
         double precision,intent(out)::ss
@@ -771,8 +771,8 @@
     
         use tailles
         use donnees,only:x2,w2,x3,w3
-        use comon,only:auxig,typeof
-            use donnees_indiv,only : frailpol,numpat
+        use comon,only:typeof !auxig
+            use donnees_indiv,only : frailpol !numpat
         Implicit none
     
         double precision,intent(out)::ss
@@ -808,7 +808,7 @@
     
         use tailles
         use donnees,only:x2,w2,x3,w3
-        use comon,only:auxig,typeof,nb1,which_random
+        use comon,only:typeof,which_random !auxig,nb1
             use donnees_indiv,only : frailpol,frailpol2,frailpol3,frailpol4
         Implicit none
     
@@ -1046,27 +1046,27 @@
     !=========================
     double precision function func1pred1GHtri_nl(frail,frail2)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc$
     
     
 
@@ -1134,10 +1134,10 @@
         double precision  function func2pred1GHtri_nl(frail,frail2)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -1145,8 +1145,8 @@
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -1154,7 +1154,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -1228,27 +1228,27 @@
     !=========================
     double precision function func1pred2GHtri_nl(frail,frail2)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -1317,10 +1317,10 @@
         double precision  function func2pred2GHtri_nl(frail,frail2)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -1328,8 +1328,8 @@
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -1337,7 +1337,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -1411,27 +1411,27 @@
     !=========================
     double precision function func1pred3GHtri_nl(frail,frail2)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -1498,10 +1498,10 @@
         double precision  function func2pred3GHtri_nl(frail,frail2)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -1509,8 +1509,8 @@
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -1518,7 +1518,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -1589,27 +1589,27 @@
     !=========================
     double precision function func1pred4GHtri_nl(frail,frail2)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -1676,10 +1676,10 @@
         double precision  function func2pred4GHtri_nl(frail,frail2)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -1687,8 +1687,8 @@
     
     double precision,intent(in)::frail,frail2
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -1696,7 +1696,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -1769,27 +1769,27 @@
     !=========================
     double precision function func1pred5GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -1860,10 +1860,10 @@
         double precision  function func2pred5GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -1871,8 +1871,8 @@
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -1880,7 +1880,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -1958,27 +1958,27 @@
     !=========================
     double precision function func1pred6GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -2048,10 +2048,10 @@
         double precision  function func2pred6GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -2059,8 +2059,8 @@
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -2068,7 +2068,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -2146,27 +2146,27 @@
     !=========================
     double precision function func1pred7GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -2238,10 +2238,10 @@
         double precision  function func2pred7GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -2249,8 +2249,8 @@
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -2258,7 +2258,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -2335,27 +2335,27 @@
     !=========================
     double precision function func1pred8GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -2427,10 +2427,10 @@
         double precision  function func2pred8GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -2438,8 +2438,8 @@
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -2447,7 +2447,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -2523,27 +2523,27 @@
     !=========================
     double precision function func1pred9GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -2615,10 +2615,10 @@
         double precision  function func2pred9GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -2626,8 +2626,8 @@
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -2635,7 +2635,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -2712,27 +2712,27 @@
     !=========================
     double precision function func1pred10GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -2804,10 +2804,10 @@
         double precision  function func2pred10GHtri_nl(frail,frail2,frail3)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -2815,8 +2815,8 @@
     
     double precision,intent(in)::frail,frail2,frail3
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -2824,7 +2824,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -2900,27 +2900,27 @@
     !=========================
     double precision function func1pred11GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -2994,10 +2994,10 @@
         double precision  function func2pred11GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -3005,8 +3005,8 @@
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -3014,7 +3014,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -3094,27 +3094,27 @@
     !=========================
     double precision function func1pred12GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -3188,10 +3188,10 @@
         double precision  function func2pred12GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -3199,8 +3199,8 @@
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -3208,7 +3208,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -3286,27 +3286,27 @@
     !=========================
     double precision function func1pred13GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -3380,10 +3380,10 @@
         double precision  function func2pred13GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -3391,8 +3391,8 @@
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -3400,7 +3400,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -3479,27 +3479,27 @@
     !=========================
     double precision function func1pred14GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -3573,10 +3573,10 @@
         double precision  function func2pred14GHtri_nl(frail,frail2,frail3,frail4)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey,
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -3584,8 +3584,8 @@
     
     double precision,intent(in)::frail,frail2,frail3,frail4
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -3593,7 +3593,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     
@@ -3674,27 +3674,27 @@
     !=========================
     double precision function func1pred15GHtri_nl(frail,frail2,frail3,frail4,frail5)
         ! calcul de l integrant (numerateur de la fonction de prediction)
-            use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-                    
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& ! !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
+    
             use prediction
         implicit none
     
     
     double precision,intent(in)::frail,frail2,frail3,frail4,frail5
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
-                    double precision,external::survdcCM_pred,survRCM_pred
+            double precision,external::survdcCM_pred,survRCM_pred
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-            double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
     
 
@@ -3771,10 +3771,10 @@
         double precision  function func2pred15GHtri_nl(frail,frail2,frail3,frail4,frail5)
         ! calcul de l integrant (denominateur de la fonction de prediction)
             use optim
-                    use comon,only:netadc,etaydc,sigmae,netar,etayr,&
-                    s_cag,s_cag_id,alpha,ut,utt,link,npp,box_cox1,box_cox_par,&
-                    nva3,nva4,vey,nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea
-            use donnees_indiv,only:nmescur,mu,z2,ycurrent,b1,x2cur,z1cur,nmescurr
+                    use comon,only:etaydc,sigmae,etayr,& !netadc,netar
+                    s_cag,s_cag_id,alpha,box_cox1,box_cox_par,& ! !ut,utt,link,npp
+                    nb1,mat,det,K_G0,K_D0,lambda,y0,ziy,it,nea !nva3,nva4,vey
+            use donnees_indiv,only:nmescur,mu,ycurrent,nmescurr !b1,x2cur,z1cur,z2
     
             use prediction
         implicit none
@@ -3782,8 +3782,8 @@
     
     double precision,intent(in)::frail,frail2,frail3,frail4,frail5
             double precision,dimension(nmescur,1)::mu1
-            double precision :: yscalar,eps,finddet,prod_cag
-            integer :: j,jj,k,ier
+            double precision :: yscalar,prod_cag !eps,finddet
+            integer :: k !j,jj,ier
             double precision,dimension((nb1+1),1)::  Xea2
             double precision,dimension((nb1+1)):: uii, Xea22
             double precision,dimension(1)::uiiui
@@ -3791,7 +3791,7 @@
         double precision,parameter::pi=3.141592653589793d0
             logical :: upper
             double precision :: alnorm
-    double precision :: resultdc,resultR,abserr,resabs,resasc
+    !double precision :: resultdc,resultR,abserr,resabs,resasc
     
             upper = .false.
     

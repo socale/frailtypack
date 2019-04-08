@@ -16,11 +16,11 @@
                             GH,paGH0,weights0,nodes0,nnodes_all0)
     
             use tailles,only:npmax
-        use comon,only:typeof,nst,nbintervR,nbintervDC,nva,nva1,nva2,&
+        use comon,only:typeof,nst,nva,nva1,nva2,& !nbintervR,nbintervDC
         nva3,nva4,ve,vey,vedc, &
-        nz1,nz2,zi,ttt,tttdc,yy,c,cdc,date,ndate,datedc,ndatedc,t0,t1,t0dc,t1dc,g, &
+        nz1,nz2,zi,yy,c,cdc,date,ndate,datedc,ndatedc,t0,t1,t0dc,t1dc,g, & !ttt,tttdc
             ng,nsujet,nsujety,npp,nea,nb_re,nb1,ziy,g,b_e,vals,netadc,netar,&
-            s_cag,s_cag_id,link,netar,netadc,indic_alpha,ut,utt,res_ind,&
+            s_cag,s_cag_id,link,netar,netadc,indic_alpha,res_ind,& !ut,utt,
             nodes,weights,invBi_chol,b_lme,invBi_cholDet,methodGH,nnodes_all,nodes_number,&
             etaydc,etayr,mat,matb_chol,box_cox1,box_cox_par,which_random
             use lois_normales
@@ -412,15 +412,15 @@
     !------------------------------------------------------------
         subroutine derivc_condt_NL(b,m,V,rlindiv,nobs,nsujet,indT)
         !use comon,only:g
-            use comon,only  : g,nea,nva3,nva4,yy, &
-                    ve,vey,vedc,ziy,all,groupeey,b_e,&
-                    t1,nea,s_cag,s_cag_id,nb1
+            use comon,only  : nva3,nva4,yy, &
+                    vey,ziy,all,b_e,&
+                    s_cag,s_cag_id !nb1,g,vedc,ve,groupeey,t1 !nea
                     use lois_normales
                     use donnees_indiv
                     use choix_epoce
         implicit none
     
-		integer::m,i,k,id,nsujet,nobs,it,l
+    integer::m,i,k,id,nsujet,nobs,it,l
         double precision::funcpi_NL,funcpi2_NL,thn,th,z,temp1,temp2
         double precision,dimension(m,1)::Uscore,Uscore2
         double precision,dimension(m)::b
@@ -560,10 +560,10 @@
         double precision function funcpi_NL(b,npp,id,thi,jd,thj,i)
     use optim
             use lois_normales
-        use comon,only:typeof,nst,nva,vey,nz1, &
-        zidc,stra,date,datedc,ndate,ndatedc,nva1,nva2,vedc,t0,t1,t1dc,tttdc,g,cdc,&
-            nea,nva3,nz2,sigmae,g,the1_e,netar,etaydc,netadc,netar ,&
-            betacoef,alpha,all,netadc,netar,&
+        use comon,only:nva, & !typeof,nst,vey,nz1,
+        !zidc,stra,date,datedc,ndate,ndatedc,nva1,nva2,vedc,t0,t1,t1dc,tttdc,g,cdc,&
+            nea,sigmae,netar,etaydc,netadc,netar ,& !nva3,nz2,the1_e,betacoef,g
+            alpha,all,netadc,netar,&
             etayr,alpha,betaR,etaR,betaD,etaD,ut,utt,nb1,nb_re,&
             K_G0,K_D0,lambda,y0,det,mat,indic_alpha
             use donnees_indiv
@@ -757,13 +757,12 @@
     
     use optim
             use lois_normales
-    use comon,only:typeof,nst,nva,vey,nz1, &
-        zidc,stra,date,datedc,ndate,ndatedc,nva1,nva2,vedc,t0,t1,t1dc,tttdc,g,cdc,&
-            nea,nva3,nz2,sigmae,g,the1_e,netar,etaydc,netadc,etayr ,&
-            betacoef,alpha,all,netadc,netar,&
-            alpha,betaR,etaR,betaD,etaD,ut,utt,nb1,nb_re,&
-            K_G0,K_D0,lambda,y0,det,mat,indic_alpha
-            
+    use comon,only:nva, & !typeof,nst,vey,nz1,
+        !zidc,stra,date,datedc,ndate,ndatedc,nva1,nva2,vedc,t0,t1,t1dc,tttdc,g,cdc,&
+            nea,sigmae,netar,etaydc,netadc,netar ,& !nva3,nz2,the1_e,betacoef,g
+            alpha,all,netadc,netar,&
+            etayr,alpha,betaR,etaR,betaD,etaD,ut,utt,nb1,nb_re,&
+            K_G0,K_D0,lambda,y0,det,mat,indic_alpha        
             use donnees_indiv
             use choix_epoce
         implicit none
@@ -961,10 +960,11 @@
            use optim
         use tailles
         use comongroup,only:vet,vet2
-        use comon,only:auxig,alpha,sig2,res1,res3,aux1,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,nva4,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy, y0,invBi_cholDet,netadc,initGh,&
+        
+        use comon,only:cdc,sigmae,& !auxig,alpha,sig2,res1,res3,aux1,nig,nmesy
+            nva2,npp,nva3,nva4,vedc,nea,nb1,betaD,etaD,t1dc,etaydc,link,& !t0dc
+            typeof,s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt,
+            nodes,weights,mat,det, K_G0, K_D0, lambda, y0,invBi_cholDet,netadc,& !yy,ziy,initGh,it
             all,vals,nva,ndatedc,nz2,zi,datedc,t1,betaR,etaR,etayr,indic_alpha,&
             ndate,netar,nsujet,nva1,nz1,g,ve,t0,c,date,box_cox_par,box_cox1,which_random
         use donnees_indiv
@@ -972,11 +972,11 @@
     
         double precision,intent(out)::ss
         integer,intent(in)::choix
-        double precision::aux
+        !double precision::aux
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag,T,vraisind
-        integer :: j,i,jj,k,ier,nnn,nn
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag,T,vraisind !eps
+        integer :: j,i,k,nnn,nn !jj,ier
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
@@ -984,9 +984,9 @@
        ! double precision,dimension(nb1,nb1)::mat
         logical :: upper
         double precision,external::survdcCM,survRCM
-            double precision :: abserr,resabs,resasc,func10J
-            double precision :: resultR
-            double precision,dimension(1):: current_meanR
+            double precision :: func10J !abserr,resabs,resasc
+            !double precision :: resultR
+            !double precision,dimension(1):: current_meanR
         double precision,parameter::pi=3.141592653589793d0
             double precision,dimension(nmescur,1)::mu11
           double precision,dimension(2)::su,sut1,sut0
