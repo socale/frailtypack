@@ -14,7 +14,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     use sortie
     use Autres_fonctions
     use double_precision
-    use var_surrogate, only: graine,aleatoire,nbre_sim,nbre_itter_PGH,nb_procs,random_generator,affiche_itteration
+    use var_surrogate, only: graine,aleatoire,nbre_sim,nbre_itter_PGH,nb_procs,random_generator,affiche_itteration, &
+	     copula_function
     use Autres_fonctions, only:pos_proc_domaine
     !use mpi ! module pour l'environnement MPI
     !$ use OMP_LIB 
@@ -25,9 +26,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     
     ! =====Parametres prises en entree de la subroutine=====
     integer, dimension(3),intent(in)::nbrevar
-    integer,dimension(11), intent(inout)::nsim_node
+    integer,dimension(12), intent(inout)::nsim_node
     integer,intent(in)::nsujet1,ng,ntrials1,nst,maxiter,nparamfrail,n_sim1,logNormal,vrai_val_init,random_generator0,sujet_equi,&
-                        affiche_itter
+                        affiche_itter, typecopula
                         
     integer,dimension(5),intent(in)::indice_a_estime
     integer,dimension(5),intent(in):: param_risque_base
@@ -115,7 +116,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 indice_theta_st,indice_gamma_t,rangparam_thetat,rangparam_thetast,rangparam_gammat,&
                 rangparam_gammast,rangparam_alpha,decoup_simul,incre_decoup,method_int_kendal,N_MC_kendall,&
                 param_weibull,donne_reel,indice_seed,npoint1,npoint2,rangparam_eta,nboot_kendal,nparam_kendall,&
-                rangparam_theta,erreur_fichier,indicCP,controlgoto,remplnsim,indice_kapa                
+                rangparam_theta,erreur_fichier,indicCP,controlgoto,remplnsim,indice_kapa, type_joint_estim
                 
                 
     double precision::theta,eta,betas,alpha,betat,lambdas,nus,lambdat,nut,temps_cens,&
@@ -155,7 +156,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         moy_kendal_10,tau_kendal_10,moy_kendal_01,tau_kendal_01,moy_kendal_00,tau_kendal_00,se_kendal_11,&
                         se_kendal_01,se_kendal_00,moy_tau_boots,IC_Inf,IC_sup,zeta_init,moy_R2_boots,IC_Inf_R2,IC_sup_R2,&
                         CP_R2_boot,CP_ktau_boot,moy_R2_boots_test,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,&
-                        bi_R2_trial,bs_R2_trial,thetacopule
+                        bi_R2_trial,bs_R2_trial,thetacopule, thetacopula_init
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS, don_simultamp,don_simulStamp,don_simulS1,&
 	                    parametre_empirique, parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,&
@@ -186,6 +187,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 	! call dblepr("voile kappa", -1, vect_kappa, n_sim1)
 	! goto 998
 	
+	! for copula model 
+	copula_function = nsim_node(12) ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
+	type_joint_estim = nsim_node(8) ! type of estimated model
     ! affectation de certains parametres
     nomvarl(1) = "trt"
     NomFichier(1) = "kappa_valid_crois.txt"
@@ -234,7 +238,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     tableau_rejet = NomFichier(5)
 
     ! Parametres initiaux
-    theta_init = param_init(1)
+    theta_init = param_init(1) ! if we are estimating the joint surrogate model
+	thetacopula_init = param_init(1) ! if we are estimating copula modele
     sigma_ss_init = param_init(2)
     sigma_tt_init = param_init(3)
     sigma_st_init = param_init(4)
@@ -373,6 +378,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             indice_gamma_t=1
         endif
     end if
+	
+	if(type_joint_estim == 3) then ! joint frailty-copula model
+		indice_theta = 0
+		indice_theta_t = 0
+        indice_theta_st = 0
+	endif
 
     !!write(4,*)'**************************************************'
     !!write(4,*)'*****************JOINT MODEL *********************'
@@ -1017,7 +1028,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         groupe(i)=don_simul(i,Patienref1) ! numero de l'individu
         vaxdct(i,1)=don_simul(i,trt1) ! vecteur des variables explicatives
         tableEssai(pourtrial(i))=tableEssai(pourtrial(i))+1
-        
+        ! j'ajoute les autres variables a la fin
+		
+		if(type_joint_estim == 3) then! joint frailty copula
+			if(ver > 1) then ! I add the rest of covariates
+				vaxdct(i,2:ver) = don_simul(i,(size(don_simul,2) - ver +2):size(don_simul,2))
+			endif
+		endif
+		
         !ecriture des donnees dans le fichier (juste pour le premier jeux de donnee)
         ! on sauvegarde seulement si on est dans la simple generation des donnees
         !!print*,seed_
@@ -1069,7 +1087,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         pourtrial(i)=don_simulS(i,trialref1) !indice de l'essai
         groupe(i)=don_simulS(i,Patienref1) ! numero de l'individu
         vaxt(i,1)=don_simulS(i,trt1) ! vecteur des variables explicatives
-        
+        ! j'ajoute les autres variables a la fin
+		
+		if(type_joint_estim == 3) then! joint frailty copula
+			if(ver > 1) then ! I add the rest of covariates
+				vaxt(i,2:ver) = don_simulS(i,(size(don_simulS,2) - ver +2):size(don_simulS,2))
+			endif
+		endif
+				
         !ecriture des donnees dans le fichier (juste pour le premier jeux de donnee)
         ! on sauvegarde seulement si on est dans la simple generation des donnees
         

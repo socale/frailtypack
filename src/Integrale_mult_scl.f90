@@ -256,6 +256,144 @@ module monteCarlosMult_Gaus
 !SUBROUTINES simulation pour le calcul integrale multiple par monte carlo
 !
 !========================================================================
+	 double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
+    ! dans cette fonction on fait une quadrature adaptative ou non pour les deux effets aleatoire vsi et vti
+    ! func: fonction a integrer au niveau individuel
+    ! ndim= dimension de l'integrale 2 ou 3 integrations?
+    ! nsujet_trial= nombre de sujets dans le cluster courant
+    ! i= cluster courant
+    use Autres_fonctions, only:init_random_seed
+    use var_surrogate, only: Vect_sim_MC,a_deja_simul,nsim,chol,frailt_base,&
+                             graine,aleatoire,nbre_sim,nb_procs
+    use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
+    use Autres_fonctions, only:pos_proc_domaine
+    !use mpi
+    !$ use OMP_LIB
+    
+    implicit none
+    integer,intent(in):: ndim,nsujet_trial,i
+    integer ::ii,jj,l,m,maxmes,nsimu,init_i,max_i,code,erreur,rang !maxmes= nombre de dimension ou encore dimension de X
+    double precision:ss,SX,x22 
+    double precision,dimension(:,:),allocatable::vc, fraili
+    double precision,dimension(:),allocatable::usim,vi
+
+    !double precision, external::gauss_HermMultA_surr    
+    
+    ! bloc interface pour la definition de la fonction func
+    interface
+        double precision function func(vsi,vti,ui,ig,nsujet_trial)
+			! vsi= frailtie niveau essai associe a s
+			! vti= frailtie niveau essai associe a t
+			! ui = random effect associated xith the baseline hazard
+			! ig = current cluster
+			! nsujet_trial = number of subjects in the current trial
+            integer,intent(in):: ig, nsujet_trial
+            double precision,intent(in)::vsi,vti,ui
+        end function func
+    end interface
+    
+    allocate(vc(size(chol,2),size(chol,2)),fraili(nsim,size(chol,2)))
+    !vc=ABS(chol)
+    vc=chol
+    nsimu=nsim
+    x22=0.d0
+
+    maxmes=size(vc,2)
+     allocate(vi(maxmes*(maxmes+1)/2))
+     allocate(usim(maxmes))    
+    
+  ! --------------------- boucle du MC ------------------------
+    l=1
+    !stemp=0
+    !===============================================================================
+    ! initialisation de la matrice des donnees generees pour l'estimation de l'integrale 
+    !===============================================================================
+    
+    if(a_deja_simul.eq.0) then
+        call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation pour lagraine
+        Vect_sim_MC=0.d0
+        do while(l.le.nsimu)
+            ! on genere suivant des normales centrees reduites pour les variables aleatoires correlees
+             usim=0.d0
+             do m=1,maxmes
+                 SX=1.d0
+                 call bgos(SX,0,Vect_sim_MC(l,m),x22,0.d0)
+             end do
+            l=l+1
+        end do    
+        
+        a_deja_simul=1 ! pour dire qu'on ne simule plus
+    endif
+    
+    ! on utilise les generations precedentes pour obtenir deux variables correlees suivant une multinormale centree de covariance vc
+    l=1
+    do while(l.le.nsimu)
+        if(frailt_base==0)then
+            fraili(l,:)=0.d0+MATMUL(vc,Vect_sim_MC(l,1:2)) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
+        else
+            fraili(l,:)=0.d0+MATMUL(vc,Vect_sim_MC(l,1:3))
+        endif
+        l=l+1
+    end do
+    
+    
+    !integration sur vsi et vti
+    ss=0.d0
+    if(nb_procs==1) then !on fait du open MP car un seul processus
+        rang=0
+        if(ndim.eq.2) then
+            !$OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili)&
+            !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+                do ii=1,nsimu
+                    ss=ss+func(fraili(ii,1),fraili(ii,2),0.d0,i,nsujet_trial)
+                    !!print*,"ss",ss
+                end do
+            !$OMP END PARALLEL DO
+        else ! cas de 3 points
+            !$OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili)&
+            !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+                do ii=1,nsimu
+                    ss=ss+func(fraili(ii,1),fraili(ii,2),fraili(ii,3),i,nsujet_trial)
+                    ! !print*,"ss",ss
+                end do
+            !$OMP END PARALLEL DO
+        end if
+    else ! dans ce cas on va faire du MPI
+        ! rang du processus courang
+        !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code)
+        ! on cherche les position initiale et finale pour le processus courant
+        call pos_proc_domaine(nsimu,nb_procs,rang,init_i,max_i)
+        if(ndim.eq.2) then
+            do ii=1,nsimu
+                if((ii<init_i).or.ii>max_i) then 
+                    goto 1003 ! pour dire le processus ne considere pas cet itteration car n'appartient pas a son domaine
+                endif
+                ss=ss+func(fraili(ii,1),fraili(ii,2),0.d0,i,nsujet_trial)
+                ! !print*,"ss",ss
+                1003 continue
+            end do
+        else ! cas de 3 points
+            do ii=1,nsimu
+                if((ii<init_i).or.ii>max_i) then 
+                    goto 1004 ! pour dire le processus ne considere pas cet itteration car n'appartient pas a son domaine
+                endif
+                ss=ss+func(fraili(ii,1),fraili(ii,2),fraili(ii,3),i,nsujet_trial)
+                ! !print*,"ss",ss
+                1004 continue
+            end do
+        end if
+        ! !print*,"rang",rang, "mon ss vaut",ss
+        ! on fait la reduction et redistribu le resultat a tous les procesus
+        !call MPI_ALLREDUCE(ss,ss,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,code)
+        ! !print*,"rang",rang, "voila ss general",ss
+        ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
+    endif
+
+    MC_MultInd_Essai=ss/dble(nsimu)
+
+    deallocate(vi,usim,vc,fraili)
+    return
+  end function MC_Copula_Essai
 
     subroutine monteCarlosMult(funcMC,mu,vc,nsim,vcdiag,posind_i,result)
     ! mu: l'esperance de mes variables

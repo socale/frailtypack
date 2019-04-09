@@ -367,6 +367,9 @@
         integer, save::switch_adaptative ! variable qui prend la valeur 0 si on veut ommetre la pseudo adaptative (cas typique lorsqu'echou l'estimation des effets aleatoires a posteriori) ou 1 si tout se passe bien
         integer, save::nbre_itter_PGH ! nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
         integer,save::random_generator ! generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
+		! Add for the joint frailty-copula model -scl - 05-04-2019
+		integer,save:: copula_function ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
+		double precision, save:: theta_copule ! copula parameters
     end module var_surrogate
     
     !gestion de la double precision

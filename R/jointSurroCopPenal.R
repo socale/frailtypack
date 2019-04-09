@@ -1,8 +1,8 @@
 
-#' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint
+#' Fit the one-step Joint frailty-copula model for the evaluation of a canditate surrogate endpoint
 #'
 #'@description{
-#' \if{html}{\bold{Joint Frailty Surrogate model definition} 
+#' \if{html}{\bold{Joint Frailty-Copula model for Surrogacy definition} 
 #'
 #' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint, 
 #' with different integration methods on the random effects, using a semiparametric penalized 
@@ -214,18 +214,18 @@
 #' 
 #' @aliases jointSurroPenal
 #' @usage 
-#' jointSurroPenal(data, maxit=40, indicator.zeta = 1, 
+#' jointSurroPenal(data, maxit=40, 
 #'    indicator.alpha = 1, frail.base = 1, n.knots = 6, 
 #'    LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, 
 #'    nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, 
-#'    int.method = 2, nb.iterPGH = 5, nb.MC.kendall = 10000, 
+#'    int.method = 0, nb.iterPGH = 5, nb.MC.kendall = 10000, 
 #'    nboot.kendall = 1000, true.init.val = 0, 
 #'    theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
 #'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
-#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, nb.decimal = 4, 
-#'    print.times = TRUE, print.iter=FALSE)
+#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, typecopula =1, 
+#'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param data A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
 #'    \itemize{
@@ -241,10 +241,6 @@
 #'    }
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' Default is \code{40}. 
-#' @param indicator.zeta A binary, indicates whether the power's parameter \eqn{\zeta} should 
-#' be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
-#' The default is \code{1}. This parameter can be seted to \code{0} in case of convergence and 
-#' identification issues. 
 #' @param indicator.alpha A binary, indicates whether the power's parameter \eqn{\alpha} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
@@ -274,11 +270,7 @@
 #' @param adaptatif A binary, indicates whether the pseudo adaptive Gaussian-Hermite quadrature \code{(1)} or the classical
 #' Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.
 #' @param int.method A numeric, indicates the integration method: \code{0} for Monte carlo, 
-#' \code{1} for Gaussian-Hermite quadrature, \code{2} for a combination of both Gaussian-Hermite quadrature to 
-#' integrate over the individual-level random effects and Monte carlo to integrate over the trial-level
-#' random effects, \code{4} for a combination of both Monte carlo to integrate over 
-#' the individual-level random effects and Gaussian-Hermite quadrature to integrate over the trial-level
-#' random effects. The default is \code{2}.
+#' \code{1} for Gaussian-Hermite quadrature. The default is \code{0}.
 #' @param nb.iterPGH Number of iterations before the re-estimation of the posterior random effects,
 #' in case of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
 #' re-estimation". The default is \code{5}.
@@ -341,6 +333,7 @@
 #' The default is \code{0}.
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
+#' @param typecopula The copula function used, can be 1 for clayton or 2 for Gumbel-Hougaard. The default is \code{1}
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
 #' is TRUE.
@@ -432,14 +425,14 @@
 #' #and classical Gaussian Hermite integration.*
 #' # (Computation takes around 5 minutes)
 #' 
-#' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
+#' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 0, 
 #'                    nb.mc = 300, nb.gh = 20)
 #'                    
 #' #Surrogacy evaluation based on ganerated data with a combination of Monte Carlo 
 #' # and Pseudo-adaptive Gaussian Hermite integration.
 #' # (Computation takes around 4 minutes)
 #' 
-#' joint.surro.sim.MCPGH <- jointSurroPenal(data = data.sim, int.method = 2, 
+#' joint.surro.sim.MCPGH <- jointSurroPenal(data = data.sim, int.method = 0, 
 #'                    nb.mc = 300, nb.gh = 20, adaptatif = 1)
 #'                    
 #' # Results
@@ -468,25 +461,28 @@
 #' 
 #' data(gastadj)
 #' joint.surro.gast <- jointSurroPenal(data = gastadj, nb.mc = 100, nb.gh = 20, 
-#'                 indicator.zeta = 0, indicator.alpha = 0, n.knots = 10, 
-#'                 random.generator = 2, init.kappa = c(367700100,10025184521))
+#'                 indicator.alpha = 0, n.knots = 10,random.generator = 2, 
+#'                 init.kappa = c(367700100,10025184521))
 #'
 #' # results
 #' summary(joint.surro.gast)
 #' 
 #' }
 #' 
-jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, 
+jointSurroPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base = 1, 
                       n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, 
-                      nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, nb.iterPGH = 5, 
+                      nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
                       nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, theta.init = 1, 
                       sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, gamma.init = 0.5, 
                       alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
                       random.generator = 1, kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, 
-                      init.kappa = NULL, nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
+                      init.kappa = NULL, typecopula = 1, nb.decimal = 4, print.times = TRUE, 
+                      print.iter = FALSE
+                      ){
   
  # The initial followup time. The default value is 0
   data$initTime <- 0 
+  indicator.zeta = 0
   
  # list of models parameters:
   parameter <- c(maxit = maxit,indicator.zeta = indicator.zeta, indicator.alpha = indicator.alpha,
@@ -642,12 +638,12 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   indice_a_estime <- c(indicator.zeta, indice_covST, indicator.alpha, indice_gamma_st,frail.base)
   
   if(indice_covST == 1){
-    # we estimated at least 4 parameters correspondint to the covariance matrix \sigma and the variance of \omega_ij
-    nb.frailty <- 4
-    nparamfrail <- nb.frailty + indicator.zeta + indicator.alpha + frail.base
-  } else{
+    # we estimated at least 3 parameters corresponding to the covariance matrix \sigma
     nb.frailty <- 3
-    nparamfrail <- nb.frailty + indicator.zeta + indicator.alpha + frail.base
+    nparamfrail <- nb.frailty + indicator.alpha + frail.base + 1 # 1 for the copula parameter
+  } else{
+    nb.frailty <- 2
+    nparamfrail <- nb.frailty + indicator.alpha + frail.base + 1 # 1 for the copula parameter
   }
   
   # parametre fonction de risque de base
@@ -661,18 +657,18 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   param_risque_base <- c(typeof,nbintervR,nbintervDC,equidistant,nz)
   
   #nombre de variables explicatives
-  ves <- 1 # nombre variables explicative surrogate
-  ved <- 1 # nombre variables explicative deces/evenement terminal
-  ver <- 1 # nombre total de variables explicative
-  nbrevar <- c(ves,ved,ver) 
+  ves <- 2 # nombre variables explicative surrogate
+  vet <- 2 # nombre variables explicative deces/evenement terminal
+  ver <- 2 # nombre total de variables explicative
+  nbrevar <- c(ves,vet,ver) 
   
   # vecteur des noms de variables
   nomvarl<- "trt"
   # matrice d'indicatrice de prise en compte des variables explicatives pour le surrogate et le tru
   # filtre = vecteur associe au surrogate
   # filtre2 = vecteur associe au true
-  filtre  <- 1
-  filtre2 <- 1
+  filtre  <- c(1,1)
+  filtre2 <- c(1,1)
   filtre0 <- as.matrix(data.frame(filtre,filtre2))
   
   # gestion de l'affichage a l'ecran
@@ -729,7 +725,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   nsim_node[1] <- nb.mc # nombre de simulation pour l'integration par Monte carlo, vaut 0 si on ne veut pas faire du MC
   nsim_node[2] <- nb.gh # nombre de points de quadrature a utiliser (preference 5 points pour l'adaptatice et 32 poits pour la non adaptatice)
   nsim_node[3] <- adaptatif # doit-on faire de l'adaptative(1) ou de la non-adaptative(0)
-  nsim_node[4] <- int.method# indique la methode d'integration 0=Monte carlo,1= quadrature, 2=quadrature individuel+MC essai, 3=Laplace, 4= monte carlo individuel + quadrature essai
+  nsim_node[4] <- int.method# indique la methode d'integration 0=Monte carlo,1= quadrature, 3=Laplace
   nsim_node[5] <- nparamfrail
   nsim_node[6] <- 1 # indique si lon fait de la vectorisation dans le calcul integral (1) ou non (0). rmq: la vectorisation permet de reduire le temps de calcul
   nsim_node[7] <- nb.frailty # indique le nombre d'effet aleatoire cas quadrature adaptative
@@ -738,8 +734,8 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   nsim_node[8] <- type.joint 
   nsim_node[9] <- nb.gh2 # nombre de point de quadrature a utiliser en cas de non convergence de prefenrence 7 ou 9 pour la pseudo adaptative et 32 pour la non adaptative
   nsim_node[10] <- nb.iterPGH # nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
-  nsim_node[11] <- 1 # model a utiliser pour la generation des donnee en cas de simulation: 1=joint surrogate avec 1 frailty partage indiv, 3=joint frailty copula model
-  nsim_node[12] <- 0 # not used: the copula function: 1 = clayton, 2=Gumbel
+  nsim_node[11] <- 3 # model a utiliser pour la generation des donnee en cas de simulation: 1=joint surrogate avec 1 frailty partage indiv, 3=joint frailty copula model
+  nsim_node[12] <- typecopula # the copula function: 1 = clayton, 2=Gumbel
   
   # Parametres associes au taux de kendall et au bootstrap
   meth.int.kendal <- 4
@@ -911,7 +907,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   
   # autres dichiers de sortie
   # vecteur des pametres
-  nva=2 # deux parametres lies aux effets fixes du traitement
+  nva <- ves + vet # deux parametres lies aux effets fixes du traitement
   effet <- 0
   if(typeof==0) np <- 2*(nz+2) + nva + nparamfrail
   if(typeof==1) np <- nbintervDC + nbintervR + nva + nparamfrail

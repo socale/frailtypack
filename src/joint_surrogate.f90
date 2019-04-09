@@ -187,8 +187,7 @@
             else
                 indice_eta = 1 
             endif
-        endif
-        
+        endif      
       
       !!print*,"indice_eta=",indice_eta
       indice_theta=1
@@ -1229,6 +1228,8 @@
                 
                 case(2)
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_surrogate)    
+				case(3) ! the joint frailty-copula model
+					call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_copula_surrogate)    
             endselect
         case(1) ! fonctions de risque de base supposees constantes par morceau
 !                 if (timedep.eq.0) then
