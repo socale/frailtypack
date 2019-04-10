@@ -613,7 +613,9 @@
 #' seq(0,max(time),length=99), where time is the vector of survival times.}
 #' \item{lam}{array (dim=3) of hazard estimates and confidence bands.}
 #' \item{surv}{array (dim=3) of baseline survival estimates and confidence
-#' bands.} \item{nbintervR}{Number of intervals (between 1 and 20) for the
+#' bands.} \item{median}{The value of the median survival and its confidence bands. If there are
+#' two stratas or more, the first value corresponds to the value for the 
+#' first strata, etc.} \item{nbintervR}{Number of intervals (between 1 and 20) for the
 #' parametric hazard functions ("Piecewise-per", "Piecewise-equi").}
 #' \item{npar}{number of parameters.} \item{nvar}{number of explanatory
 #' variables.} \item{LCV}{the approximated likelihood cross-validation
@@ -951,10 +953,24 @@
 #' 
 "frailtyPenal" <-
   function (formula, formula.terminalEvent, data, recurrentAG=FALSE, cross.validation=FALSE, jointGeneral, n.knots, kappa,maxit=300, 
-	hazard="Splines", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
+	hazard="Splines-per", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
 	LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
 	
-	if (missing(jointGeneral)) jointGeneral<-FALSE
+    # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
+    minmin <- function(y, x) {
+      tolerance <- .Machine$double.eps^.5   #same as used in all.equal()
+      keep <- (!is.na(y) & y <(.5 + tolerance))
+      if (!any(keep)) NA
+      else {
+        x <- x[keep]
+        y <- y[keep]
+        if (abs(y[1]-.5) <tolerance  && any(y< y[1])) 
+          (x[1] + x[min(which(y<y[1]))])/2
+        else x[1]
+      }
+    }
+    
+    if (missing(jointGeneral)) jointGeneral<-FALSE
     if (!missing(init.Eta) & jointGeneral)  init.Alpha <- init.Eta
     
     # al suppression de l'argument joint
@@ -1820,7 +1836,15 @@
 		fit$type <- type
 		fit$n.strat <- uni.strat
 		fit$n.iter <- ans[[33]]
-      
+    
+		median <- NULL
+		for (i in (1:fit$n.strat)) median[i] <- ifelse(typeof==0, minmin(fit$surv[,1,i],fit$x), minmin(fit$surv[,1,i],fit$xSu))
+		lower <- NULL
+		for (i in (1:fit$n.strat)) lower[i] <- ifelse(typeof==0, minmin(fit$surv[,2,i],fit$x), minmin(fit$surv[,2,i],fit$xSu))
+		upper <- NULL
+		for (i in (1:fit$n.strat)) upper[i] <- ifelse(typeof==0, minmin(fit$surv[,3,i],fit$x), minmin(fit$surv[,3,i],fit$xSu))
+		fit$median <- cbind(lower,median,upper)
+		
 		if (typeof == 0){
 			fit$n.knots<-n.knots
 			if (uni.strat > 1) fit$kappa <- ans[[36]]
@@ -2655,6 +2679,23 @@
 			fit$time <- ans$time
 			fit$timedc <- ans$timedc
 		}
+		
+		medianR <- NULL
+		for (i in (1:fit$n.strat)) medianR[i] <- ifelse(typeof==0, minmin(fit$survR[,1,i],fit$xR), minmin(fit$survR[,1,i],fit$xSuR))
+		lowerR <- NULL
+		for (i in (1:fit$n.strat)) lowerR[i] <- ifelse(typeof==0, minmin(fit$survR[,2,i],fit$xR), minmin(fit$survR[,2,i],fit$xSuR))
+		upperR <- NULL
+		for (i in (1:fit$n.strat)) upperR[i] <- ifelse(typeof==0, minmin(fit$survR[,3,i],fit$xR), minmin(fit$survR[,3,i],fit$xSuR))
+		fit$medianR <- cbind(lowerR,medianR,upperR)
+		
+		medianD <- NULL
+		for (i in (1:fit$n.strat)) medianD[i] <- ifelse(typeof==0, minmin(fit$survD[,1,i],fit$xD), minmin(fit$survD[,1,i],fit$xSuD))
+		lowerD <- NULL
+		for (i in (1:fit$n.strat)) lowerD[i] <- ifelse(typeof==0, minmin(fit$survD[,2,i],fit$xD), minmin(fit$survD[,2,i],fit$xSuD))
+		upperD <- NULL
+		for (i in (1:fit$n.strat)) upperD[i] <- ifelse(typeof==0, minmin(fit$survD[,3,i],fit$xD), minmin(fit$survD[,3,i],fit$xSuD))
+		fit$medianD <- cbind(lowerD,medianD,upperD)
+		
       #AD:
 		fit$noVar1 <- noVar1
 		fit$noVar2 <- noVar2
@@ -2998,7 +3039,15 @@
 		fit$n.iter <- ans$ni
 		fit$typeof <- typeof
 		fit$noVar1 <- noVar1
-      
+    
+		median <- NULL
+		for (i in (1:fit$n.strat)) median[i] <- ifelse(typeof==0, minmin(fit$surv[,1,i],fit$x), minmin(fit$surv[,1,i],fit$xSu))
+		lower <- NULL
+		for (i in (1:fit$n.strat)) lower[i] <- ifelse(typeof==0, minmin(fit$surv[,3,i],fit$x), minmin(fit$surv[,3,i],fit$xSu))
+		upper <- NULL
+		for (i in (1:fit$n.strat)) upper[i] <- ifelse(typeof==0, minmin(fit$surv[,2,i],fit$x), minmin(fit$surv[,2,i],fit$xSu))
+		fit$median <- cbind(lower,median,upper)
+		
 		if (typeof == 0){
 			fit$n.knots<-n.knots
 			if (uni.strat > 1) fit$kappa <- ans$k0
@@ -3553,6 +3602,22 @@
 		fit$n.strat <- uni.strat
 		fit$n.iter <- ans$counts[1]
 		fit$typeof <- typeof
+		
+		medianR <- NULL
+		for (i in (1:fit$n.strat)) medianR[i] <- ifelse(typeof==0, minmin(fit$survR[,1,i],fit$xR), minmin(fit$survR[,1,i],fit$xSuR))
+		lowerR <- NULL
+		for (i in (1:fit$n.strat)) lowerR[i] <- ifelse(typeof==0, minmin(fit$survR[,2,i],fit$xR), minmin(fit$survR[,2,i],fit$xSuR))
+		upperR <- NULL
+		for (i in (1:fit$n.strat)) upperR[i] <- ifelse(typeof==0, minmin(fit$survR[,3,i],fit$xR), minmin(fit$survR[,3,i],fit$xSuR))
+		fit$medianR <- cbind(lowerR,medianR,upperR)
+		
+		medianD <- NULL
+		for (i in (1:fit$n.strat)) medianD[i] <- ifelse(typeof==0, minmin(fit$survD[,1,i],fit$xD), minmin(fit$survD[,1,i],fit$xSuD))
+		lowerD <- NULL
+		for (i in (1:fit$n.strat)) lowerD[i] <- ifelse(typeof==0, minmin(fit$survD[,2,i],fit$xD), minmin(fit$survD[,2,i],fit$xSuD))
+		upperD <- NULL
+		for (i in (1:fit$n.strat)) upperD[i] <- ifelse(typeof==0, minmin(fit$survD[,3,i],fit$xD), minmin(fit$survD[,3,i],fit$xSuD))
+		fit$medianD <- cbind(lowerD,medianD,upperD)
 		
 		fit$noVar1 <- noVar1
 		fit$noVar2 <- noVar2

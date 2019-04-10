@@ -138,7 +138,10 @@ of type 2} \item{surv2}{the same value as surv1 for the recurrent event of
 type 2.} \item{xEnd}{vector of times for the terminal event (see x1 value).}
 \item{lamEnd}{the same value as lam1 for the terminal event.}
 \item{xSuEnd}{vector of times for the survival function of the terminal
-event} \item{survEnd}{the same value as surv1 for the terminal event.}
+event} \item{survEnd}{the same value as surv1 for the terminal event.} 
+\item{median1}{The value of the median survival and its confidence bands for the recurrent event of type 1.}
+\item{median2}{The value of the median survival and its confidence bands for the recurrent event of type 2.}  
+\item{medianEnd}{The value of the median survival and its confidence bands for the terminal event.}
 \item{type.of.Piecewise}{Type of Piecewise hazard functions (1:"percentile",
 0:"equidistant").} \item{n.iter}{number of iterations needed to converge.}
 \item{type.of.hazard}{Type of hazard functions (0:"Splines", "1:Piecewise",

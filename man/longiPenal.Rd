@@ -143,7 +143,9 @@ terminal event are estimated. By default seq(0,max(time),length=99), where
 time is the vector of survival times.} \item{lamD}{The array (dim=3) of
 baseline hazard estimates and confidence bands (terminal event).}
 \item{survD}{The array (dim=3) of baseline survival estimates and confidence
-bands (terminal event).} \item{typeof}{The type of the baseline hazard
+bands (terminal event).} 
+\item{median}{The value of the median survival and its confidence bands.}
+\item{typeof}{The type of the baseline hazard
 functions (0:"Splines", "2:Weibull").} \item{npar}{The number of parameters.}
 \item{nvar}{The vector of number of explanatory variables for the terminal
 event and biomarker.} \item{nvarEnd}{The number of explanatory variables for
