@@ -1207,7 +1207,8 @@
         allocate(invBi_chol_Essai(ntrials*9),invBi_chol_Individuel(ng0),ui_chap_Essai(ntrials,3))
                         
     endif
-                    
+    call intpr("typeof =", -1, typeof, 1)
+	call intpr("type_joint =", -1, type_joint, 1)	
     call cpu_time(tp1)
     select case(typeof)
         case(0) ! fonction de risque de base approximee par des splines

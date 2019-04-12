@@ -3306,7 +3306,7 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     end do
     ! !print*,vi
     EPS=10.d-10
-	call dblepr("Vi =", -1, Vi, size(Vi))
+	!call dblepr("Vi =", -1, Vi, size(Vi))
     if(vcdiag.eq.0) then
         CALL DMFSD(Vi,maxmes,eps,ier) ! si matice diagonale on na pas besoin de ceci
     end if

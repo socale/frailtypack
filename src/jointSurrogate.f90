@@ -39,7 +39,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(ng,5+nbrevar(2)), intent(in):: death
     double precision,dimension(2), intent(in):: kappa0
     double precision,dimension(9), intent(in):: param_init
-    double precision,dimension(23), intent(in):: paramSimul
+    double precision,dimension(23+nbrevar(1) + nbrevar(2)-2), intent(in):: paramSimul
+	!double precision,dimension(:), intent(in):: paramSimul
     double precision,dimension(3), intent(inout)::EPS2
     character(len=30),dimension(5)::NomFichier
     double precision, intent(in)::prop_trait,revision_echelle
@@ -274,6 +275,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     sigma_s = paramSimul(21)
     sigma_t = paramSimul(22)
     thetacopule = paramSimul(23)
+	! les les parametres de simulation pour les autres covariables se trouvent a la fin du tableau paramSimul
+	
+	call dblepr("paramSimul = ",-1,paramSimul,size(paramSimul))
     if(nsim_node(11) == 3) then ! joint frailty copula, remplissage des vecteurs des variables explicatives
         do i = 1, size(vbetast,1)
             vbetas(i) = vbetast(i,1) ! beta_s
@@ -889,6 +893,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             !stop
         else            
             theta=0.d0
+			!call intpr("nsim_node(8) =", -1, nsim_node(8), 1)
             if(nsim_node(8)==0) then
                 indice_seed=0
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
@@ -910,7 +915,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 indice_seed=0
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
                 11 continue
-                            
+                
                 if(nsim_node(11)==1) then !modele avec effets aleatoires partages
                    
                     call Generation_surrogate(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
@@ -3187,7 +3192,7 @@ end do
                 sigma_st0(:,2)= (/sigmast_vrai,sigma_t/)
             endif
             
-            if(nsim_node(8).eq.1)then ! modele reduit
+            if((nsim_node(8).eq.1) .or. (nsim_node(8).eq.3))then ! modele reduit
                 allocate(theta_ST0_2(1,1),gamma_st0_2(1,1))
                 theta_ST0_2(1,1)= theta2
                 gamma_st0_2(1,1)= gamma_ui

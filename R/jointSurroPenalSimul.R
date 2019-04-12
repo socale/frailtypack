@@ -313,6 +313,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   real.data <- 0
   gener.only <- 0
   param.weibull <- 0
+
   
   if(type.joint.estim == 3) indicator.zeta = 0
   if(type.joint.estim == 3){
@@ -465,23 +466,23 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       if(type.joint.simul == 1){ # joint surrogate model
         data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
                         alpha = alpha.ui, theta = theta2, gamma = gamma.ui, zeta = zeta, sigma.s = sigma.s, 
-                        sigma.t = sigma.t, rsqrt = R2, betas = betas, betat = betat, lambda.S = lambdas, 
+                        sigma.t = sigma.t, rsqrt = R2, betas = betas[1], betat = betat[1], lambda.S = lambdas, 
                         nu.S = nus, lambda.T = lambdat, nu.T = nut, ver = ver,
                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt, full.data = 0, 
                         random.generator = random.generator, random = random, 
                         random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = j-1)
       }else{ # joint frailty copula model
-        data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
-                        alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
-                        sigma.t = sigma.t, rsqrt = R2, betas = c(betas, mbetast[,1]), betat = c(betat, mbetast[,2]),
-                        lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
-                        equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
-                        prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
-                        full.data = 0, random.generator = random.generator, random = random, 
-                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = j-1,
-                        thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
-                        covar.names = nomvarl)
+          data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
+                                        alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
+                                        sigma.t = sigma.t, rsqrt = R2, betas = c(betas, mbetast[,1]), betat = c(betat, mbetast[,2]),
+                                        lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
+                                        equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
+                                        prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
+                                        full.data = 0, random.generator = random.generator, random = random, 
+                                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = j-1,
+                                        thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
+                                        covar.names = nomvarl)
       }
       data.sim$initTime <- 0
       donnees <- data.sim[,c("trialID","patienID","trt","initTime","timeS","statusS")]
@@ -603,10 +604,19 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   rsqrt <- sqrt(R2)# niveau de correlation souhaite pour les frailties niveau essai
   # sigma.s <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au surrogate
   # sigma.t <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au true
-  paramSimul <- c(gamma1, gamma2, theta2, eta, gamma.ui, alpha.ui, theta2_t, rsqrt_theta, gamma.uit,
-                  rsqrt_gamma.ui, betas, betat, lambdas, nus, lambdat,nut, mode_cens, temps_cens,
-                  cens0, rsqrt, sigma.s, sigma.t, theta.copula)
   
+  if(length(betas)==1 & length(betat)==1){ # seulement le traitement
+    paramSimul <- c(gamma1, gamma2, theta2, eta, gamma.ui, alpha.ui, theta2_t, rsqrt_theta, gamma.uit,
+                    rsqrt_gamma.ui, betas, betat, lambdas, nus, lambdat, nut, mode_cens, temps_cens,
+                    cens0, rsqrt, sigma.s, sigma.t, theta.copula)
+  } else{
+    paramSimul <- c(gamma1, gamma2, theta2, eta, gamma.ui, alpha.ui, theta2_t, rsqrt_theta, gamma.uit,
+                    rsqrt_gamma.ui, betas[1], betat[1], lambdas, nus, lambdat, nut, mode_cens, temps_cens,
+                    cens0, rsqrt, sigma.s, sigma.t, theta.copula, if(length(betas)>1) betas[-1] else NULL, 
+                    if(length(betat)>1) betat[-1] else NULL)
+  }
+    
+  #cat(paramSimul)
   # Autres parametres de simulation
   weib <- 1# 0= on simule les temps par une loi exponentielle, 1= on simule par une weibull
   # param.weibull <- # parametrisation de la weibull utilisee: 0= parametrisation par default dans le programme de Virginie, 1= parametrisation a l'aide de la fonction de weibull donnee dans le cous de Pierre
