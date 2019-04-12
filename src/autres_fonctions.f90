@@ -2169,6 +2169,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     mu=0.d0
     
     !generation de (vs_i, vt_i) suivant une multinormale
+	!call dblepr("sigma =", -1, sigma, size(sigma)**2)
     call rmvnorm(mu,sigma,n_essai,0,x_)    
     
     k=1
@@ -3305,13 +3306,12 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     end do
     ! !print*,vi
     EPS=10.d-10
+	call dblepr("Vi =", -1, Vi, size(Vi))
     if(vcdiag.eq.0) then
         CALL DMFSD(Vi,maxmes,eps,ier) ! si matice diagonale on na pas besoin de ceci
     end if
     !!print*,vi
     if (ier.eq.-1) then
-        !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
-        !stop
         call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
     else ! ysim sera un vecteur de 0
      
