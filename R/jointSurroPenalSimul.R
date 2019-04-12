@@ -64,7 +64,7 @@
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL,  
 #'    type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL,  
-#'    typecopula =1, theta.copule = 6, nb.decimal = 4, 
+#'    typecopula =1, theta.copula = 6, nb.decimal = 4, 
 #'    print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
@@ -206,7 +206,7 @@
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
 #' @param type.joint.estim  Model to considered for the estimation. If this argument is set to \code{1}, the joint surrogate model
-#' is used, the default (see \link{joinSurroPenal}). If set to \code{2}, parameters are estimated under the joint frailty-copula model
+#' is used, the default (see \link{joinSurroPenal}). If set to \code{3}, parameters are estimated under the joint frailty-copula model
 #' for surrogacy.
 #' @param type.joint.simul Model to considered for data generation. If this argument is set to \code{1}, the joint surrogate model
 #' is used, the default (see \link{joinSurroPenal}). If set to \code{3}, data are generated following the joint frailty-copula model
@@ -216,7 +216,7 @@
 #' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 #' is NULL and assume only the treatment effect
 #' @param typecopula # The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1
-#' @param theta.copule The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
+#' @param theta.copula The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 #' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
 #' @param thetacopula.init Initial value for the copula parameter. The default is 3 
 #' @param nb.decimal Number of decimal required for results presentation.
@@ -293,7 +293,7 @@
 #' 
 #' }
 #' 
-jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, n.knots = 6,
+jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, n.knots = 6,
                       nb.dataset = 1, nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001,
                       LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, 
                       nb.iterPGH = 5, nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, 
@@ -304,7 +304,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                       gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL, type.joint.estim = 1,
-                      type.joint.simul = 1, mbetast = NULL, typecopula = 1, theta.copule = 6, thetacopula.init = 3, 
+                      type.joint.simul = 1, mbetast = NULL, typecopula = 1, theta.copula = 6, thetacopula.init = 3, 
                       nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL
@@ -314,8 +314,8 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   gener.only <- 0
   param.weibull <- 0
   
-  if(type.joint.estim == 2) indicator.zeta = 0
-  if(type.joint.estim == 2){
+  if(type.joint.estim == 3) indicator.zeta = 0
+  if(type.joint.estim == 3){
     if(int.method %in% c(2,4)) int.method <- 0
   }
   
@@ -480,7 +480,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
                         full.data = 0, random.generator = random.generator, random = random, 
                         random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = j-1,
-                        thetacopule = thetacopule, filter.surr = filtre0, filter.true = filtre2, 
+                        thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
                         covar.names = nomvarl)
       }
       data.sim$initTime <- 0
@@ -563,7 +563,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                     zeta.init,betas.init,betat.init)
   }
   if(type.joint.estim == 3){
-    param_init <- c(thetacopule.init,sigma.ss.init,sigma.tt.init,sigma.st.init,gamma.init,alpha.init,
+    param_init <- c(thetacopula.init,sigma.ss.init,sigma.tt.init,sigma.st.init,gamma.init,alpha.init,
                     zeta.init,betas.init,betat.init)
   }
   
@@ -605,7 +605,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   # sigma.t <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au true
   paramSimul <- c(gamma1, gamma2, theta2, eta, gamma.ui, alpha.ui, theta2_t, rsqrt_theta, gamma.uit,
                   rsqrt_gamma.ui, betas, betat, lambdas, nus, lambdat,nut, mode_cens, temps_cens,
-                  cens0, rsqrt, sigma.s, sigma.t, theta.copule)
+                  cens0, rsqrt, sigma.s, sigma.t, theta.copula)
   
   # Autres parametres de simulation
   weib <- 1# 0= on simule les temps par une loi exponentielle, 1= on simule par une weibull
@@ -764,7 +764,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   # resultats a retourner:
   result <- NULL
   result$theta2  <- theta2
-  result$theta.copula  <- theta.copule
+  result$theta.copula  <- theta.copula
   result$zeta <- zeta
   result$gamma.ui  <- gamma.ui
   result$alpha.ui <- alpha.ui
