@@ -17,7 +17,7 @@ contains
 	! nsujet_trial = number of subjects in the current trial
 	
     use var_surrogate, only: posind_i, alpha_ui, const_res4, const_res5, res2_dcs_sujet,res2s_sujet, &
-        theta_copule, delta, deltastar
+        theta_copule, delta, deltastar, copula_function
     use comon, only: eta,ve
 	
     IMPLICIT NONE
@@ -25,7 +25,7 @@ contains
     double precision,intent(in)::vsi,vti,ui
     integer::j,n
 	double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
-                      sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv
+                      sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T
     
 	
 	integrant = 1.d0
@@ -69,7 +69,7 @@ contains
 		! expression with derrivatives
 		derivphi_ij = delta(posind_i-1+j) * deltastar(posind_i-1+j) * phisecond_ST + (delta(posind_i-1+j)&
 					* (1.d0 - deltastar(posind_i-1+j)) + (1.d0 - delta(posind_i-1+j)) * &
-					deltastar(posind_i-1+j)) *  phiprim_ST + (1.d0 - delta(posind_i-1+j)) * 
+					deltastar(posind_i-1+j)) *  phiprim_ST + (1.d0 - delta(posind_i-1+j)) *&
 					(1.d0 - deltastar(posind_i-1+j)) * C_theta
 		
 		! individual contributions

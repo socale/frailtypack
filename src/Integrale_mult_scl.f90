@@ -272,8 +272,8 @@ module monteCarlosMult_Gaus
     
     implicit none
     integer,intent(in):: ndim,nsujet_trial,i
-    integer ::ii,jj,l,m,maxmes,nsimu,init_i,max_i,code,erreur,rang !maxmes= nombre de dimension ou encore dimension de X
-    double precision:ss,SX,x22 
+    integer ::ii,jj,l,m,maxmes,nsimu,init_i,max_i,code,erreur,rang
+    double precision:: ss,SX,x22 
     double precision,dimension(:,:),allocatable::vc, fraili
     double precision,dimension(:),allocatable::usim,vi
 
@@ -389,7 +389,7 @@ module monteCarlosMult_Gaus
         ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
     endif
 
-    MC_MultInd_Essai=ss/dble(nsimu)
+    MC_Copula_Essai=ss/dble(nsimu)
 
     deallocate(vi,usim,vc,fraili)
     return

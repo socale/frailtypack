@@ -81,7 +81,7 @@
     double precision,external::funcpaGsplines,funcpaGcpm,funcpaGweib
     double precision,external::funcpaGsplines_intcens,funcpaGcpm_intcens,funcpaGweib_intcens
     double precision,external::funcpaGsplines_log,funcpaGcpm_log,funcpaGweib_log
-    double precision,external::funcpaj_tps,funcpaG_tps
+    double precision,external::funcpaj_tps,funcpaG_tps,funcpajsplines_copule_surrogate
     double precision,dimension(100)::xSu1,xSu2
 !cpm
     integer::indd,ent,entdc,typeof0,nbintervR0,nbintervDC0
@@ -1242,7 +1242,7 @@
                 case(2)
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_surrogate)    
 				case(3) ! the joint frailty-copula model
-					call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_copula_surrogate)    
+					call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_copule_surrogate)    
             endselect
         case(1) ! fonctions de risque de base supposees constantes par morceau
 !                 if (timedep.eq.0) then

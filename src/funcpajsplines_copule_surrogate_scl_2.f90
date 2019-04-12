@@ -2,7 +2,7 @@
 
 
 !========================          FUNCPAJ_SPLINES         ====================
-    double precision function funcpajsplines_copula_surrogate(b,np,id,thi,jd,thj,k0)
+    double precision function funcpajsplines_copule_surrogate(b,np,id,thi,jd,thj,k0)
     
     use tailles
     use comon
@@ -321,13 +321,13 @@
             ! res2s(pourtrial(i)) = res2s(pourtrial(i))+dlog(dut1(nt1(i)))+vet
         ! endif  
         ! if ((res2s(pourtrial(i)).ne.res2s(pourtrial(i))).or.(abs(res2s(pourtrial(i))).ge. 1.d30)) then
-            ! funcpajsplines_surrogate=-1.d9
+            ! funcpajsplines_copule_surrogate=-1.d9
             ! goto 123
         ! end if    
         
         const_res4(g(i)) = const_res4(g(i))+ut1(nt1(i))* dexp(vet) ! cumulative baseline hazard for subject i
         if ((const_res4(g(i)).ne.const_res4(g(i))).or.(abs(const_res4(g(i))).ge. 1.d30)) then !scl si risque cumule >10^30
-            funcpajsplines_surrogate=-1.d9
+            funcpajsplines_copule_surrogate=-1.d9
             goto 123
         end if
     end do
@@ -352,14 +352,14 @@
         ! if(cdc(k).eq.1)then
             ! res2_dcs(pourtrial(k)) =res2_dcs(pourtrial(k))+dlog(dut2(nt1dc(k)))+vet2
             ! if ((res2_dcs(pourtrial(k)).ne.res2_dcs(pourtrial(k))).or.(abs(res2_dcs(pourtrial(k))).ge. 1.d30)) then
-                ! funcpajsplines_surrogate=-1.d9
+                ! funcpajsplines_copule_surrogate=-1.d9
                 ! goto 123
             ! end if    
         ! endif 
       
         const_res5(g(k)) = const_res5(g(k))+ut2(nt1dc(k))* dexp(vet2) 
         if ((const_res5(g(k)).ne.const_res5(g(k))).or.(abs(const_res5(g(k))).ge. 1.d30)) then
-            funcpajsplines_surrogate=-1.d9
+            funcpajsplines_copule_surrogate=-1.d9
             goto 123
         end if
     end do
@@ -584,7 +584,7 @@
                     deallocate(mu,vc)
                     
                     ! if(adaptative .and. resultatInt(1).eq.-1.d9) then
-                        ! funcpajsplines_surrogate=-1.d9
+                        ! funcpajsplines_copule_surrogate=-1.d9
                         ! goto 123
                     ! endif
                     
@@ -647,7 +647,7 @@
                 end do    
             endif
         case(1)! quadature classique (non-adaptative) ou pseudo-adaptative selon le contenu de la variable adaptative
-!            !print*,"funcpajsplines_surrogate_scl.f90 lige 307: quadrature pas encore implémenté"
+!            !print*,"funcpajsplines_copule_surrogate_scl.f90 lige 307: quadrature pas encore implémenté"
             
             !!print*, "suis la dans funcpa adaptative debut",adaptative,control_adaptative
             !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code) ! recherche du rang du processus
@@ -745,7 +745,7 @@
                             !print*,"le nombre de tentative sans convergence vaut:",non_conv
                             !print*,"istop=",istop,"essai k=",k
                             non_conv=0
-                            funcpajsplines_surrogate=-1.d9
+                            funcpajsplines_copule_surrogate=-1.d9
                             goto 123
                         endif
                                 
@@ -1013,7 +1013,7 @@
                             !print*,"le nombre de tentative sans convergence vaut:",non_conv
                             !print*,"istop=",istop,"essai k=",k
                             non_conv=0
-                            funcpajsplines_surrogate=-1.d9
+                            funcpajsplines_copule_surrogate=-1.d9
                             goto 123
                         endif
                                 
@@ -1183,13 +1183,13 @@
             do k=1,ntrials!ng  
                 if(cpt(k).gt.0)then
                     if(sigma2.gt.(1.d-8)) then      
-                        res= res dlog(integrale3(k))
+                        res= res + dlog(integrale3(k))
                     else
                         res= res + dlog(integrale3(k))
                     endif
                     
                     if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                        funcpajsplines_surrogate=-1.d9
+                        funcpajsplines_copule_surrogate=-1.d9
                         goto 123
                     end if    
                 endif
@@ -1198,7 +1198,7 @@
             ! je teste si l'une des estimations dans le calcul intégrale n'a pas marché 
             do ig=1,ntrials
                 if(integrale3(ig).eq.-1.d9) then
-                    funcpajsplines_surrogate=-1.d9
+                    funcpajsplines_copule_surrogate=-1.d9
                     Rrec = 0.d0
                     Nrec = 0.d0
                     Rdc = 0.d0
@@ -1215,7 +1215,7 @@
             
             
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                funcpajsplines_surrogate=-1.d9
+                funcpajsplines_copule_surrogate=-1.d9
                 goto 123
             end if
         case(2) ! estimation par monte carlo niveau essai et quadrature niveau individuel
@@ -1240,7 +1240,7 @@
                         endif
                         
                         if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                            funcpajsplines_surrogate=-1.d9
+                            funcpajsplines_copule_surrogate=-1.d9
                             goto 123
                         end if    
                     endif
@@ -1267,7 +1267,7 @@
                         endif
                         
                         if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                            funcpajsplines_surrogate=-1.d9
+                            funcpajsplines_copule_surrogate=-1.d9
                             goto 123
                         end if    
                     endif
@@ -1323,7 +1323,7 @@
                     endif
      
                     if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                        funcpajsplines_surrogate=-1.d9
+                        funcpajsplines_copule_surrogate=-1.d9
                         goto 123
                     end if    
                 endif
@@ -1374,7 +1374,7 @@
                     endif
      
                     if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                        funcpajsplines_surrogate=-1.d9
+                        funcpajsplines_copule_surrogate=-1.d9
                         goto 123
                     end if    
                 endif
@@ -1432,7 +1432,7 @@
     !endif
     deallocate(mat_A)
     if ((res.ne.res).or.(abs(res).ge. 1.d30).or.(res .ge. 0.d0)) then
-        funcpajsplines_surrogate=-1.d9
+        funcpajsplines_copule_surrogate=-1.d9
         Rrec = 0.d0
         Nrec = 0.d0
         Rdc = 0.d0
@@ -1440,7 +1440,7 @@
         goto 123
 
     else
-        funcpajsplines_surrogate = res 
+        funcpajsplines_copule_surrogate = res 
         ! section encore a definir en fonction de la suite
         do k=1,ng
             Rrec(k)=res1(k)
@@ -1455,7 +1455,7 @@
  !stop 
     return
     
-    end function funcpajsplines_copula_surrogate
+    end function funcpajsplines_copule_surrogate
 
 
 
