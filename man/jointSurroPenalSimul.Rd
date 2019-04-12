@@ -22,8 +22,8 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
    random.nb.sim = 0, seed = 0, init.kappa = NULL,  
    type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL,  
-   theta.copule = 6, nb.decimal = 4, print.times = TRUE, 
-   print.iter=FALSE)
+   typecopula =1, theta.copule = 6, nb.decimal = 4, 
+   print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
@@ -226,6 +226,8 @@ for surrogacy.}
 two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
 to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 is NULL and assume only the treatment effect}
+
+\item{typecopula}{# The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1}
 
 \item{theta.copule}{The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula}
