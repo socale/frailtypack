@@ -7,7 +7,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
-						  dataHessian,dataHessianIH,datab,vbetast)
+                          dataHessian,dataHessianIH,datab,vbetast)
                           
     ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
@@ -15,7 +15,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     use Autres_fonctions
     use double_precision
     use var_surrogate, only: graine,aleatoire,nbre_sim,nbre_itter_PGH,nb_procs,random_generator,affiche_itteration, &
-	     copula_function
+         copula_function
     use Autres_fonctions, only:pos_proc_domaine
     !use mpi ! module pour l'environnement MPI
     !$ use OMP_LIB 
@@ -46,7 +46,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer, dimension(5), intent(in)::sizeVect
     double precision, dimension(ntrials1), intent(in)::p,prop_i
     double precision,dimension(n_sim1,2), intent(in):: vect_kappa
-	double precision, dimension(nbrevar(3),2), intent(in)::vbetast
+    double precision, dimension(nbrevar(3),2), intent(in)::vbetast
     
     ! ! =====Parametres fournies en sortie par la subroutine=====
     integer, intent(out):: ni, istop, ier
@@ -58,8 +58,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(sizeVect(3)), intent(out)::x2Out
     double precision,dimension(sizeVect(1),sizeVect(1)), intent(out)::H_hessOut,HIHOut ! H_hessOut = matrice hesienne (des variance-covariance), HIHOut= matrice hessienne corrigee
     double precision,dimension(sizeVect(1)*n_sim1,sizeVect(1)), intent(out)::dataHessian, dataHessianIH ! sauvegarde des matrices hessiennes des differentes simulations 
-	double precision,dimension(n_sim1,sizeVect(1)), intent(out)::datab ! sauvegarde des vecteurs de parametres de toutes les simulations 
-	double precision,dimension(sizeVect(2),3), intent(out)::lamOut
+    double precision,dimension(n_sim1,sizeVect(1)), intent(out)::datab ! sauvegarde des vecteurs de parametres de toutes les simulations 
+    double precision,dimension(sizeVect(2),3), intent(out)::lamOut
     double precision,dimension(sizeVect(3),3), intent(out)::lam2Out
     double precision,dimension(sizeVect(4),3), intent(out)::suOut
     double precision,dimension(sizeVect(5),3), intent(out)::su2Out
@@ -105,7 +105,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(4)::paraweib
     double precision,dimension(3)::paratps,descripSurr,descripDeces
     double precision,dimension(:,:),allocatable:: paGH,matrice_generation ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,
-	    !     racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
+        !     racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
     !parametres de simulation
     integer::n_col,mode_cens,n_essai,n_obs,weib,frailty_cor,affiche_stat,s_i,indice_eta,indice_theta&
                 ,rangparam,rangparam2,nbre_rejet,ind_temp,seed_,une_donnee,gener_only,kapa_use,&
@@ -159,8 +159,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         bi_R2_trial,bs_R2_trial,thetacopule, thetacopula_init
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS, don_simultamp,don_simulStamp,don_simulS1,&
-	                    parametre_empirique, parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,&
-						parametre_estimes_MPI_T,result_bootstrap
+                        parametre_empirique, parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,&
+                        parametre_estimes_MPI_T,result_bootstrap
     double precision, dimension(:),allocatable::tab_var_theta,tampon,tampon_all
     double precision, dimension(:,:),allocatable::tab_var_sigma
     integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
@@ -175,21 +175,21 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer::nb_processus,rang,code,n_sim_total,suplement,erreur,comm,init_i,max_i,debut_exe,indice_sim_proc,sofeu, &
             rang_proc,init_i_proc,max_i_proc, code_print ! je redefini ces indices car les precedentes sont utilisees autrement: cas OpenMP
     double precision,dimension(10)::t
-	double precision,dimension(3,3):: sigmac ! pour la mtrice de variance covariance de Sigma par la delta-metode 
-	double precision,dimension(3,3):: hb 
+    double precision,dimension(3,3):: sigmac ! pour la mtrice de variance covariance de Sigma par la delta-metode 
+    double precision,dimension(3,3):: hb 
     
     !=====================================================================================
     !*********fin declaration des variables et debut du programme principale**************
     !=====================================================================================
     
-	! call dblepr("voile p", -1, p, ntrials1)
-	! call dblepr("voile prop_i", -1, prop_i, ntrials1)
-	! call dblepr("voile kappa", -1, vect_kappa, n_sim1)
-	! goto 998
-	
-	! for copula model 
-	copula_function = nsim_node(12) ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
-	type_joint_estim = nsim_node(8) ! type of estimated model
+    ! call dblepr("voile p", -1, p, ntrials1)
+    ! call dblepr("voile prop_i", -1, prop_i, ntrials1)
+    ! call dblepr("voile kappa", -1, vect_kappa, n_sim1)
+    ! goto 998
+    
+    ! for copula model 
+    copula_function = nsim_node(12) ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
+    type_joint_estim = nsim_node(8) ! type of estimated model
     ! affectation de certains parametres
     nomvarl(1) = "trt"
     NomFichier(1) = "kappa_valid_crois.txt"
@@ -239,7 +239,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 
     ! Parametres initiaux
     theta_init = param_init(1) ! if we are estimating the joint surrogate model
-	thetacopula_init = param_init(1) ! if we are estimating copula modele
+    thetacopula_init = param_init(1) ! if we are estimating copula modele
     sigma_ss_init = param_init(2)
     sigma_tt_init = param_init(3)
     sigma_st_init = param_init(4)
@@ -273,19 +273,19 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     rsqrt = paramSimul(20)
     sigma_s = paramSimul(21)
     sigma_t = paramSimul(22)
-	thetacopule = paramSimul(23)
+    thetacopule = paramSimul(23)
     if(nsim_node(11) == 3) then ! joint frailty copula, remplissage des vecteurs des variables explicatives
-		do i = 1, size(vbetast,1)
-			vbetas(i) = vbetast(i,1) ! beta_s
-			vbetat(i) = vbetast(i,2) ! beta_t
-		enddo
-	endif
-	
-	if(nsim_node(11) == 1) then ! joint surrogate, remplissage des vecteurs des variables explicatives
-		vbetas(1) = betas ! beta_s
-		vbetat(1) = betat ! beta_t
-	endif
-	
+        do i = 1, size(vbetast,1)
+            vbetas(i) = vbetast(i,1) ! beta_s
+            vbetat(i) = vbetast(i,2) ! beta_t
+        enddo
+    endif
+    
+    if(nsim_node(11) == 1) then ! joint surrogate, remplissage des vecteurs des variables explicatives
+        vbetas(1) = betas ! beta_s
+        vbetat(1) = betat ! beta_t
+    endif
+    
     ! autres parametres de simulation
     weib = autreParamSim(1)
     param_weibull = autreParamSim(2)
@@ -378,12 +378,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             indice_gamma_t=1
         endif
     end if
-	
-	if(type_joint_estim == 3) then ! joint frailty-copula model
-		indice_theta = 0
-		indice_theta_t = 0
+    
+    if(type_joint_estim == 3) then ! joint frailty-copula model
+        indice_theta = 0
+        indice_theta_t = 0
         indice_theta_st = 0
-	endif
+    endif
 
     !!write(4,*)'**************************************************'
     !!write(4,*)'*****************JOINT MODEL *********************'
@@ -580,9 +580,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! read(2,*)nboot_kendal ! nombre d'echantillon bootstrap pour le calcul de l'IC du taux de ke,ndall
     ! read(2,*)fichier_kendall ! fichier dans lequel saugarder les taux de kendall avec les IC par boostrap
     
-	nparam_kendall=4 ! on a 4 parametres qui rentrent dans le calcul du tau de kendall: theta, alpha, gamma, zeta
-	
-	if(method_int_kendal==4) then
+    nparam_kendall=4 ! on a 4 parametres qui rentrent dans le calcul du tau de kendall: theta, alpha, gamma, zeta
+    
+    if(method_int_kendal==4) then
         if(indice_alpha==0) nparam_kendall=nparam_kendall-1
         if(indice_eta==0) nparam_kendall=nparam_kendall-1        
     endif
@@ -606,11 +606,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         n_col=13 + nbrevar(3)-1 ! j'ajoute le surplus des covariables
     endif
     alpha = eta    ! alpha associe a u_i chez les deces
-	
-	!generation des donnees par joint failty-copula
-	if(nsim_node(11)==3) allocate(don_simultamp(n_obs,n_col-1),don_simulStamp(n_obs,n_col-1))
-		
-	allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col))
+    
+    !generation des donnees par joint failty-copula
+    if(nsim_node(11)==3) allocate(don_simultamp(n_obs,n_col-1),don_simulStamp(n_obs,n_col-1))
+        
+    allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col))
     
     if(nsim_node(8)==2)then
         allocate(donnee_essai(n_essai,5))
@@ -621,16 +621,16 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     don_simul=0.d0
     ! read(5,*)weib ! 0= on simule les temps par une loi exponentielle, 1= on simule par une weibull
     ! read(5,*)param_weibull ! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation a l'aide de la fonction de weibull donnee dans le cous de Pierre
-	! read(5,*)frailty_cor ! indique si l'on considere pour le modele de simulation deux effets aleatoire correles au niveau essai(=1) ou un effet aleatoire partage(=0) ou encore on simule sans effet aleatoire au niveau essai(=2, model conjoint classique)
+    ! read(5,*)frailty_cor ! indique si l'on considere pour le modele de simulation deux effets aleatoire correles au niveau essai(=1) ou un effet aleatoire partage(=0) ou encore on simule sans effet aleatoire au niveau essai(=2, model conjoint classique)
     ! read(5,*)affiche_stat ! dit si l'on affiche les statistiques des donnees simulees(1) ou non (0)
     ! read(5,*)seed_  !jeux de donnees a retenir pour la validation croisee
     ! read(5,*)une_donnee ! pour dire si on simule avec un seul jeu de donnees(1) ou pas (0). ceci pour tester le programme d'estimation
     ! read(5,*)donne_reel !dit si 1 a la question precedente dit s'il sagit du jeux de donnees reel (1) ou non (0)
     ! read(5,*)gener_only ! dit si on voudrait seulement generer les donnees(1) ou generer et faire des simulation(0)
     ! read(5,*)kapa_use ! dit si on utilise un kappa a chaque generation de donnee (1) ou le premier kappa pour tous les jeux de donnees(0)
-	! read(5,*)decoup_simul ! dans le cas où l'on a decoupe les simulations en plusieurs paquets, donne le nombre de generation de donnees a ne pas considerer avant d'engager les simulations. ceci empêche de reproduire les meme 
-	!          jeux de donnees pour tous les paquets de simulation. vaut 0 si pas de decoupage pevu sinon pour chaque jeux de simulation mettre cette valeur a jour. Exp si 10 paquets de simul pour un total de 100, on affecte 0 
-	!          pour le premier paquet, 10 pour le second, 20 pour le 3 ieme, ... 90 pour le 10ieme
+    ! read(5,*)decoup_simul ! dans le cas où l'on a decoupe les simulations en plusieurs paquets, donne le nombre de generation de donnees a ne pas considerer avant d'engager les simulations. ceci empêche de reproduire les meme 
+    !          jeux de donnees pour tous les paquets de simulation. vaut 0 si pas de decoupage pevu sinon pour chaque jeux de simulation mettre cette valeur a jour. Exp si 10 paquets de simul pour un total de 100, on affecte 0 
+    !          pour le premier paquet, 10 pour le second, 20 pour le 3 ieme, ... 90 pour le 10ieme
     ! read(5,*)aleatoire    ! dit si on reinitialise la generation des nombre aleatoire avec un environnement different a chaque appel (1) ou non(O).En cas de generation differente, on utilise l'horloge (heure) de l'ordinateur comme graine. Dans ce cas, il n'est pas possible de reproduire les donnees simulees
     ! read(5,*)nbre_sim    ! dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
     ! read(5,*)graine    ! dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
@@ -639,12 +639,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     thetast_vrai=rsqrt_theta*dsqrt(theta2)*dsqrt(theta2_t)
     gammast_vrai=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
     
-	if(nsim_node(11) == 3) then ! si joint frailty copula, alors on ajout les covariable aux jeux de donnees
-	  allocate(d_S(nsujet*n_sim,6 +size(vbetast,1)-1),d_T(ng*n_sim,6+size(vbetast,1)-1)) 
-	else
-	  allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6)) 
-	endif
-	
+    if(nsim_node(11) == 3) then ! si joint frailty copula, alors on ajout les covariable aux jeux de donnees
+      allocate(d_S(nsujet*n_sim,6 +size(vbetast,1)-1),d_T(ng*n_sim,6+size(vbetast,1)-1)) 
+    else
+      allocate(d_S(nsujet*n_sim,6),d_T(ng*n_sim,6)) 
+    endif
+    
     if(une_donnee==1) then
         ! on recupere le jeu de donnees reelles
         d_S=donnees
@@ -818,7 +818,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 don_simul(:,statusT1)=d_T(i_min_t:i_max_t,6)
                 don_simul(:,trialref1)=d_T(i_min_t:i_max_t,1)
                 don_simul(:,Patienref1)=d_T(i_min_t:i_max_t,2)
-                don_simul(:,trt1)=d_T(i_min_t:i_max_t,3)	
+                don_simul(:,trt1)=d_T(i_min_t:i_max_t,3)    
             else ! alors la position des variables n'est plus la meme
                 don_simulS1(:,initTime1)=d_S(i_min:i_max,1)
                 don_simulS1(:,timeS1)=d_S(i_min:i_max,2)
@@ -833,16 +833,17 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 don_simul(:,Patienref1)=d_T(i_min_t:i_max_t,5)
                 don_simul(:,trt1)=d_T(i_min_t:i_max_t,6)
             endif
-			
-			! j'ajoute les autres variables a la fin
+            
+            ! j'ajoute les autres variables a la fin
             do i = 2,nbrevar(3)
-				if(filtre(i).eq.1)then
-					don_simulS1(:,size(don_simulS1,2) - nbrevar(3) + i - 1)=d_S(i_min:i_max,size(don_simulS1,2) - nbrevar(3) + i - 1)
-				endif
-				if(filtre2(i).eq.1)then
-					don_simul(:,size(don_simul,2)- nbrevar(3) + i - 1)=d_T(i_min_t:i_max_t,size(don_simul,2)- nbrevar(3) + i - 1)
-				endif
-		    enddo
+                if(filtre(i).eq.1)then
+                    don_simulS1(:,size(don_simulS1,2) - nbrevar(3) + i - 1)=d_S(i_min:i_max,size(don_simulS1,2) &
+					- nbrevar(3) + i - 1)
+                endif
+                if(filtre2(i).eq.1)then
+                    don_simul(:,size(don_simul,2)- nbrevar(3) + i - 1)=d_T(i_min_t:i_max_t,size(don_simul,2)- nbrevar(3) + i - 1)
+                endif
+            enddo
             ! on met à jour le nombre d'essais
             
             20041 continue
@@ -903,19 +904,19 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 indice_seed=0
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
                 11 continue
-                			
+                            
                 if(nsim_node(11)==1) then !modele avec effets aleatoires partages
-				   
+                   
                     call Generation_surrogate(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base)    
                 endif
-				
-				if(nsim_node(11)==3) then ! joint frailty copula model
+                
+                if(nsim_node(11)==3) then ! joint frailty copula model
                     call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col-1,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
-						filtre2)    
+                        filtre2)    
                 endif
                 
                 if(nsim_node(11)==2) then ! modele complet avec effets aleatoires correles
@@ -970,17 +971,17 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !!print*,don_simul(:,:)    
         !!print*,don_simulS1(1:5,)        
         !stop        
-		
-		if(nsim_node(11)==3) then ! joint frailty copula model
-			don_simul(:,1:4) = don_simultamp(:,1:4)
-			don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
-			don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:size(don_simultamp,2))
-			don_simulS1(:,1:4) = don_simulStamp(:,1:4)
-			don_simulS1(:,5) = 0.d0
-			don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:size(don_simulStamp,2))
-		endif
-		
-		
+        
+        if(nsim_node(11)==3) then ! joint frailty copula model
+            don_simul(:,1:4) = don_simultamp(:,1:4)
+            don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
+            don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:size(don_simultamp,2))
+            don_simulS1(:,1:4) = don_simulStamp(:,1:4)
+            don_simulS1(:,5) = 0.d0
+            don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:size(don_simulStamp,2))
+        endif
+        
+        
         ind_temp=ng
         allocate(don_simulS(ind_temp,n_col))
         allocate(tableEssai(n_essai))
@@ -1029,13 +1030,13 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         vaxdct(i,1)=don_simul(i,trt1) ! vecteur des variables explicatives
         tableEssai(pourtrial(i))=tableEssai(pourtrial(i))+1
         ! j'ajoute les autres variables a la fin
-		
-		if(type_joint_estim == 3) then! joint frailty copula
-			if(ver > 1) then ! I add the rest of covariates
-				vaxdct(i,2:ver) = don_simul(i,(size(don_simul,2) - ver +2):size(don_simul,2))
-			endif
-		endif
-		
+        
+        if(type_joint_estim == 3) then! joint frailty copula
+            if(ver > 1) then ! I add the rest of covariates
+                vaxdct(i,2:ver) = don_simul(i,(size(don_simul,2) - ver +2):size(don_simul,2))
+            endif
+        endif
+        
         !ecriture des donnees dans le fichier (juste pour le premier jeux de donnee)
         ! on sauvegarde seulement si on est dans la simple generation des donnees
         !!print*,seed_
@@ -1088,13 +1089,13 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         groupe(i)=don_simulS(i,Patienref1) ! numero de l'individu
         vaxt(i,1)=don_simulS(i,trt1) ! vecteur des variables explicatives
         ! j'ajoute les autres variables a la fin
-		
-		if(type_joint_estim == 3) then! joint frailty copula
-			if(ver > 1) then ! I add the rest of covariates
-				vaxt(i,2:ver) = don_simulS(i,(size(don_simulS,2) - ver +2):size(don_simulS,2))
-			endif
-		endif
-				
+        
+        if(type_joint_estim == 3) then! joint frailty copula
+            if(ver > 1) then ! I add the rest of covariates
+                vaxt(i,2:ver) = don_simulS(i,(size(don_simulS,2) - ver +2):size(don_simulS,2))
+            endif
+        endif
+                
         !ecriture des donnees dans le fichier (juste pour le premier jeux de donnee)
         ! on sauvegarde seulement si on est dans la simple generation des donnees
         
@@ -2091,44 +2092,44 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 varS_es=sigma_st(1,1)
                 varT_es=sigma_st(2,2)
                 covST_es=sigma_st(1,2)
-				
-				! =========Delta methode pour varcov des elements de sigme_v===============
-				! recherche de la matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) par la delta methode:
-				! à partir de la hessienne. voir le raisonnement dans le cahier à la date du 04/01/2019
-				hb(1,:) = (/ 2.d0*Chol(1,1), 0.d0, 0.d0 /)
-				hb(2,:) = (/ 0.d0, 2.d0*Chol(2,2), 2.d0*Chol(2,1) /)
-				hb(3,:) = (/ Chol(2,1), 0.d0, Chol(1,1) /)
-				sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigt), &
-				                H_hessOut(rangparam_sigs,rangparam_sigst)/)
-				sigmac(2,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigt), &
-				                H_hessOut(rangparam_sigt,rangparam_sigst)/)
-				sigmac(3,:) = (/H_hessOut(rangparam_sigst,rangparam_sigs), H_hessOut(rangparam_sigst,rangparam_sigt), &
-				                H_hessOut(rangparam_sigst,rangparam_sigst)/)
-				
-				hb = TRANSPOSE(hb)
-				varcov = MATMUL(TRANSPOSE(hb), sigmac)
-				varcov = MATMUL(varcov, hb)
-				
-				
-				! ========== Fin delta methode ==================
-				
-				! ====sauvegarde de la hessienne et du vecteur b des parametres====
-				
-				do i=1,np
-					dataHessian(np*(s_i-nbre_rejet-1) + i,:) = H_hessOut(i,:)
-					dataHessianIH(np*(s_i-nbre_rejet-1) + i,:) = HIHOut(i,:)
-				enddo
-				
-				datab(s_i-nbre_rejet,:) = b
-				
-				! Write(aaa,'(i3)') s_i ! instruction pour convertir un entier en chaine de caractere (3 caracteres)
-				! aaa="H_hessOut"//aaa ! instruction pour concatener deux chaines de caracteres
-				! aaa=aaa//".txt"
-                ! open(270,file=aaa)				
-				! write(270,*) dataHessian				
-				! close(270)
-				
-				!====Fin sauvegarde hessienne et b======
+                
+                ! =========Delta methode pour varcov des elements de sigme_v===============
+                ! recherche de la matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) par la delta methode:
+                ! à partir de la hessienne. voir le raisonnement dans le cahier à la date du 04/01/2019
+                hb(1,:) = (/ 2.d0*Chol(1,1), 0.d0, 0.d0 /)
+                hb(2,:) = (/ 0.d0, 2.d0*Chol(2,2), 2.d0*Chol(2,1) /)
+                hb(3,:) = (/ Chol(2,1), 0.d0, Chol(1,1) /)
+                sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigt), &
+                                H_hessOut(rangparam_sigs,rangparam_sigst)/)
+                sigmac(2,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigt), &
+                                H_hessOut(rangparam_sigt,rangparam_sigst)/)
+                sigmac(3,:) = (/H_hessOut(rangparam_sigst,rangparam_sigs), H_hessOut(rangparam_sigst,rangparam_sigt), &
+                                H_hessOut(rangparam_sigst,rangparam_sigst)/)
+                
+                hb = TRANSPOSE(hb)
+                varcov = MATMUL(TRANSPOSE(hb), sigmac)
+                varcov = MATMUL(varcov, hb)
+                
+                
+                ! ========== Fin delta methode ==================
+                
+                ! ====sauvegarde de la hessienne et du vecteur b des parametres====
+                
+                do i=1,np
+                    dataHessian(np*(s_i-nbre_rejet-1) + i,:) = H_hessOut(i,:)
+                    dataHessianIH(np*(s_i-nbre_rejet-1) + i,:) = HIHOut(i,:)
+                enddo
+                
+                datab(s_i-nbre_rejet,:) = b
+                
+                ! Write(aaa,'(i3)') s_i ! instruction pour convertir un entier en chaine de caractere (3 caracteres)
+                ! aaa="H_hessOut"//aaa ! instruction pour concatener deux chaines de caracteres
+                ! aaa=aaa//".txt"
+                ! open(270,file=aaa)                
+                ! write(270,*) dataHessian                
+                ! close(270)
+                
+                !====Fin sauvegarde hessienne et b======
                 !calcul du R2(trial) reduit, c'est a dire sans prise en compte des effets aleatoires sur le risque de base
                 R2_trial=(covST1**2)/(covST1**2+varT1**2)
                 se_R2_trial=2.d0*dsqrt((covST1**2 * varT1**4 * H_hessOut(rangparam_sigst,rangparam_sigst)-2.d0*covST1**3 &
@@ -2150,7 +2151,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             
             !sigma_s
             moy_sigmas_est=moy_sigmas_est+varS_es ! sigma_s estime
-			! moy_se_sigmas=moy_se_sigmas+(dsqrt(((2.d0*b(rangparam_sigs))**2.d0)*H_hessOut(rangparam_sigs,rangparam_sigs)))
+            ! moy_se_sigmas=moy_se_sigmas+(dsqrt(((2.d0*b(rangparam_sigs))**2.d0)*H_hessOut(rangparam_sigs,rangparam_sigs)))
             ! bi_sigmas = varS_es - 1.96d0*(dsqrt(((2.d0*b(rangparam_sigs))**2.d0)*H_hessOut(rangparam_sigs,rangparam_sigs)))
             ! bs_sigmas = varS_es + 1.96d0*(dsqrt(((2.d0*b(rangparam_sigs))**2.d0)*H_hessOut(rangparam_sigs,rangparam_sigs)))
             moy_se_sigmas=moy_se_sigmas+ dsqrt(varcov(1,1))
@@ -2172,7 +2173,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             ! bs_sigmat = varT_es + 1.96d0*2.d0*dsqrt(covST1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst)+&
                         ! 2.d0*varT1*covST1*H_hessOut(rangparam_sigst,rangparam_sigt)+&
                         ! varT1**2.d0*H_hessOut(rangparam_sigt,rangparam_sigt))
-		    moy_se_sigmat=moy_se_sigmat+dsqrt(varcov(2,2))
+            moy_se_sigmat=moy_se_sigmat+dsqrt(varcov(2,2))
             bi_sigmat = varT_es - 1.96d0*dsqrt(varcov(2,2))
             bs_sigmat = varT_es + 1.96d0*dsqrt(varcov(2,2))
             !taux de couverture
@@ -2192,7 +2193,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             ! bs_sigmast = covST_es + 1.96d0*dsqrt(covST1**2.d0*H_hessOut(rangparam_sigs,rangparam_sigs)+&
                         ! 2.d0*varS1*covST1*H_hessOut(rangparam_sigs,rangparam_sigst)+&
                         ! varS1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst))
-			moy_se_sigmast=moy_se_sigmast+dsqrt(varcov(3,3))
+            moy_se_sigmast=moy_se_sigmast+dsqrt(varcov(3,3))
             bi_sigmast = covST_es - 1.96d0*dsqrt(varcov(3,3))
             bs_sigmast = covST_es + 1.96d0*dsqrt(varcov(3,3))
             !taux de couverture
@@ -3881,10 +3882,10 @@ end do
     ! deallocate(kappa,tab_var_theta,donnee_essai,tableNsim,parametre_estimes_MPI,parametre_estimes_MPI_T)
     ! deallocate(vect_kendall_tau,v_chap_kendall,theta_chap_kendall,t_chap_kendall,v_chap_R2,theta_chap_R2,t_chap_R2,result_bootstrap)
     ! !deallocate(Vect_sim_MC)
-	
-	!generation des donnees par joint failty-copula 
-	if(nsim_node(11)==3) deallocate(don_simultamp,don_simulStamp)
-		
+    
+    !generation des donnees par joint failty-copula 
+    if(nsim_node(11)==3) deallocate(don_simultamp,don_simulStamp)
+        
     deallocate(d_S,d_T,vbetas,vbetat)
     endsubroutine jointsurrogate
     !complilation:

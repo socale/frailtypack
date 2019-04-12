@@ -256,7 +256,7 @@ module monteCarlosMult_Gaus
 !SUBROUTINES simulation pour le calcul integrale multiple par monte carlo
 !
 !========================================================================
-	 double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
+     double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
     ! dans cette fonction on fait une quadrature adaptative ou non pour les deux effets aleatoire vsi et vti
     ! func: fonction a integrer au niveau individuel
     ! ndim= dimension de l'integrale 2 ou 3 integrations?
@@ -282,11 +282,11 @@ module monteCarlosMult_Gaus
     ! bloc interface pour la definition de la fonction func
     interface
         double precision function func(vsi,vti,ui,ig,nsujet_trial)
-			! vsi= frailtie niveau essai associe a s
-			! vti= frailtie niveau essai associe a t
-			! ui = random effect associated xith the baseline hazard
-			! ig = current cluster
-			! nsujet_trial = number of subjects in the current trial
+            ! vsi= frailtie niveau essai associe a s
+            ! vti= frailtie niveau essai associe a t
+            ! ui = random effect associated xith the baseline hazard
+            ! ig = current cluster
+            ! nsujet_trial = number of subjects in the current trial
             integer,intent(in):: ig, nsujet_trial
             double precision,intent(in)::vsi,vti,ui
         end function func
@@ -1270,7 +1270,7 @@ module monteCarlosMult_Gaus
                 np_2=1
                 np_1=1
                 effet2=0
-				!call intpr("je suis la pour pseudo-adpdative 1136", -1, adaptative, 1)
+                !call intpr("je suis la pour pseudo-adpdative 1136", -1, adaptative, 1)
                 allocate(I_hess_scl(np_2,np_2),v(np_2*(np_2+3)/2),b_2(1))
                 allocate(H_hess_scl(np_2,np_2),hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
                 allocate(H_hessOut(np_2,np_2))
@@ -1292,19 +1292,19 @@ module monteCarlosMult_Gaus
                 
                 call marq98J_scl(k0_2,b_2,np_1,ni,v,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_ind,I_hess_scl,H_hess_scl,&
                                 hess_scl,vvv_scl,individu_j)
-									
+                                    
                 nparamfrail=nparamfrail_save ! on restitu sa valeur avant de continuer
                 model=model_save
                 maxiter=maxiter_save
                 
-				
-				!call dblepr("b_2 pseudo-adpd 1165", -1, b_2, 1)
+                
+                !call dblepr("b_2 pseudo-adpd 1165", -1, b_2, 1)
                 if (istop.ne.1 .and. ind_frail.eq.5) then
                     ind_frail=ind_frail+1 ! on prend un autre jeux d'effets aleatoire: le suivant
                     goto 1241
                 endif
                 
-				!call intpr("istop pour pseudo-adpdative 1171", -1, istop, 1)
+                !call intpr("istop pour pseudo-adpdative 1171", -1, istop, 1)
                 if(istop .ne.1) then
                     non_conv=1
                     ! !print*,"2-individu",ii,"wij=",b_2,"istop=",istop,"ier=",ier,"v=",v
@@ -1320,21 +1320,21 @@ module monteCarlosMult_Gaus
                         H_hessOut(jj,sss)= I_hess_scl(jj,sss)
                     end do
                 end do
-									
-                invBi_chol_Individuel(ii)=dsqrt(H_hess_scl(1,1))	
+                                    
+                invBi_chol_Individuel(ii)=dsqrt(H_hess_scl(1,1))    
                 !calcul du determinant de la cholesky de l'inverse de la hessienne                    
                 invBi_cholDet(ii)=invBi_chol_Individuel(ii) !individuel
-				
-				
-				deallocate(H_hessOut)
-				!deallocate(HIH,HIHOut,IH,invBi_chol_2)
+                
+                
+                deallocate(H_hessOut)
+                !deallocate(HIH,HIHOut,IH,invBi_chol_2)
                 deallocate(H_hess_scl)
-				
-				deallocate(I_hess_scl)
-				deallocate(hess_scl)
-				deallocate(vvv_scl)
-				deallocate(v)
-				deallocate(b_2)
+                
+                deallocate(I_hess_scl)
+                deallocate(hess_scl)
+                deallocate(vvv_scl)
+                deallocate(v)
+                deallocate(b_2)
             enddo ! fin estimation des w_ij_chapeau
             kk=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
         enddo

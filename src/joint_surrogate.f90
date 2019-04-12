@@ -65,7 +65,7 @@
     double precision,dimension(4),intent(out)::paraweib
     
     integer,intent(in)::noVar1,noVar2,intcens0,param_weibull0 !param_weibull! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation 
-	!                                                         a l'aide de la fonction de weibull donnee dans le cours de Pierre
+    !                                                         a l'aide de la fonction de weibull donnee dans le cours de Pierre
     integer,intent(out)::cpt,cpt_dc,ier,ni
     integer::groupe,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2,code   &
     ,i,ic,icdc,istop,cptni,cptni1,cptni2,nb_echec,nb_echecor,id,cptbiais &
@@ -119,11 +119,11 @@
     double precision,dimension(0:100,0:4*sum(filtretps0(nva10+1:nva10+nva20)))::BetaTpsMatDc
     double precision,dimension(paratps(2)+paratps(3))::basis
     double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : on recupere les valeurs obtenues lors de l'algorithme a la fin
-	integer, dimension(8),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
+    integer, dimension(8),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
                                                  !0=Monte carlo,1= MC+quadrature, 2=quadrature, le cinquieme le nombre de parametres associes a la fragilite
                                                  ! le septieme indique le nombre d'effet aleatoire dans le cas de la quadrature adaptative
                                                  ! et le huitieme le type de modele a estimer (0=joint surrogate classique,1=joint surrogate complet)
-	double precision,dimension(ng0,nsim_nodes(7)+1+nsim_nodes(7) + (nsim_nodes(7)*(nsim_nodes(7)-1))/2),intent(in):: paGH ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
+    double precision,dimension(ng0,nsim_nodes(7)+1+nsim_nodes(7) + (nsim_nodes(7)*(nsim_nodes(7)-1))/2),intent(in):: paGH ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
 
     integer, dimension(ntrials0,2),intent(in)::nigs0,cdcs0
     integer, dimension(nsujet0),intent(in)::pourtrial0
@@ -417,11 +417,11 @@
     nva1=nva10
     nva2=nva20
     nva = nva1+nva2
-	!===========Fin scl: 12/04:2019================
+    !===========Fin scl: 12/04:2019================
     !nvarmax=nva
     !allocate(ve(nsujetmax,nvarmax),vedc(ngtemp,nvarmax))
-	allocate(ve(nsujetmax,nva1),vedc(ngtemp,nva2))
-	!===========Fin scl: 12/04:2019================
+    allocate(ve(nsujetmax,nva1),vedc(ngtemp,nva2))
+    !===========Fin scl: 12/04:2019================
     allocate(ve1(nsujetmax,nva1),ve2(ngtemp,nva2))
     allocate(filtre(nva10),filtre2(nva20))
     nig=0
@@ -499,30 +499,30 @@
             endif
             iii = 0
             iii2 = 0
-			!===========scl: 12/04:2019================
+            !===========scl: 12/04:2019================
             ! do ii = 1,nva20
                 ! if(filtre2(ii).eq.1)then
                     ! iii2 = iii2 + 1
                     ! vedc(k,iii2) = dble(vaxdc(ii))
                 ! endif
             ! end do
-			vedc(k,:) = dble(vaxdc)
-			!===========Fin scl: 12/04:2019================
+            vedc(k,:) = dble(vaxdc)
+            !===========Fin scl: 12/04:2019================
         else
 !------------------   censure a droite ou event recurr  c=0
             if(icdc.eq.0)then
                 cdc(k) = 0
                 iii = 0
                 iii2 = 0
-				!===========scl: 12/04:2019================
+                !===========scl: 12/04:2019================
                 ! do ii = 1,nva20
                     ! if(filtre2(ii).eq.1)then
                     ! iii2 = iii2 + 1
                     ! vedc(k,iii2) = dble(vaxdc(ii))
                     ! endif
                 ! end do 
-				vedc(k,:) = dble(vaxdc) 
-				!===========Fin scl: 12/04:2019================
+                vedc(k,:) = dble(vaxdc) 
+                !===========Fin scl: 12/04:2019================
                 t0dc(k) = tt0dc
                 t1dc(k) = tt1dc
                 if(typeJoint.ne.1) gsuj(k) = groupe
@@ -587,15 +587,15 @@
             nig(groupe) = nig(groupe)+1 ! nb d event recurr dans un groupe
             iii = 0
             iii2 = 0
-			!===========scl: 12/04:2019================
+            !===========scl: 12/04:2019================
             ! do ii = 1,nva10
                 ! if(filtre(ii).eq.1)then
                     ! iii = iii + 1
                     ! ve(i,iii) = dble(vax(ii)) !ici sur les observations
                 ! endif
             ! end do
-			ve(i,:) = dble(vax)
-			!===========Fin scl: 12/04:2019================
+            ve(i,:) = dble(vax)
+            !===========Fin scl: 12/04:2019================
         else
 !------------------   censure a droite  c=0 pour donnees recurrentes
             if(ic.eq.0)then
@@ -603,15 +603,15 @@
                 c(i) = 0
                 iii = 0
                 iii2 = 0
-				!===========scl: 12/04:2019================
+                !===========scl: 12/04:2019================
                 ! do ii = 1,nva10
                     ! if(filtre(ii).eq.1)then
                     ! iii = iii + 1
                     ! ve(i,iii) = dble(vax(ii))
                     ! endif
                 ! end do
-				ve(i,:) = dble(vax)
-				!===========Fin scl: 12/04:2019================
+                ve(i,:) = dble(vax)
+                !===========Fin scl: 12/04:2019================
                 t0(i) =  tt0
                 t1(i) = tt1
                 tU(i) = ttU !! rajout
@@ -1241,8 +1241,8 @@
                 
                 case(2)
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_surrogate)    
-				case(3) ! the joint frailty-copula model
-					call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_copule_surrogate)    
+                case(3) ! the joint frailty-copula model
+                    call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_copule_surrogate)    
             endselect
         case(1) ! fonctions de risque de base supposees constantes par morceau
 !                 if (timedep.eq.0) then

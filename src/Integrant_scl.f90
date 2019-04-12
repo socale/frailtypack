@@ -12,77 +12,77 @@ contains
  double precision function Integrant_Copula(vsi,vti,ui,ig,nsujet_trial)
     ! vsi= frailtie niveau essai associe a s
     ! vti= frailtie niveau essai associe a t
-	! ui = random effect associated xith the baseline hazard
+    ! ui = random effect associated xith the baseline hazard
     ! ig = current cluster
-	! nsujet_trial = number of subjects in the current trial
-	
+    ! nsujet_trial = number of subjects in the current trial
+    
     use var_surrogate, only: posind_i, alpha_ui, const_res4, const_res5, res2_dcs_sujet,res2s_sujet, &
         theta_copule, delta, deltastar, copula_function
     use comon, only: eta,ve
-	
+    
     IMPLICIT NONE
     integer,intent(in):: ig, nsujet_trial
     double precision,intent(in)::vsi,vti,ui
     integer::j,n
-	double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
+    double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
                       sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T
     
-	
-	integrant = 1.d0
-	
-	do j = 1, nsujet_trial
-		! Expression in the log-vraisamblance
-		f_Sij = res2s_sujet(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))) &
-				* dexp(- const_res4(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))))
-		f_Tij = res2_dcs_sujet(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1)))&
-				* dexp(- const_res5(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1))))
-		fbar_Sij = dexp(- const_res4(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))))
-		fbar_Tij = dexp(- const_res5(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1))))
-		select case(copula_function)
-			case(1) ! clayton copula 
-				C_theta = (fbar_Sij**(-theta_copule) + fbar_Tij**(-theta_copule) - 1.d0)&
-						**(-1.d0/theta_copule)
-				phimun_S = (fbar_Sij**(-theta_copule) - 1.d0) / theta_copule
-				phimun_T = (fbar_Tij**(-theta_copule) - 1.d0) / theta_copule
-				phiprim_ST = - (fbar_Sij**(-theta_copule) + fbar_Tij**(-theta_copule) - 1.d0)**&
-						  (-(1.d0+theta_copule)/theta_copule)
-				sumphimun_ST = phimun_S + phimun_T
-				phisecond_ST = (1.d0 + theta_copule) * (1.d0 + theta_copule * sumphimun_ST)**(- (1.d0 + &
-							 2.d0 * theta_copule)/theta_copule)
-				phiprimphimun_S = - fbar_Sij**(1.d0 + theta_copule)
-			case(2) ! Gumbel copula
-				C_theta = dexp(-((-dlog(fbar_Sij))**(theta_copule + 1.d0) + (- dlog(fbar_Tij))**&
-						(theta_copule + 1.d0))**(1.d0/(theta_copule + 1.d0)))
-				phimun_S = (-dlog(fbar_Sij))**(1.d0 + theta_copule)
-				phimun_T = (-dlog(fbar_Tij))**(1.d0 + theta_copule)
-				phiprim_ST = - 1.d0/(1.d0+theta_copule) * ((- dlog(fbar_Sij))**(1.d0+theta_copule) + &
-						  (-dlog(fbar_Tij))**(1.d0+theta_copule))**(-theta_copule/(1.d0+theta_copule)) &
-						  * C_theta
-				sumphimun_ST = phimun_S + phimun_T
-				phisecond_ST = (1.d0 / (1.d0 + theta_copule)**2.d0) * (theta_copule * sumphimun_ST**&
-							 (-(2.d0 * theta_copule + 1.d0)/(theta_copule + 1.d0)) + sumphimun_ST**&
-							 (-(2.d0 * theta_copule)/(theta_copule + 1.d0))) * dexp(- sumphimun_ST**&
-							 (1.d0/(1.d0 + theta_copule)))
-				phiprimphimun_T = (-fbar_Tij/(1.d0 + theta_copule)) * (- dlog(fbar_Tij))**(- theta_copule)
-		end select
-		
-		! expression with derrivatives
-		derivphi_ij = delta(posind_i-1+j) * deltastar(posind_i-1+j) * phisecond_ST + (delta(posind_i-1+j)&
-					* (1.d0 - deltastar(posind_i-1+j)) + (1.d0 - delta(posind_i-1+j)) * &
-					deltastar(posind_i-1+j)) *  phiprim_ST + (1.d0 - delta(posind_i-1+j)) *&
-					(1.d0 - deltastar(posind_i-1+j)) * C_theta
-		
-		! individual contributions
-		contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**delta(posind_i-1+j) * (f_Tij / phiprimphimun_T)&
-					 **deltastar(posind_i-1+j)
-	    integrant = integrant * contri_indiv
-		
-	enddo
-	Integrant_Copula = integrant
+    
+    integrant = 1.d0
+    
+    do j = 1, nsujet_trial
+        ! Expression in the log-vraisamblance
+        f_Sij = res2s_sujet(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))) &
+                * dexp(- const_res4(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))))
+        f_Tij = res2_dcs_sujet(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1)))&
+                * dexp(- const_res5(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1))))
+        fbar_Sij = dexp(- const_res4(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))))
+        fbar_Tij = dexp(- const_res5(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1))))
+        select case(copula_function)
+            case(1) ! clayton copula 
+                C_theta = (fbar_Sij**(-theta_copule) + fbar_Tij**(-theta_copule) - 1.d0)&
+                        **(-1.d0/theta_copule)
+                phimun_S = (fbar_Sij**(-theta_copule) - 1.d0) / theta_copule
+                phimun_T = (fbar_Tij**(-theta_copule) - 1.d0) / theta_copule
+                phiprim_ST = - (fbar_Sij**(-theta_copule) + fbar_Tij**(-theta_copule) - 1.d0)**&
+                          (-(1.d0+theta_copule)/theta_copule)
+                sumphimun_ST = phimun_S + phimun_T
+                phisecond_ST = (1.d0 + theta_copule) * (1.d0 + theta_copule * sumphimun_ST)**(- (1.d0 + &
+                             2.d0 * theta_copule)/theta_copule)
+                phiprimphimun_S = - fbar_Sij**(1.d0 + theta_copule)
+            case(2) ! Gumbel copula
+                C_theta = dexp(-((-dlog(fbar_Sij))**(theta_copule + 1.d0) + (- dlog(fbar_Tij))**&
+                        (theta_copule + 1.d0))**(1.d0/(theta_copule + 1.d0)))
+                phimun_S = (-dlog(fbar_Sij))**(1.d0 + theta_copule)
+                phimun_T = (-dlog(fbar_Tij))**(1.d0 + theta_copule)
+                phiprim_ST = - 1.d0/(1.d0+theta_copule) * ((- dlog(fbar_Sij))**(1.d0+theta_copule) + &
+                          (-dlog(fbar_Tij))**(1.d0+theta_copule))**(-theta_copule/(1.d0+theta_copule)) &
+                          * C_theta
+                sumphimun_ST = phimun_S + phimun_T
+                phisecond_ST = (1.d0 / (1.d0 + theta_copule)**2.d0) * (theta_copule * sumphimun_ST**&
+                             (-(2.d0 * theta_copule + 1.d0)/(theta_copule + 1.d0)) + sumphimun_ST**&
+                             (-(2.d0 * theta_copule)/(theta_copule + 1.d0))) * dexp(- sumphimun_ST**&
+                             (1.d0/(1.d0 + theta_copule)))
+                phiprimphimun_T = (-fbar_Tij/(1.d0 + theta_copule)) * (- dlog(fbar_Tij))**(- theta_copule)
+        end select
+        
+        ! expression with derrivatives
+        derivphi_ij = delta(posind_i-1+j) * deltastar(posind_i-1+j) * phisecond_ST + (delta(posind_i-1+j)&
+                    * (1.d0 - deltastar(posind_i-1+j)) + (1.d0 - delta(posind_i-1+j)) * &
+                    deltastar(posind_i-1+j)) *  phiprim_ST + (1.d0 - delta(posind_i-1+j)) *&
+                    (1.d0 - deltastar(posind_i-1+j)) * C_theta
+        
+        ! individual contributions
+        contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**delta(posind_i-1+j) * (f_Tij / phiprimphimun_T)&
+                     **deltastar(posind_i-1+j)
+        integrant = integrant * contri_indiv
+        
+    enddo
+    Integrant_Copula = integrant
     return
     end function Integrant_Copula
-	
-	
+    
+    
     double precision function funcSurrNN_MC(frail,n,i)
     ! fonction a integrer: cas des effets aleatoires niveau essai et individuel normalement distribues: ici on integre seulement par MC
     ! frail= vecteur des frailties de taille nombre d'individus dans le cluster ou on se trouve

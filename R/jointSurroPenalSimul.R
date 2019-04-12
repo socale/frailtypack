@@ -64,8 +64,8 @@
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL,  
 #'    type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL,  
-#'    theta.copule = 6, nb.decimal = 4, print.times = TRUE, 
-#'    print.iter=FALSE)
+#'    typecopula =1, theta.copule = 6, nb.decimal = 4, 
+#'    print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' Default is \code{40}. 
@@ -215,6 +215,7 @@
 #' two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
 #' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 #' is NULL and assume only the treatment effect
+#' @param typecopula # The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1
 #' @param theta.copule The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 #' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
 #' @param thetacopula.init Initial value for the copula parameter. The default is 3 
@@ -303,8 +304,8 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
                       gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL, type.joint.estim = 1,
-                      type.joint.simul = 1, mbetast = NULL, theta.copule = 6, thetacopula.init = 3, nb.decimal = 4, print.times = TRUE, 
-                      print.iter = FALSE){
+                      type.joint.simul = 1, mbetast = NULL, typecopula = 1, theta.copule = 6, thetacopula.init = 3, 
+                      nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL
   scale <- 1
@@ -464,8 +465,8 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
       if(type.joint.simul == 1){ # joint surrogate model
         data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
                         alpha = alpha.ui, theta = theta2, gamma = gamma.ui, zeta = zeta, sigma.s = sigma.s, 
-                        sigma.t = sigma.t, rsqrt = R2, betas = betas, betat = betat, lambda.S = lambda.S, 
-                        nu.S = nu.S, lambda.T = lambda.T, nu.T = nu.T, ver = ver,
+                        sigma.t = sigma.t, rsqrt = R2, betas = betas, betat = betat, lambda.S = lambdas, 
+                        nu.S = nus, lambda.T = lambdat, nu.T = nut, ver = ver,
                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt, full.data = 0, 
                         random.generator = random.generator, random = random, 
@@ -474,7 +475,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
         data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
                         alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
                         sigma.t = sigma.t, rsqrt = R2, betas = c(betas, mbetast[,1]), betat = c(betat, mbetast[,2]),
-                        lambda.S = lambda.S, nu.S = nu.S,lambda.T = lambda.T, nu.T = nu.T, ver = ver,
+                        lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
                         full.data = 0, random.generator = random.generator, random = random, 

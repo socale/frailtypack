@@ -97,8 +97,8 @@
     
     if(effet.eq.1) then
         if(logNormal==1)then
-		    if(copula_function == 1) theta_copule = dexp(bh(np-nva + 1)) ! claton: exp transform
-			if(copula_function == 2) theta_copule = bh(np-nva + 1)**2.d0  ! Gumbel: choleschy transform
+            if(copula_function == 1) theta_copule = dexp(bh(np-nva + 1)) ! claton: exp transform
+            if(copula_function == 2) theta_copule = bh(np-nva + 1)**2.d0  ! Gumbel: choleschy transform
             varS1 = bh(np-nva-nparamfrail+indice_varS)
             varT1 = bh(np-nva-nparamfrail+indice_varS+indice_varT)
             !sig2=theta2 ! je fais appel a sig2 car c'est la variable utilisee dans la suite des procedures pour le joint classique
@@ -315,7 +315,7 @@
         endif
          
     !res2s_sujet(i)=dlog(dut1(nt1(i)))+vet
-	res2s_sujet(i)=dut1(nt1(i)) * dexp(vet) ! baseline hazard for subject i
+    res2s_sujet(i)=dut1(nt1(i)) * dexp(vet) ! baseline hazard for subject i
          
         ! if((c(i).eq.1))then
             ! res2s(pourtrial(i)) = res2s(pourtrial(i))+dlog(dut1(nt1(i)))+vet
@@ -347,7 +347,7 @@
         endif
         
         !res2_dcs_sujet(k)=dlog(dut2(nt1dc(k)))+vet2
-		res2_dcs_sujet(k)=dut2(nt1dc(k))* dexp(vet2)
+        res2_dcs_sujet(k)=dut2(nt1dc(k))* dexp(vet2)
         
         ! if(cdc(k).eq.1)then
             ! res2_dcs(pourtrial(k)) =res2_dcs(pourtrial(k))+dlog(dut2(nt1dc(k)))+vet2
@@ -399,12 +399,12 @@
                     deallocate(mu,vc)
                 end do
             endif
-			
-			! ========= End for now===============
-			
-			
-			
-			
+            
+            ! ========= End for now===============
+            
+            
+            
+            
             
             ! cas modele a effet aleatoires correles
             if(type_joint==2) then 
@@ -1179,7 +1179,7 @@
                    
         res=0.d0
         select case(methodInt)
-		case(0) ! estimation par monte carlo
+        case(0) ! estimation par monte carlo
             do k=1,ntrials!ng  
                 if(cpt(k).gt.0)then
                     if(sigma2.gt.(1.d-8)) then      

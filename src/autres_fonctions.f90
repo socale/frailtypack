@@ -44,8 +44,8 @@ module InverseMatrix
         !z_11 : indicatrice de traitement individu 1
         !z_21 : indicatice de tritement individu 2
         !method_int : methode d'integration: 0= montecarle, 1= quadrature quaussienne classique, 2= approximation de Laplace, 
-		!             4=integration par monte-carlo, 1 seul taux de kendall, 5=integration par monte-carlo, 1 seul taux de kendall et 
-		!             pas de stratification sur les risques de base
+        !             4=integration par monte-carlo, 1 seul taux de kendall, 5=integration par monte-carlo, 1 seul taux de kendall et 
+        !             pas de stratification sur les risques de base
         !N_MC: nombre de boucle MC ou nombre de points de quadrature si method_int=1
         !alpha: fragilite associe a w_ij
         !zeta: fragilite associe a u_i
@@ -389,7 +389,7 @@ module InverseMatrix
     ! quantile d'ordre 2.5%
     a=(n-1)*0.025d0
     ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
-	b = a - int(a)
+    b = a - int(a)
     c=a-b
     ib=int(c)
     t25= (1-b)*t(ib+1)+b*t(ib+2)
@@ -397,7 +397,7 @@ module InverseMatrix
     ! quantile d'ordre 97.5%
     a=(n-1)*0.975d0
     ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
-	b = a - int(a)
+    b = a - int(a)
     c=a-b
     ib=int(c)
     t975= (1-b)*t(ib+1)+b*t(ib+2)
@@ -405,14 +405,14 @@ module InverseMatrix
     ! quantile d'ordre q%
     a=(n-1)*dble(q)
     ! b=mod(a,1.0d0) ! bad formula # 19/11/2018
-	b = a - int(a)
+    b = a - int(a)
     c=a-b
-	ib=int(c) ! pb: si q = 1, ib = n-1 et donc ib + 2 =n + 1 > n pour la dimension de t
-	if(ib <= n-2)then
-		tq = (1-b)*t(ib+1)+b*t(ib+2)
-	else
-		tq = t(n) ! l'on suppose ici qu'on cherche le 100th percentile de la serie, ce qui est normale car dans ce cas, q est tres proche de 1
-	endif
+    ib=int(c) ! pb: si q = 1, ib = n-1 et donc ib + 2 =n + 1 > n pour la dimension de t
+    if(ib <= n-2)then
+        tq = (1-b)*t(ib+1)+b*t(ib+2)
+    else
+        tq = t(n) ! l'on suppose ici qu'on cherche le 100th percentile de la serie, ce qui est normale car dans ce cas, q est tres proche de 1
+    endif
 
     end subroutine percentile_scl
    
@@ -944,11 +944,11 @@ end function table_essai
 
     return
     endsubroutine weigui2
-	
-	subroutine weiguicopule(a,at,b,bt,betau,betaut,theta,Sij,Tij)
-	!theta : parametre de copula
+    
+    subroutine weiguicopule(a,at,b,bt,betau,betaut,theta,Sij,Tij)
+    !theta : parametre de copula
     ! fonction de densité de la loi de weibull = f(x)=b.a. x**(a-1)
-	! a, at parametres d'echelle, b, bt : parametres de forme
+    ! a, at parametres d'echelle, b, bt : parametres de forme
     ! generation du temps de deces conditionnellement au surrogate: T_ij|S_ij
         use var_surrogate, only:param_weibull
         use var_surrogate, only: random_generator
@@ -957,30 +957,30 @@ end function table_essai
         real ::ran2
         if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
             u = uniran()
-			ut = uniran()
+            ut = uniran()
         else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)    
             CALL RANDOM_NUMBER(u)
-			CALL RANDOM_NUMBER(ut)
+            CALL RANDOM_NUMBER(ut)
         endif
         v = (1.d0-u)
-		vt = (1.d0-ut)
-		wij = (1.d0 - u)**(- theta)
-		vtij = 1.d0 - wij + wij * vt**(-theta/(1.d0 + theta))
-		
+        vt = (1.d0-ut)
+        wij = (1.d0 - u)**(- theta)
+        vtij = 1.d0 - wij + wij * vt**(-theta/(1.d0 + theta))
+        
        !parametrisation de weibull par defaut dans le programme de Virginie: fonction de densite differente de celle donnee ci-dessus, idem a Takeshi
         Sij = ((1.d0/b)*(-dexp(-betau)*dlog(v)))**(1.d0/a)
-	    Tij = ((1.d0/(theta *bt))*dexp(-betaut)*dlog(vtij))**(1.d0/at)
-		
-		! call dblepr("theta", -1, theta, 1)
-		! call dblepr("bt", -1, bt, 1)
-		! call dblepr("at", -1, at, 1)
-		! call dblepr("vtij", -1, vtij, 1)
-		! call dblepr("betaut", -1, betaut, 1)
-		! call dblepr("Sij", -1, Sij, 1)
-		! call dblepr("Tij", -1, Tij, 1)
+        Tij = ((1.d0/(theta *bt))*dexp(-betaut)*dlog(vtij))**(1.d0/at)
+        
+        ! call dblepr("theta", -1, theta, 1)
+        ! call dblepr("bt", -1, bt, 1)
+        ! call dblepr("at", -1, at, 1)
+        ! call dblepr("vtij", -1, vtij, 1)
+        ! call dblepr("betaut", -1, betaut, 1)
+        ! call dblepr("Sij", -1, Sij, 1)
+        ! call dblepr("Tij", -1, Tij, 1)
     return
     endsubroutine weiguicopule
-	
+    
     !==============================================================================================================================
     ! subroutine pour la generation  des donnees pour une distribution gamma des effects aleatoires et weibull des risques de bases
     !==============================================================================================================================
@@ -1690,12 +1690,12 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t
-	  double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
+      double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
       double precision,dimension(n_essai),intent(in)::prop_i,p      
       double precision,intent(out)::vrai_theta
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
       
-	       integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000,nboumax=1000,NSIMAX=5000,&
+           integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000,nboumax=1000,NSIMAX=5000,&
                           ndatemax=30000
       integer  j,k,n,ii,iii,iii2,i,nbou
       integer filtre(nvarmax), filtre2(nvarmax), ind(nboumax), values(8)
@@ -1731,8 +1731,8 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
     
       
 !CCCCCCCCCCCCCCCCChosur9.f CCCCCCCCCCCCCCCCCCCCCCCC
-	  don_simulS1 = 0.d0
-	  don_simul = 0.d0
+      don_simulS1 = 0.d0
+      don_simul = 0.d0
       
       call date_and_time(dateamj,heure1,zone,values)                  
       nrecurr=1
@@ -1900,20 +1900,20 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
                else
                   v1(j) = 1.
                endif
-         111        continue		   
+         111        continue           
          x=0.d0
          xdc=0.d0
          cens=0.d0
 
          do 10 k=1,nrecurr ! observations max / sujet
-			 if(k.gt.max_recu)then
-				max_recu=k 
-			 endif
+             if(k.gt.max_recu)then
+                max_recu=k 
+             endif
              nobs=nobs+1   ! indice l ensemble des observations
              idnum(ig) = k
 !c-----------RECURRENT --------------------------------------------
 !c---  genere temps recurrents a partir 2 var explic :
-			if (lognormal==0)then ! Gamma
+            if (lognormal==0)then ! Gamma
                 !print*,"generation gamma avec 2 effets aleatoires correles au niveau essai non encore", &
                 !      "implementee suis au probleme de la loi gamma multivariee"
             else ! lognormale
@@ -1933,104 +1933,104 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
                 endif
             endif
             
-			call weigui2(bw1(1),bw1(2),auxbeta1,gapx)
-				x=gapx
-						 
-		!c-----------DECES --------------------------------------------
-		!c---     genere temps de dc a partir d une var explic :
-				call weigui2(bw2(1),bw2(2),auxbeta2,gapdc) 
-		!c**************  gap time: 
-				xdc=gapdc
-				tempsD(ig)=xdc
+            call weigui2(bw1(1),bw1(2),auxbeta1,gapx)
+                x=gapx
+                         
+        !c-----------DECES --------------------------------------------
+        !c---     genere temps de dc a partir d une var explic :
+                call weigui2(bw2(1),bw2(2),auxbeta2,gapdc) 
+        !c**************  gap time: 
+                xdc=gapdc
+                tempsD(ig)=xdc
 
-		! scl============censure====================
-				cens=cens_A
-				if(xdc.le.cens)then ! patient decede
-				  deltadc=1.d0
-				  temps1 = xdc
-				  nb_dc =nb_dc + 1
-			    else    !patient censuree administrativement
-				  deltadc=0.d0
-				  temps1 = cens
-				  nb_cens =nb_cens + 1
-			    endif
+        ! scl============censure====================
+                cens=cens_A
+                if(xdc.le.cens)then ! patient decede
+                  deltadc=1.d0
+                  temps1 = xdc
+                  nb_dc =nb_dc + 1
+                else    !patient censuree administrativement
+                  deltadc=0.d0
+                  temps1 = cens
+                  nb_cens =nb_cens + 1
+                endif
 
-				!on construit les temps de progression
-				if(x < temps1)then ! evenement avant la censure
-					delta=1.d0
-					temps1_S = x
-					nb_recur =nb_recur + 1
-					nig(ig) = nig(ig)+1 !nb events recurrents
-				else
-					if((x.eq.cens).and.(deltadc==0.d0)) then !evenement a la date de censure et patient vivant
-						delta=1.d0
-						temps1_S = x
-						nb_recur =nb_recur + 1
-						nig(ig) = nig(ig)+1 !nb events recurrents
-					else ! progression le meme jour que le deces ou sans progression
-						delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
-						temps1_S=temps1! et on censure a la date de deces(ou censure)
-					endif
-				endif
-		!c****** for gap time :         
-				 t0(nobs) = 0.d0
-		!c fin gap
-					   t1(nobs) = temps1
-					   t1_S(nobs) = temps1_S
-					   c(nobs) = delta
-					   cdc(nobs) = deltadc
-					   g(nobs)= ig
-					   iii = 0
-					   iii2 = 0
-					   do ii = 1,ver
-						  if(filtre(ii).eq.1)then
-							 iii = iii + 1
-							 ve(nobs,iii) = dble(v1(ii))
-						  endif
-						  if(filtre2(ii).eq.1)then
-							 iii2 = iii2 + 1
-							 ve2(nobs,iii2) = dble(v1(ii))
-						  endif
-		                enddo
-	           !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
-				don_simulS1(ig,initTime1)=t0(nobs)
-				don_simulS1(ig,timeS1)=t1_S(nobs)
-				don_simulS1(ig,statusS1)=c(nobs)
-				don_simulS1(ig,Patienref1)=g(nobs)
+                !on construit les temps de progression
+                if(x < temps1)then ! evenement avant la censure
+                    delta=1.d0
+                    temps1_S = x
+                    nb_recur =nb_recur + 1
+                    nig(ig) = nig(ig)+1 !nb events recurrents
+                else
+                    if((x.eq.cens).and.(deltadc==0.d0)) then !evenement a la date de censure et patient vivant
+                        delta=1.d0
+                        temps1_S = x
+                        nb_recur =nb_recur + 1
+                        nig(ig) = nig(ig)+1 !nb events recurrents
+                    else ! progression le meme jour que le deces ou sans progression
+                        delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+                        temps1_S=temps1! et on censure a la date de deces(ou censure)
+                    endif
+                endif
+        !c****** for gap time :         
+                 t0(nobs) = 0.d0
+        !c fin gap
+                       t1(nobs) = temps1
+                       t1_S(nobs) = temps1_S
+                       c(nobs) = delta
+                       cdc(nobs) = deltadc
+                       g(nobs)= ig
+                       iii = 0
+                       iii2 = 0
+                       do ii = 1,ver
+                          if(filtre(ii).eq.1)then
+                             iii = iii + 1
+                             ve(nobs,iii) = dble(v1(ii))
+                          endif
+                          if(filtre2(ii).eq.1)then
+                             iii2 = iii2 + 1
+                             ve2(nobs,iii2) = dble(v1(ii))
+                          endif
+                        enddo
+               !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
+                don_simulS1(ig,initTime1)=t0(nobs)
+                don_simulS1(ig,timeS1)=t1_S(nobs)
+                don_simulS1(ig,statusS1)=c(nobs)
+                don_simulS1(ig,Patienref1)=g(nobs)
                 don_simulS1(ig,trt1)=ve2(nobs,1)
-				don_simulS1(ig,w_ij1)=ui		   
-				   
+                don_simulS1(ig,w_ij1)=ui           
+                   
                 don_simul(ig,initTime1)=t0(nobs)
-				don_simul(ig,timeT1)=t1(nobs)
-				don_simul(ig,statusT1)=cdc(nobs)
-				don_simul(ig,Patienref1)=g(nobs)
-				don_simul(ig,trt1)=ve2(nobs,1)
-				don_simul(ig,w_ij1)=ui            
+                don_simul(ig,timeT1)=t1(nobs)
+                don_simul(ig,statusT1)=cdc(nobs)
+                don_simul(ig,Patienref1)=g(nobs)
+                don_simul(ig,trt1)=ve2(nobs,1)
+                don_simul(ig,w_ij1)=ui            
 
-				!c****************************************************
-				!c******** FIN generation des donnees****************
-				!c****************************************************
+                !c****************************************************
+                !c******** FIN generation des donnees****************
+                !c****************************************************
           
-				if (maxtemps.lt.t1(nobs))then
-				   maxtemps = t1(nobs)
-				endif  
+                if (maxtemps.lt.t1(nobs))then
+                   maxtemps = t1(nobs)
+                endif  
 
-				if (delta.eq.0.d0)then ! deces ou censure
-				   goto 30          ! on change de sujet
-				endif				   
-		    10      continue          !observations par sujet
-		   30   continue                  !sujets=groupes	
-            enddo		
-			
-			  if(ibou.eq.Aretenir)then
-				  moy_idnum=0
-				  do 444 jj=1,ng
-					 moy_idnum =moy_idnum + idnum(jj)
-				  444     continue
-					  moy_idnum =moy_idnum / ng 
-			  endif		   		   
-	!c=========     on retourne a l'iteration suivante
-	 1000 continue
+                if (delta.eq.0.d0)then ! deces ou censure
+                   goto 30          ! on change de sujet
+                endif                   
+            10      continue          !observations par sujet
+           30   continue                  !sujets=groupes    
+            enddo        
+            
+              if(ibou.eq.Aretenir)then
+                  moy_idnum=0
+                  do 444 jj=1,ng
+                     moy_idnum =moy_idnum + idnum(jj)
+                  444     continue
+                      moy_idnum =moy_idnum / ng 
+              endif                      
+    !c=========     on retourne a l'iteration suivante
+     1000 continue
      ! scl============censure conseillee pour la proportion souhaitee de censure==
      call percentile_scl(tempsD,ng,1.d0-propC,cens)
     deallocate(tempsD,sigma,mu,x_)
@@ -2060,26 +2060,26 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     ! gamma: variance de l'effet aleatoire u_i associe au risque de base chez S
     ! alpha: parametre de puissance (zeta) associe a u_i pour les deces
     ! frailt_base: dit si l'on prend en compte l'heterogeneite sur le risque de base aussi bien dans la generation des donnes que dans l'estimation(1) ou non (0)
-	! thetacopule : parametre de la copule de clayton
-	! filtre: vecteur qui dit si une variable est prise en compte pour le surrogate
-	! filtre2: vecteur qui dit si une variable est prise en compte pour le true endpoint
-	
+    ! thetacopule : parametre de la copule de clayton
+    ! filtre: vecteur qui dit si une variable est prise en compte pour le surrogate
+    ! filtre2: vecteur qui dit si une variable est prise en compte pour le true endpoint
+    
      use var_surrogate, only: random_generator
 
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t,&
-									thetacopule
-	  double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
+                                    thetacopule
+      double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
       double precision,dimension(n_essai),intent(in)::prop_i,p      
       double precision,intent(out)::vrai_theta
       double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
       
-	  integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000,nboumax=1000,NSIMAX=5000,&
+      integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000,nboumax=1000,NSIMAX=5000,&
                           ndatemax=30000
       integer  j,k,n,ii,iii,iii2,i,nbou
       integer, dimension(ver), intent(in):: filtre, filtre2
-	  integer ind(nboumax), values(8)
+      integer ind(nboumax), values(8)
       double precision maxtemps
       character*18 nomvar(nvarmax),nomvar2(nvarmax)
       character*20 dateamj, zone, heure1
@@ -2113,8 +2113,8 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       
 !CCCCCCCCCCCCCCCCChosur9.f CCCCCCCCCCCCCCCCCCCCCCCC
       allocate(v1(ver))
-	  don_simulS1 = 0.d0
-	  don_simul = 0.d0
+      don_simulS1 = 0.d0
+      don_simul = 0.d0
       
       call date_and_time(dateamj,heure1,zone,values)                  
       nrecurr=1
@@ -2252,7 +2252,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
             else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
                 CALL RANDOM_NUMBER(tempon)
             endif
-			
+            
             piece = real(tempon)
             if (piece.le.demi) then
                 v1(j) = 0.
@@ -2260,174 +2260,174 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
                 v1(j) = 1.
             endif
          111        continue
-		 
-		! if(ig==1) then 
-		   ! call realpr("voile v1", -1, v1, ver)
-		   ! call realpr("voile piece", -1, piece, 1)
-		   ! call dblepr("voile tempon", -1, tempon, 1)
-		! endif
-		
+         
+        ! if(ig==1) then 
+           ! call realpr("voile v1", -1, v1, ver)
+           ! call realpr("voile piece", -1, piece, 1)
+           ! call dblepr("voile tempon", -1, tempon, 1)
+        ! endif
+        
          x=0.d0
          xdc=0.d0
          cens=0.d0
 
          do k=1,nrecurr ! observations max / sujet
-			 if(k.gt.max_recu)then
-				max_recu=k 
-			 endif
+             if(k.gt.max_recu)then
+                max_recu=k 
+             endif
              nobs=nobs+1   ! indice l ensemble des observations
              idnum(ig) = k
 !c-----------Surrogate --------------------------------------------
 !c---  genere temps de progression a partir 2 var explic :
-			if (lognormal==0)then ! Gamma
+            if (lognormal==0)then ! Gamma
 
-			else ! lognormale
-				if (lognormal==1)then !joint surrogate
-					if(frailt_base==1) then ! on tient compte des u_i
-						auxbeta1=don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
-						auxbeta2=alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-					    if(ver > 1) then
-							do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
-							  if(filtre(ii).eq.1)then
-								auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
-							  endif
-							  if(filtre2(ii).eq.1)then
-								auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
-							  endif
-							enddo
-						endif
-					else ! on ne tient pas compte des u_i dans la generation des temps de survie
-						auxbeta1=don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
-						auxbeta2=don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
-					    if(ver > 1) then
-							do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
-							  if(filtre(ii).eq.1)then
-								auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
-							  endif
-							  if(filtre2(ii).eq.1)then
-								auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
-							  endif
-							enddo
-						endif
-					endif
-				endif
-			endif
+            else ! lognormale
+                if (lognormal==1)then !joint surrogate
+                    if(frailt_base==1) then ! on tient compte des u_i
+                        auxbeta1=don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
+                        auxbeta2=alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+                        if(ver > 1) then
+                            do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
+                              if(filtre(ii).eq.1)then
+                                auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
+                              endif
+                              if(filtre2(ii).eq.1)then
+                                auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
+                              endif
+                            enddo
+                        endif
+                    else ! on ne tient pas compte des u_i dans la generation des temps de survie
+                        auxbeta1=don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
+                        auxbeta2=don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+                        if(ver > 1) then
+                            do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
+                              if(filtre(ii).eq.1)then
+                                auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
+                              endif
+                              if(filtre2(ii).eq.1)then
+                                auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
+                              endif
+                            enddo
+                        endif
+                    endif
+                endif
+            endif
 
-			call weiguicopule(bw1(1),bw2(1),bw1(2),bw2(2),auxbeta1,auxbeta2,thetacopule,gapx,gapdc)
-			x=gapx ! temps de progression
-			xdc=gapdc ! temps de deces
-			tempsD(ig)=xdc
-			! if(ig == 1) then
-				! call dblepr("gapx", -1, gapx, 1)
-				! call dblepr("gapdc", -1, gapdc, 1)
-			! endif
+            call weiguicopule(bw1(1),bw2(1),bw1(2),bw2(2),auxbeta1,auxbeta2,thetacopule,gapx,gapdc)
+            x=gapx ! temps de progression
+            xdc=gapdc ! temps de deces
+            tempsD(ig)=xdc
+            ! if(ig == 1) then
+                ! call dblepr("gapx", -1, gapx, 1)
+                ! call dblepr("gapdc", -1, gapdc, 1)
+            ! endif
 
-		! scl============censure====================
-				cens=cens_A
+        ! scl============censure====================
+                cens=cens_A
 
-				if(xdc.le.cens)then ! patient decede
-				  deltadc=1.d0
-				  temps1 = xdc
-				  nb_dc =nb_dc + 1
-			    else    !patient censuree administrativement
-				  deltadc=0.d0
-				  temps1 = cens
-				  nb_cens =nb_cens + 1
-			    endif
+                if(xdc.le.cens)then ! patient decede
+                  deltadc=1.d0
+                  temps1 = xdc
+                  nb_dc =nb_dc + 1
+                else    !patient censuree administrativement
+                  deltadc=0.d0
+                  temps1 = cens
+                  nb_cens =nb_cens + 1
+                endif
 
-				!on construit les temps de progression
-				if(x < temps1)then ! evenement avant la censure
-					delta=1.d0
-					temps1_S = x
-					nb_recur =nb_recur + 1
-					nig(ig) = nig(ig)+1 !nb events recurrents
-				else
-					if((x.eq.cens).and.(deltadc==0.d0)) then !evenement a la date de censure et patient vivant
-						delta=1.d0
-						temps1_S = x
-						nb_recur =nb_recur + 1
-						nig(ig) = nig(ig)+1 !nb events recurrents
-					else ! progression le meme jour que le deces ou sans progression
-						delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
-						temps1_S=temps1! et on censure a la date de deces(ou censure)
-					endif
-				endif
-		!c****** for gap time :         
-					   t0(nobs) = 0.d0
-		!c fin gap
-					   t1(nobs) = temps1
-					   t1_S(nobs) = temps1_S
-					   c(nobs) = delta
-					   cdc(nobs) = deltadc
-					   g(nobs)= ig
-					   iii = 0
-					   iii2 = 0
-					   do ii = 1,ver
-						  if(filtre(ii).eq.1)then
-							 iii = iii + 1
-							 ve(nobs,iii) = dble(v1(ii))
-						  endif
-						  if(filtre2(ii).eq.1)then
-							 iii2 = iii2 + 1
-							 ve2(nobs,iii2) = dble(v1(ii))
-							! if(ig==1) then 
-							   ! call realpr("v1", -1, v1, ver)
-							   ! call dblepr("dble(v1)", -1, dble(v1), ver)
-							   ! call dblepr("ve2(nobs,iii2)", -1, ve2(nobs,iii2), 1)
-							! endif	
-						  endif
-		               enddo
-	           !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
-				don_simulS1(ig,initTime1)=t0(nobs)
-				don_simulS1(ig,timeS1)=t1_S(nobs)
-				don_simulS1(ig,statusS1)=c(nobs)
-				don_simulS1(ig,Patienref1)=g(nobs)
+                !on construit les temps de progression
+                if(x < temps1)then ! evenement avant la censure
+                    delta=1.d0
+                    temps1_S = x
+                    nb_recur =nb_recur + 1
+                    nig(ig) = nig(ig)+1 !nb events recurrents
+                else
+                    if((x.eq.cens).and.(deltadc==0.d0)) then !evenement a la date de censure et patient vivant
+                        delta=1.d0
+                        temps1_S = x
+                        nb_recur =nb_recur + 1
+                        nig(ig) = nig(ig)+1 !nb events recurrents
+                    else ! progression le meme jour que le deces ou sans progression
+                        delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+                        temps1_S=temps1! et on censure a la date de deces(ou censure)
+                    endif
+                endif
+        !c****** for gap time :         
+                       t0(nobs) = 0.d0
+        !c fin gap
+                       t1(nobs) = temps1
+                       t1_S(nobs) = temps1_S
+                       c(nobs) = delta
+                       cdc(nobs) = deltadc
+                       g(nobs)= ig
+                       iii = 0
+                       iii2 = 0
+                       do ii = 1,ver
+                          if(filtre(ii).eq.1)then
+                             iii = iii + 1
+                             ve(nobs,iii) = dble(v1(ii))
+                          endif
+                          if(filtre2(ii).eq.1)then
+                             iii2 = iii2 + 1
+                             ve2(nobs,iii2) = dble(v1(ii))
+                            ! if(ig==1) then 
+                               ! call realpr("v1", -1, v1, ver)
+                               ! call dblepr("dble(v1)", -1, dble(v1), ver)
+                               ! call dblepr("ve2(nobs,iii2)", -1, ve2(nobs,iii2), 1)
+                            ! endif    
+                          endif
+                       enddo
+               !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
+                don_simulS1(ig,initTime1)=t0(nobs)
+                don_simulS1(ig,timeS1)=t1_S(nobs)
+                don_simulS1(ig,statusS1)=c(nobs)
+                don_simulS1(ig,Patienref1)=g(nobs)
                 don_simulS1(ig,trt1)=ve2(nobs,1)
-				!don_simulS1(ig,w_ij1)=ui		
-				   
+                !don_simulS1(ig,w_ij1)=ui        
+                   
                 don_simul(ig,initTime1)=t0(nobs)
-				don_simul(ig,timeT1)=t1(nobs)
-				don_simul(ig,statusT1)=cdc(nobs)
-				don_simul(ig,Patienref1)=g(nobs)
-				don_simul(ig,trt1)=ve2(nobs,1)
-				!don_simul(ig,w_ij1)=ui    
-				! if(ig==1) then 
-				   ! call dblepr("don_simulS1(nobs,trt1)", -1, don_simulS1(nobs,trt1), 1)
-				! endif				
+                don_simul(ig,timeT1)=t1(nobs)
+                don_simul(ig,statusT1)=cdc(nobs)
+                don_simul(ig,Patienref1)=g(nobs)
+                don_simul(ig,trt1)=ve2(nobs,1)
+                !don_simul(ig,w_ij1)=ui    
+                ! if(ig==1) then 
+                   ! call dblepr("don_simulS1(nobs,trt1)", -1, don_simulS1(nobs,trt1), 1)
+                ! endif                
                 
-			   ! j'ajoute les autres variables a la fin
-			   if(ver > 1) then
-				   do ii = 2,ver
-						if(filtre(ii).eq.1)then
-						  don_simulS1(ig,size(don_simulS1,2) - ver + ii - 1)=ve(nobs,ii)
-						endif
-						if(filtre2(ii).eq.1)then
-						  don_simul(ig,size(don_simul,2)- ver + ii - 1)=ve2(nobs,ii)
-						endif
-					enddo	
-                endif					
+               ! j'ajoute les autres variables a la fin
+               if(ver > 1) then
+                   do ii = 2,ver
+                        if(filtre(ii).eq.1)then
+                          don_simulS1(ig,size(don_simulS1,2) - ver + ii - 1)=ve(nobs,ii)
+                        endif
+                        if(filtre2(ii).eq.1)then
+                          don_simul(ig,size(don_simul,2)- ver + ii - 1)=ve2(nobs,ii)
+                        endif
+                    enddo    
+                endif                    
 
-				!c****************************************************
-				!c******** FIN generation des donnees****************
-				!c****************************************************
+                !c****************************************************
+                !c******** FIN generation des donnees****************
+                !c****************************************************
           
-				if (maxtemps.lt.t1(nobs))then
-				   maxtemps = t1(nobs)
-				endif  
+                if (maxtemps.lt.t1(nobs))then
+                   maxtemps = t1(nobs)
+                endif  
 
-				if (delta.eq.0.d0)then ! deces ou censure
-				   goto 30          ! on change de sujet
-				endif				   
-		   enddo                  !observations par sujet
-		   30   continue                  !sujets=groupes
-        enddo		   	  
+                if (delta.eq.0.d0)then ! deces ou censure
+                   goto 30          ! on change de sujet
+                endif                   
+           enddo                  !observations par sujet
+           30   continue                  !sujets=groupes
+        enddo                 
      ! scl============censure conseillee pour la proportion souhaitee de censure==
      call percentile_scl(tempsD,ng,1.d0-propC,cens)
     deallocate(tempsD,sigma,mu,x_,v1)
-	! call dblepr("betas", -1, betas, ver)
-	! call dblepr("betat", -1, betat, ver)
-	! call dblepr("voile don_simul", -1, don_simul(1,:), size(don_simul,2))
-	! call dblepr("voile don_simul", -1, don_simul(2,:), size(don_simul,2))
+    ! call dblepr("betas", -1, betas, ver)
+    ! call dblepr("betat", -1, betat, ver)
+    ! call dblepr("voile don_simul", -1, don_simul(1,:), size(don_simul,2))
+    ! call dblepr("voile don_simul", -1, don_simul(2,:), size(don_simul,2))
 endsubroutine Generation_surrogate_copula
 
 !==============================================================================================================================
@@ -3312,32 +3312,32 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     if (ier.eq.-1) then
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
         !stop
-		call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
+        call intpr("Problem with the cholesky transformation in the program", -1, ier, 1)
     else ! ysim sera un vecteur de 0
      
-		VC=0.d0
-		do j=1,maxmes
-			do k=1,j
-				VC(j,k)=Vi(k+j*(j-1)/2)
-			end do
-		end do    
-		
-		! --------------------- Generation des donnees ------------------------
-		ymarg=0.d0
-		!!print*,vc
-		!stop
-		l=1
-		do while(l.le.nsim)
-			usim=0.d0
-			do m=1,maxmes
-				SX=1.d0
-				call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
-			end do
-			ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
-			l=l+1
-		end do
-	endif
-			
+        VC=0.d0
+        do j=1,maxmes
+            do k=1,j
+                VC(j,k)=Vi(k+j*(j-1)/2)
+            end do
+        end do    
+        
+        ! --------------------- Generation des donnees ------------------------
+        ymarg=0.d0
+        !!print*,vc
+        !stop
+        l=1
+        do while(l.le.nsim)
+            usim=0.d0
+            do m=1,maxmes
+                SX=1.d0
+                call bgos(SX,0,usim(m),x22,0.d0) !usim contient des valeurs simulees d'une Normale centre reduite
+            end do
+            ysim(l,:)=mu+MATMUL(vc,usim) ! ysim contient des realisations d'une Normale de moyenne mu et de matrice de variance VC telle que chVC'chVC = VC
+            l=l+1
+        end do
+    endif
+            
     deallocate(vi,usim,vc)
     return
 end subroutine rmvnorm
@@ -3373,12 +3373,12 @@ subroutine Cholesky_Factorisation(vc)
         !print*,"Probleme dans la transformation de cholesky pour la generation multinormale"
         ! stop
     else ! on retourne un vecteur de 0 car pas possible de transformer
-		do j=1,maxmes
-			do k=1,j
-				VC(j,k)=Vi(k+j*(j-1)/2)
-			end do
-		end do    
-	end if
+        do j=1,maxmes
+            do k=1,j
+                VC(j,k)=Vi(k+j*(j-1)/2)
+            end do
+        end do    
+    end if
     
 end subroutine Cholesky_Factorisation
 

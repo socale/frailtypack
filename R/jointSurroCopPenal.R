@@ -469,7 +469,7 @@
 #' 
 #' }
 #' 
-jointSurroPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base = 1, 
+jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base = 1, 
                       n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, 
                       nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
                       nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, theta.init = 1, 

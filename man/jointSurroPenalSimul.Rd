@@ -20,9 +20,10 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
-   random.nb.sim = 0, seed = 0, init.kappa = NULL, 
-   type.joint.simul = 1, mbetast =NULL, theta.copule = 6, 
-   nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
+   random.nb.sim = 0, seed = 0, init.kappa = NULL,  
+   type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL,  
+   theta.copule = 6, nb.decimal = 4, print.times = TRUE, 
+   print.iter=FALSE)
 }
 \arguments{
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
@@ -213,7 +214,11 @@ The default is \code{0}.}
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 are obtain by cross-validation.}
 
-\item{type.joint.simul}{# Model to considered for data generation. If this argument is set to \code{1}, the joint surrogate model
+\item{type.joint.estim}{Model to considered for the estimation. If this argument is set to \code{1}, the joint surrogate model
+is used, the default (see \link{joinSurroPenal}). If set to \code{2}, parameters are estimated under the joint frailty-copula model
+for surrogacy.}
+
+\item{type.joint.simul}{Model to considered for data generation. If this argument is set to \code{1}, the joint surrogate model
 is used, the default (see \link{joinSurroPenal}). If set to \code{3}, data are generated following the joint frailty-copula model
 for surrogacy.}
 
@@ -224,6 +229,8 @@ is NULL and assume only the treatment effect}
 
 \item{theta.copule}{The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula}
+
+\item{thetacopula.init}{Initial value for the copula parameter. The default is 3}
 
 \item{nb.decimal}{Number of decimal required for results presentation.}
 
@@ -237,6 +244,7 @@ is FALSE.}
 This function return an object of class jointSurroPenalSimul with elements :
 
    \item{theta2}{True value for \eqn{\theta};}
+   \item{theta.copula}{Copula parameter}
    \item{zeta}{true value for \eqn{\zeta};}
    \item{gamma.ui}{true value for \eqn{\gamma};}
    \item{alpha.ui}{true value for \eqn{\alpha};}
