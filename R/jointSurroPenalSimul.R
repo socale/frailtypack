@@ -764,7 +764,7 @@ jointSurroPenalSimul = function(maxit=40, indicator.zeta = 1, indicator.alpha = 
   # resultats a retourner:
   result <- NULL
   result$theta2  <- theta2
-  result$theta.copula  <- thetacopula
+  result$theta.copula  <- theta.copule
   result$zeta <- zeta
   result$gamma.ui  <- gamma.ui
   result$alpha.ui <- alpha.ui
