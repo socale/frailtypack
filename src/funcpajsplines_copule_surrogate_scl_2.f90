@@ -402,7 +402,7 @@
             endif
             
             ! ========= End for now===============
-            call dblepr(" dans funcpa integrale3=", -1, integrale3, ntrials)
+            !call dblepr(" dans funcpa integrale3=", -1, integrale3, ntrials)
             
             
             
