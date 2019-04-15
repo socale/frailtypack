@@ -562,6 +562,7 @@
         ttU=ttU0(i) !! rajout
         ic=ic0(i)
         groupe=groupe0(i)
+		!call dblepr("suis danc funcpan vax0=", -1, dble(vax0(i,:)), size(vax0,2))
 !------------------
         do j=1,nva10
             vax(j)=vax0(i,j) ! ensemble des observation du sujet i associees au surrrogate

@@ -6,7 +6,7 @@
 \usage{
 jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
   alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7,
-  sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25,
+  sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25,
   frailt.base = 1, lambda.S = 1.8, nu.S = 0.0045, lambda.T = 3,
   nu.T = 0.0025, ver = 1, typeOf = 1, equi.subj.trial = 1,
   equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
@@ -32,7 +32,7 @@ jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
 
 \item{sigma.t}{Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.}
 
-\item{rsqrt}{Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=rsqrt^2}. 
+\item{cor}{Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=cor^2}. 
 The default is \code{0.8}.}
 
 \item{betas}{Fixed value for \eqn{\beta_S}. The default is \code{-1.25}.}
@@ -121,7 +121,7 @@ the desired individual level correlation (Kendall's \eqn{\tau}) depend on the va
 
 data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
             alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
-            zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, 
+            zeta = 1, sigma.t = 0.7, cor = 0.8, betas = -1.25, 
             betat = -1.25, full.data = 0, random.generator = 1, 
             seed = 0, nb.reject.data = 0)
 

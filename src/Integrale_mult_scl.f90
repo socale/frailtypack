@@ -256,7 +256,7 @@ module monteCarlosMult_Gaus
 !SUBROUTINES simulation pour le calcul integrale multiple par monte carlo
 !
 !========================================================================
-     double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
+double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
     ! dans cette fonction on fait une quadrature adaptative ou non pour les deux effets aleatoire vsi et vti
     ! func: fonction a integrer au niveau individuel
     ! ndim= dimension de l'integrale 2 ou 3 integrations?
@@ -336,7 +336,8 @@ module monteCarlosMult_Gaus
         l=l+1
     end do
     
-    
+    ! call intpr(" dans nb_procs=", -1, nb_procs, 1)
+	! call intpr(" dans ndim=", -1, ndim, 1)
     !integration sur vsi et vti
     ss=0.d0
     if(nb_procs==1) then !on fait du open MP car un seul processus
@@ -354,7 +355,7 @@ module monteCarlosMult_Gaus
             !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
                     ss=ss+func(fraili(ii,1),fraili(ii,2),fraili(ii,3),i,nsujet_trial)
-                    ! !print*,"ss",ss
+                    !call dblepr(" dans ss=", -1, ss, 1)
                 end do
             !$OMP END PARALLEL DO
         end if

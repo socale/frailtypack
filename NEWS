@@ -1,6 +1,7 @@
 Changes in Version 3.0.4 march 2019
-o Bugg fixed in the jointSurroPenalSimul() R function for the parameters of the jointSurrSimul() function, when one generate data to estimate kappas by cross validation. some parameters were taken let fixed by default.
+o Bugg fixed in the jointSurroPenalSimul() R function for the parameters of the jointSurrSimul() function, when one generate data to estimate kappas by cross validation. Some parameters were taken let fixed by default. Argument "cor" is set to "sqrt(R2)"  
 o New model added: Joint frailty-copula models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints (vignettes file updated)
+o Rename of the argument "rsqrt" in the jointSurrSimul() function by "cor".
 
 
 Changes in Version 3.0.3.1 march 2019

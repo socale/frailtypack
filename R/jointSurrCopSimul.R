@@ -16,7 +16,7 @@
 #' @param gamma Fixed value for \eqn{\gamma}. The default is \code{2.5}.
 #' @param sigma.s Fixed value for \eqn{\sigma^2_S}. The default is \code{0.7}.
 #' @param sigma.t Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.
-#' @param rsqrt Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=rsqrt^2}. 
+#' @param cor Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=cor^2}. 
 #' The default is \code{0.8}.
 #' @param betas Vector of the fixed effects for \eqn{\beta_S}. The size must be equal to \code{ver} 
 #' The default is \code{c(-1.25,0.5)}.
@@ -109,13 +109,13 @@
 #' # dataset with 2 covariates
 #' data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30,cens.adm=549, 
 #'             alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, 
-#'             rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
+#'             cor = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
 #'             full.data = 0, random.generator = 1,ver = 2, covar.names = "trt", 
 #'             nb.reject.data = 0, thetacopule = 6, filter.surr = c(1,1), 
 #'             filter.true = c(1,1), seed = 0)
 #' 
 jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549, alpha = 1.5, gamma = 2.5, 
-                           sigma.s = 0.7, sigma.t = 0.7,rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
+                           sigma.s = 0.7, sigma.t = 0.7,cor = 0.9, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
                            frailt.base = 1, lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, ver = 2, typeOf = 1,
                            equi.subj.trial = 1 ,equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
                            full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, nb.reject.data = 0,
@@ -123,7 +123,8 @@ jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549, alpha =
   
   param.weibull <- 0
   theta <- 3.5
-  zeta = 1
+  zeta <- 1
+  rsqrt <- cor
   # ==============parameters checking======================
   if(!(equi.subj.trt %in% c(0,1)) | !(equi.subj.trial %in% c(0,1))){
     stop("Model's parameters equi.subj.trt and equi.subj.trial must be set to 0 or 1")

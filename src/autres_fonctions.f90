@@ -2110,7 +2110,38 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       double precision,dimension(n_essai)::n_i
       double precision,dimension(:,:),allocatable::sigma,x_ 
     
-      
+      ! some print
+	  ! call intpr("n_obs", -1,n_obs , 1)	
+	  ! call intpr("n_col", -1,n_col , 1)
+	  ! call intpr("lognormal", -1, lognormal, 1)	
+	  ! call dblepr("vrai_theta", -1,vrai_theta , 1)
+	  ! call intpr("ng", -1,ng , 1)	
+	  ! call intpr("ver", -1,ver , 1)
+	  ! call dblepr("truealpha", -1, truealpha, 1)	
+	  ! call dblepr("propC", -1,propC , 1)
+	  ! call dblepr("cens_A", -1, cens_A, 1)	
+	  ! call dblepr("gamma1", -1,gamma1 , 1)
+	  ! call dblepr("gamma2", -1,gamma2 , 1)	
+	  ! call dblepr("theta2", -1, theta2, 1)
+	  ! call dblepr("lambda_S", -1, lambda_S, 1)	
+	  ! call dblepr("nu_S", -1,nu_S , 1)
+	  ! call dblepr("lambda_T", -1, lambda_T, 1)	
+	  ! call dblepr("nu_T", -1,nu_T , 1)
+	  ! call dblepr("betas", -1,betas , ver)
+	  ! call dblepr("betat", -1,betat, ver)	
+	  ! call intpr("n_essai", -1, n_essai, 1)
+	  ! call dblepr("rsqrt", -1, rsqrt, 1)
+	  ! call dblepr("sigma_s", -1,sigma_s , 1)	
+	  ! call dblepr("sigma_t", -1,sigma_t , 1)
+	  ! call dblepr("p", -1,p, size(p))
+	  ! call dblepr("prop_i", -1, prop_i, size(prop_i))	
+	  ! call dblepr("gamma", -1,gamma , 1)
+	  ! call dblepr("alpha", -1,alpha , 1)
+	  ! call intpr("frailt_base", -1, frailt_base, 1)	
+	  ! call dblepr("thetacopule", -1,thetacopule , 1)
+	  ! call intpr("filtre", -1,filtre,size(filtre))	
+	  ! call intpr("filtre2", -1,filtre, size(filtre2))
+
 !CCCCCCCCCCCCCCCCChosur9.f CCCCCCCCCCCCCCCCCCCCCCCC
       allocate(v1(ver))
       don_simulS1 = 0.d0

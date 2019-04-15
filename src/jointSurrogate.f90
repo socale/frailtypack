@@ -282,6 +282,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         do i = 1, size(vbetast,1)
             vbetas(i) = vbetast(i,1) ! beta_s
             vbetat(i) = vbetast(i,2) ! beta_t
+			!call dblepr("vbetast", -1, vbetast(i,:), size(vbetast,2))
         enddo
     endif
     
@@ -612,7 +613,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     alpha = eta    ! alpha associe a u_i chez les deces
     
     !generation des donnees par joint failty-copula
-    if(nsim_node(11)==3) allocate(don_simultamp(n_obs,n_col-1),don_simulStamp(n_obs,n_col-1))
+    if(nsim_node(11)==3) allocate(don_simultamp(n_obs,n_col),don_simulStamp(n_obs,n_col))
         
     allocate(don_simul(n_obs,n_col),don_simulS1(n_obs,n_col))
     
@@ -923,8 +924,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base)    
                 endif
                 
+				call dblepr("sigma_s", -1, sigma_s, 1)	
+				call dblepr("sigma_s", -1, sigma_s, 1)	
+				call dblepr("rsqrt", -1, rsqrt, 1)					
+				
                 if(nsim_node(11)==3) then ! joint frailty copula model
-                    call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col-1,logNormal,affiche_stat,theta,&
+                    call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
                         filtre2)    
@@ -981,16 +986,20 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                
         !!print*,don_simul(:,:)    
         !!print*,don_simulS1(1:5,)        
-        !stop        
+        !stop    
         
         if(nsim_node(11)==3) then ! joint frailty copula model
             don_simul(:,1:4) = don_simultamp(:,1:4)
             don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
-            don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:size(don_simultamp,2))
+            don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:(size(don_simultamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
             don_simulS1(:,1:4) = don_simulStamp(:,1:4)
             don_simulS1(:,5) = 0.d0
-            don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:size(don_simulStamp,2))
-        endif
+            don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:(size(don_simulStamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
+        endif		
+! call dblepr("don_simultamp", -1, dble(don_simultamp(1,:)), size(don_simultamp,2))		
+! call dblepr("don_simulStamp", -1, dble(don_simulStamp(1,:)), size(don_simulStamp,2))		
+! call dblepr("don_simulS1", -1, dble(don_simulS1(1,:)), size(don_simulS1,2))		
+
         
         
         ind_temp=ng
@@ -1089,7 +1098,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     
 !---------------------->  Surrogate
     vax=0.d0
-    
+	
+! call intpr("suis danc funcpan n_col=", -1, n_col, 1)
+! call dblepr("suis danc funcpan don_simulS=", -1, dble(don_simulS(1,:)), size(don_simulS,2))
+
     do i = 1,nsujet     !sur les observations
         k=0
         !read(9,*)tt0(i),tt1(i),ic(i),pourtrial(i),groupe(i),(vaxt(i,j),j=1,ver)

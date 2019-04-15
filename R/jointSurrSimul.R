@@ -17,7 +17,7 @@
 #' @param zeta Fixed value for \eqn{\zeta}. The default is \code{1}.
 #' @param sigma.s Fixed value for \eqn{\sigma^2_S}. The default is \code{0.7}.
 #' @param sigma.t Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.
-#' @param rsqrt Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=rsqrt^2}. 
+#' @param cor Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=cor^2}. 
 #' The default is \code{0.8}.
 #' @param betas Fixed value for \eqn{\beta_S}. The default is \code{-1.25}.
 #' @param betat Fixed value for \eqn{\beta_T}. The default is \code{-1.25}.
@@ -99,19 +99,19 @@
 #' 
 #' data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
 #'             alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
-#'             zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, 
+#'             zeta = 1, sigma.t = 0.7, cor = 0.8, betas = -1.25, 
 #'             betat = -1.25, full.data = 0, random.generator = 1, 
 #'             seed = 0, nb.reject.data = 0)
 #' 
 jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, 
-                           sigma.s = 0.7, sigma.t = 0.7,rsqrt = 0.8, betas = -1.25, betat = -1.25, frailt.base = 1,
+                           sigma.s = 0.7, sigma.t = 0.7,cor = 0.8, betas = -1.25, betat = -1.25, frailt.base = 1,
                            lambda.S = 1.8, nu.S = 0.0045,lambda.T = 3, nu.T = 0.0025, ver = 1, typeOf = 1,
                            equi.subj.trial = 1 ,equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
                            full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, nb.reject.data = 0){
   
   param.weibull <- 0
   n.col <- 13 #Number of columns of the simulated dataset. The required number is 13.
-  
+  rsqrt <- cor
   # ==============parameters checking======================
   if(!(equi.subj.trt %in% c(0,1)) | !(equi.subj.trial %in% c(0,1))){
     stop("Model's parameters equi.subj.trt and equi.subj.trial must be set to 0 or 1")

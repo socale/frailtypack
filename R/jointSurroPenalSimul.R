@@ -358,7 +358,6 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   
   # ============End parameters checking====================
   
-  vbetast = mbetast
   nsujet1 <- nbSubSimul
   ng <- nbSubSimul
   ntrials1 <- ntrialSimul
@@ -431,7 +430,10 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     filtre  <- c(1,1)
     filtre2 <- c(1,1)
     filtre0 <- as.matrix(data.frame(filtre,filtre2))
+    mbetast <- matrix(c(betas, betat), nrow = length(filtre), ncol = 2, byrow = F)
   }
+  
+  vbetast = mbetast
   
   # parametre fonction de risque de base
   gamma1 <- 2 # paramertre de la loi gamma
@@ -466,7 +468,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       if(type.joint.simul == 1){ # joint surrogate model
         data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
                         alpha = alpha.ui, theta = theta2, gamma = gamma.ui, zeta = zeta, sigma.s = sigma.s, 
-                        sigma.t = sigma.t, rsqrt = R2, betas = betas[1], betat = betat[1], lambda.S = lambdas, 
+                        sigma.t = sigma.t, cor = sqrt(R2), betas = betas[1], betat = betat[1], lambda.S = lambdas, 
                         nu.S = nus, lambda.T = lambdat, nu.T = nut, ver = ver,
                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt, full.data = 0, 
@@ -475,7 +477,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       }else{ # joint frailty copula model
           data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
                                         alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
-                                        sigma.t = sigma.t, rsqrt = R2, betas = c(betas, mbetast[,1]), betat = c(betat, mbetast[,2]),
+                                        sigma.t = sigma.t, cor = sqrt(R2), betas = mbetast[,1], betat = mbetast[,2],
                                         lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
                                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
                                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,

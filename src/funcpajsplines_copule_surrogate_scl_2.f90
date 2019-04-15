@@ -306,7 +306,6 @@
         cpt(g(i))=cpt(g(i))+1  
         if(nva1.gt.0)then
             vet = 0.d0   
-			call dblepr("suis danc funcpan ve=", -1, dble(ve(i,:)), size(ve,2))
             do j=1,nva1
                 vet =vet + bh(np-nva+j)*dble(ve(i,j))
             end do
@@ -337,6 +336,7 @@
 !ccccccccccccccccccccccccccccccccccccccccc 
 
     do k=1,ng  
+		!call dblepr("suis danc funcpan vedc=", -1, dble(vedc(k,:)), size(vedc,2))
         if(nva2.gt.0)then
             vet2 = 0.d0   
             do j=1,nva2
@@ -369,13 +369,14 @@
     !================================================================================
     !==========distribution lognormale des effects aleatoires==============================
     !================================================================================
-  
+    ! call intpr(" dans methodInt=", -1, methodInt, 1)
+	! call intpr(" dans type_joint=", -1, type_joint, 1)
     if (logNormal==1) then 
         select case(methodInt)
         case(0) ! estimation par monte carlo
             posind_i=1
             !call cpu_time(c3)
-            if(type_joint==1) then !cas modeles a effets aleatoires partages
+            if(type_joint==3) then !cas modeles a effets aleatoires partages
                 do ig=1,ntrials 
                     allocate(mu(nsujeti(ig))) !initialisation du vecteur des moyennes des effects alatoires
                     allocate(vc(nsujeti(ig),nsujeti(ig))) !initialisation de la matrice de variance covariance pour le MC      
@@ -401,7 +402,7 @@
             endif
             
             ! ========= End for now===============
-            
+            call dblepr(" dans funcpa integrale3=", -1, integrale3, ntrials)
             
             
             
