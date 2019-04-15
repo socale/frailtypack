@@ -29,7 +29,7 @@ contains
     
     
     integrant = 1.d0
-    
+    call intpr("nsujet_trial=", -1, nsujet_trial, 1)
     do j = 1, nsujet_trial
         ! Expression in the log-vraisamblance
         f_Sij = res2s_sujet(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))) &
@@ -78,7 +78,21 @@ contains
         integrant = integrant * contri_indiv
         
     enddo
+	call dblepr("f_Sij = ", -1, f_Sij, 1)
+	call dblepr("f_Tij = ", -1, f_Tij, 1)
+	call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
+	call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
+	call dblepr("C_theta = ", -1, C_theta, 1)
+	call dblepr("phimun_S = ", -1, phimun_S, 1)
+	call dblepr("phimun_T = ", -1, phimun_T, 1)
+	call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
+	call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
+	call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
+	call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
+	call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
+	call dblepr("contri_indiv = ", -1, contri_indiv, 1)
     Integrant_Copula = integrant
+	!Integrant_Copula = 0.d0
     return
     end function Integrant_Copula
     

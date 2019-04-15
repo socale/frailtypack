@@ -348,8 +348,8 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
         l=l+1
     end do
     
-    call intpr(" dans nb_procs=", -1, nb_procs, 1)
-	call intpr(" dans ndim=", -1, ndim, 1)
+    ! call intpr(" dans nb_procs=", -1, nb_procs, 1)
+	! call intpr(" dans ndim=", -1, ndim, 1)
     !integration sur vsi et vti
     ss=0.d0
     if(nb_procs==1) then !on fait du open MP car un seul processus
@@ -367,7 +367,7 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
             !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
                     ss=ss+func(fraili(ii,1),fraili(ii,2),fraili(ii,3),i,nsujet_trial)
-                    !call dblepr(" dans ss=", -1, ss, 1)
+                    ! call dblepr(" dans ss=", -1, ss, 1)
                 end do
             !$OMP END PARALLEL DO
         end if
@@ -401,8 +401,9 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
         ! !print*,"rang",rang, "voila ss general",ss
         ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
     endif
-
     MC_Copula_Essai=ss/dble(nsimu)
+	! call intpr("ss=", -1, ss, 1)
+	! call intpr("MC_Copula_Essai=", -1, MC_Copula_Essai, 1)
 
     deallocate(vi,usim,vc,fraili)
     return
