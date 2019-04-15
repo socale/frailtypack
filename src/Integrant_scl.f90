@@ -29,7 +29,7 @@ contains
     
     
     integrant = 1.d0
-    call intpr("nsujet_trial=", -1, nsujet_trial, 1)
+    !call intpr("nsujet_trial=", -1, nsujet_trial, 1)
     do j = 1, nsujet_trial
         ! Expression in the log-vraisamblance
         f_Sij = res2s_sujet(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1))) &

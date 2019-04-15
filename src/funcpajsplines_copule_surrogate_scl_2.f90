@@ -370,7 +370,7 @@
     !==========distribution lognormale des effects aleatoires==============================
     !================================================================================
     ! call intpr(" dans methodInt=", -1, methodInt, 1)
-	 call dblepr("nsujeti=", -1, nsujeti, ntrials)
+	 call intpr("nsujeti=", -1, nsujeti, ntrials)
     if (logNormal==1) then 
         select case(methodInt)
         case(0) ! estimation par monte carlo
