@@ -301,7 +301,7 @@
 !     pour le surrogate
 !ccccccccccccccccccccccccccccccccccccccccc
 
-    !!print*,"g=",g
+    
     do i=1,nsujet 
         cpt(g(i))=cpt(g(i))+1  
         if(nva1.gt.0)then
@@ -330,7 +330,7 @@
             goto 123
         end if
     end do
-!    !print*,'const_res1',const_res1
+    call dblepr("const_res4=", -1, const_res4, nsujet)
 !ccccccccccccccccccccccccccccccccccccccccc
 ! pour le deces 
 !ccccccccccccccccccccccccccccccccccccccccc 
@@ -370,7 +370,7 @@
     !==========distribution lognormale des effects aleatoires==============================
     !================================================================================
     ! call intpr(" dans methodInt=", -1, methodInt, 1)
-	! call intpr(" dans type_joint=", -1, type_joint, 1)
+	 call dblepr("nsujeti=", -1, nsujeti, ntrials)
     if (logNormal==1) then 
         select case(methodInt)
         case(0) ! estimation par monte carlo
