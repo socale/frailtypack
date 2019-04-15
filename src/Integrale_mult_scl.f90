@@ -292,9 +292,21 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
         end function func
     end interface
     
-    allocate(vc(size(chol,2),size(chol,2)),fraili(nsim,size(chol,2)))
+    allocate(vc(ndim,ndim),fraili(nsim,ndim))
     !vc=ABS(chol)
     vc=chol
+	if(frailt_base==0)then
+        vc = 0.d0 
+        vc(1,1) = Chol(1,1)
+        vc(2,1) = Chol(2,1)
+        vc(2,2) = Chol(2,2)
+    else
+        vc = 0.d0 
+        vc(1,1) = Chol(1,1)
+        vc(2,1) = Chol(2,1)
+        vc(2,2) = Chol(2,2)
+        vc(3,3) = Chol(3,3)
+    endif
     nsimu=nsim
     x22=0.d0
 
