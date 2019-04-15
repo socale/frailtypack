@@ -294,7 +294,7 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
     
     allocate(vc(ndim,ndim),fraili(nsim,ndim))
     !vc=ABS(chol)
-    vc=chol
+    !vc = chol
 	if(frailt_base==0)then
         vc = 0.d0 
         vc(1,1) = Chol(1,1)
@@ -348,8 +348,8 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
         l=l+1
     end do
     
-    ! call intpr(" dans nb_procs=", -1, nb_procs, 1)
-	! call intpr(" dans ndim=", -1, ndim, 1)
+    call intpr(" dans nb_procs=", -1, nb_procs, 1)
+	call intpr(" dans ndim=", -1, ndim, 1)
     !integration sur vsi et vti
     ss=0.d0
     if(nb_procs==1) then !on fait du open MP car un seul processus
