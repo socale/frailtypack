@@ -68,6 +68,7 @@
     double precision,dimension(:), allocatable::vvv_scl
 
 !    !print*,'debut funcpa'
+        
     choix=0
     ig=0
     k=0
@@ -85,7 +86,6 @@
     if (id.ne.0) bh(id)=bh(id)+thi
     if (jd.ne.0) bh(jd)=bh(jd)+thj    
     n = (np-nva-nparamfrail)/nst
-    
     ! reparametrisation des parametres de la spline (>=0) pour être sur d'avoir une fonction des risquer de base positive
     do i=1,n
         the1(i-3)=(bh(i))*(bh(i))
@@ -302,11 +302,11 @@
 !ccccccccccccccccccccccccccccccccccccccccc
 
     !!print*,"g=",g
-
     do i=1,nsujet 
         cpt(g(i))=cpt(g(i))+1  
         if(nva1.gt.0)then
             vet = 0.d0   
+			call dblepr("suis danc funcpan ve=", -1, dble(ve(i,:)), size(ve,2))
             do j=1,nva1
                 vet =vet + bh(np-nva+j)*dble(ve(i,j))
             end do
