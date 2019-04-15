@@ -330,7 +330,7 @@
             goto 123
         end if
     end do
-    call dblepr("const_res4=", -1, const_res4, nsujet)
+	
 !ccccccccccccccccccccccccccccccccccccccccc
 ! pour le deces 
 !ccccccccccccccccccccccccccccccccccccccccc 
@@ -363,14 +363,17 @@
             goto 123
         end if
     end do
-    
+    ! call dblepr("const_res4=", -1, const_res4, nsujet)
+	! call dblepr("const_res5=", -1, const_res5, nsujet)
+	! call dblepr("res2s_sujet=", -1, res2s_sujet, nsujet)
+	! call dblepr("res2_dcs_sujet=", -1, res2_dcs_sujet, nsujet)
 !**************INTEGRALES ****************************
 
     !================================================================================
     !==========distribution lognormale des effects aleatoires==============================
     !================================================================================
     ! call intpr(" dans methodInt=", -1, methodInt, 1)
-	 call intpr("nsujeti=", -1, nsujeti, ntrials)
+	 ! call intpr("nsujeti=", -1, nsujeti, ntrials)
     if (logNormal==1) then 
         select case(methodInt)
         case(0) ! estimation par monte carlo

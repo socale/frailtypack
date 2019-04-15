@@ -352,6 +352,7 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
 	! call intpr(" dans ndim=", -1, ndim, 1)
     !integration sur vsi et vti
     ss=0.d0
+	call OMP_SET_NUM_THREADS(1)
     if(nb_procs==1) then !on fait du open MP car un seul processus
         rang=0
         if(ndim.eq.2) then
