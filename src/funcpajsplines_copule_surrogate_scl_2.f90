@@ -416,6 +416,8 @@
             endif
             
             ! ========= End for now===============
+			!call dblepr("integrale3=", -1, integrale3, ntrials)
+			!call dblepr("log integrale3=", -1, dlog(integrale3), ntrials)
             ! call dblepr(" dans sum integrale3=", -1, sum(integrale3), 1)
 			! call dblepr(" dans log sum integrale3=", -1, dlog(sum(integrale3)), 1)
             
