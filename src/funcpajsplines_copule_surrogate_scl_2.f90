@@ -160,7 +160,7 @@
     !!print*,np,nva,nparamfrail,indice_eta,indice_theta,indice_varS,indice_varT,indice_covST
     ! pour eviter d'avoir des matrices de variances-covariances non defini positive, je suppose que c'est la cholesky qui est generee. par consequent sigma=Chol*Chol^T
     !Chol: matrice triangulaire inferieur. pour eviter de refaire la factorisation de cholesky pour l'algo MC, j'utilise directement cette matrice de cholesky a la place de la matrice de variance-covariance
-    if(type_joint==1) then !cas modele a fragilites partages
+    if(type_joint==1 .or. type_joint==3) then !cas modele a fragilites partages
         if(frailt_base==0)then
             allocate(mat_A(2,2))
             Chol=0.d0 
