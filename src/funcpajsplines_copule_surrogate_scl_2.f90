@@ -416,7 +416,8 @@
             endif
             
             ! ========= End for now===============
-            !call dblepr(" dans funcpa integrale3=", -1, integrale3, ntrials)
+            ! call dblepr(" dans sum integrale3=", -1, sum(integrale3), 1)
+			! call dblepr(" dans log sum integrale3=", -1, dlog(sum(integrale3)), 1)
             
             
             
@@ -1195,20 +1196,21 @@
         res=0.d0
         select case(methodInt)
         case(0) ! estimation par monte carlo
-            do k=1,ntrials!ng  
-                if(cpt(k).gt.0)then
-                    if(sigma2.gt.(1.d-8)) then      
-                        res= res + dlog(integrale3(k))
-                    else
-                        res= res + dlog(integrale3(k))
-                    endif
-                    
-                    if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                        funcpajsplines_copule_surrogate=-1.d9
-                        goto 123
-                    end if    
-                endif
-            end do
+            
+			res = sum(dlog(integrale3))
+			! do k=1,ntrials!ng  
+                ! if(cpt(k).gt.0)then
+                    ! if(sigma2.gt.(1.d-8)) then      
+                        ! res= res + dlog(integrale3(k))
+                    ! else
+                        ! res= res + dlog(integrale3(k))
+                    ! endif  
+                ! endif
+            ! end do
+			if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+                funcpajsplines_copule_surrogate=-1.d9
+                goto 123
+            end if 
         case(3) ! estimation par approximation de laplace
             ! je teste si l'une des estimations dans le calcul intégrale n'a pas marché 
             do ig=1,ntrials
@@ -1399,15 +1401,7 @@
         end do
         
         end select
-        
- !!print*,"integrale3=",integrale3        
- ! !print*,"suis la dans funcpa============5, res=",res  
- ! stop
-
     endif
-!!print*,res2s,res2_dcs,sum(res2s)+sum(res2_dcs),-pourgam,integrale3(k)
-! !print*,"res =",res
-! stop
 
     !================================================================================
     !=========================calcul de la penalisation==============================
@@ -1440,11 +1434,8 @@
     pe = k0(1)*pe1 + k0(2)*pe2 
     resnonpen = res
     res = res - pe
-    ! !print*,"funcpajsplines ligne 434, vraisemblance penalisee res=",res,"resnonpen",resnonpen
-    !cpteu=cpteu+1
-    !if(cpteu.eq.1000) then
-        !stop
-    !endif
+    call dblepr("k0 ", -1, k0, 2)
+	call dblepr("res ", -1, res, 1)
     deallocate(mat_A)
     if ((res.ne.res).or.(abs(res).ge. 1.d30).or.(res .ge. 0.d0)) then
         funcpajsplines_copule_surrogate=-1.d9
@@ -1466,8 +1457,6 @@
     end if
 !Ad:
 123     continue
- !!print*,"suis la dans funcpa============6, res=",res  
- !stop 
     return
     
     end function funcpajsplines_copule_surrogate

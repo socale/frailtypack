@@ -372,6 +372,8 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
                 end do
            !$OMP END PARALLEL DO
         end if
+		! call intpr("cluster i ", -1, i, 1)
+		! call dblepr("integrant ss ", -1, ss, 1)
     else ! dans ce cas on va faire du MPI
         ! rang du processus courang
         !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code)

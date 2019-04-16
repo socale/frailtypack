@@ -199,7 +199,7 @@
             ! !write(*,*)'iteration***',ni,'vrais',rl 
             if(affiche_itteration==1) then 
               call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
-			  call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
+			  !call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
             endif
         endif
     endif

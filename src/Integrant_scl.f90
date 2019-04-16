@@ -68,18 +68,19 @@ contains
         end select
         
         ! expression with derrivatives
-        derivphi_ij = delta(posind_i-1+j) * deltastar(posind_i-1+j) * phisecond_ST + (delta(posind_i-1+j)&
-                    * (1.d0 - deltastar(posind_i-1+j)) + (1.d0 - delta(posind_i-1+j)) * &
-                    deltastar(posind_i-1+j)) *  phiprim_ST + (1.d0 - delta(posind_i-1+j)) *&
-                    (1.d0 - deltastar(posind_i-1+j)) * C_theta
+        derivphi_ij = dble(delta(posind_i-1+j)) * dble(deltastar(posind_i-1+j)) * phisecond_ST + (dble(delta(posind_i-1+j))&
+                    * (1.d0 - dble(deltastar(posind_i-1+j))) + (1.d0 - dble(delta(posind_i-1+j))) * &
+                    dble(deltastar(posind_i-1+j))) *  phiprim_ST + (1.d0 - dble(delta(posind_i-1+j))) *&
+                    (1.d0 - dble(deltastar(posind_i-1+j))) * C_theta
         
         ! individual contributions
-        contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**delta(posind_i-1+j) * (f_Tij / phiprimphimun_T)&
-                     **deltastar(posind_i-1+j)
+        contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**dble(delta(posind_i-1+j)) * (f_Tij / phiprimphimun_T)&
+                     **dble(deltastar(posind_i-1+j))
         integrant = integrant * contri_indiv
+		! call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
+		! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
     enddo
 	!call intpr("control_affichage = ", -1, control_affichage, 1)
-		if(control_affichage == 0) then
 			! call dblepr("f_Sij = ", -1, f_Sij, 1)
 			! call dblepr("f_Tij = ", -1, f_Tij, 1)
 			! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
@@ -92,9 +93,7 @@ contains
 			! call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
 			! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
 			! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
-			! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
-		!	control_affichage = 1
-		endif
+			! call dblepr("integrant = ", -1, integrant, 1)
 		
     Integrant_Copula = integrant
     return

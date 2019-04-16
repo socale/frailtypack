@@ -528,6 +528,11 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       # I deleate the created text file
       file.remove(dir(pattern="kappa_valid_crois.txt"))
     }
+    
+    if(!is.null(kappa0) & (n_sim1 == 1)){
+      vect_kappa = kappa0
+    }
+
    # utils::write.table(vect_kappa,"kappa_valid_crois.txt",sep=" ",row.names = F,col.names = F)
 
   # critere de convergence du modele on donne en entree les critere a respecter et en sortie on recupere ceux obtenue du programme
