@@ -1576,13 +1576,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         EPS,nsim_node,indice_esti,indice_covST,0,param_weibull)
     !call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
-        ! !print*,""
-        ! !print*,"voila le vecteur b des parametres, s_i=:",s_i
-        ! !print*,b(2*(nz+2)+1:np)
-        ! !print*,""
-        
-        ! sauvegarde des b dans le fichier "ResultPreliminair_model_complet_simul.txt"
-        !!write(445,*)b
+		call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
     endif
 !122     continue
     !if(s_i<5) nsim_node(2)=32 ! on fait ceci juste pour debugger le programme
