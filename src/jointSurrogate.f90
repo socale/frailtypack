@@ -277,7 +277,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     thetacopule = paramSimul(23)
 	! les les parametres de simulation pour les autres covariables se trouvent a la fin du tableau paramSimul
 	
-	call dblepr("paramSimul = ",-1,paramSimul,size(paramSimul))
+	!call dblepr("paramSimul = ",-1,paramSimul,size(paramSimul))
     if(nsim_node(11) == 3) then ! joint frailty copula, remplissage des vecteurs des variables explicatives
         do i = 1, size(vbetast,1)
             vbetas(i) = vbetast(i,1) ! beta_s
@@ -924,9 +924,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base)    
                 endif
                 
-				call dblepr("sigma_s", -1, sigma_s, 1)	
-				call dblepr("sigma_s", -1, sigma_s, 1)	
-				call dblepr("rsqrt", -1, rsqrt, 1)					
+				! call dblepr("sigma_s", -1, sigma_s, 1)	
+				! call dblepr("sigma_s", -1, sigma_s, 1)	
+				! call dblepr("rsqrt", -1, rsqrt, 1)					
 				
                 if(nsim_node(11)==3) then ! joint frailty copula model
                     call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col,logNormal,affiche_stat,theta,&

@@ -25,9 +25,9 @@ contains
     double precision,intent(in)::vsi,vti,ui
     integer::j,n
     double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
-                      sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T
-    
-    
+                      sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T,&
+					  control_affichage
+      
     integrant = 1.d0
     do j = 1, nsujet_trial
         ! Expression in the log-vraisamblance
@@ -77,21 +77,25 @@ contains
         contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**delta(posind_i-1+j) * (f_Tij / phiprimphimun_T)&
                      **deltastar(posind_i-1+j)
         integrant = integrant * contri_indiv
-        
     enddo
-	call dblepr("f_Sij = ", -1, f_Sij, 1)
-	call dblepr("f_Tij = ", -1, f_Tij, 1)
-	call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
-	call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
-	call dblepr("C_theta = ", -1, C_theta, 1)
-	call dblepr("phimun_S = ", -1, phimun_S, 1)
-	call dblepr("phimun_T = ", -1, phimun_T, 1)
-	call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
-	call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
-	call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
-	call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
-	call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
-	call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+	
+		if(control_affichage == 0) then
+			call dblepr("f_Sij = ", -1, f_Sij, 1)
+			call dblepr("f_Tij = ", -1, f_Tij, 1)
+			call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
+			call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
+			call dblepr("C_theta = ", -1, C_theta, 1)
+			call dblepr("phimun_S = ", -1, phimun_S, 1)
+			call dblepr("phimun_T = ", -1, phimun_T, 1)
+			call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
+			call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
+			call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
+			call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
+			call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
+			call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+			control_affichage = 1
+		endif
+		
     Integrant_Copula = integrant
     return
     end function Integrant_Copula

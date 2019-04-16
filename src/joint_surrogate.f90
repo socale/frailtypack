@@ -135,6 +135,7 @@
     
     param_weibull=param_weibull0
     estim_wij_chap=0
+	control_affichage = 0
     
    ! 100 continue
     !rang=0
