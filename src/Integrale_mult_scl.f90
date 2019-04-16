@@ -352,7 +352,7 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
 	! call intpr(" dans ndim=", -1, ndim, 1)
     !integration sur vsi et vti
     ss=0.d0
-	call OMP_SET_NUM_THREADS(1)
+	! call OMP_SET_NUM_THREADS(1)
     if(nb_procs==1) then !on fait du open MP car un seul processus
         rang=0
         if(ndim.eq.2) then
@@ -364,13 +364,13 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
                 end do
             !$OMP END PARALLEL DO
         else ! cas de 3 points
-         !   !$OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili)&
-         !   !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+           !$OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili)&
+           !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
                     ss=ss+func(fraili(ii,1),fraili(ii,2),fraili(ii,3),i,nsujet_trial)
                     ! call dblepr(" dans ss=", -1, ss, 1)
                 end do
-         !   !$OMP END PARALLEL DO
+           !$OMP END PARALLEL DO
         end if
     else ! dans ce cas on va faire du MPI
         ! rang du processus courang
