@@ -84,7 +84,8 @@
     end do 
 
     if (id.ne.0) bh(id)=bh(id)+thi
-    if (jd.ne.0) bh(jd)=bh(jd)+thj    
+    if (jd.ne.0) bh(jd)=bh(jd)+thj   
+	!call intpr("nva", -1, nva, 1)	
     n = (np-nva-nparamfrail)/nst
     ! reparametrisation des parametres de la spline (>=0) pour être sur d'avoir une fonction des risquer de base positive
     do i=1,n
@@ -97,8 +98,8 @@
     
     if(effet.eq.1) then
         if(logNormal==1)then
-            if(copula_function == 1) theta_copule = dexp(bh(np-nva + 1)) ! claton: exp transform
-            if(copula_function == 2) theta_copule = bh(np-nva + 1)**2.d0  ! Gumbel: choleschy transform
+            if(copula_function == 1) theta_copule = dexp(bh(np-nva)) ! claton: exp transform
+            if(copula_function == 2) theta_copule = bh(np-nva)**2.d0  ! Gumbel: choleschy transform
             varS1 = bh(np-nva-nparamfrail+indice_varS)
             varT1 = bh(np-nva-nparamfrail+indice_varS+indice_varT)
             !sig2=theta2 ! je fais appel a sig2 car c'est la variable utilisee dans la suite des procedures pour le joint classique
@@ -174,19 +175,19 @@
             Chol(2,2)=varT1
             Chol(3,3)=gamma_ui
         endif
-        mat_A=MATMUL(Chol,TRANSPOSE(Chol))
-		!mat_A=MATMUL(Chol(1:3,1:3),TRANSPOSE(Chol(1:3,1:3)))
+        mat_A = MATMUL(Chol,TRANSPOSE(Chol))
         varS=mat_A(1,1)
         varT=mat_A(2,2)
         covST=mat_A(1,2)
         if(frailt_base==1)    gamma_ui=mat_A(3,3)
-    endif
 	
-	if(control_affichage == 0) then
-		call dblepr("bh = ", -1, bh(np-nva-nparamfrail +1 :np),nva+nparamfrail)
-		call dblepr(" Chol =", -1, Chol, 9)
-		call dblepr(" mat_A =", -1, mat_A, 9)
-		control_affichage = 1
+		! if(control_affichage == 0) then
+			! call dblepr("bh = ", -1, bh(np-nva-nparamfrail +1 :np),nva+nparamfrail)
+			! call dblepr(" Chol =", -1, Chol, 9)
+			! call dblepr(" TRANSPOSE(Chol) =", -1, TRANSPOSE(Chol), 9)
+			! call dblepr(" mat_A =", -1, mat_A, size(mat_A,1)*size(mat_A,2))
+			! control_affichage = 1
+		! endif
 	endif
 	! call intpr(" size(Chol, 2)=", -1, size(Chol, 2), 1)
 	
@@ -320,6 +321,8 @@
         else
             vet=1.d0
         endif
+		! call intpr("nva1", -1, nva1, 1)
+		! call dblepr(" ve(i,j)=", -1, ve(i,:), 2)
          
     !res2s_sujet(i)=dlog(dut1(nt1(i)))+vet
     res2s_sujet(i)=dut1(nt1(i)) * dexp(vet) ! baseline hazard for subject i

@@ -1414,8 +1414,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma)=&
                   dsqrt(gamma_ui)
             endif
-			if(copula_function == 1) b(np-nva + 1) = dlog(thetacopule) ! claton: exp transform
-            if(copula_function == 2) b(np-nva + 1) = dsqrt(thetacopule)  ! Gumbel: choleschy transform
+			if(copula_function == 1) b(np-nva) = dlog(thetacopule) ! claton: exp transform
+            if(copula_function == 2) b(np-nva) = dsqrt(thetacopule)  ! Gumbel: choleschy transform
 			b((np-nva + 1) : (np - nva + nva1)) = vbetas
 			b((np-nva2 + 1) : np) = vbetat
         endif
@@ -1465,10 +1465,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     
 	if(nsim_node(8)==3)then !joint frailty-copula
         b(np-nva-nparamfrail+indice_varS)=dsqrt(sigma_ss_init)
-        b(np-nva-nparamfrail+indice_varS+indice_varT)=sigma_st_init/dsqrt(sigma_ss_init)
-        if(indice_covST==1) then
-            b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST)=dsqrt(sigma_tt_init-&
+        b(np-nva-nparamfrail+indice_varS+indice_varT)=dsqrt(sigma_tt_init-&
                 (sigma_st_init**2.d0)/sigma_ss_init)
+        if(indice_covST==1) then
+            b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST)=sigma_st_init/dsqrt(sigma_ss_init)
         endif
         if(frailt_base==1) then
             if(indice_alpha==1) b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha)=&
@@ -1476,8 +1476,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma)=&
                     dsqrt(gamma_init)
             endif
-		if(copula_function == 1)  b(np-nva + 1) =  dlog(thetacopula_init)! claton: exp transform
-        if(copula_function == 2) b(np-nva + 1) = dsqrt(thetacopula_init)  ! Gumbel: choleschy transform
+		if(copula_function == 1)  b(np-nva) =  dlog(thetacopula_init)! claton: exp transform
+        if(copula_function == 2) b(np-nva) = dsqrt(thetacopula_init)  ! Gumbel: choleschy transform
 		b((np-nva + 1) : (np - nva + nva1)) = vbetas_intit
 		b((np-nva2 + 1) : np) = vbetat_intit
     else 
@@ -1492,10 +1492,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     if(nsim_node(8)==1)then
         b(np-2-nparamfrail+indice_eta+indice_theta)=dsqrt(theta_init)
         b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS)=dsqrt(sigma_ss_init)
-        b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT)=sigma_st_init/dsqrt(sigma_ss_init)
-        if(indice_covST==1) then
-            b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST)=dsqrt(sigma_tt_init-&
+        b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT)=dsqrt(sigma_tt_init-&
                 (sigma_st_init**2.d0)/sigma_ss_init)
+        if(indice_covST==1) then
+            b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST)=sigma_st_init/&
+			    dsqrt(sigma_ss_init)
          endif
         if(frailt_base==1) then
             if(indice_alpha==1) b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+&

@@ -203,7 +203,7 @@
         indice_gamma_t=1
         indice_gamma_st=indice_esti(4)
         indice_alpha_ui=indice_esti(3)
-        if(type_joint==1) then ! modele a fragilites partages
+        if(type_joint==1 .or. type_joint==3) then ! modele a fragilites partages
             allocate(chol(3,3))
         else ! modele complet
             allocate(chol(6,6))
