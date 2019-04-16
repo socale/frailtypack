@@ -78,8 +78,8 @@ contains
                      **deltastar(posind_i-1+j)
         integrant = integrant * contri_indiv
     enddo
-	
-		! if(control_affichage == 0) then
+	!call intpr("control_affichage = ", -1, control_affichage, 1)
+		if(control_affichage == 0) then
 			! call dblepr("f_Sij = ", -1, f_Sij, 1)
 			! call dblepr("f_Tij = ", -1, f_Tij, 1)
 			! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
@@ -93,8 +93,8 @@ contains
 			! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
 			! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
 			! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
-			! control_affichage = 1
-		! endif
+		!	control_affichage = 1
+		endif
 		
     Integrant_Copula = integrant
     return

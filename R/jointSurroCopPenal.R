@@ -769,6 +769,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   #betas.init  # valeur initiale de betas
   #betat.init  # valeur initiale de betat
   vbetast = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
+  vbetast_init = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
   
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
@@ -1032,6 +1033,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
                   dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
                   datab = matrix(0, nrow = 1, ncol = np),
                   as.double(vbetast),
+                  as.double(vbetastinit),
                   PACKAGE="frailtypack"
   )
   

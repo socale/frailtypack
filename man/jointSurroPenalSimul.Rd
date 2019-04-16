@@ -21,9 +21,9 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
    random.nb.sim = 0, seed = 0, init.kappa = NULL,  
-   type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL,  
-   typecopula =1, theta.copula = 6, nb.decimal = 4, 
-   print.times = TRUE, print.iter=FALSE)
+   type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL, 
+   mbetast.init = NULL, typecopula =1, theta.copula = 6, 
+   nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
@@ -223,6 +223,11 @@ is used, the default (see \link{joinSurroPenal}). If set to \code{3}, data are g
 for surrogacy.}
 
 \item{mbetast}{Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix include 
+two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
+to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
+is NULL and assume only the treatment effect}
+
+\item{mbetast.init}{Matrix or dataframe containing the initial values for the fixed effects associated with the covariates. This matrix include 
 two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
 to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 is NULL and assume only the treatment effect}

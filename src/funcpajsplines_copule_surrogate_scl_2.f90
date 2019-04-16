@@ -161,14 +161,13 @@
     ! pour eviter d'avoir des matrices de variances-covariances non defini positive, je suppose que c'est la cholesky qui est generee. par consequent sigma=Chol*Chol^T
     !Chol: matrice triangulaire inferieur. pour eviter de refaire la factorisation de cholesky pour l'algo MC, j'utilise directement cette matrice de cholesky a la place de la matrice de variance-covariance
     if(type_joint==1 .or. type_joint==3) then !cas modele a fragilites partages
+		allocate(mat_A(3,3))
         if(frailt_base==0)then
-            allocate(mat_A(2,2))
             Chol=0.d0 
             Chol(1,1)=varS1
             Chol(2,1)=covST1
             Chol(2,2)=varT1
         else
-            allocate(mat_A(3,3))
             Chol=0.d0 
             Chol(1,1)=varS1
             Chol(2,1)=covST1
@@ -176,12 +175,21 @@
             Chol(3,3)=gamma_ui
         endif
         mat_A=MATMUL(Chol,TRANSPOSE(Chol))
+		!mat_A=MATMUL(Chol(1:3,1:3),TRANSPOSE(Chol(1:3,1:3)))
         varS=mat_A(1,1)
         varT=mat_A(2,2)
         covST=mat_A(1,2)
         if(frailt_base==1)    gamma_ui=mat_A(3,3)
     endif
- 
+	
+	if(control_affichage == 0) then
+		call dblepr("bh = ", -1, bh(np-nva-nparamfrail +1 :np),nva+nparamfrail)
+		call dblepr(" Chol =", -1, Chol, 9)
+		call dblepr(" mat_A =", -1, mat_A, 9)
+		control_affichage = 1
+	endif
+	! call intpr(" size(Chol, 2)=", -1, size(Chol, 2), 1)
+	
 !!print*,"suis la dans funcpa============2"
 !----------  calcul de ut1(ti) et ut2(ti) ---------------------------
 !    attention the(1)  sont en nz=1

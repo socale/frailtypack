@@ -63,9 +63,9 @@
 #'    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL,  
-#'    type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL,  
-#'    typecopula =1, theta.copula = 6, nb.decimal = 4, 
-#'    print.times = TRUE, print.iter=FALSE)
+#'    type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL, 
+#'    mbetast.init = NULL, typecopula =1, theta.copula = 6, 
+#'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' Default is \code{40}. 
@@ -215,6 +215,11 @@
 #' two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
 #' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 #' is NULL and assume only the treatment effect
+#' @param mbetast.init Matrix or dataframe containing the initial values for the fixed effects associated with the covariates. This matrix include 
+#' two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
+#' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
+#' is NULL and assume only the treatment effect
+
 #' @param typecopula # The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1
 #' @param theta.copula The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 #' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
@@ -304,7 +309,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                       gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL, type.joint.estim = 1,
-                      type.joint.simul = 1, mbetast = NULL, typecopula = 1, theta.copula = 6, thetacopula.init = 3, 
+                      type.joint.simul = 1, mbetast = NULL, mbetast.init = NULL, typecopula = 1, theta.copula = 6, thetacopula.init = 3, 
                       nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL
@@ -350,10 +355,18 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   if((type.joint.simul == 1) & !is.null(mbetast)){
     stop("argument mbetast is required only if the argument type.joint.simul is set to 3")
   }
+
+  if((type.joint.simul == 1) & !is.null(mbetast.init)){
+    stop("argument mbetast.init is required only if the argument type.joint.simul is set to 3")
+  }
   
   if(!is.null(mbetast))
     if(!(length(dim(mbetast)) ==2)| !(dim(mbetast)[2] == 2)){
       stop("argument mbetast should be a matrix or a dataframe with 2 columns")
+    }
+  if(!is.null(mbetast.init))
+    if(!(length(dim(mbetast.init)) ==2)| !(dim(mbetast.init)[2] == 2)){
+      stop("argument mbetast.init should be a matrix or a dataframe with 2 columns")
     }
   
   # ============End parameters checking====================
@@ -392,6 +405,10 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       if(!(dim(mbetast)[1] == ver))
         stop(" The number of rows of the matrix mbetast must be equal to the number of covariates ")
     }
+    if(!is.null(mbetast.init)){
+      if(!(dim(mbetast.init)[1] == ver))
+        stop(" The number of rows of the matrix mbetast.init must be equal to the number of covariates ")
+    }
     
     # vecteur des noms de variables
     nomvarl<- "trt"
@@ -421,6 +438,10 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       if(!(dim(mbetast)[1] == ver))
         stop(" The number of rows of the matrix mbetast must be equal to the number of covariates ")
     }
+    if(!is.null(mbetast.init)){
+      if(!(dim(mbetast.init)[1] == ver))
+        stop(" The number of rows of the matrix mbetast.init must be equal to the number of covariates ")
+    }
     
     # vecteur des noms de variables
     nomvarl<- c("trt","var2")
@@ -431,9 +452,11 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     filtre2 <- c(1,1)
     filtre0 <- as.matrix(data.frame(filtre,filtre2))
     mbetast <- matrix(c(betas, betat), nrow = length(filtre), ncol = 2, byrow = F)
+    mbetast.init <- matrix(c(betas.init, betat.init), nrow = length(filtre), ncol = 2, byrow = F)
   }
   
   vbetast = mbetast
+  vbetastinit = mbetast.init
   
   # parametre fonction de risque de base
   gamma1 <- 2 # paramertre de la loi gamma
@@ -571,7 +594,10 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   }
   
   if(is.null(vbetast)){ # joint surrogate or joint copula with 1 covariate
-    vbetast = matrix(c(betas.init,betat.init),nrow = 1, ncol = 2)
+    vbetast = matrix(c(betas,betat),nrow = 1, ncol = 2)
+  }
+  if(is.null(vbetastinit)){ # joint surrogate or joint copula with 1 covariate
+    vbetastinit = matrix(c(betas.init,betat.init),nrow = 1, ncol = 2)
   }
   
   revision_echelle <- scale # coefficient pour la division des temps de suivi. permet de reduire l'echelle des temps pour eviter les problemes numeriques en cas d'un nombre eleve de sujet pour certains cluster
@@ -770,6 +796,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                   dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
                   datab = matrix(0, nrow = n_sim1, ncol = np),
                   as.double(vbetast),
+                  as.double(vbetastinit),
                   PACKAGE="frailtypack"
   )
   

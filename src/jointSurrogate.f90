@@ -7,7 +7,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
-                          dataHessian,dataHessianIH,datab,vbetast)
+                          dataHessian,dataHessianIH,datab,vbetast,vbetastinit)
                           
     ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
@@ -47,7 +47,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer, dimension(5), intent(in)::sizeVect
     double precision, dimension(ntrials1), intent(in)::p,prop_i
     double precision,dimension(n_sim1,2), intent(in):: vect_kappa
-    double precision, dimension(nbrevar(3),2), intent(in)::vbetast
+    double precision, dimension(nbrevar(3),2), intent(in)::vbetast,vbetastinit
+
     
     ! ! =====Parametres fournies en sortie par la subroutine=====
     integer, intent(out):: ni, istop, ier
@@ -101,7 +102,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(:),allocatable::linearpred,vect_kendall_tau,t_chap_kendall,t_chap_R2,vect_kendall_tau_temp,vect_R2
     double precision,dimension(:),allocatable::linearpreddc
     double precision,dimension(:),allocatable::time
-    double precision,dimension(:),allocatable::timedc,vbetas,vbetat
+    double precision,dimension(:),allocatable::timedc,vbetas,vbetat, vbetas_intit, vbetat_intit
     integer,dimension(4)::mtaille
     double precision,dimension(4)::paraweib
     double precision,dimension(3)::paratps,descripSurr,descripDeces
@@ -218,7 +219,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     frailt_base=indice_a_estime(5) !dit si l'on prend en compte l'heterogeneite sur le risque de base aussi bien dans la generation des donnes que dans l'estimation(1) ou non (0)
     !call intpr("I'm there scl 13:", -1, code_print, 1)
     ver=nbrevar(3) ! nombre total de variables explicatives
-    allocate(vbetas(ver),vbetat(ver))
+    allocate(vbetas(ver),vbetat(ver),vbetas_intit(ver), vbetat_intit(ver))
     
     AG=0 ! andersen-gill approach(1=oui) 
     
@@ -282,6 +283,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         do i = 1, size(vbetast,1)
             vbetas(i) = vbetast(i,1) ! beta_s
             vbetat(i) = vbetast(i,2) ! beta_t
+			vbetas_intit(i) = vbetastinit(i,1) ! beta_s
+            vbetat_intit(i) = vbetastinit(i,2) ! beta_t
 			!call dblepr("vbetast", -1, vbetast(i,:), size(vbetast,2))
         enddo
     endif
@@ -1398,6 +1401,24 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 indice_theta_t+indice_theta_st+indice_gamma_t+indice_gamma_st)=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
             
         endif
+		
+		if(nsim_node(8)==3)then !joint frailty-copula
+            b(np-nva-nparamfrail+indice_varS)=dsqrt(sigma_s)
+            b(np-nva-nparamfrail+indice_varS+indice_varT)=dsqrt(sigma_t)
+            if(indice_covST==1) then
+                b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST)=rsqrt*dsqrt(sigma_s)*dsqrt(sigma_t)
+            endif
+            if(frailt_base==1) then
+                if(indice_alpha==1) b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha)=&
+                  alpha_ui
+                b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma)=&
+                  dsqrt(gamma_ui)
+            endif
+			if(copula_function == 1) b(np-nva + 1) = dlog(thetacopule) ! claton: exp transform
+            if(copula_function == 2) b(np-nva + 1) = dsqrt(thetacopule)  ! Gumbel: choleschy transform
+			b((np-nva + 1) : (np - nva + nva1)) = vbetas
+			b((np-nva2 + 1) : np) = vbetat
+        endif
     endif
     
     !affectation manuelle des parametres initiaux (choleschy obtenue de R)
@@ -1426,6 +1447,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         thetast_init=rsqrt_theta*dsqrt(theta)*dsqrt(theta2_t)
         gammat_init=gamma_uit
         gammast_init=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
+		
+		! frailty-copula 
+		thetacopula_init = thetacopule
+		vbetas_intit = vbetas
+		vbetat_intit = vbetat
         
     endif
     
@@ -1437,23 +1463,30 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         endif
     endif
     
-    b(np-1)=betas_init !b_s
-    b(np)=betat_init
-    if(indice_eta==1)then
-        b(np-2-nparamfrail+indice_eta)=zeta_init !eta
-    endif
-    
-    ! !print*,"indice_covST=",indice_covST
-    ! !print*,dsqrt(theta_init)
-    ! !print*,dsqrt(sigma_ss_init)
-    ! !print*,sigma_st_init/dsqrt(sigma_ss_init)
-    ! !print*,dsqrt(sigma_tt_init-(sigma_st_init**2.d0)/&
-            ! sigma_ss_init)
-    ! !print*,alpha_init
-    ! !print*,dsqrt(gamma_init)
-    ! !print*,sigma_st_init
-    ! !print*,sigma_tt_init
-    ! !print*,"indice_alpha",indice_alpha
+	if(nsim_node(8)==3)then !joint frailty-copula
+        b(np-nva-nparamfrail+indice_varS)=dsqrt(sigma_ss_init)
+        b(np-nva-nparamfrail+indice_varS+indice_varT)=sigma_st_init/dsqrt(sigma_ss_init)
+        if(indice_covST==1) then
+            b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST)=dsqrt(sigma_tt_init-&
+                (sigma_st_init**2.d0)/sigma_ss_init)
+        endif
+        if(frailt_base==1) then
+            if(indice_alpha==1) b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha)=&
+                alpha_init
+                b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma)=&
+                    dsqrt(gamma_init)
+            endif
+		if(copula_function == 1)  b(np-nva + 1) =  dlog(thetacopula_init)! claton: exp transform
+        if(copula_function == 2) b(np-nva + 1) = dsqrt(thetacopula_init)  ! Gumbel: choleschy transform
+		b((np-nva + 1) : (np - nva + nva1)) = vbetas_intit
+		b((np-nva2 + 1) : np) = vbetat_intit
+    else 
+		b(np-1)=betas_init !b_s
+		b(np)=betat_init
+		if(indice_eta==1)then
+			b(np-2-nparamfrail+indice_eta)=zeta_init !eta
+		endif
+	endif
     
     ! si modele complet avec effets aleatoires partages
     if(nsim_node(8)==1)then
@@ -1461,23 +1494,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS)=dsqrt(sigma_ss_init)
         b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT)=sigma_st_init/dsqrt(sigma_ss_init)
         if(indice_covST==1) then
-            ! !print*,"suiss",np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST
-            ! !print*,"b",b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST)&
-            ! ,dsqrt(sigma_tt_init-(sigma_st_init**2.d0)/sigma_ss_init)
-            ! !print*,dsqrt(sigma_tt_init-(sigma_st_init**2.d0)/sigma_ss_init)
-            
             b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST)=dsqrt(sigma_tt_init-&
                 (sigma_st_init**2.d0)/sigma_ss_init)
-            
-            ! !print*,b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST)
-        endif
+         endif
         if(frailt_base==1) then
             if(indice_alpha==1) b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+&
                 indice_alpha)=alpha_init
             b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma)=&
                 dsqrt(gamma_init)
-            ! !print*,"gamma_init",gamma_init,dsqrt(gamma_init)
-            ! stop
         endif
     endif
     
