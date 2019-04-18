@@ -2633,8 +2633,8 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     ! nsujet_trial= nombre de sujets dans le cluster courant
     ! i= cluster courant
     
-    use var_surrogate, only: adaptative,xx1,ww1,estim_wij_chap,posind_i,invBi_chol_Essai,ui_chap_Essai,&
-        invBi_cholDet_Essai,frailt_base,nb_procs
+    use var_surrogate, only: adaptative,xx1,ww1,invBi_chol_Essai,ui_chap_Essai,&
+        invBi_cholDet_Essai,nb_procs
     use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
     use fonction_A_integrer, only:multiJ
     use Autres_fonctions, only:pos_proc_domaine
@@ -2645,11 +2645,9 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     implicit none
     integer ::ii,jj,npg,kk,cpt,init_i,max_i,code,erreur,rang
     integer,intent(in):: ndim,nnodes,nsujet_trial,i
-    !double precision,dimension(1:nnodes) ::xx1,ww1
     double precision::ss1,ss2,auxfunca,ss
-    double precision, dimension(ndim)::xxl,m,xx !vecteur qui contiendra à chaque fois les points de quadrature
-    double precision,dimension(ndim,ndim)::invBi_chol_Essai_k ! pour recuperer les matrice B_k dans le vecteur des matrices B des essais K
-    !double precision, external::gauss_HermMultA_surr    
+    double precision, dimension(ndim)::xxl,m 
+    double precision,dimension(ndim,ndim)::invBi_chol_Essai_k ! pour recuperer les matrice B_k dans le vecteur des matrices B des essais K 
     
     ! bloc interface pour la definition de la fonction func
     interface
@@ -2683,7 +2681,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     
     if(ndim.eq.2) then
         !$OMP PARALLEL DO default(none) PRIVATE (ii,jj,ss1,m,xxl) firstprivate(auxfunca) SHARED(npg,nsujet_trial,i,xx1,ww1,&
-        !$OMP invBi_chol_Essai_k,ndim,ui_chap_Essai,adaptative,posind_i)&
+        !$OMP invBi_chol_Essai_k,ndim,ui_chap_Essai,adaptative)&
         !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do ii=1,npg
                 ss1=0.d0
@@ -2707,7 +2705,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
             rang=0
             !$OMP PARALLEL DO default(none) PRIVATE (ii,jj,ss1,m,xxl,kk,ss2) firstprivate(auxfunca) &
             !$OMP SHARED(npg,nsujet_trial,i,xx1,ww1,&
-            !$OMP invBi_chol_Essai_k,ndim,ui_chap_Essai,adaptative,posind_i,frailt_base)&
+            !$OMP invBi_chol_Essai_k,ndim,ui_chap_Essai,adaptative)&
             !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
             do kk=1,npg
                 ss2=0.d0

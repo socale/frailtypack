@@ -298,10 +298,13 @@ module func_adaptative
         endif
 		
         res = Integrant_Copula(vsi,vti,ui,essai_courant,nsujeti(essai_courant))
-        res = dlog(res)
-
-		if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+        !call dblepr("res funcpaadaptativ = ", -1, res, 1)
+		res = dlog(res)
+		!call dblepr("log res funcpaadaptativ = ", -1, res, 1)
+		
+		if ((res.ne.res).or.(abs(res).ge. 1.d30)) then ! pour test infini et NaN
 			funcpafrailtyPred_copula =-1.d9
+			call dblepr("log res funcpaadaptativ = ", -1, res, 1)
 			goto 124
 		else
 			funcpafrailtyPred_copula = res

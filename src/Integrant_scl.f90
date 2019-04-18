@@ -18,7 +18,7 @@ contains
     
     use var_surrogate, only: posind_i, alpha_ui, const_res4, const_res5, res2_dcs_sujet,res2s_sujet, &
         theta_copule, delta, deltastar, copula_function, methodInt, pi, gamma_ui, determinant, &
-		varcovinv
+		varcovinv, adaptative
     use comon, only: eta,ve
     
     IMPLICIT NONE
@@ -27,7 +27,7 @@ contains
     integer::j,n
     double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
                       sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T,&
-					  control_affichage, f_V
+					  f_V
     double precision, dimension(:,:),allocatable::m1,m3  
     double precision, dimension(:,:),allocatable::m
       
@@ -80,8 +80,11 @@ contains
         contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**dble(delta(posind_i-1+j)) * (f_Tij / phiprimphimun_T)&
                      **dble(deltastar(posind_i-1+j))
         integrant = integrant * contri_indiv
-		! call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
-		! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+		if(adaptative .and. integrant==0) then
+		    call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
+		    call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+			call dblepr("integrant = ", -1, integrant, 1)
+		endif
     enddo
 	
 	if (methodInt == 1)then
@@ -94,7 +97,7 @@ contains
 		Integrant_Copula = integrant * f_V
 		deallocate(m,m1,m3)
 	endif
-	!call intpr("control_affichage = ", -1, control_affichage, 1)
+		! if(adaptative) then
 			! call dblepr("f_Sij = ", -1, f_Sij, 1)
 			! call dblepr("f_Tij = ", -1, f_Tij, 1)
 			! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
@@ -108,6 +111,7 @@ contains
 			! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
 			! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
 			! call dblepr("integrant = ", -1, integrant, 1)
+	    ! endif
 		
     if (methodInt == 0) Integrant_Copula = integrant
     return

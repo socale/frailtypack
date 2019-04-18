@@ -493,7 +493,7 @@
                         10 continue
                         call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_copula,&
                                          I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
-  
+							
                         if (istop.ne.1 .and. non_conv<=10) then ! on passe à l'individu suivant, juste pour le test
                             b_i=-0.5*non_conv
                             non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
@@ -574,7 +574,8 @@
                 endif 
             end do
    
-            
+            ! call dblepr("integrale3=", -1, integrale3, ntrials)
+			! call dblepr("log integrale3=", -1, dlog(integrale3), ntrials)
             
             
             ! cas modele a effet aleatoires correles
