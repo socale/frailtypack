@@ -491,7 +491,7 @@
                         v_i=0.d0
                         
                         10 continue
-                        call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_Essai,&
+                        call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_copula,&
                                          I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
   
                         if (istop.ne.1 .and. non_conv<=10) then ! on passe à l'individu suivant, juste pour le test
