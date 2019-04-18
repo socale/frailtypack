@@ -191,7 +191,7 @@
         endif      
       
       !!print*,"indice_eta=",indice_eta
-      indice_theta=1
+      if(type_joint .ne.3) indice_theta=1
       indice_alpha=1
       indice_sigma=1
       indice_varS=1

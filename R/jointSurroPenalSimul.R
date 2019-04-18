@@ -843,10 +843,26 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   result$n.iter <- ans$ni
   result$dataTkendall <- data.frame(ans$fichier_kendall)
   result$dataR2boot <- data.frame(ans$fichier_R2)
-  result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
-  names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
-                                    "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
-                                    "R2trial","SE.R2trial","tau")
+  if(!(type.joint==3)){
+    result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
+    names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
+                                      "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
+                                      "R2trial","SE.R2trial","tau")
+  }else{
+    result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
+    entete <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
+                                      "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
+                                      "R2trial","SE.R2trial","tau","SE.KendTau")
+    if(ves>1){
+      entete <- c(entete, paste("var", 2:ves, sep = ""))
+      
+    }
+    if(vet>1){
+      entete <- c(entete, paste("var", 2:vet, sep = ""))
+      
+    }
+    names(result$dataParamEstim) <- entete
+  }
   names(result$dataTkendall) <- c("Ktau","inf.95%CI","sup.95%CI")
   names(result$dataR2boot) <- c("R2.boot","inf.95%CI","sup.95%CI")
   result$dataHessian <- data.frame(ans$dataHessian)
