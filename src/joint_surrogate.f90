@@ -59,7 +59,7 @@
     double precision,dimension(mtaille(2),3)::lam2Out
     double precision,dimension(mtaille(4),3)::su2Out
     integer::ss,sss
-    double precision,dimension(np):: b!,b_save
+    double precision,dimension(np), intent(inout):: b!,b_save
     double precision,dimension(2),intent(out)::LCV
     double precision,dimension(2)::shapeweib,scaleweib
     double precision,dimension(4),intent(out)::paraweib
