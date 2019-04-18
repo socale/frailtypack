@@ -937,7 +937,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
-                        filtre2)    
+                        filtre2)  
+					don_simul(:,1:4) = don_simultamp(:,1:4)
+					don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
+					don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:(size(don_simultamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
+					don_simulS1(:,1:4) = don_simulStamp(:,1:4)
+					don_simulS1(:,5) = 0.d0
+					don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:(size(don_simulStamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
+
                 endif
                 
                 if(nsim_node(11)==2) then ! modele complet avec effets aleatoires correles
@@ -992,15 +999,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !!print*,don_simul(:,:)    
         !!print*,don_simulS1(1:5,)        
         !stop    
-        
-        if(nsim_node(11)==3) then ! joint frailty copula model
-            don_simul(:,1:4) = don_simultamp(:,1:4)
-            don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
-            don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:(size(don_simultamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
-            don_simulS1(:,1:4) = don_simulStamp(:,1:4)
-            don_simulS1(:,5) = 0.d0
-            don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:(size(don_simulStamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
-        endif		
+        	
 ! call dblepr("don_simultamp", -1, dble(don_simultamp(1,:)), size(don_simultamp,2))		
 ! call dblepr("don_simulStamp", -1, dble(don_simulStamp(1,:)), size(don_simulStamp,2))		
 ! call dblepr("don_simulS1", -1, dble(don_simulS1(1,:)), size(don_simulS1,2))		
@@ -1420,6 +1419,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             if(copula_function == 2) b(np-nva) = dsqrt(thetacopule)  ! Gumbel: choleschy transform
 			b((np-nva + 1) : (np - nva + nva1)) = vbetas
 			b((np-nva2 + 1) : np) = vbetat
+			! call dblepr(" gamma_ui joint =", -1, gamma_ui, 1)
         endif
     endif
     

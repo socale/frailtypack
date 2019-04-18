@@ -18,8 +18,8 @@ contains
     
     use var_surrogate, only: posind_i, alpha_ui, const_res4, const_res5, res2_dcs_sujet,res2s_sujet, &
         theta_copule, delta, deltastar, copula_function, methodInt, pi, gamma_ui, determinant, &
-		varcovinv, adaptative
-    use comon, only: eta,ve
+		varcovinv, adaptative, control_affichage
+    use comon, only: ve
     
     IMPLICIT NONE
     integer,intent(in):: ig, nsujet_trial
@@ -30,7 +30,38 @@ contains
 					  f_V
     double precision, dimension(:,:),allocatable::m1,m3  
     double precision, dimension(:,:),allocatable::m
-      
+     
+
+	if(control_affichage == 0)then
+		call dblepr("vsi = ", -1, vsi, 1)
+		call dblepr("vti = ", -1, vti, 1)
+		call dblepr("ui = ", -1, ui, 1)
+		call intpr("ig = ", -1, ig, 1)
+		call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
+		call intpr("posind_i = ", -1, posind_i, 1)
+		call dblepr("alpha_ui = ", -1, alpha_ui, 1)
+		call dblepr("const_res4 = ", -1, const_res4, 1)
+		call dblepr("const_res5 = ", -1, const_res5, 1)
+		call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
+		call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
+		call dblepr("theta_copule = ", -1, theta_copule, 1)
+		call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
+		call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
+		call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
+		call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
+		call intpr("copula_function = ", -1, copula_function, 1)
+		call intpr("methodInt = ", -1, methodInt, 1)
+		call dblepr("pi = ", -1, pi, 1)
+		call dblepr("gamma_ui = ", -1, gamma_ui, 1)
+		call dblepr("determinant = ", -1, determinant, 1)
+		call dblepr("varcovinv = ", -1, varcovinv, 9)
+		call intpr("adaptative = ", -1, adaptative, 1)
+		call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
+		call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
+		control_affichage = 1
+	endif
+	
+	 
     integrant = 1.d0
     do j = 1, nsujet_trial
         ! Expression in the log-vraisamblance
@@ -80,6 +111,7 @@ contains
         contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**dble(delta(posind_i-1+j)) * (f_Tij / phiprimphimun_T)&
                      **dble(deltastar(posind_i-1+j))
         integrant = integrant * contri_indiv
+		
 		if(adaptative .and. integrant==0) then
 		    ! call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
 		    ! call dblepr("contri_indiv = ", -1, contri_indiv, 1)

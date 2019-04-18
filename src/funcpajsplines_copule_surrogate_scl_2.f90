@@ -179,10 +179,11 @@
         varS=mat_A(1,1)
         varT=mat_A(2,2)
         covST=mat_A(1,2)
-        if(frailt_base==1)    gamma_ui=mat_A(3,3)
+        if(frailt_base==1)    gamma_ui = mat_A(3,3)
 	
 		! if(control_affichage == 0) then
 			! call dblepr("bh = ", -1, bh(np-nva-nparamfrail +1 :np),nva+nparamfrail)
+			! call dblepr(" gamma_ui funcpa =", -1, gamma_ui, 1)
 			! call dblepr(" Chol =", -1, Chol, 9)
 			! call dblepr(" TRANSPOSE(Chol) =", -1, TRANSPOSE(Chol), 9)
 			! call dblepr(" mat_A =", -1, mat_A, size(mat_A,1)*size(mat_A,2))

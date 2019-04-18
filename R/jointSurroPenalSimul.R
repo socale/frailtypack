@@ -64,7 +64,8 @@
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL,  
 #'    type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL, 
-#'    mbetast.init = NULL, typecopula =1, theta.copula = 6, 
+#'    mbetast.init = NULL, typecopula =1, theta.copula = 6,
+#'    filter.surr = c(1,1), filter.true = c(1,1), 
 #'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
@@ -223,6 +224,10 @@
 #' @param typecopula # The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1
 #' @param theta.copula The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 #' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
+#' @param filter.surr Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
+#' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.
+#' @param filter.true Vector defines as \code{filter.surr}, for the true endpoint. \code{filter.true} and \code{filter.surr}
+#' should have the same size
 #' @param thetacopula.init Initial value for the copula parameter. The default is 3 
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
@@ -310,7 +315,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                       lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, 
                       kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, init.kappa = NULL, type.joint.estim = 1,
                       type.joint.simul = 1, mbetast = NULL, mbetast.init = NULL, typecopula = 1, theta.copula = 6, thetacopula.init = 3, 
-                      nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
+                      filter.surr = c(1,1), filter.true = c(1,1), nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL
   scale <- 1
@@ -368,6 +373,14 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     if(!(length(dim(mbetast.init)) ==2)| !(dim(mbetast.init)[2] == 2)){
       stop("argument mbetast.init should be a matrix or a dataframe with 2 columns")
     }
+  
+  if(is.null(filter.surr) | is.null(filter.true)){
+    stop("The vectors filter.surr and filter.true must contain at least one element corresponding to the effect of the treatment")
+  }
+  
+  if(!(length(filter.surr) == length(betas)) | !(length(filter.true)==length(betas))){
+    stop("The vectors filter.surr and filter.true must contain a number of elements corresponding to the size of the vector betas")
+  }
   
   # ============End parameters checking====================
   
@@ -430,9 +443,9 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     }
     
     #nombre de variables explicatives
-    ves <- 2 # nombre variables explicative surrogate
-    vet <- 2 # nombre variables explicative deces/evenement terminal
-    ver <- 2 # nombre total de variables explicative
+    ves <- sum(filter.surr) # nombre variables explicative surrogate
+    vet <- sum(filter.true) # nombre variables explicative deces/evenement terminal
+    ver <- length(filter.surr) # nombre total de variables explicative
     nbrevar <- c(ves,vet,ver) 
     if(!is.null(mbetast)){
       if(!(dim(mbetast)[1] == ver))
@@ -448,8 +461,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     # matrice d'indicatrice de prise en compte des variables explicatives pour le surrogate et le tru
     # filtre = vecteur associe au surrogate
     # filtre2 = vecteur associe au true
-    filtre  <- c(1,1)
-    filtre2 <- c(1,1)
+    filtre  <- filter.surr 
+    filtre2 <- filter.true
     filtre0 <- as.matrix(data.frame(filtre,filtre2))
     mbetast <- matrix(c(betas, betat), nrow = length(filtre), ncol = 2, byrow = F)
     mbetast.init <- matrix(c(betas.init, betat.init), nrow = length(filtre), ncol = 2, byrow = F)
