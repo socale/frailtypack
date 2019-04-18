@@ -2623,6 +2623,175 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     110 continue
     return
  end function gauss_HermMultA_surr_MC
+ 
+ ! computation of the integrale using gaussian-Hermite quadrature for the joint frailty-copula model
+ double precision function gauss_Herm_copula_Int(func,nnodes,ndim,nsujet_trial,i)
+    ! dans cette fonction on fait une quadrature adaptative ou non pour les deux effets aleatoire vsi et vti
+    ! func: fonction a integrer au niveau individuel
+    ! nnodes: nombre de point de quadrature
+    ! ndim= dimension de l'integrale 2 ou 3 integrations?
+    ! nsujet_trial= nombre de sujets dans le cluster courant
+    ! i= cluster courant
+    
+    use var_surrogate, only: adaptative,xx1,ww1,estim_wij_chap,posind_i,invBi_chol_Essai,ui_chap_Essai,&
+        invBi_cholDet_Essai,frailt_base,nb_procs
+    use donnees ! pour les points et poids de quadrature (fichier Adonnees.f90)
+    use fonction_A_integrer, only:multiJ
+    use Autres_fonctions, only:pos_proc_domaine
+    !use mpi
+    !$ use OMP_LIB
+    
+    
+    implicit none
+    integer ::ii,jj,npg,kk,cpt,init_i,max_i,code,erreur,rang
+    integer,intent(in):: ndim,nnodes,nsujet_trial,i
+    !double precision,dimension(1:nnodes) ::xx1,ww1
+    double precision::ss1,ss2,auxfunca,ss
+    double precision, dimension(ndim)::xxl,m,xx !vecteur qui contiendra à chaque fois les points de quadrature
+    double precision,dimension(ndim,ndim)::invBi_chol_Essai_k ! pour recuperer les matrice B_k dans le vecteur des matrices B des essais K
+    !double precision, external::gauss_HermMultA_surr    
+    
+    ! bloc interface pour la definition de la fonction func
+    interface
+        double precision function func(vsi,vti,ui,ig,nsujet_trial)
+			! vsi= frailtie niveau essai associe a s
+			! vti= frailtie niveau essai associe a t
+			! ui = random effect associated xith the baseline hazard
+			! ig = current cluster
+			! nsujet_trial = number of subjects in the current trial    
+			IMPLICIT NONE
+			integer,intent(in):: ig, nsujet_trial
+			double precision,intent(in)::vsi,vti,ui
+        end function func
+    end interface
+	
+    npg=nnodes    
+    auxfunca=0.d0
+    ss=0.d0
+    ss1=0.d0
+    ss2=0.d0
+        if(adaptative) then
+        ! je recupere la matrice B_i de l'essai i dans le vecteur des B_i
+            cpt=((i-1)*ndim**2)+1 !ceci permet de parcourir le vecteur invBi_chol_Essai en fonction du cluster sur lequel on se trouve
+            do jj=1,ndim     
+                do ii=1,ndim
+                    invBi_chol_Essai_k(ii,jj)=invBi_chol_Essai(cpt) ! en effet le vecteur "invBi_chol_Essai" a ete rempli par des matrices colonne apres colonne
+                    cpt=cpt+1
+                enddo
+            enddo         
+        endif
+    
+    if(ndim.eq.2) then
+        !$OMP PARALLEL DO default(none) PRIVATE (ii,jj,ss1,m,xxl) firstprivate(auxfunca) SHARED(npg,nsujet_trial,i,xx1,ww1,&
+        !$OMP invBi_chol_Essai_k,ndim,ui_chap_Essai,adaptative,posind_i)&
+        !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+            do ii=1,npg
+                ss1=0.d0
+                do jj=1,npg
+                    xxl(1)=xx1(ii)
+                    xxl(2)=xx1(jj)
+                    !changement de variable en cas de quadrature adaptative
+                    if(adaptative) then ! on effectue le changement de variable
+                        m=matmul(invBi_chol_Essai_k,xxl)
+                        xxl=ui_chap_Essai(i,1:2)+dsqrt(2.d0)*m        
+                        !!print*,"xxl",xxl
+                    end if
+                    auxfunca=func(xxl(1),xxl(2),0.d0,i,nsujet_trial)
+                    ss1 = ss1+ww1(jj)*(auxfunca)
+                end do
+                ss = ss+ww1(ii)*ss1
+            end do
+      !$OMP END PARALLEL DO
+    else ! cas de 3 points
+        if(nb_procs==1) then !on fait du open MP car un seul processus
+            rang=0
+            !$OMP PARALLEL DO default(none) PRIVATE (ii,jj,ss1,m,xxl,kk,ss2) firstprivate(auxfunca) &
+            !$OMP SHARED(npg,nsujet_trial,i,xx1,ww1,&
+            !$OMP invBi_chol_Essai_k,ndim,ui_chap_Essai,adaptative,posind_i,frailt_base)&
+            !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+            do kk=1,npg
+                ss2=0.d0
+                do ii=1,npg
+                    ss1=0.d0
+                    do jj=1,npg    
+                        xxl(2)=xx1(jj)        
+                        xxl(1)=xx1(ii)                    
+                        xxl(3)=xx1(kk)
+                        !changement de variable en cas de quadrature adaptative
+                        if(adaptative) then ! on effectue le changement de variable
+                            m=matmul(invBi_chol_Essai_k,xxl)
+                            xxl=ui_chap_Essai(i,1:3)+dsqrt(2.d0)*m        
+                        end if                      
+                        auxfunca=func(xxl(1),xxl(2),xxl(3),i,nsujet_trial)
+                        ss1 = ss1+ww1(jj)*(auxfunca)
+                    end do
+                    ss2 = ss2+ww1(ii)*ss1
+                end do
+                ss = ss+ww1(kk)*ss2
+            end do
+            !$OMP END PARALLEL DO
+        else ! dans ce cas on va faire du MPI
+            ! rang du processus courang
+            !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code)
+            ! on cherche les position initiale et finale pour le processus courant
+            call pos_proc_domaine(npg,nb_procs,rang,init_i,max_i)
+            ! !print*,"nb_procs=",nb_procs,"rang=",rang
+            ! !print*,"init_i,max_i=",init_i,max_i
+            
+            do kk=1,npg
+                ! if((kk<init_i).or.kk>max_i) then 
+                    ! goto 1000 ! pour dire le processus ne considere pas cet itteration car n'appartient pas a son domaine
+                ! endif
+                ss2=0.d0
+                do ii=1,npg
+                    ss1=0.d0
+                    do jj=1,npg    
+                        xxl(2)=xx1(jj)        
+                        xxl(1)=xx1(ii)                    
+                        xxl(3)=xx1(kk)
+                        
+                        !changement de variable en cas de quadrature adaptative
+                        if(adaptative) then ! on effectue le changement de variable
+                            m=matmul(invBi_chol_Essai_k,xxl)
+                            xxl=ui_chap_Essai(i,1:3)+dsqrt(2.d0)*m        
+                        end if
+                        
+                        !auxfunca=func2(func,xx1(ii),xx1(jj),nnodes,nsujet_trial,i)
+                        auxfunca=func(xxl(1),xxl(2),xxl(3),i,nsujet_trial)
+                        !!print*,"12"
+                        ss1 = ss1+ww1(jj)*(auxfunca)
+                        ! !print*,ww1(jj)
+                        ! stop
+                        !!print*,"13"
+                        !!print*,"Integrant niveau essai=",auxfunca
+                    end do
+                    ss2 = ss2+ww1(ii)*ss1
+                    ! !print*,ww1(ii)
+                    ! stop
+                end do
+                ss = ss+ww1(kk)*ss2
+                ! !print*,ww1(kk)
+                ! stop
+                1000 continue
+            end do
+            ! on fait la reduction et redistribu le resultat a tous les procesus
+            ! !call MPI_ALLREDUCE(ss,ss,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,code)
+        endif
+    end if
+    
+    ! !print*,"rang=",rang,"voile la valeur de ton calcul integral",ss
+    ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
+    !!print*,"ss=",ss
+    if(adaptative) then
+        ss=ss*2.d0**(dble(ndim)/2.d0)*invBi_cholDet_Essai(i) 
+        ! if(frailt_base==0) ss=ss*2.d0**(dble(ndim)/2.d0)*invBi_cholDet_Essai(i)  
+    end if
+    !!print*,"ss_transformé=",ss
+    
+    gauss_Herm_copula_Int=ss
+    101 continue
+    return
+  end function gauss_Herm_copula_Int
   
  ! calcul de l'integral au niveau essai pour le modele surrogate final par quadrature gaussienne
  double precision function gauss_HermMultInd_Essai(func,func2,nnodes,ndim,nsujet_trial,i)

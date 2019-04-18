@@ -17,7 +17,8 @@ contains
     ! nsujet_trial = number of subjects in the current trial
     
     use var_surrogate, only: posind_i, alpha_ui, const_res4, const_res5, res2_dcs_sujet,res2s_sujet, &
-        theta_copule, delta, deltastar, copula_function
+        theta_copule, delta, deltastar, copula_function, methodInt, pi, gamma_ui, determinant, &
+		varcovinv
     use comon, only: eta,ve
     
     IMPLICIT NONE
@@ -26,7 +27,9 @@ contains
     integer::j,n
     double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
                       sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T,&
-					  control_affichage
+					  control_affichage, f_V
+    double precision, dimension(:,:),allocatable::m1,m3  
+    double precision, dimension(:,:),allocatable::m
       
     integrant = 1.d0
     do j = 1, nsujet_trial
@@ -80,6 +83,17 @@ contains
 		! call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
 		! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
     enddo
+	
+	if (methodInt == 1)then
+		allocate(m(1,1),m1(1,2),m3(1,2))
+		m1(1,1)=vsi
+		m1(1,2)=vti
+		m3=MATMUL(m1,varcovinv)
+        m=MATMUL(m3,TRANSPOSE(m1))
+		f_V = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
+		Integrant_Copula = integrant * f_V
+		deallocate(m,m1,m3)
+	endif
 	!call intpr("control_affichage = ", -1, control_affichage, 1)
 			! call dblepr("f_Sij = ", -1, f_Sij, 1)
 			! call dblepr("f_Tij = ", -1, f_Tij, 1)
@@ -95,7 +109,7 @@ contains
 			! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
 			! call dblepr("integrant = ", -1, integrant, 1)
 		
-    Integrant_Copula = integrant
+    if (methodInt == 0) Integrant_Copula = integrant
     return
     end function Integrant_Copula
     

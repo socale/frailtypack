@@ -420,7 +420,239 @@
 			!call dblepr("log integrale3=", -1, dlog(integrale3), ntrials)
             ! call dblepr(" dans sum integrale3=", -1, sum(integrale3), 1)
 			! call dblepr(" dans log sum integrale3=", -1, dlog(sum(integrale3)), 1)
+        
+		case(1)! quadature classique (non-adaptative) ou pseudo-adaptative selon le contenu de la variable adaptative
+            !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code) ! recherche du rang du processus
+            l=1
+            res = 0.d0
+            ! matrice des variances-covariance
+            varcov(1,1)=varS
+            varcov(1,2)=covST
+            varcov(2,1)=covST
+            varcov(2,2)=varT
+            call matinv(varcov,varcovinv,determinant) ! scl calcul de l'inverse de la matrice de variance-covariance et du determinant
+            if(determinant.eq.0.d0) then ! mais ce cas n'est plus suppose arrive a grace a la cholesky
+                !print*,"Attention determinant vaut 0"
+                !stop
+                determinant=0.d-10 ! ceci permet d'eviter les division par 0 si le determinant est =0
+            end if
             
+            
+            !================================================================================
+            !estimation des fragilites a posteriori, a utiliser dans le calcul integral
+            !================================================================================
+         
+            if(adaptative .and. control_adaptative==1) then ! on effectue le changement de variable
+                !if(estim_wij_chap.eq.0) then ! on n'a pas encore estime les wij_chap 
+                    ! !print*,""
+                    if(rang==0)then
+                         ! !print*,"==============================================="
+                         ! !print*,"Recherche des effets aleatoires  à postériorie"
+                         ! !print*,"==============================================="
+                    endif
+                    ! !print*,""
+                    k0_2=k0 
+                                        
+                    !initialisation des variables de module
+                    individu_j=1
+                    ni=0
+                    ca=0.d0
+                    cb=0.d0
+                    dd=0.d0
+                    model_save=model
+                    nparamfrail_save=nparamfrail
+                    maxiter_save=maxiter
+                    model = 9 !scl pour le model effet aleatoires
+                    maxiter=10
+                    non_conv=0
+                    ui_chap=0.d0
+                    !posind_i_save=posind_i
+                    
+                    indice_B_essai=1 ! compte le nombe d'element du vecteur invBi_chol_Essai des elements de la matrice B
+                    !indice_ind_util_essai=0 ! indice de l'individu utilise pour l'estimation des frailties dans l'essai
+                    i=1
+                    nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
+                    posind_i=1 
+                    do k=1,ntrials !k permet d'indicer les essais. ce changement empeche l'ambiguite avec le J passe en parametre
+                        indicej=i
+                        nmax_2=nmax_2+nsujeti(k)
+                        essai_courant=k
+                        ! ====================================================================================================
+                        ! estimation des vs_i_chapeau et vt_i_chapeau
+                        ! ====================================================================================================
+                        !!print*
+                        !!print*, "suis la dans funcpa adaptative"
+                        
+                        if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
+                            np_2=2
+                            nparamfrail=2
+                        else
+                            np_2=3
+                            nparamfrail=3
+                        endif
+                        !deallocate(H_hess_scl,I_hess_scl,H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
+                        allocate(I_hess_scl(np_2,np_2),H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),H_hessOut(np_2,np_2),&
+                                 b_i(np_2),v_i(np_2*(np_2+3)/2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
+                                hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
+                        b_i=0.5d0
+                        v_i=0.d0
+                        
+                        10 continue
+                        call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_Essai,&
+                                         I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
+                                
+                        ! !print*,"suis la2"
+                        ! !print*,"b_i=",b_i
+                        ! !print*,"H_hess_scl=",H_hess_scl
+                        ! !print*,"I_hess_scl=",I_hess_scl
+                        ! stop
+                        
+                        if (istop.ne.1 .and. non_conv<=10) then ! on passe à l'individu suivant, juste pour le test
+                            b_i=-0.5*non_conv
+                            non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
+                            goto 10
+                        endif
+                                
+                        if(non_conv==11 .and. istop .ne. 1)then
+                            !print*,"le nombre de tentative sans convergence vaut:",non_conv
+                            !print*,"istop=",istop,"essai k=",k
+                            non_conv=0
+                            funcpajsplines_copule_surrogate=-1.d9
+                            goto 123
+                        endif
+                                
+                        if(non_conv>0 .and. non_conv<=10) then
+                            !print*,"le nombre de tentative pour la convergence vaut:",non_conv
+                            !print*,"istop=",istop,"essai k=",k
+                            non_conv=0
+                            !stop
+                        endif
+                        ! !print*,"k=",k,"istop=",istop
+                        
+                        ui_chap_Essai(k,1)=b_i(1) ! ui_chap_Essai: contient uniquement les vs_i_chapeau et vt_i_chapeau et u_i_chapeau
+                        ui_chap_Essai(k,2)=b_i(2)
+                        if(frailt_base==1) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
+                            ui_chap_Essai(k,3)=b_i(3)
+                        endif
+                        
+                        ! !print*,"invBi_chol_2=",invBi_chol_2
+                        ! !print*,"size(invBi_chol_2)",size(invBi_chol_2),"np_2=",np_2
+                        do ss=1,np_2
+                            do sss=1,np_2
+                                !HIHOut(ss,sss) = HIH(ss,sss)
+                                H_hessOut(ss,sss)= I_hess_scl(ss,sss)
+                                invBi_chol_2(sss,ss)=H_hess_scl(sss,ss) ! je fais ceci juste pour le calcul de la cholesky I_hess_scl est que l'inverse de la hessienne
+                                !!print*,invBi_chol_2(sss,ss)
+                            end do
+                        end do
+                        ! !print*,"invBi_chol_2=",invBi_chol_2
+                        ! !print*,"H_hessOut=",H_hessOut
+                        call Cholesky_Factorisation(invBi_chol_2)! calcul de la cholesky de l'inverse de la hessienne 
+                                
+                        ! je sauvegarde ls element de la matrice B pour l'essai k
+                        do ss=1,np_2     
+                            do sss=1,np_2
+                                invBi_chol_Essai(indice_B_essai)=invBi_chol_2(sss,ss)
+                                indice_B_essai=indice_B_essai+1
+                            enddo
+                        enddo
+                        ! je sauvegarde ls element de la matrice B pour l'individu i
+                                
+                        !calcul du determinant de la cholesky de l'inverse de la hessienne
+                        ! invBi_chol_2(1,1)=1.d0
+                        ! invBi_chol_2(2,1)=2.d0
+                        ! invBi_chol_2(1,2)=3.d0
+                        ! invBi_chol_2(2,2)=4.d0
+                        ! !print*,"Determinant_2((/1,2,3,4/),np_2)",Determinant_2(invBi_chol_2,np_2)
+                        ! stop
+                        invBi_cholDet_Essai(k)=Determinant_2(invBi_chol_2,np_2) ! essai
+                        !invBi_cholDet_Essai(k)=1.d0/dsqrt(Determinant_2(H_hess_scl,np_2)) ! essai
+                        ! !print*,"invBi_cholDet_Essai(k)=",Determinant_2(invBi_chol_2,np_2)
+                        ! ! on calcule plutôt le determinant de la hessienne inverse et on le passe sous la racine
+                        ! !print*,"dsqrt(Determinant_2(I_hess_scl,np_2))",dsqrt(Determinant_2(I_hess_scl,np_2))
+                        ! !print*,"1/dsqrt(Determinant_2(H_hess_scl,np_2))",1.d0/dsqrt(Determinant_2(H_hess_scl,np_2))
+                        !stop
+                        !invBi_cholDet(i)=invBi_chol_Individuel(i) !individuel    
+                        ! !print*,"suis la1"        
+                        deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,I_hess_scl,H_hess_scl,hess_scl,vvv_scl,b_i,v_i)
+                        ! allocate(I_hess_scl(np_1,np_1),H_hess_scl(np_1,np_1),invBi_chol_2(np_1,np_1),H_hessOut(np_1,np_1))
+                        ! allocate(HIH(np_1,np_1),HIHOut(np_1,np_1),IH(np_1,np_1),hess_scl(np_1,np_1),vvv_scl(np_1*(np_1+1)/2))
+                        
+                        posind_i=posind_i+nsujeti(k) ! a utiliser dans funcpafrailtyPred_Essai
+                        i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
+                    enddo ! fin estimation des vs_i_chapeau et vt_i_chapeau
+                    ! sauvegarde des resultats dans les fichiers
+                    
+                    ! open(20,file='Prediction_wij_chapeau.txt')
+                    ! open(21,file='Prediction_vsi_vti_chapeau.txt')
+                    
+                    ! !!print*,"impression des frailties au individuel dans le fichier Prediction_wij_chapeau"
+                    ! !write(20,*)"sujet"," ","w_ij_chapeau"
+                    ! do ss=1,(i-1)
+                        ! !write(20,*)ss,ui_chap(ss,1)
+                    ! enddo            
+                    
+                    ! !!print*,"impression des frailties au niveau essai dans le fichier Prediction_vsi_vti_chapeau"
+                    ! !write(21,*)"sujet"," ","vs_i_chapeau"," ","vt_i_chapeau"
+                    ! do ss=1,ntrials
+                        ! !write(21,*)ss,ui_chap_Essai(ss,1),ui_chap_Essai(ss,2)
+                    ! enddo
+                    
+                    ! close(20)
+                    ! close(21)
+                    
+                    !stop
+                    ! deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
+                    estim_wij_chap=1 ! pour eviter de faire les estimations dans l'integrale    
+                    ! deallocate(I_hess_scl,H_hess_scl) 
+                    
+                    model=model_save
+                    nparamfrail=nparamfrail_save
+                    maxiter=maxiter_save
+                    !!print*,"suis la======================="
+                    ! je remets les position i et jcol
+                    individu_j=1
+                    
+                    ! sauvegarde des resultats dans les fichiers
+                    
+                    ! open(20,file='Prediction_wij_chapeau.txt')
+                    ! open(21,file='Prediction_vsi_vti_chapeau.txt')
+                    
+                    !!print*,"impression des frailties au individuel dans le fichier Prediction_wij_chapeau"
+                    !write(20,*)"sujet"," ","w_ij_chapeau"
+                    do ss=1,(i-1)
+                        !write(20,*)ss,ui_chap(ss,1)
+                    enddo            
+
+                    do ss=1,ntrials
+                        !write(21,*)ss,ui_chap_Essai(ss,1),ui_chap_Essai(ss,2),ui_chap_Essai(ss,3)
+                    enddo
+                    
+                    control_adaptative=0
+
+                if(rang==0)then
+                    ! !print*,"================================================================================"
+                    ! !print*,"Fin estimation des fragilites a posteriorie"
+                    ! !print*,"================================================================================"
+                endif
+            endif
+
+            posind_i=1
+            do ig=1,ntrials 
+                nsujet_trial=nsujeti(ig)        
+                resultatInt=0.d0
+                if(frailt_base==0) dimint=2 ! deux integrations au niveau essai correspondant aux effets aleatoires correles
+                if(frailt_base==1) dimint=3 ! deux integrations au niveau essai correspondant aux effets aleatoires correles
+                resultatInt=gauss_Herm_copula_Int(Integrant_Copula,npoint,dimint,nsujet_trial,ig)
+                posind_i=posind_i+nsujeti(ig)
+                if(resultatInt(1).eq.0.d0) then
+                    integrale3(ig)=0.1d-300
+                    !!print*,"integrale nulle et affectation de la valeur 0.1d-300, trials:",ig
+                else
+                    integrale3(ig) = resultatInt(1) ! on recupere le premier element car les deux autres sont supposes etre la precision et la variance 
+                endif 
+            end do
+   
             
             
             
@@ -664,260 +896,7 @@
                     deallocate(mu)
                 end do    
             endif
-        case(1)! quadature classique (non-adaptative) ou pseudo-adaptative selon le contenu de la variable adaptative
-!            !print*,"funcpajsplines_copule_surrogate_scl.f90 lige 307: quadrature pas encore implémenté"
-            
-            !!print*, "suis la dans funcpa adaptative debut",adaptative,control_adaptative
-            !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code) ! recherche du rang du processus
-            l=1
-            res = 0.d0
-            ! matrice des variances-covariance
-            varcov(1,1)=varS
-            varcov(1,2)=covST
-            varcov(2,1)=covST
-            varcov(2,2)=varT
-            call matinv(varcov,varcovinv,determinant) ! scl calcul de l'inverse de la matrice de variance-covariance et du determinant
-            if(determinant.eq.0.d0) then ! mais ce cas n'est plus suppose arrive a grace a la cholesky
-                !print*,"Attention determinant vaut 0"
-                !stop
-                determinant=0.d-10 ! ceci permet d'eviter les division par 0 si le determinant est =0
-            end if
-            
-            
-            !================================================================================
-            !estimation des fragilites a posteriori, a utiliser dans le calcul integral
-            !================================================================================
-         
-            if(adaptative .and. control_adaptative==1) then ! on effectue le changement de variable
-                !if(estim_wij_chap.eq.0) then ! on n'a pas encore estime les wij_chap 
-                    ! !print*,""
-                    if(rang==0)then
-                         ! !print*,"==============================================="
-                         ! !print*,"Recherche des effets aleatoires  à postériorie"
-                         ! !print*,"==============================================="
-                    endif
-                    ! !print*,""
-                    k0_2=k0 
-                                        
-                    !initialisation des variables de module
-                    individu_j=1
-                    ni=0
-                    ca=0.d0
-                    cb=0.d0
-                    dd=0.d0
-                    model_save=model
-                    nparamfrail_save=nparamfrail
-                    maxiter_save=maxiter
-                    model = 9 !scl pour le model effet aleatoires
-                    maxiter=10
-                    non_conv=0
-                    ui_chap=0.d0
-                    !posind_i_save=posind_i
-                    
-                    indice_B_essai=1 ! compte le nombe d'element du vecteur invBi_chol_Essai des elements de la matrice B
-                    !indice_ind_util_essai=0 ! indice de l'individu utilise pour l'estimation des frailties dans l'essai
-                    i=1
-                    nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
-                    posind_i=1 
-                    do k=1,ntrials !k permet d'indicer les essais. ce changement empeche l'ambiguite avec le J passe en parametre
-                        indicej=i
-                        nmax_2=nmax_2+nsujeti(k)
-                        essai_courant=k
-                        ! ====================================================================================================
-                        ! estimation des vs_i_chapeau et vt_i_chapeau
-                        ! ====================================================================================================
-                        !!print*
-                        !!print*, "suis la dans funcpa adaptative"
-                        
-                        if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
-                            np_2=2
-                            nparamfrail=2
-                        else
-                            np_2=3
-                            nparamfrail=3
-                        endif
-                        !deallocate(H_hess_scl,I_hess_scl,H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
-                        allocate(I_hess_scl(np_2,np_2),H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),H_hessOut(np_2,np_2),&
-                                 b_i(np_2),v_i(np_2*(np_2+3)/2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
-                                hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
-                        b_i=0.5d0
-                        v_i=0.d0
-                        
-                        10 continue
-                        call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_Essai,&
-                                         I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
-                                
-                        ! !print*,"suis la2"
-                        ! !print*,"b_i=",b_i
-                        ! !print*,"H_hess_scl=",H_hess_scl
-                        ! !print*,"I_hess_scl=",I_hess_scl
-                        ! stop
-                        
-                        if (istop.ne.1 .and. non_conv<=10) then ! on passe à l'individu suivant, juste pour le test
-                            b_i=-0.5*non_conv
-                            non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
-                            goto 10
-                        endif
-                                
-                        if(non_conv==11 .and. istop .ne. 1)then
-                            !print*,"le nombre de tentative sans convergence vaut:",non_conv
-                            !print*,"istop=",istop,"essai k=",k
-                            non_conv=0
-                            funcpajsplines_copule_surrogate=-1.d9
-                            goto 123
-                        endif
-                                
-                        if(non_conv>0 .and. non_conv<=10) then
-                            !print*,"le nombre de tentative pour la convergence vaut:",non_conv
-                            !print*,"istop=",istop,"essai k=",k
-                            non_conv=0
-                            !stop
-                        endif
-                        ! !print*,"k=",k,"istop=",istop
-                        
-                        ui_chap_Essai(k,1)=b_i(1) ! ui_chap_Essai: contient uniquement les vs_i_chapeau et vt_i_chapeau et u_i_chapeau
-                        ui_chap_Essai(k,2)=b_i(2)
-                        if(frailt_base==1) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
-                            ui_chap_Essai(k,3)=b_i(3)
-                        endif
-                        
-                        ! !print*,"invBi_chol_2=",invBi_chol_2
-                        ! !print*,"size(invBi_chol_2)",size(invBi_chol_2),"np_2=",np_2
-                        do ss=1,np_2
-                            do sss=1,np_2
-                                !HIHOut(ss,sss) = HIH(ss,sss)
-                                H_hessOut(ss,sss)= I_hess_scl(ss,sss)
-                                invBi_chol_2(sss,ss)=H_hess_scl(sss,ss) ! je fais ceci juste pour le calcul de la cholesky I_hess_scl est que l'inverse de la hessienne
-                                !!print*,invBi_chol_2(sss,ss)
-                            end do
-                        end do
-                        ! !print*,"invBi_chol_2=",invBi_chol_2
-                        ! !print*,"H_hessOut=",H_hessOut
-                        call Cholesky_Factorisation(invBi_chol_2)! calcul de la cholesky de l'inverse de la hessienne 
-                                
-                        ! je sauvegarde ls element de la matrice B pour l'essai k
-                        do ss=1,np_2     
-                            do sss=1,np_2
-                                invBi_chol_Essai(indice_B_essai)=invBi_chol_2(sss,ss)
-                                indice_B_essai=indice_B_essai+1
-                            enddo
-                        enddo
-                        ! je sauvegarde ls element de la matrice B pour l'individu i
-                                
-                        !calcul du determinant de la cholesky de l'inverse de la hessienne
-                        ! invBi_chol_2(1,1)=1.d0
-                        ! invBi_chol_2(2,1)=2.d0
-                        ! invBi_chol_2(1,2)=3.d0
-                        ! invBi_chol_2(2,2)=4.d0
-                        ! !print*,"Determinant_2((/1,2,3,4/),np_2)",Determinant_2(invBi_chol_2,np_2)
-                        ! stop
-                        invBi_cholDet_Essai(k)=Determinant_2(invBi_chol_2,np_2) ! essai
-                        !invBi_cholDet_Essai(k)=1.d0/dsqrt(Determinant_2(H_hess_scl,np_2)) ! essai
-                        ! !print*,"invBi_cholDet_Essai(k)=",Determinant_2(invBi_chol_2,np_2)
-                        ! ! on calcule plutôt le determinant de la hessienne inverse et on le passe sous la racine
-                        ! !print*,"dsqrt(Determinant_2(I_hess_scl,np_2))",dsqrt(Determinant_2(I_hess_scl,np_2))
-                        ! !print*,"1/dsqrt(Determinant_2(H_hess_scl,np_2))",1.d0/dsqrt(Determinant_2(H_hess_scl,np_2))
-                        !stop
-                        !invBi_cholDet(i)=invBi_chol_Individuel(i) !individuel    
-                        ! !print*,"suis la1"        
-                        deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,I_hess_scl,H_hess_scl,hess_scl,vvv_scl,b_i,v_i)
-                        ! allocate(I_hess_scl(np_1,np_1),H_hess_scl(np_1,np_1),invBi_chol_2(np_1,np_1),H_hessOut(np_1,np_1))
-                        ! allocate(HIH(np_1,np_1),HIHOut(np_1,np_1),IH(np_1,np_1),hess_scl(np_1,np_1),vvv_scl(np_1*(np_1+1)/2))
-                        
-                        posind_i=posind_i+nsujeti(k) ! a utiliser dans funcpafrailtyPred_Essai
-                        i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
-                    enddo ! fin estimation des vs_i_chapeau et vt_i_chapeau
-                    ! sauvegarde des resultats dans les fichiers
-                    
-                    ! open(20,file='Prediction_wij_chapeau.txt')
-                    ! open(21,file='Prediction_vsi_vti_chapeau.txt')
-                    
-                    ! !!print*,"impression des frailties au individuel dans le fichier Prediction_wij_chapeau"
-                    ! !write(20,*)"sujet"," ","w_ij_chapeau"
-                    ! do ss=1,(i-1)
-                        ! !write(20,*)ss,ui_chap(ss,1)
-                    ! enddo            
-                    
-                    ! !!print*,"impression des frailties au niveau essai dans le fichier Prediction_vsi_vti_chapeau"
-                    ! !write(21,*)"sujet"," ","vs_i_chapeau"," ","vt_i_chapeau"
-                    ! do ss=1,ntrials
-                        ! !write(21,*)ss,ui_chap_Essai(ss,1),ui_chap_Essai(ss,2)
-                    ! enddo
-                    
-                    ! close(20)
-                    ! close(21)
-                    
-                    !stop
-                    ! deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,hess_scl,vvv_scl)
-                    estim_wij_chap=1 ! pour eviter de faire les estimations dans l'integrale    
-                    ! deallocate(I_hess_scl,H_hess_scl) 
-                    
-                    model=model_save
-                    nparamfrail=nparamfrail_save
-                    maxiter=maxiter_save
-                    !!print*,"suis la======================="
-                    ! je remets les position i et jcol
-                    individu_j=1
-                    
-                    ! sauvegarde des resultats dans les fichiers
-                    
-                    ! open(20,file='Prediction_wij_chapeau.txt')
-                    ! open(21,file='Prediction_vsi_vti_chapeau.txt')
-                    
-                    !!print*,"impression des frailties au individuel dans le fichier Prediction_wij_chapeau"
-                    !write(20,*)"sujet"," ","w_ij_chapeau"
-                    do ss=1,(i-1)
-                        !write(20,*)ss,ui_chap(ss,1)
-                    enddo            
-                    
-                    !!print*,"impression des frailties au niveau essai dans le fichier Prediction_vsi_vti_chapeau"
-                    !write(21,*)"sujet"," ","vs_i_chapeau"," ","vt_i_chapeau"
-                    do ss=1,ntrials
-                        !write(21,*)ss,ui_chap_Essai(ss,1),ui_chap_Essai(ss,2),ui_chap_Essai(ss,3)
-                    enddo
-                    
-                    ! close(20)
-                    ! close(21)
-                    control_adaptative=0
-                    !!print*,"suis la====="
-                    !stop
-                !endif
-                if(rang==0)then
-                    ! !print*,"================================================================================"
-                    ! !print*,"Fin estimation des fragilites a posteriorie"
-                    ! !print*,"================================================================================"
-                endif
-            endif
-            !!print*,"suis sorti====","estim_wij_chap=",estim_wij_chap
-            
-    
-            
-            posind_i=1
-            do ig=1,ntrials 
-                nsujet_trial=nsujeti(ig)        
-                resultatInt=0.d0
-                if(frailt_base==0) dimint=2 ! deux integrations au niveau essai correspondant aux effets aleatoires correles
-                if(frailt_base==1) dimint=3 ! deux integrations au niveau essai correspondant aux effets aleatoires correles
-                resultatInt=gauss_HermMultInd_Essai(Integrale_Individuel,gauss_HermMultA_surr,npoint,dimint,nsujet_trial,ig)
-                !!print*,"12"
-                !!print*,"funcpa resultatInt(1)=",-(1/2.d0)*(nsujeti(ig)*dlog(2.d0*pi)+dlog(theta2**nsujeti(ig)))+resultatInt(1)
-                !stop
-                !resultatInt=gauss_HermMult(integrant_indiv_1,npoint,nsujet_trial)
-                !!print*,resultatInt(1),npoint,posind_i,nsujeti(ig)
-                posind_i=posind_i+nsujeti(ig)
-                !!print*,"funcpajsplines_surr ligne 285: resultatInt=",resultatInt(1),"ni=",nsujeti(ig),"essai",ig  
-                if(resultatInt(1).eq.0.d0) then
-                    integrale3(ig)=0.1d-300
-                    !!print*,"integrale nulle et affectation de la valeur 0.1d-300, trials:",ig
-                else
-                    integrale3(ig) = resultatInt(1) ! on recupere le premier element car les deux autres sont supposes etre la precision et la variance 
-                endif 
-                !deallocate(vc,frail,vcinv)
-            end do
-        !determinant=theta2**nsujeti(ig)
-        !!print*,"cas quadrature"
-        !!print*,-(1/2.d0)*(nsujeti(ig)*dlog(2.d0*pi)+dlog(determinant))+dlog(integrale3)
-        !stop
+			
         case(4)! quadature classique (non-adaptative) ou pseudo-adaptative (selon le contenu de la variable adaptative) niveau essai et monte-carlo niveau individuel
             !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code) ! recherche du rang du processus
             l=1
@@ -1200,15 +1179,12 @@
         case(0) ! estimation par monte carlo
             
 			res = sum(dlog(integrale3))
-			! do k=1,ntrials!ng  
-                ! if(cpt(k).gt.0)then
-                    ! if(sigma2.gt.(1.d-8)) then      
-                        ! res= res + dlog(integrale3(k))
-                    ! else
-                        ! res= res + dlog(integrale3(k))
-                    ! endif  
-                ! endif
-            ! end do
+			if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+                funcpajsplines_copule_surrogate=-1.d9
+                goto 123
+            end if 
+		case(1) ! estimation par monte carlo
+			res = sum(dlog(integrale3))
 			if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
                 goto 123
@@ -1294,62 +1270,6 @@
                     !!print*,'res',res2s(k) + res2_dcs(k),'dlog(integrale3(k))', dlog(integrale3(k))     
                 end do
             endif
-            
-        case(1) !quadrature
-            !!print*,"sum(res2s)=",SUM(res2s(1:ntrials)),"size(res2s)=",size(res2s)
-            !!print*,"sum(res2_dcs)=",SUM(res2_dcs(1:ntrials)),"size(res2_dcs)=",size(res2_dcs)
-            do k=1,ntrials!ng  
-                if(cpt(k).gt.0)then
-                    if(frailt_base==1) then
-                        if(sigma2.gt.(1.d-8)) then  
-                            !determinant=theta2**nsujeti(k) ! produit des elements de la diagonale
-                            res= res + res2s(k) &
-                            + res2_dcs(k)&
-                            -(1/2.d0)*(nsujeti(k)*dlog(2.d0*pi*theta2)+(2.d0*dlog(2.d0*pi))+dlog(determinant)&
-                            !+ integrale3(k)
-                            +dlog(2.d0*pi*gamma_ui))+ dlog(integrale3(k))
-                            
-                        else
-                            !determinant=theta2**nsujeti(k) ! produit des elements de la diagonale
-                            res= res + res2s(k) &
-                            + res2_dcs(k)&
-                            -(1/2.d0)*(nsujeti(k)*dlog(2.d0*pi*theta2)+(2.d0*dlog(2.d0*pi))+dlog(determinant)&
-                            !+ integrale3(k)
-                            +dlog(2.d0*pi*gamma_ui))+ dlog(integrale3(k))
-                            
-                            ! !print*,"dlog(integrale3(k))=",dlog(integrale3(k))&
-                            ! -(1/2.d0)*(nsujeti(k)*dlog(2.d0*pi*theta2)+(2.d0*dlog(2.d0*pi))+dlog(determinant)&
-                            ! !+ integrale3(k)
-                            ! +dlog(2.d0*pi*gamma_ui))
-                            ! stop
-                        endif
-                    else
-                        if(sigma2.gt.(1.d-8)) then  
-                            !determinant=theta2**nsujeti(k) ! produit des elements de la diagonale
-                            res= res + res2s(k) &
-                            + res2_dcs(k)&
-                            -(1/2.d0)*(nsujeti(k)*dlog(2.d0*pi*theta2)+(2.d0*dlog(2.d0*pi))+dlog(determinant))&
-                            !+ integrale3(k)
-                            + dlog(integrale3(k))
-                        else
-                            !determinant=theta2**nsujeti(k) ! produit des elements de la diagonale
-                            res= res + res2s(k) &
-                            + res2_dcs(k)&
-                            -(1/2.d0)*(nsujeti(k)*dlog(2.d0*pi*theta2)+(2.d0*dlog(2.d0*pi))+dlog(determinant))&
-                            !+ integrale3(k)
-                            + dlog(integrale3(k))
-                        endif
-                    endif
-     
-                    if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-                        funcpajsplines_copule_surrogate=-1.d9
-                        goto 123
-                    end if    
-                endif
-    !            !print*,'k',k
-                !!print*,'res',res2s(k) + res2_dcs(k),'dlog(integrale3(k))', -(1/2.d0)*(nsujeti(k)*dlog(2.d0*pi*theta2)+(2.d0*dlog(2.d0*pi))&
-                !                                        +dlog(determinant))+dlog(integrale3(k))     
-        end do
     case(4) !quadrature essai et monte-carlo individuel
             !!print*,"sum(res2s)=",SUM(res2s(1:ntrials)),"size(res2s)=",size(res2s)
             !!print*,"sum(res2_dcs)=",SUM(res2_dcs(1:ntrials)),"size(res2_dcs)=",size(res2_dcs)

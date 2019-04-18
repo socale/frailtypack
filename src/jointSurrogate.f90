@@ -158,7 +158,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         moy_kendal_10,tau_kendal_10,moy_kendal_01,tau_kendal_01,moy_kendal_00,tau_kendal_00,se_kendal_11,&
                         se_kendal_01,se_kendal_00,moy_tau_boots,IC_Inf,IC_sup,zeta_init,moy_R2_boots,IC_Inf_R2,IC_sup_R2,&
                         CP_R2_boot,CP_ktau_boot,moy_R2_boots_test,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,&
-                        bi_R2_trial,bs_R2_trial,thetacopule, thetacopula_init
+                        bi_R2_trial,bs_R2_trial,thetacopule, thetacopula_init, printnbre
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS, don_simultamp,don_simulStamp,don_simulS1,&
                         parametre_empirique, parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,&
@@ -183,9 +183,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     !=====================================================================================
     !*********fin declaration des variables et debut du programme principale**************
     !=====================================================================================
-    
-    ! call dblepr("voile p", -1, p, ntrials1)
-    ! call dblepr("voile prop_i", -1, prop_i, ntrials1)
+    ! test operators priority
+	! printnbre = 1.d0/2.d0 *5.d0
+    ! call dblepr("test 1/2 *5", -1, printnbre, 1)
+	! printnbre = (1.d0/2.d0) *5.d0
+    ! call dblepr("test (1/2) *5", -1, printnbre, 1)
     ! call dblepr("voile kappa", -1, vect_kappa, n_sim1)
     ! goto 998
     
