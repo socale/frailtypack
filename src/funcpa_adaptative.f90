@@ -266,5 +266,52 @@ module func_adaptative
     return
     
     endfunction funcpafrailtyPred_Essai
+	
+	! joint frailty_copula
+	double precision function funcpafrailtyPred_copula(b,np,id,thi,jd,thj,k0)
+        use var_surrogate, only:essai_courant,nsujeti,frailt_base
+        use fonction_A_integrer,only:Integrant_Copula
+        
+        implicit none
+         
+        integer,intent(in)::id,jd,np
+        integer::i
+        double precision,dimension(np),intent(in)::b
+        double precision,dimension(2),intent(in)::k0
+        double precision,intent(in)::thi,thj
+        double precision::vsi,vti,res,ui
+        double precision,dimension(np)::bh
+         
+        do i=1,np
+            bh(i)=b(i)
+        end do
+        
+        if (id.ne.0) bh(id)=bh(id)+thi
+        if (jd.ne.0) bh(jd)=bh(jd)+thj
+        
+        vsi=bh(1)
+        vti=bh(2)
+        if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de
+            ui=0.d0
+        else
+            ui=bh(3)
+        endif
+		
+        res = Integrant_Copula(vsi,vti,ui,essai_courant,nsujeti(essai_courant))
+        res = dlog(res)
+
+		if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+			funcpafrailtyPred_copula =-1.d9
+			goto 124
+		else
+			funcpafrailtyPred_copula = res
+		end if
+    
+    
+		124    continue
+		
+		return
+    
+    endfunction funcpafrailtyPred_copula
 
 endmodule func_adaptative
