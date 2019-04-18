@@ -32,34 +32,34 @@ contains
     double precision, dimension(:,:),allocatable::m
      
 
-	if(control_affichage == 0)then
-		call dblepr("vsi = ", -1, vsi, 1)
-		call dblepr("vti = ", -1, vti, 1)
-		call dblepr("ui = ", -1, ui, 1)
-		call intpr("ig = ", -1, ig, 1)
-		call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
-		call intpr("posind_i = ", -1, posind_i, 1)
-		call dblepr("alpha_ui = ", -1, alpha_ui, 1)
-		call dblepr("const_res4 = ", -1, const_res4, 1)
-		call dblepr("const_res5 = ", -1, const_res5, 1)
-		call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
-		call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
-		call dblepr("theta_copule = ", -1, theta_copule, 1)
-		call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
-		call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
-		call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
-		call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
-		call intpr("copula_function = ", -1, copula_function, 1)
-		call intpr("methodInt = ", -1, methodInt, 1)
-		call dblepr("pi = ", -1, pi, 1)
-		call dblepr("gamma_ui = ", -1, gamma_ui, 1)
-		call dblepr("determinant = ", -1, determinant, 1)
-		call dblepr("varcovinv = ", -1, varcovinv, 9)
-		call intpr("adaptative = ", -1, adaptative, 1)
-		call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
-		call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
-		control_affichage = 1
-	endif
+	! if(control_affichage == 0)then
+		! call dblepr("vsi = ", -1, vsi, 1)
+		! call dblepr("vti = ", -1, vti, 1)
+		! call dblepr("ui = ", -1, ui, 1)
+		! call intpr("ig = ", -1, ig, 1)
+		! call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
+		! call intpr("posind_i = ", -1, posind_i, 1)
+		! call dblepr("alpha_ui = ", -1, alpha_ui, 1)
+		! call dblepr("const_res4 = ", -1, const_res4, 1)
+		! call dblepr("const_res5 = ", -1, const_res5, 1)
+		! call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
+		! call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
+		! call dblepr("theta_copule = ", -1, theta_copule, 1)
+		! call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
+		! call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
+		! call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
+		! call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
+		! call intpr("copula_function = ", -1, copula_function, 1)
+		! call intpr("methodInt = ", -1, methodInt, 1)
+		! call dblepr("pi = ", -1, pi, 1)
+		! call dblepr("gamma_ui = ", -1, gamma_ui, 1)
+		! call dblepr("determinant = ", -1, determinant, 1)
+		! call dblepr("varcovinv = ", -1, varcovinv, 9)
+		! call intpr("adaptative = ", -1, adaptative, 1)
+		! call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
+		! call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
+		! control_affichage = 1
+	! endif
 	
 	 
     integrant = 1.d0
