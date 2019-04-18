@@ -2594,7 +2594,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     ! theta_ST_2(1,1)= matrice_generation(1,rangparam_theta)**2.d0 !theta simule
                     ! gamma_st_2(1,1)= matrice_generation(1,rangparam_gamma)**2.d0  ! gamma simule
                     
-                    call rmvnorm(t_chap_kendall,v_chap_kendall,1,0,theta_chap_kendall)
+                    if(nsim_node(8).ne.3) call rmvnorm(t_chap_kendall,v_chap_kendall,1,0,theta_chap_kendall)
                     theta_ST_2(1,1)= theta_chap_kendall(1,1)**2.d0 !theta simule
                     gamma_st_2(1,1)= theta_chap_kendall(1,2)**2.d0  ! gamma simule
                     if(indice_alpha==0 .and. indice_eta==0)then
