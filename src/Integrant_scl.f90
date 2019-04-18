@@ -81,9 +81,9 @@ contains
                      **dble(deltastar(posind_i-1+j))
         integrant = integrant * contri_indiv
 		if(adaptative .and. integrant==0) then
-		    call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
-		    call dblepr("contri_indiv = ", -1, contri_indiv, 1)
-			call dblepr("integrant = ", -1, integrant, 1)
+		    ! call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
+		    ! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+			! call dblepr("integrant = ", -1, integrant, 1)
 		endif
     enddo
 	
