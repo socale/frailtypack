@@ -139,7 +139,12 @@ jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549, alpha =
   if(is.null(filter.surr) | is.null(filter.true)){
     stop("The vectors filter.surr and filter.true must contain at least one element corresponding to the effect of the treatment")
   }
-  
+  print("ver=")
+  cat(ver)
+  print("betas=")
+  cat(betas)
+  print("betat=")
+  cat(betat)
   if(!(length(betas) == ver) | !(length(betat)==ver)){
     stop("The vectors betas and betat must contain a number of elements corresponding to ver")
   }

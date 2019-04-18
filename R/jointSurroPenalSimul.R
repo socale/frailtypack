@@ -464,9 +464,9 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     filtre  <- filter.surr 
     filtre2 <- filter.true
     filtre0 <- as.matrix(data.frame(filtre,filtre2))
-    mbetast <- matrix(c(betas, betat), nrow = length(filtre), ncol = 2, byrow = F)
-    mbetast.init <- matrix(c(betas.init, betat.init), nrow = length(filtre), ncol = 2, byrow = F)
   }
+  mbetast <- matrix(c(betas, betat), nrow = length(filtre), ncol = 2, byrow = F)
+  mbetast.init <- matrix(c(betas.init, betat.init), nrow = length(filtre), ncol = 2, byrow = F)
   
   vbetast = mbetast
   vbetastinit = mbetast.init
