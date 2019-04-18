@@ -268,6 +268,7 @@
 #'    \item{dataHessian}{Dataframe of the variance-Covariance matrices  of the estimates for all simulations}
 #'    \item{dataHessianIH}{Dataframe of the robust estimation of the variance matrices  of the estimates for all simulations}
 #'    \item{datab}{Dataframe of the estimates for all simulations which rich convergence}
+#'    \item{type.joint}{the estimation model; 1 for the joint surrogate and 3 for joint frailty-copula model}
 #'    
 #'   
 #' @seealso \code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}
@@ -843,6 +844,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   result$n.iter <- ans$ni
   result$dataTkendall <- data.frame(ans$fichier_kendall)
   result$dataR2boot <- data.frame(ans$fichier_R2)
+  result$type.joint <- type.joint
   if(!(type.joint==3)){
     result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
     names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",

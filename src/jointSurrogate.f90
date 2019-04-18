@@ -197,8 +197,6 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! for copula model 
     copula_function = nsim_node(12) ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
     type_joint_estim = nsim_node(8) ! type of estimated model
-	allocate(moy_betaS(nva1), moy_betaT(nva2),moy_betaS_se(nva1), moy_betaT_se(nva2),&
-						taux_couvertureS(nva1), taux_couvertureT(nva2))
     ! affectation de certains parametres
     nomvarl(1) = "trt"
     NomFichier(1) = "kappa_valid_crois.txt"
@@ -535,6 +533,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     nva = nva1+nva2
 
     allocate(vaxdc(ng,nva2)) ! matrice des variables explicatives presentes dans le jeux de donnees deces
+		allocate(moy_betaS(nva1), moy_betaT(nva2),moy_betaS_se(nva1), moy_betaT_se(nva2),&
+			taux_couvertureS(nva1), taux_couvertureT(nva2))
     !!write(4,*)trim('---> Nombre de variables explicatives pour les donnees surrrogate:'),nva1
    ! if(rang_proc==0) !write(*,*)trim('---> Nombre de variables explicatives pour les donnees surrrogate:'),nva1
     !!write(4,*)trim('---> Nombre de variables explicatives pour les donnees deces:'),nva2
