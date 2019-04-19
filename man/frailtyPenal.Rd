@@ -9,7 +9,7 @@
 \usage{
 frailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,
 cross.validation = FALSE, jointGeneral,n.knots, kappa, maxit = 300, hazard =
-"Splines", nb.int, RandDist = "Gamma", betaknots = 1, betaorder = 3,
+"Splines-per", nb.int, RandDist = "Gamma", betaknots = 1, betaorder = 3,
 initialize = TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi,
 init.Eta, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, print.times =
 TRUE)
@@ -171,7 +171,9 @@ times where both survival and hazard function are estimated. By default
 seq(0,max(time),length=99), where time is the vector of survival times.}
 \item{lam}{array (dim=3) of hazard estimates and confidence bands.}
 \item{surv}{array (dim=3) of baseline survival estimates and confidence
-bands.} \item{nbintervR}{Number of intervals (between 1 and 20) for the
+bands.} \item{median}{The value of the median survival and its confidence bands. If there are
+two stratas or more, the first value corresponds to the value for the 
+first strata, etc.} \item{nbintervR}{Number of intervals (between 1 and 20) for the
 parametric hazard functions ("Piecewise-per", "Piecewise-equi").}
 \item{npar}{number of parameters.} \item{nvar}{number of explanatory
 variables.} \item{LCV}{the approximated likelihood cross-validation

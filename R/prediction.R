@@ -1005,6 +1005,16 @@ prediction <- function(fit, data, data.Longi, t, window, event = "Both", conditi
   if (MC.sample==0) ICproba <- FALSE
   else ICproba <- TRUE
   
+  # Ajout Julien pour eviter que des variables numeriques ne soient considerees comme "character"
+  for (i in 1:length(data)) {
+    if (!is.factor(data[,i])) data[,i] <- as.numeric(data[,i])
+  }
+  if (!missing(data.Longi)) {
+    for (i in 1:length(data.Longi)) {
+      if (!is.factor(data.Longi[,i])) data.Longi[,i] <- as.numeric(data.Longi[,i])
+    }
+  }
+  
   np <- fit$npar
   b <- fit$b
   typeof <- fit$typeof

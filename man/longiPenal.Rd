@@ -6,7 +6,7 @@
 \usage{
 longiPenal(formula, formula.LongitudinalData, data, data.Longi,
   random, id, intercept = TRUE, link = "Random-effects", left.censoring =
-  FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
+  FALSE, n.knots, kappa, maxit = 350, hazard = "Splines-per", init.B,
   init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam = 1e-3,
   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 }
@@ -143,7 +143,9 @@ terminal event are estimated. By default seq(0,max(time),length=99), where
 time is the vector of survival times.} \item{lamD}{The array (dim=3) of
 baseline hazard estimates and confidence bands (terminal event).}
 \item{survD}{The array (dim=3) of baseline survival estimates and confidence
-bands (terminal event).} \item{typeof}{The type of the baseline hazard
+bands (terminal event).} 
+\item{median}{The value of the median survival and its confidence bands.}
+\item{typeof}{The type of the baseline hazard
 functions (0:"Splines", "2:Weibull").} \item{npar}{The number of parameters.}
 \item{nvar}{The vector of number of explanatory variables for the terminal
 event and biomarker.} \item{nvarEnd}{The number of explanatory variables for

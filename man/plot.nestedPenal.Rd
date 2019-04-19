@@ -8,10 +8,10 @@
 \title{Plot Method for a Nested frailty model and an Additive frailty model.}
 \usage{
 \method{plot}{nestedPenal}(x, type.plot="Hazard", conf.bands=TRUE,
-pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab =
+pos.legend="topright", cex.legend=0.7, main, color=2, median=TRUE, Xlab = "Time", Ylab =
 "Hazard function", ...)
 \method{plot}{additivePenal}(x, type.plot="Hazard", conf.bands=TRUE,
-pos.legend="topright", cex.legend=0.7, main, color=2, Xlab = "Time", Ylab =
+pos.legend="topright", cex.legend=0.7, main, color=2, median=TRUE, Xlab = "Time", Ylab =
 "Hazard function", ...)
 }
 \arguments{
@@ -37,6 +37,8 @@ this argument to a single keyword from the list '"bottomright"', '"bottom"',
 \item{main}{plot title}
 
 \item{color}{curve color (integer)}
+
+\item{median}{Logical value. Determines whether survival median will be plotted. Default is TRUE.}
 
 \item{Xlab}{Label of x-axis. Default is '"Time"'}
 

@@ -7,7 +7,7 @@
 events and a terminal event.}
 \usage{
 \method{plot}{trivPenal}(x, event = "Both", type.plot = "Hazard", conf.bands =
-FALSE, pos.legend="topright", cex.legend = 0.7, ylim, main, color = 2, Xlab
+FALSE, pos.legend="topright", cex.legend = 0.7, ylim, main, color = 2, median=TRUE, Xlab
 = "Time", Ylab = "Hazard function", ...)
 }
 \arguments{
@@ -36,6 +36,8 @@ this argument to a single keyword from the list '"bottomright"', '"bottom"',
 \item{main}{plot title}
 
 \item{color}{curve color (integer)}
+
+\item{median}{Logical value. Determines whether survival median will be plotted. Default is TRUE.}
 
 \item{Xlab}{Label of x-axis. Default is '"Time"'}
 
