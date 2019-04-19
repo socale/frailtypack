@@ -15,7 +15,7 @@
         ,np,neta0,b,H_hessOut,HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out &
         ,typeof0,equidistant,mtaille &
         ,counts,ier_istop,paraweib &
-        ,MartinGales,ResLongi,Pred_y0 &
+        ,MartinGales,ResLongi,Pred_y0,bclam0 &
         ,positionVarTime,numInterac &
         ,linearpred,linearpreddc,ziOut &
     ,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc,BetaTpsMatY,EPS,GH,paGH)
@@ -86,6 +86,7 @@
         double precision,dimension(2),intent(out)::LCV
         double precision,dimension(2)::shapeweib,scaleweib
         double precision,dimension(4),intent(out)::paraweib
+    double precision, dimension(1),intent(in)::bclam0
     
         integer,dimension(4),intent(in)::noVar ! modif TwoPart
         integer::noVar1,noVar2,noVar3!! rajout
@@ -147,11 +148,14 @@
    
    !add TwoPart
    integer::nvaB0,groupeB,nbB0,noVarB,nsujetB0, nb0
-      
+
    a_deja_simul=0 ! add Monte-carlo
    ng0=ngnzag(1)
    nz0=ngnzag(2)
    ag0=ngnzag(3)
+   
+   boxcoxlambda(1)=0.d0
+   boxcoxlambda(1)=bclam0(1) ! lambda box-cox transformation
    
     nsujet0=VectNsujet(1)
     nsujety0=VectNsujet(2)
@@ -193,7 +197,7 @@
 !     close(2)
      
     if(link0(1).eq.2) then
-    if(positionVarTime(1).ne.404) then
+    if(positionVarTime(1).lt.400) then
     allocate(positionVarT((numInterac(1)+numInterac(2))*4))
     positionVarT = positionVarTime
     end if
@@ -1146,7 +1150,7 @@
             if(typeJoint.eq.3)     b(1:4)=0.8d0
         end if
     
-    
+          
     
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     !     INITIALISATION SUR SHARED Frailty MODEL
@@ -1171,7 +1175,7 @@
             Binit((nz+2+1):(nz+2+nva1))=1.d-1
             Binit(nz+2+nva1+effet)=1.d0
                 
-                
+
     !    write(*,*),'===================================',effet,npinit
     !    write(*,*),'== sur un SHARED FRAILTY model ====',(nz+2),nva1,nva2
     !    write(*,*),'=== donnees recurrentes uniquement ='
@@ -1747,7 +1751,7 @@ end if
         deallocate(etaydc,etayr,b_lme,invBi_chol,invBi_cholDet)
     deallocate(chol) !Monte-carlo
     if(link.eq.2) then
-    if(positionVarTime(1).ne.404) deallocate(positionVarT)
+    if(positionVarTime(1).lt.400) deallocate(positionVarT)
 end if
         return
     
@@ -4180,16 +4184,16 @@ if(numInter.ge.1)then
         end if
     end if
 
- !               open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
- !!        write(2,*)'X2BcurG',X2BcurG
- !    write(2,*)'nvaB',nvaB
- !       write(2,*)'veB',veB
- !         write(2,*)'positionVarT',positionVarT
- !        write(2,*)'TwoPart',TwoPart
- !        write(2,*)'resultf1',resultf1
- !         write(2,*)'resultf2',resultf2
- !          write(2,*)'counter2',counter2
- !         close(2)
+! open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!         write(2,*)'X2BcurG',X2BcurG
+!     write(2,*)'nvaB',nvaB
+!        write(2,*)'veB',veB
+!          write(2,*)'positionVarT',positionVarT
+!         write(2,*)'TwoPart',TwoPart
+!         write(2,*)'resultf1',resultf1
+!          write(2,*)'resultf2',resultf2
+!           write(2,*)'counter2',counter2
+!          close(2)
     
     if(TwoPart.eq.1) then
     X2BcurG=0.d0
@@ -4278,9 +4282,11 @@ Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
                     
 cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1curG(1, 1:nb1),frail(1:nb1)))
 
-
+if(boxcoxlambda(1).gt.400) then
         current_meanG = cmY*Bcurrentvalue
-
+else if(boxcoxlambda(1).le.400) then
+        current_meanG = (((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue
+end if
 
         
                     else if(TwoPart.eq.0) then
@@ -4756,9 +4762,11 @@ end if
                     
 
         cmY = (MATMUL(x2curG,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1YcurG,Xea22))
-
+if(boxcoxlambda(1).eq.404) then
         current_meanG = cmY*Bcurrentvalue
-        
+else if(boxcoxlambda(1).le.404) then
+        current_meanG = (((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue
+end if
                     else if(TwoPart.eq.0) then
                             current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
 
@@ -4911,7 +4919,11 @@ end if
         
     
     funcG = dexp(funcG)
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!         write(2,*)'ping'
+!          close(2)
 
+ 
         return
     
         end function funcG

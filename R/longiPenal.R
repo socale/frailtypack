@@ -348,15 +348,14 @@
 #' 
 "longiPenal" <-
   function (formula, formula.LongitudinalData, formula.Binary=FALSE, data,  data.Longi, random, random.Binary=FALSE, 
-  id, intercept = TRUE, link="Random-effects",timevar=FALSE,left.censoring=FALSE, n.knots, kappa, maxit=350, hazard="Splines",
+  id, intercept = TRUE, link="Random-effects",timevar=FALSE,left.censoring=FALSE,BClam=FALSE, n.knots, kappa, maxit=350, hazard="Splines",
   init.B, init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, 
   print.times=TRUE)
   {
     OrderLong <- data.Longi[,id]
     OrderDat <- data[,id]
-    
     m2 <- match.call()
-    m2$formula <-  m2$data <- m2$random <- m2$random.Binary  <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
+    m2$formula <-  m2$data <- m2$random <- m2$random.Binary  <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$BClam <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
     Names.data.Longi <- m2$data.Longi
 
     # TWO-PART indicator
@@ -392,6 +391,13 @@
     if(!is.null(left.censoring) && left.censoring!=FALSE){
       if(!is.numeric(left.censoring))stop("If you want to include left-censored longitudinal outcome you must give the threshold value as the argument of 'left.censoring'")
     }
+    
+    ### Box-cox
+        if(!is.null(BClam) && BClam!=FALSE){
+      if(!is.numeric(BClam))stop("Numeric value for Box-cox transformation required (FALSE if no tranformation)")
+    }
+    
+    
     
     ### Intercept
     if(!is.logical(intercept))stop("The argument 'intercept' must be logical")
@@ -508,7 +514,7 @@
     
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur
     
-    m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- NULL
+    m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$BClam <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- NULL
     
     
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")
@@ -534,6 +540,11 @@
     if(TwoPart){
     biom <- which(names(data.Longi)==as.character(attr(TermsY, "variables")[[2]])) # identifying biomarker
     data.Longi=data.Longi[data.Longi[,biom]>min(data.Longi[,biom]),]  # only positive biomarker values for semi-continuous part
+    
+    if(BClam!=F){
+    data.Longi[,biom]=(data.Longi[,biom]^BClam-1)/BClam
+    }
+    
     OrderLong <- data.Longi[, id]
     OrderBinary <- data.Binary[, id]
     }
@@ -1450,6 +1461,12 @@ if(TwoPart) max_repB <- max(table(clusterB))
       n.censored <- length(which(Y<=left.censoring))
       prop.censored <- n.censored/nsujety
     }
+    
+    # Box-cox
+    
+    BoxCoxlam <- BClam
+    
+    
     #============= pseudo-adaptive Gauss Hermite ==============
     #m <- lme(measuret ~ time+interact+treatment, data = data, random = ~ 1| idd)
     if(method.GH=="Pseudo-adaptive"){
@@ -1962,6 +1979,9 @@ if(i==1){
     positionVarTime=c(404,0,0,0) # 404 means there is no time-interaction
     }
 
+    if(BClam==F) BClam=404
+    
+    
   if(!TwoPart){ # initialize TwoPart variables if not activated to avoid memory allocation problems
     Binary <- rep(0, length(nsujety))
     nsujetB=0
@@ -2071,6 +2091,7 @@ if(i==1){
 			MartinGale=as.double(matrix(0,nrow=ng,ncol=3+nRE)),###
 			ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
 			Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
+            bclam0 = as.double(BoxCoxlam), # box-cox lambda
 			
 			positionVarTime = as.integer(positionVarTime),
 			numInterac = as.integer(c(numInterac, numInteracB)),

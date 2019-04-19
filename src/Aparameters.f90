@@ -79,6 +79,7 @@
     double precision,dimension(:),allocatable,save :: Bcurrent, current_meanRaw ! add TwoPart
     integer,save::nmescurB, it_curB !add TwoPart
     integer, save::item ! remove this
+    double precision,dimension(1),save::boxcoxlambda ! lambda for longiPenal current-level box cox retransformation
     end module donnees_indiv
 
 
