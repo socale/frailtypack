@@ -554,7 +554,7 @@
         integer,intent(in)::id,jd,np
         double precision,intent(in)::thi,thj
         double precision,dimension(np)::uu,bh
-        double precision::frail1,frail2,frail3,res,yscalar,prod_cag,eps
+        double precision::res,yscalar,prod_cag,eps !frail1,frail2,frail3
             double precision::finddet,alnorm
             double precision,dimension(nea)::b_vec,uii
             double precision,dimension(nea*(nea+1)/2)::matv
@@ -728,7 +728,7 @@
     
             use optim
         use comon
-            use donnees_indiv,only:z1cur,x2cur,current_mean,b1,mu
+            use donnees_indiv,only:b1,mu !z1cur,x2cur,current_mean
             use residusM
  !   use ParametresPourParallelisation
     
@@ -747,7 +747,7 @@
             integer::jj,j,k,ier
             logical :: upper
         double precision,parameter::pi=3.141592653589793d0
-        double precision :: abserr,resabs,resasc
+        !double precision :: abserr,resabs,resasc
             upper=.false.
         bh=uu
     
@@ -1085,26 +1085,26 @@
     
             use optim
         use comon
-            use donnees_indiv,only:z1cur,x2cur,current_mean,b1,mu,sigmav
+            use donnees_indiv,only:current_mean,b1,mu,sigmav !z1cur,x2cur
             use residusM
         implicit none
     
         integer,intent(in)::id,jd,np
         double precision,intent(in)::thi,thj
         double precision,dimension(np)::uu,bh
-        double precision::frail1,frail2,frail3,frail4,res,yscalar,prod_cag,eps
+        double precision::res,yscalar,prod_cag,eps !frail1,frail2,frail3,frail4
             double precision::finddet,alnorm
             double precision,dimension(nea)::b_vec,uii
             double precision,dimension(nea*(nea+1)/2)::matv
             double precision,dimension(nea,1)::b_vecT
             double precision,dimension(nea,nea)::mat_B
             double precision,dimension(1)::uiiui
-            integer::jj,j,k,ier,ii
+            integer::jj,j,k,ier !ii
             logical :: upper
         double precision,parameter::pi=3.141592653589793d0
-            double precision :: resultdc,resultr
+            !double precision :: resultdc,resultr
             double precision,external::survdcCM,survRCM
-        double precision :: abserr,resabs,resasc,ress
+        double precision :: ress !abserr,resabs,resasc
             double precision,dimension(1)::current_meanR
             upper=.false.
             

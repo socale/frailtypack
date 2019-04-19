@@ -3315,9 +3315,9 @@
         end do
     
     
-    !     Pour chaque temps de 0 à la censure du d    cès par pas cens/100
+    !     Pour chaque temps de 0 ? la censure du d    c?s par pas cens/100
     
-    !     commencer à 0 dans la boucle
+    !     commencer ? 0 dans la boucle
             if(datedc(1).eq.0) then
             x=datedc(2)
             mint = datedc(2)
@@ -3335,21 +3335,21 @@
         do t=1,mt
     
             lamDC=0.d0
-    !         n=n+1 ! compteur sur nième temps
+    !         n=n+1 ! compteur sur ni?me temps
             if(t.ne.1) then
                 x=x+(cens-mint)/(mt-1)
             end if
     
-    ! On simule 1000 r    alisations gaussienne par paramètres
+    ! On simule 1000 r    alisations gaussienne par param?tres
             do k=1,1000
-    !     Pour chaque paramètre estim    
+    !     Pour chaque param?tre estim    
                 do i=1,ns
                     som=0.d0
                     do j=1,i         ! cela correspond au produit trp(L)%*%U
                         som=som+vv(i*(i-1)/2+j)*u(k,j)
                     end do
                     bgen(i)=(b(i)+som)**2
-                end do              ! en sortie on r    cupère le nouveau vecteur b
+                end do              ! en sortie on r    cup?re le nouveau vecteur b
     
     
     
@@ -3390,20 +3390,20 @@
     
             glDC=0.d0
             suDC=0.d0
-    !         n=n+1 ! compteur sur nième temps
+    !         n=n+1 ! compteur sur ni?me temps
             if(t.ne.1) then
             x=x+(cens-mint)/(mt-1) !x+(cens-mint)/99 !100
             end if
-    ! On simule 1000 r    alisations gaussienne par paramètres
+    ! On simule 1000 r    alisations gaussienne par param?tres
             do k=1,1000
-    !     Pour chaque paramètre estim    
+    !     Pour chaque param?tre estim    
                 do i=1,ns
                     som=0.d0
                     do j=1,i         ! cela correspond au produit trp(L)%*%U
                         som=som+vv(i*(i-1)/2+j)*u(k,j)
                     end do
                     bgen(i)=(b(i)+som)**2
-                end do              ! en sortie on r    cupère le nouveau vecteur b
+                end do              ! en sortie on r    cup?re le nouveau vecteur b
     
     
                     glDC(k)  =  (x/bgen(2))**bgen(1)

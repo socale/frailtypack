@@ -418,7 +418,7 @@
             m1=m-nva-effet-indic_alpha !joint
         case(6)  !Uni 
             m1 = m - nva - effet*2 - indic_alpha*2
-        !cas supplementaire rajouté pour joint general
+        !cas supplementaire rajout? pour joint general
         case(5)
             m1=m-nva-effet-indic_alpha !joint general (du moment que indic_eta=indic_alpha=1)
         case(2)
@@ -544,15 +544,14 @@
     double precision::fctnames,thn,th,z,vl,th2,vaux
     external::fctnames
     logical::endDeriva
-	
-	fcith = 0.d0 ! scl pour initialisation: 21/02/2019
+
     endDeriva=.false.
     
     select case(model)
     case(1,7)
         th=1.d-3 !joint
     case(5)
-        th=1.d-5 !joint general !cas supplementaire rajouté
+        th=1.d-5 !joint general !cas supplementaire rajout?
     case(2)
         th=5.d-3 !additive
     case(3)
@@ -1335,7 +1334,7 @@
         case(1,7)
             m1=m-nva-effet-indic_alpha !joint
 
-        !cas supplementaire rajouté pour joint general
+        !cas supplementaire rajout? pour joint general
         case(5)
             m1=m-nva-effet-indic_alpha !joint general
         case(2)
@@ -1639,7 +1638,7 @@
     !use comon,only: c,cdc,Hspl_hess,indic_eta,ndate,ndatedc,nst,nsujet,&
     !nt0,nt0dc,nt1,nt1dc,nva1,nva2,PEN_deri,t0,t0dc,t1,t1dc
     use comon,only:nva,model,I_hess,H_hess,hess,indic_ALPHA,&
-    typeof,vvv,indic_tronc,ng
+    typeof,vvv,ng !indic_tronc
 
 !add additive
     !use additiv,only:correl
@@ -1655,9 +1654,9 @@
     double precision,dimension(2)::k0
     double precision,dimension(2)::zero
 !   variables locales
-    integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k,sub,iun
+    integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k,sub !iun
     character(len=100)::bar ! Pour la progressBar
-    double precision,dimension(m*(m+3)/2)::fu,v1,vnonpen
+    double precision,dimension(m*(m+3)/2)::fu,v1 !vnonpen
     double precision,dimension(m)::delta,b1,bh,vindiv ! last one IJ
     double precision::da,dm,ga,tr
     double precision::GHG,step,eps,vw,fi,maxt, &
@@ -1932,7 +1931,7 @@
             m1=m-nva-effet-indic_alpha !joint
         case(6)  !Uni 
             m1 = m - nva - effet*2 - indic_alpha*2
-        !cas supplementaire rajouté pour joint general
+        !cas supplementaire rajout? pour joint general
         case(5)
             m1=m-nva-effet-indic_alpha !joint general (du moment que indic_eta=indic_alpha=1)
         case(2)
@@ -2082,7 +2081,7 @@
         ! first derivatives only
     subroutine derivaJindiv(b,m,vindiv,rl,k0,index,fctnamesindiv)
     !use comon,only:nst,k0T
-    use comon,only:model,nstRec, indic_tronc
+    use comon,only:model !nstRec, indic_tronc
     implicit none
 
     integer,intent(in)::m,index
@@ -2091,7 +2090,7 @@
     double precision,dimension(m),intent(in)::b
     double precision,dimension(m),intent(inout)::vindiv
     double precision,dimension(m)::fcith
-    integer ::i0,i,k,j,iun,ll,m1
+    integer ::i0,i,iun !ll,m1,k,j
     double precision::fctnamesindiv,thn,th,z,vl,th2,vaux
     external::fctnamesindiv
     logical::endDeriva
@@ -2102,7 +2101,7 @@
     case(1,7)
         th=1.d-3 !joint
     case(5)
-        th=1.d-5 !joint general !cas supplementaire rajouté
+        th=1.d-5 !joint general !cas supplementaire rajout?
     case(2)
         th=5.d-3 !additive
     case(3)

@@ -93,8 +93,7 @@
     !    print*,'--'
     !end do
     !STOP
-    
-    
+
 !cpm
     istopp=0
     time = 0.d0
@@ -867,7 +866,7 @@
             call mnbraks(ax,bx,cx,fa,fb,fc,b,n)
         
             tol = 0.001d0
-        
+            
             res = goldens(ax,bx,cx,tol,xmin1,n,b,y,ddl)
     !        write(4,*)'******************************************* '
     !        write(4,*)'Best smoothing parameter',real(xmin1*xmin1), '  DoF :',-ddl

@@ -1049,7 +1049,7 @@
             end if
     
     prod_cag = 1.d0
-            !----- censure à gauche-----------
+            !----- censure ? gauche-----------
     
     
             if(s_cag_id.eq.1)then
@@ -1491,7 +1491,7 @@
     
     
             prod_cag =1.d0
-            !----- censure à gauche-----------
+            !----- censure ? gauche-----------
     
             if(s_cag_id.eq.1)then
   
@@ -1636,7 +1636,7 @@
     
     
                     !***********************************
-            !********* Gauss-Hermit pour la dimension 2 - modèle trviarie b_10, v*
+            !********* Gauss-Hermit pour la dimension 2 - mod?le trviarie b_10, v*
             !*************************************
     
         SUBROUTINE gauherJ3cvpl(ss,choix)
@@ -1675,7 +1675,7 @@
     
     
                             !***********************************
-            !********* Gauss-Hermit pour la dimension 3 - modèle trviarie b_10,b_11, v
+            !********* Gauss-Hermit pour la dimension 3 - mod?le trviarie b_10,b_11, v
             !*************************************
     
             SUBROUTINE gauherJ4cvpl(ss,choix)
@@ -1864,7 +1864,7 @@
             end if
     
             prod_cag = 1.d0
-            !----- censure à gauche-----------
+            !----- censure ? gauche-----------
     
             if(s_cag_id.eq.1)then
                     if(all.eq.1) then
@@ -2142,7 +2142,7 @@
             end if
     
     prod_cag = 1.d0
-            !----- censure à gauche-----------
+            !----- censure ? gauche-----------
     
             if(s_cag_id.eq.1)then
                     if(all.eq.1) then
@@ -2515,7 +2515,7 @@
             end if
     
             prod_cag = 1.d0
-            !----- censure à gauche-----------
+            !----- censure ? gauche-----------
     
             if(s_cag_id.eq.1)then
                     if(all.eq.1) then
@@ -2884,7 +2884,7 @@
             end if
     
             prod_cag = 1.d0
-            !----- censure à gauche-----------
+            !----- censure ? gauche-----------
     
             if(s_cag_id.eq.1)then
                     if(all.eq.1) then
