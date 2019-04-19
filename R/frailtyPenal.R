@@ -2688,12 +2688,9 @@
       for (i in (1:fit$n.strat)) upperR[i] <- ifelse(typeof==0, minmin(fit$survR[,3,i],fit$xR), minmin(fit$survR[,3,i],fit$xSuR))
       fit$medianR <- cbind(lowerR,medianR,upperR)
       
-      medianD <- NULL
-      for (i in (1:fit$n.strat)) medianD[i] <- ifelse(typeof==0, minmin(fit$survD[,1,i],fit$xD), minmin(fit$survD[,1,i],fit$xSuD))
-      lowerD <- NULL
-      for (i in (1:fit$n.strat)) lowerD[i] <- ifelse(typeof==0, minmin(fit$survD[,2,i],fit$xD), minmin(fit$survD[,2,i],fit$xSuD))
-      upperD <- NULL
-      for (i in (1:fit$n.strat)) upperD[i] <- ifelse(typeof==0, minmin(fit$survD[,3,i],fit$xD), minmin(fit$survD[,3,i],fit$xSuD))
+      medianD <- ifelse(typeof==0, minmin(fit$survD[,1],fit$xD), minmin(fit$survD[,1],fit$xSuD))
+      lowerD <- ifelse(typeof==0, minmin(fit$survD[,3],fit$xD), minmin(fit$survD[,3],fit$xSuD))
+      upperD <- ifelse(typeof==0, minmin(fit$survD[,2],fit$xD), minmin(fit$survD[,2],fit$xSuD))
       fit$medianD <- cbind(lowerD,medianD,upperD)
       
       #AD:
@@ -3611,12 +3608,9 @@
       for (i in (1:fit$n.strat)) upperR[i] <- ifelse(typeof==0, minmin(fit$survR[,3,i],fit$xR), minmin(fit$survR[,3,i],fit$xSuR))
       fit$medianR <- cbind(lowerR,medianR,upperR)
       
-      medianD <- NULL
-      for (i in (1:fit$n.strat)) medianD[i] <- ifelse(typeof==0, minmin(fit$survD[,1,i],fit$xD), minmin(fit$survD[,1,i],fit$xSuD))
-      lowerD <- NULL
-      for (i in (1:fit$n.strat)) lowerD[i] <- ifelse(typeof==0, minmin(fit$survD[,2,i],fit$xD), minmin(fit$survD[,2,i],fit$xSuD))
-      upperD <- NULL
-      for (i in (1:fit$n.strat)) upperD[i] <- ifelse(typeof==0, minmin(fit$survD[,3,i],fit$xD), minmin(fit$survD[,3,i],fit$xSuD))
+      medianD <- ifelse(typeof==0, minmin(fit$survD[,1],fit$xD), minmin(fit$survD[,1],fit$xSuD))
+      lowerD <- ifelse(typeof==0, minmin(fit$survD[,3],fit$xD), minmin(fit$survD[,3],fit$xSuD))
+      upperD <- ifelse(typeof==0, minmin(fit$survD[,2],fit$xD), minmin(fit$survD[,2],fit$xSuD))
       fit$medianD <- cbind(lowerD,medianD,upperD)
       
       fit$noVar1 <- noVar1
