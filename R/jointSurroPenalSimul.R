@@ -570,7 +570,12 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   nsim_node[10] <- nb.iterPGH # nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
   nsim_node[11] <- type.joint.simul # model a utiliser pour la generation des donnee en cas de simulation: 1=joint surrogate avec 1 frailty partage indiv, 3=joint frailty copula model
   nsim_node[12] <- typecopula # the copula function: 1 = clayton, 2=Gumbel
-  
+  if(type.joint == 3) # on adapte le nombre de colonne des paramteres estimes au type de modele
+    ncol_param_estim <- 25 + ves + vet -2
+  else
+    ncol_param_estim <- 24
+  nsim_node[13] <- ncol_param_estim # nobre de colenne de la matrice des parametres estimes: depend du type de modele
+    
   # Parametres associes au taux de kendall et au bootstrap
   meth.int.kendal <- 4
   method_int_kendal <- meth.int.kendal# methode d'integration pour le taux de kendall: 0= montecarle, 1= quadrature quaussienne classique, 2= approximation de Laplace
@@ -790,7 +795,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                   as.integer(autreParamSim),
                   fichier_kendall = matrix (0,nrow = n_sim1, ncol = 3), # debut section des parametres de sortie
                   fichier_R2 = matrix (0,nrow = n_sim1, ncol = 3),
-                  param_estimes = matrix (0,nrow = n_sim1, ncol = 24),
+                  param_estimes = matrix (0,nrow = n_sim1, ncol = ncol_param_estim),
                   as.integer(sizeVect),
                   b = rep(0,np),
                   H_hessOut = matrix(0,np,np),
@@ -853,8 +858,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   }else{
     result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
     entete <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
-                                      "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
-                                      "R2trial","SE.R2trial","tau","SE.KendTau")
+                 "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
+                 "R2trial","SE.R2trial","tau","SE.KendTau")
     if(ves>1){
       entete <- c(entete, paste("var", 2:ves, sep = ""))
       
@@ -863,12 +868,27 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       entete <- c(entete, paste("var", 2:vet, sep = ""))
       
     }
+    # cat("names(result$dataParamEstim)")
+    # cat(names(result$dataParamEstim))
+    # cat("ddeedd")
+    # cat(entete)
     names(result$dataParamEstim) <- entete
   }
   names(result$dataTkendall) <- c("Ktau","inf.95%CI","sup.95%CI")
   names(result$dataR2boot) <- c("R2.boot","inf.95%CI","sup.95%CI")
   result$dataHessian <- data.frame(ans$dataHessian)
   result$datab <- data.frame(ans$datab)
+  
+  cat("result$datab", fill = TRUE)
+  print(result$datab)
+  cat("dataHessian", fill = TRUE)
+ # print(dataHessian)
+  cat("result$dataR2boot", fill = TRUE)
+  print(result$dataR2boot)
+  cat("result$dataTkendall", fill = TRUE)
+  print(result$dataTkendall)
+  cat("result$dataParamEstim", fill = TRUE)
+  print(result$dataParamEstim)
   
   #if(is.na(result$n.iter)) result=NULL # model did not converged 
   

@@ -736,6 +736,10 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nsim_node[10] <- nb.iterPGH # nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
   nsim_node[11] <- 3 # model a utiliser pour la generation des donnee en cas de simulation: 1=joint surrogate avec 1 frailty partage indiv, 3=joint frailty copula model
   nsim_node[12] <- typecopula # the copula function: 1 = clayton, 2=Gumbel
+  # on adapte le nombre de colonne des paramteres estimes au type de modele
+  ncol_param_estim <- 25 + ves + vet -2
+  nsim_node[13] <- ncol_param_estim # nobre de colenne de la matrice des parametres estimes: depend du type de modele
+  
   
   # Parametres associes au taux de kendall et au bootstrap
   meth.int.kendal <- 4
@@ -1008,7 +1012,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
                   as.integer(autreParamSim),
                   fichier_kendall = matrix (0,nrow = 1, ncol = 3), # debut section des parametres de sortie
                   fichier_R2 = matrix (0,nrow = 1, ncol = 3),
-                  param_estimes = matrix (0,nrow = 1, ncol = 24),
+                  param_estimes = matrix (0,nrow = 1, ncol = ncol_param_estim),
                   as.integer(sizeVect),
                   b = rep(0,np),
                   H_hessOut = matrix(0,np,np),
