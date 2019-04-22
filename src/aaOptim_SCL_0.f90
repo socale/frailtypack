@@ -197,10 +197,10 @@
     if(model.ne.9) then ! on ne fait pas d'affichage pour l'estimation des frailties individuelles
         if(rang==0)then ! on affiche que pour le processus maître
             ! !write(*,*)'iteration***',ni,'vrais',rl 
-            if(affiche_itteration==1) then 
-              call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
-			  call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
-            endif
+            ! if(affiche_itteration==1) then 
+              ! call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
+			  ! call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
+            ! endif
         endif
     endif
 
