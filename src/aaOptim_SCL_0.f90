@@ -158,6 +158,10 @@
     nfmax=m*(m+1)/2
     ca=epsa+1.d0
     cb=epsb+1.d0
+	! ----nouveau SCL 22/04/2019------ 
+	dd=epsd+1.d0
+	rl = -1.d+10
+	! -----Fin nouveau SCL 22/04/2019 ------
     rl1=-1.d+10
     ni=0
     istop=0
@@ -196,11 +200,11 @@
     end if
     if(model.ne.9) then ! on ne fait pas d'affichage pour l'estimation des frailties individuelles
         if(rang==0)then ! on affiche que pour le processus maître
-            ! !write(*,*)'iteration***',ni,'vrais',rl 
-            ! if(affiche_itteration==1) then 
-              ! call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
-			  ! call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
-            ! endif
+            !write(*,*)'iteration***',ni,'vrais',rl 
+            if(affiche_itteration==1) then 
+              call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
+			  call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
+            endif
         endif
     endif
 

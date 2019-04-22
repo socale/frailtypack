@@ -535,7 +535,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     nva = nva1+nva2
 
     allocate(vaxdc(ng,nva2)) ! matrice des variables explicatives presentes dans le jeux de donnees deces
-		allocate(moy_betaS(nva1), moy_betaT(nva2),moy_betaS_se(nva1), moy_betaT_se(nva2),&
+	allocate(moy_betaS(nva1), moy_betaT(nva2),moy_betaS_se(nva1), moy_betaT_se(nva2),&
 			taux_couvertureS(nva1), taux_couvertureT(nva2))
     !!write(4,*)trim('---> Nombre de variables explicatives pour les donnees surrrogate:'),nva1
    ! if(rang_proc==0) !write(*,*)trim('---> Nombre de variables explicatives pour les donnees surrrogate:'),nva1
@@ -1593,7 +1593,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         nbintervR,nbintervDC,mtaille,ni,cpt,cpt_dc,ier,istop,paraweib,MartinGales,linearpred,&
                         linearpreddc,ziOut,time,timedc,0 , 1 , 0 , ttU , logNormal , paratps , 0 , 0 , 0 , &
                         EPS,nsim_node,indice_esti,indice_covST,0,param_weibull)
-    !call intpr("Nombre itteration:", -1, ni, 1)
+    ! call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
 		call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
     endif
@@ -4086,10 +4086,12 @@ end do
     ! !deallocate(Vect_sim_MC)
     
     !generation des donnees par joint failty-copula 
+	!call intpr("position test 1:", -1, ni, 1)
     if(nsim_node(11)==3) deallocate(don_simultamp,don_simulStamp)
     deallocate(moy_betaS, moy_betaT,moy_betaS_se, moy_betaT_se,taux_couvertureS, taux_couvertureT, theta_chap_copula,&
 			   v_chap_copula)
     deallocate(d_S,d_T,vbetas,vbetat)
+	!call intpr("position test 2:", -1, ni, 1)
     endsubroutine jointsurrogate
     !complilation:
     !mpif90 -fopenmp -O3 -o exe_joint_surr_MPI_OMP  Adonnees.f90 Aparameters.f90 autres_fonctions.f90 Integrant_scl.f90 aaOptim_New_scl.f90 aaOptim_New_scl2.f90 funcpa_laplace.f90 aaOptim.f90 aaOptim_SCL_0.f90 aaOptimres.f90 funcpa_adaptative.f90 Integrale_mult_scl.f90 Pour_Adaptative.f90 aaUseFunction.f90 funcpajsplines_surrogate_scl_1.f90 funcpajsplines_surrogate_scl_2.f90 afuncpasres.f90 aresidusMartingale.f90 distance.f90 joint_surrogate.f90 main_Surr_simulation.f90

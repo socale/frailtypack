@@ -879,16 +879,16 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   result$dataHessian <- data.frame(ans$dataHessian)
   result$datab <- data.frame(ans$datab)
   
-  cat("result$datab", fill = TRUE)
-  print(result$datab)
-  cat("dataHessian", fill = TRUE)
- # print(dataHessian)
-  cat("result$dataR2boot", fill = TRUE)
-  print(result$dataR2boot)
-  cat("result$dataTkendall", fill = TRUE)
-  print(result$dataTkendall)
-  cat("result$dataParamEstim", fill = TRUE)
-  print(result$dataParamEstim)
+ #  cat("result$datab", fill = TRUE)
+ #  print(result$datab)
+ #  cat("dataHessian", fill = TRUE)
+ # # print(dataHessian)
+ #  cat("result$dataR2boot", fill = TRUE)
+ #  print(result$dataR2boot)
+ #  cat("result$dataTkendall", fill = TRUE)
+ #  print(result$dataTkendall)
+ #  cat("result$dataParamEstim", fill = TRUE)
+ #  print(result$dataParamEstim)
   
   #if(is.na(result$n.iter)) result=NULL # model did not converged 
   
