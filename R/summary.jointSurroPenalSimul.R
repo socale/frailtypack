@@ -78,7 +78,7 @@
     cat(c("n.knots = ", object$n.knots), "\n")
     cat(c("n.iter = ", object$n.iter), "\n")
     cat(" ", "\n")
-    if(object$type.joint==1)
+    if(object$type.joint.simul==1)
       tau <- jointSurroTKendall(theta = object$theta2, gamma = object$gamma.ui, alpha = object$alpha.ui, zeta = object$zeta)
     else{
       if(object$typecopula == 1) tau <- object$theta.copula/(object$theta.copula + 1)

@@ -269,7 +269,7 @@
 #'    \item{dataHessianIH}{Dataframe of the robust estimation of the variance matrices  of the estimates for all simulations}
 #'    \item{datab}{Dataframe of the estimates for all simulations which rich convergence}
 #'    \item{type.joint}{the estimation model; 1 for the joint surrogate and 3 for joint frailty-copula model}
-#'    
+#'    \item{type.joint.simul}{The model used for data generation; 1 for joint surrogate and 3 for joint frailty-copula}
 #'   
 #' @seealso \code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}
 #' 
@@ -850,6 +850,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   result$dataTkendall <- data.frame(ans$fichier_kendall)
   result$dataR2boot <- data.frame(ans$fichier_R2)
   result$type.joint <- type.joint
+  result$type.joint.simul <- type.joint.simul
   result$typecopula <- typecopula
   if(!(type.joint==3)){
     result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
@@ -862,12 +863,16 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                  "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
                  "R2trial","SE.R2trial","tau","SE.KendTau")
     if(ves>1){
-      entete <- c(entete, paste("var", 2:ves, sep = ""))
-      
+      for(h in 2:ves){
+        entete <- c(entete, paste("beta_S_", h, sep = ""))
+        entete <- c(entete, paste("se.beta_S_", h, sep = ""))
+      }
     }
     if(vet>1){
-      entete <- c(entete, paste("var", 2:vet, sep = ""))
-      
+      for(h in 2:vet){
+        entete <- c(entete, paste("beta_T_", h, sep = ""))
+        entete <- c(entete, paste("se.beta_T_", h, sep = ""))
+      }
     }
     names(result$dataParamEstim) <- entete
   }

@@ -44,12 +44,16 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
                   "se_sigma_S","sigma_T","se_sigma_T","sigma_ST","se_sigma_ST","gamma_S","se_gamma_S","alpha","se_alpha",
                   "R2trial","se_R2trial","tau_00","SE.KendTau")
       if(ves>1){
-        entete <- c(entete, paste("var", 2:ves, sep = ""))
-        
+        for(h in 2:ves){
+          entete <- c(entete, paste("beta_S_", h, sep = ""))
+          entete <- c(entete, paste("se.beta_S_", h, sep = ""))
+        }
       }
       if(vet>1){
-        entete <- c(entete, paste("var", 2:vet, sep = ""))
-        
+        for(h in 2:vet){
+          entete <- c(entete, paste("beta_T_", h, sep = ""))
+          entete <- c(entete, paste("se.beta_T_", h, sep = ""))
+        }
       }
       names(estimates_complet2) <- entete
     }
@@ -141,17 +145,70 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       param_esti$bs_se_theta=param_esti$tau_00+1.96*param_esti$SE.KendTau
       param_esti$couverture_KTau=ifelse((param_init["tau"]>=param_esti$bi_se_theta) & (param_init["tau"]<=param_esti$bs_se_theta),1,0)
       # reorganisation des donnees
-      param_init=c("theta_S"=theta_S,"gamma_S"=gamma_S,"alpha"=alpha,"sigma_S"=sigma_S,"sigma_T"=sigma_T,
-                   "sigma_ST"=sigma_ST,"beta_S"=beta_S,"beta_T"=beta_T,"R2trial"=R2trial,"tau"=tau)
-      param_esti2=param_esti[,c("Theta_S","se_theta_S","couverture_thetaS","gamma_S","se_gamma_S","couverture_gamma_S",
-                                "alpha","se_alpha","couverture_alpha","sigma_S","se_sigma_S","couverture_sigma_S","sigma_T","se_sigma_T","couverture_sigma_T",
-                                "sigma_ST","se_sigma_ST","couverture_sigma_ST","beta_S","se_beta_S","couverture_beta_S","beta_T",
-                                "se_beta_T","couverture_beta_T","R2trial","se_R2trial","couverture_R2trial","tau_00","SE.KendTau","couverture_KTau")]
+      entete <- c("Theta_S","se_theta_S","couverture_thetaS","gamma_S","se_gamma_S","couverture_gamma_S",
+                  "alpha","se_alpha","couverture_alpha","sigma_S","se_sigma_S","couverture_sigma_S","sigma_T","se_sigma_T","couverture_sigma_T",
+                  "sigma_ST","se_sigma_ST","couverture_sigma_ST","beta_S","se_beta_S","couverture_beta_S")
+      if(ves>1){
+        for(h in 2:ves){
+          entete <- c(entete, paste("beta_S_", h, sep = ""))
+          entete <- c(entete, paste("se.beta_S_", h, sep = ""))
+        }
+        
+      }
+      entete = c(entete,"beta_T", "se_beta_T","couverture_beta_T")
+      if(vet>1){
+        for(h in 2:vet){
+          entete <- c(entete, paste("beta_T_", h, sep = ""))
+          entete <- c(entete, paste("se_beta_T_", h, sep = ""))
+        }
+      }
       
-      names(param_esti2)=c("theta.latex","se.theta.S","couverture.thetaS","gamma.latex","se.gamma.S","couverture.gamma.S",
-                           "alpha.latex","se.alpha","couverture.alpha","sigma.S.latex","se.sigma.S","couverture.sigma.S","sigma.T.latex","se.sigma.T","couverture.sigma.T",
-                           "sigma.ST.latex","se.sigma.ST","couverture.sigma.ST","beta.S.latex","se.beta.S.latex","couverture.beta.S","beta.T.latex",
-                           "se.beta.T","couverture.beta.T","R2trial.latex","se.R2trial","couverture.R2trial","K.tau.latex","se.KTau","couverture.KTau")
+      entete = c(entete,"R2trial","se_R2trial","couverture_R2trial","tau_00","SE.KendTau","couverture_KTau")
+      param_esti2=param_esti[,entete]
+      
+      param_init=c("theta_S"=theta_S,"gamma_S"=gamma_S,"alpha"=alpha,"sigma_S"=sigma_S,"sigma_T"=sigma_T,
+                   "sigma_ST"=sigma_ST,"beta_S" = beta_S[1])
+      if(ves>1){
+        for(h in 2:ves){
+          param_init <- c(param_init, paste("beta_S_", h, "=", beta_S[h], sep = ""))
+        }
+      }
+      param_init=c(param_init,"beta_T"=beta_T[1])
+      
+      if(vet>1){
+        for(h in 2:vet){
+          param_init <- c(param_init, paste("beta_T_", h, "=", beta_T[h], sep = ""))
+        }
+      }
+      
+      param_init <- c(param_init,"R2trial"=R2trial,"tau"=tau)
+      
+      entete <- c("theta.latex","se.theta.S","couverture.thetaS","gamma.latex","se.gamma.S","couverture.gamma.S",
+              "alpha.latex","se.alpha","couverture.alpha","sigma.S.latex","se.sigma.S","couverture.sigma.S","sigma.T.latex","se.sigma.T","couverture.sigma.T",
+              "sigma.ST.latex","se.sigma.ST","couverture.sigma.ST","beta.S.latex","se.beta.S.latex","couverture.beta.S")
+      
+      if(ves>1){
+        for(h in 2:ves){
+          entete <- c(entete, paste("beta.S.latex.", h, "=", beta_S(h), sep = "")
+                          , paste("se.beta.S.", h, "=", beta_S(h), sep = "")
+                          , paste("couverture.beta.S.", h, "=", beta_S(h), sep = ""))
+        }
+      }
+      
+      entete <- c(entete, "beta.T.latex", "se.beta.T","couverture.beta.T")
+      
+      if(vet>1){
+        for(h in 2:vet){
+          entete <- c(entete, paste("beta.T.latex.", h, "=", beta_S(h), sep = "")
+                          , paste("se.beta.T.", h, "=", beta_S(h), sep = "")
+                          , paste("couverture.beta.T.", h, "=", beta_S(h), sep = ""))
+        }
+      }
+      
+      entete <- c(entete, "R2trial.latex","se.R2trial","couverture.R2trial","K.tau.latex","se.KTau","couverture.KTau")
+      
+      names(param_esti2)= entete
+      
     }else{
       # reorganisation des donnees
       param_esti2=param_esti[,c("Theta_S","se_theta_S","couverture_thetaS","zeta","se_zeta","couverture_zeta","gamma_S","se_gamma_S","couverture_gamma_S",
