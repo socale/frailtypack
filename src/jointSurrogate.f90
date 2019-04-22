@@ -1829,7 +1829,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! extraction des fragilites niveau essai pour evaluation
     k=1
     do i=1,n_essai
-        if(nsim_node(8)==2 .or. nsim_node(8)==3)then
+        !if(nsim_node(8)==2 .or. nsim_node(8)==3)then
+		if(nsim_node(8)==2)then
             donnee_essai(i,:)=don_simulS(k,(/v_s1,v_t1,trialref1,u_i1,u_it/))
         else
             donnee_essai(i,:)=don_simulS(k,(/v_s1,v_t1,trialref1,u_i1/))
