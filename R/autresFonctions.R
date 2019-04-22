@@ -3,7 +3,7 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
                            n.obs = 600, n.trial = 30, cens.adm=549, lambda.S = 1.3,
                            nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
                            seed = 0,alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7,
-                           rsqrt = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
+                           cor = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
                            filter.surr = c(1,1), filter.true = c(1,1), frailt.base = 1,
                            thetacopule = 6){
   # variatio.seed : si = 1, je fais varier le seed, seulement pour des fins de verification des statistiques empirique.
@@ -35,7 +35,7 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
                                   lambda.T = lambda.T, nu.T = nu.T, full.data = full.data,
                                   seed = seed1, nb.reject.data = nb.reject.data1, alpha = alpha, gamma = gamma, 
                                   sigma.s = sigma.s, sigma.t = sigma.t, filter.surr = filter.surr,
-                                  rsqrt = rsqrt, betas = betas, betat = betat, filter.true= filter.true,
+                                  cor = cor, betas = betas, betat = betat, filter.true= filter.true,
                                   frailt.base = frailt.base, thetacopule = thetacopule, ver = ver)
     d[i,1] <- mean(data.sim$v_Si)
     d[i,2] <- (sd(data.sim$v_Si))**2
@@ -57,7 +57,7 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
   }
   result = data.frame(names(d))
   names(result) = "Parameters"
-  result$True <- c(0, sigma.s, 0, sigma.t, round(sqrt(rsqrt * sigma.s * sigma.t),dec), 
+  result$True <- c(0, sigma.s, 0, sigma.t, round(sqrt(cor * sigma.s * sigma.t),dec), 
                    0, gamma, "-", "-", "-", "-", rep(0.5, nbre.covar))
   result$Mean <- NA
   result$Median <- NA

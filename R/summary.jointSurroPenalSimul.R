@@ -78,17 +78,32 @@
     cat(c("n.knots = ", object$n.knots), "\n")
     cat(c("n.iter = ", object$n.iter), "\n")
     cat(" ", "\n")
-    
-    tau <- jointSurroTKendall(theta = object$theta2, gamma = object$gamma.ui, alpha = object$alpha.ui, zeta = object$zeta)
-    
+    if(object$type.joint==1)
+      tau <- jointSurroTKendall(theta = object$theta2, gamma = object$gamma.ui, alpha = object$alpha.ui, zeta = object$zeta)
+    else{
+      if(object$typecopula == 1) tau <- object$theta.copula/(object$theta.copula + 1)
+      else tau <- object$theta.copula/(object$theta.copula + 2)
+    }
+      
+    if(object$type.joint==1){
     resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
                                                 object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
                                                 object$theta2, object$zeta, object$gamma.ui, object$alpha.ui, 
                                                 object$sigma.s, object$sigma.t, object$sigma.st, object$betas,
-                                                object$betat, object$R2, tau, n_bootstrap, ick, R2parboot)
+                                                object$betat, object$R2, tau, n_bootstrap, ick, R2parboot,
+                                                object$type.joint)
+    }else{
+      resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
+                                                   object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
+                                                   object$theta.copula, object$zeta, object$gamma.ui, object$alpha.ui, 
+                                                   object$sigma.s, object$sigma.t, object$sigma.st, object$betas,
+                                                   object$betat, object$R2, tau, n_bootstrap, ick, R2parboot,
+                                                   object$type.joint)
+    }
     
     resultSimul[-nrow(resultSimul),1] <- substr(resultSimul[-nrow(resultSimul),1],1,nchar(resultSimul[-nrow(resultSimul),1])-6)
     if(is.na(resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1] <- "-"
+    if(is.na(resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1] <- "-"
     cat("Simulation results", "\n")
     print(resultSimul[-nrow(resultSimul),])
     cat(c("Rejected datasets : n(%) = ",resultSimul[nrow(resultSimul),3]), "\n")

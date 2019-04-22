@@ -2,7 +2,7 @@
 synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,ndec=3,nsim=100,
                                         theta_S=1,zeta=1,gamma_S=0.8,alpha=1,sigma_S=0.7,sigma_T=0.7,
                                         sigma_ST=0.6,beta_S=-1.25,beta_T=-1.25,R2trial=0.36,tau=0.378,
-                                        n_bootstrap=1000,ick=0, R2parboot = 0){
+                                        n_bootstrap=1000,ick=0, R2parboot = 0, type.joint = 1){
   # wd= repertoire dans lequel se trouve les scripts R
   # rep_courant=  chemin d'access au repertoire contenant les sous dossiers des paquets de simultation
   # nb_paquet= nombre de pacquets de donnees consideres
@@ -12,7 +12,7 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
   # n_bootstrap= nombre d'echantillons pour le bootstrap
   # ick= dit si on tient compte du calcul de l'IC du tau de kendall(1) ou non (0)
   # R2parboot =  dit si on calcul le taux de couverture du R2 par bootstrap (1) ou par delta-method (0)
-  
+  # type.joint = modele joint surrogate(1) ou modele joint frailty-copula(3)
   # setwd(wd)
   # source("fusion_resultats_simul.r")
   # source("kendall_bootstrap.r")
@@ -33,9 +33,27 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
     
     
     #str(estimates_complet2)
-    names(estimates_complet2)=c("Theta_S","se_theta_S","zeta","se_zeta","beta_S","se_beta_S","beta_T","se_beta_T","sigma_S",
-                                "se_sigma_S","sigma_T","se_sigma_T","sigma_ST","se_sigma_ST","gamma_S","se_gamma_S","alpha","se_alpha",
-                                "R2trial","se_R2trial","tau_00")
+    if(type.joint == 1){
+      names(estimates_complet2)=c("Theta_S","se_theta_S","zeta","se_zeta","beta_S","se_beta_S","beta_T","se_beta_T","sigma_S",
+                                  "se_sigma_S","sigma_T","se_sigma_T","sigma_ST","se_sigma_ST","gamma_S","se_gamma_S","alpha","se_alpha",
+                                  "R2trial","se_R2trial","tau_00")
+    }else{
+      ves <- length(beta_S)
+      vet <- length(beta_T)
+      entete <- c("Theta_S","se_theta_S","zeta","se_zeta","beta_S","se_beta_S","beta_T","se_beta_T","sigma_S",
+                  "se_sigma_S","sigma_T","se_sigma_T","sigma_ST","se_sigma_ST","gamma_S","se_gamma_S","alpha","se_alpha",
+                  "R2trial","se_R2trial","tau_00","SE.KendTau")
+      if(ves>1){
+        entete <- c(entete, paste("var", 2:ves, sep = ""))
+        
+      }
+      if(vet>1){
+        entete <- c(entete, paste("var", 2:vet, sep = ""))
+        
+      }
+      names(estimates_complet2) <- entete
+    }
+    
     summary(estimates_complet2)
     
     # ajout des coefficient de correlation
@@ -116,16 +134,37 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
     param_esti$bs_se_theta=param_esti$R2trial+1.96*param_esti$se_R2trial
     param_esti$couverture_R2trial=ifelse((param_init["R2trial"]>=param_esti$bi_se_theta) & (param_init["R2trial"]<=param_esti$bs_se_theta),1,0)
     
-    # reorganisation des donnees
-    param_esti2=param_esti[,c("Theta_S","se_theta_S","couverture_thetaS","zeta","se_zeta","couverture_zeta","gamma_S","se_gamma_S","couverture_gamma_S",
-                              "alpha","se_alpha","couverture_alpha","sigma_S","se_sigma_S","couverture_sigma_S","sigma_T","se_sigma_T","couverture_sigma_T",
-                              "sigma_ST","se_sigma_ST","couverture_sigma_ST","beta_S","se_beta_S","couverture_beta_S","beta_T",
-                              "se_beta_T","couverture_beta_T","R2trial","se_R2trial","couverture_R2trial","tau_00")]
+    if(type.joint == 3){
+      # taux de couverture KTau: "tau_00","SE.KendTau"
+      #param_esti$se_R2trial= param_esti$se_R2trial*sqrt(2)
+      param_esti$bi_se_theta=param_esti$tau_00-1.96*param_esti$SE.KendTau
+      param_esti$bs_se_theta=param_esti$tau_00+1.96*param_esti$SE.KendTau
+      param_esti$couverture_KTau=ifelse((param_init["tau"]>=param_esti$bi_se_theta) & (param_init["tau"]<=param_esti$bs_se_theta),1,0)
+      # reorganisation des donnees
+      param_init=c("theta_S"=theta_S,"gamma_S"=gamma_S,"alpha"=alpha,"sigma_S"=sigma_S,"sigma_T"=sigma_T,
+                   "sigma_ST"=sigma_ST,"beta_S"=beta_S,"beta_T"=beta_T,"R2trial"=R2trial,"tau"=tau)
+      param_esti2=param_esti[,c("Theta_S","se_theta_S","couverture_thetaS","gamma_S","se_gamma_S","couverture_gamma_S",
+                                "alpha","se_alpha","couverture_alpha","sigma_S","se_sigma_S","couverture_sigma_S","sigma_T","se_sigma_T","couverture_sigma_T",
+                                "sigma_ST","se_sigma_ST","couverture_sigma_ST","beta_S","se_beta_S","couverture_beta_S","beta_T",
+                                "se_beta_T","couverture_beta_T","R2trial","se_R2trial","couverture_R2trial","tau_00","SE.KendTau","couverture_KTau")]
+      
+      names(param_esti2)=c("theta.latex","se.theta.S","couverture.thetaS","gamma.latex","se.gamma.S","couverture.gamma.S",
+                           "alpha.latex","se.alpha","couverture.alpha","sigma.S.latex","se.sigma.S","couverture.sigma.S","sigma.T.latex","se.sigma.T","couverture.sigma.T",
+                           "sigma.ST.latex","se.sigma.ST","couverture.sigma.ST","beta.S.latex","se.beta.S.latex","couverture.beta.S","beta.T.latex",
+                           "se.beta.T","couverture.beta.T","R2trial.latex","se.R2trial","couverture.R2trial","K.tau.latex","se.KTau","couverture.KTau")
+    }else{
+      # reorganisation des donnees
+      param_esti2=param_esti[,c("Theta_S","se_theta_S","couverture_thetaS","zeta","se_zeta","couverture_zeta","gamma_S","se_gamma_S","couverture_gamma_S",
+                                "alpha","se_alpha","couverture_alpha","sigma_S","se_sigma_S","couverture_sigma_S","sigma_T","se_sigma_T","couverture_sigma_T",
+                                "sigma_ST","se_sigma_ST","couverture_sigma_ST","beta_S","se_beta_S","couverture_beta_S","beta_T",
+                                "se_beta_T","couverture_beta_T","R2trial","se_R2trial","couverture_R2trial","tau_00")]
+      
+      names(param_esti2)=c("theta.latex","se.theta.S","couverture.thetaS","zeta.latex","se.zeta","couverture.zeta","gamma.latex","se.gamma.S","couverture.gamma.S",
+                         "alpha.latex","se.alpha","couverture.alpha","sigma.S.latex","se.sigma.S","couverture.sigma.S","sigma.T.latex","se.sigma.T","couverture.sigma.T",
+                         "sigma.ST.latex","se.sigma.ST","couverture.sigma.ST","beta.S.latex","se.beta.S.latex","couverture.beta.S","beta.T.latex",
+                         "se.beta.T","couverture.beta.T","R2trial.latex","se.R2trial","couverture.R2trial","K.tau.latex")
+    }
     
-    names(param_esti2)=c("theta.latex","se.theta.S","couverture.thetaS","zeta.latex","se.zeta","couverture.zeta","gamma.latex","se.gamma.S","couverture.gamma.S",
-                       "alpha.latex","se.alpha","couverture.alpha","sigma.S.latex","se.sigma.S","couverture.sigma.S","sigma.T.latex","se.sigma.T","couverture.sigma.T",
-                       "sigma.ST.latex","se.sigma.ST","couverture.sigma.ST","beta.S.latex","se.beta.S.latex","couverture.beta.S","beta.T.latex",
-                       "se.beta.T","couverture.beta.T","R2trial.latex","se.R2trial","couverture.R2trial","K.tau.latex")
     
     # impression des resultats
     d=data.frame(matrix(NA,ncol=6,nrow=1))
@@ -143,9 +182,10 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
     }
     
     # impression du rho
-    i=ncol(param_esti2)
-    d=rbind(d,c(names(param_esti2)[i],round(param_init[j],ndec),round(mean(param_esti2[,i]),ndec),"-",round(sd(param_esti2[,i]),ndec),"-"))
-    
+    if(type.joint==1){
+      i=ncol(param_esti2)
+      d=rbind(d,c(names(param_esti2)[i],round(param_init[j],ndec),round(mean(param_esti2[,i]),ndec),"-",round(sd(param_esti2[,i]),ndec),"-"))
+    }
     # ajout du poucentage de rejet
     d=rbind(d,c("R : n(%)","-",paste(nsim-nrow(param_esti2),"(",round(100*(nsim-nrow(param_esti2))/nsim),")",sep=""),"-","-","-"))
    
@@ -173,7 +213,14 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
         #cat(c("suis la",i),fill=T)
       }
         
-      d[nrow(d)-1,ncol(d)]=100*round(couv_kendall/nrow(kendall),2)
+      if(type.joint == 3){ # je contrpole le calcul par bootstrat du tau de couverture du KTau
+        if(R2parboot == 1) {
+          d[nrow(d)-1,ncol(d)]=100*round(couv_kendall/nrow(kendall),2)
+          d[nrow(d)-1,ncol(d)-1]=NA # Evidemment 
+        }
+      }else{
+        d[nrow(d)-1,ncol(d)]=100*round(couv_kendall/nrow(kendall),2)
+      }
       #cat(100*round(couv_kendall/nrow(kendall),2))
       if(R2parboot == 1) { # on presente les taux de couverture de R2 obtenus par bootstrap
         d[nrow(d)-2,ncol(d)]=100*round(couv_R2boot/nrow(R2boot),2)

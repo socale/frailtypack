@@ -850,6 +850,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   result$dataTkendall <- data.frame(ans$fichier_kendall)
   result$dataR2boot <- data.frame(ans$fichier_R2)
   result$type.joint <- type.joint
+  result$typecopula <- typecopula
   if(!(type.joint==3)){
     result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
     names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
@@ -868,10 +869,6 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       entete <- c(entete, paste("var", 2:vet, sep = ""))
       
     }
-    # cat("names(result$dataParamEstim)")
-    # cat(names(result$dataParamEstim))
-    # cat("ddeedd")
-    # cat(entete)
     names(result$dataParamEstim) <- entete
   }
   names(result$dataTkendall) <- c("Ktau","inf.95%CI","sup.95%CI")
