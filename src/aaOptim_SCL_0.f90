@@ -148,7 +148,7 @@
     rang=0 ! utile en cas de programmation MPI pour gerer l'affichage
     !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,comm) !pour chaque processus associe a l'identificateur code retourne son rang
     
-    
+    convcrit = 0.d0
     zero=0.d0
     id=0
     jd=0
