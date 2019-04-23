@@ -447,7 +447,7 @@
                 !if(estim_wij_chap.eq.0) then ! on n'a pas encore estime les wij_chap 
                     ! !print*,""
                     if(rang==0)then
-						call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
+						!call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
                     endif
                     ! !print*,""
                     k0_2=k0 
@@ -555,7 +555,7 @@
                     control_adaptative=0
 
                 if(rang==0)then
-					call dblepr("Fin estimation des fragilites a posteriorie", -1, integrale3(1), 1)
+					!call dblepr("Fin estimation des fragilites a posteriorie", -1, integrale3(1), 1)
                 endif
             endif
 

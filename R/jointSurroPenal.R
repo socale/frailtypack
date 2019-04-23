@@ -1133,8 +1133,8 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   #result$dataR2boot <- ans$fichier_R2
   
   if(is.na(result$n.iter)) {
-    result <- NULL # model did not converged 
-    print("===Model did not converged!!! please try to modified initial values or others parameters===:")
+    result <- NULL # model did not converge 
+    print("===Model did not converge===")
   } 
   
   # =====================++++++++++++++++++++++++++++++++++++++++++++++++++++
