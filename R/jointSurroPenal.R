@@ -1125,7 +1125,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   
   if(is.na(result$n.iter)) {
     result <- NULL # model did not converged 
-    print("===Model did not converged!!! please try to modified initial values or others parameters===:")
+    print("===Model did not converge===")
   } 
   
   # =====================++++++++++++++++++++++++++++++++++++++++++++++++++++
