@@ -2531,10 +2531,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 					
 				else !copula
 					if(copula_function == 1) then! claton
-					    tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +1.d0) 
+					    tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +2.d0) 
 					endif
 					if(copula_function == 2) then ! Gumbel
-					    tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +2.d0)
+					    tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +1.d0)
 					endif						
 				endif
 				
@@ -2628,9 +2628,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 							! if(copula_function == 2) vect_kendall_tau(i) = parametre_estimes(s_i-nbre_rejet,1) / &
 								! (parametre_estimes(s_i-nbre_rejet,1) +2.d0)  ! Gumbel
 							if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-								(dexp(theta_chap_copula(1,1)) +1.d0) ! claton
+								(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
 							if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-								(theta_chap_copula(1,1)**2.d0 +2.d0)  ! Gumbel
+								(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
 						endif
                     else
                         if(indice_alpha==1 .and. indice_eta==1)then
@@ -2639,9 +2639,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 													theta_chap_kendall(1,4),theta_chap_kendall(1,3),0)
 							else
 								if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-									(dexp(theta_chap_copula(1,1)) +1.d0) ! claton
+									(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
 								if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-									(theta_chap_copula(1,1)**2.d0 +2.d0)  ! Gumbel
+									(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
 							endif
                         else
                             if(indice_alpha==1)then
@@ -2650,9 +2650,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 													theta_chap_kendall(1,4),1.d0,0)
                                 else
 									if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-										(dexp(theta_chap_copula(1,1)) +1.d0) ! claton
+										(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
 									if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-										(theta_chap_copula(1,1)**2.d0 +2.d0)  ! Gumbel
+										(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
 								endif
                             else
 								if(nsim_node(8).ne.3) then
@@ -2660,9 +2660,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 													1.d0,theta_chap_kendall(1,3),0)
                                 else
 									if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-										(dexp(theta_chap_copula(1,1)) +1.d0) ! claton
+										(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
 									if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-										(theta_chap_copula(1,1)**2.d0 +2.d0)  ! Gumbel
+										(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
 								endif
                             endif
                         endif
@@ -2804,8 +2804,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 parametre_estimes(s_i-nbre_rejet,24)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
 				! SE de kendall_tau par delta method. voir cahier le 18/04/2019 pour demonstration
 				if(copula_function == 1) then
-					parametre_estimes(s_i-nbre_rejet,25) =  dexp(b(rangparam_copula))/&
-						(dexp(b(rangparam_copula) + 1.d0))**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+					parametre_estimes(s_i-nbre_rejet,25) =  2.d0 * dexp(b(rangparam_copula))/&
+						(dexp(b(rangparam_copula) + 2.d0))**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
 					
 					bi_sigmas = dexp(b(rangparam_copula)) - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					bs_sigmas = dexp(b(rangparam_copula)) + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
@@ -2813,8 +2813,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 					vrai_tau_copula = thetacopule/(thetacopule + 1.d0)
 				endif
 				if(copula_function == 2) then
-					parametre_estimes(s_i-nbre_rejet,25) =   4.d0 * b(rangparam_copula)/&
-						(b(rangparam_copula)**2.d0 + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+					parametre_estimes(s_i-nbre_rejet,25) =   2.d0 * b(rangparam_copula)/&
+						(b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
 					bi_sigmas = b(rangparam_copula)**2.d0 - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					bs_sigmas = b(rangparam_copula)**2.d0  + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					!taux de couverture
