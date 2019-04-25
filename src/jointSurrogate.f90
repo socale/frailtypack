@@ -2805,12 +2805,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				! SE de kendall_tau par delta method. voir cahier le 18/04/2019 pour demonstration
 				if(copula_function == 1) then
 					parametre_estimes(s_i-nbre_rejet,25) =  2.d0 * dexp(b(rangparam_copula))/&
-						(dexp(b(rangparam_copula) + 2.d0))**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+						(dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
 					
 					bi_sigmas = dexp(b(rangparam_copula)) - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					bs_sigmas = dexp(b(rangparam_copula)) + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					!taux de couverture
-					vrai_tau_copula = thetacopule/(thetacopule + 1.d0)
+					vrai_tau_copula = thetacopule/(thetacopule + 2.d0)
 				endif
 				if(copula_function == 2) then
 					parametre_estimes(s_i-nbre_rejet,25) =   2.d0 * b(rangparam_copula)/&
@@ -2818,7 +2818,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 					bi_sigmas = b(rangparam_copula)**2.d0 - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					bs_sigmas = b(rangparam_copula)**2.d0  + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					!taux de couverture
-					vrai_tau_copula = thetacopule/(thetacopule + 2.d0)
+					vrai_tau_copula = thetacopule/(thetacopule + 1.d0)
 				endif
 				if(vrai_tau_copula >= bi_sigmas .and. vrai_tau_copula <= bs_sigmas)then ! taux de couverture
 					taux_couverture_tauk=taux_couverture_tauk+1.d0
