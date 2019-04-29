@@ -122,7 +122,7 @@
 #' trivPenal(formula, formula.terminalEvent, formula.LongitudinalData, data,
 #' data.Longi, random, id, intercept = TRUE, link = "Random-effects",
 #' left.censoring = FALSE, recurrentAG = FALSE, n.knots, kappa, maxit = 300,
-#' hazard = "Splines-per", init.B, init.Random, init.Eta, init.Alpha, method.GH =
+#' hazard = "Splines", init.B, init.Random, init.Eta, init.Alpha, method.GH =
 #' "Standard", n.nodes, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3,
 #' print.times = TRUE)
 #' @param formula a formula object, with the response on the left of a
@@ -453,7 +453,7 @@
 #' 
 #' 
 "trivPenal" <- function (formula, formula.terminalEvent, formula.LongitudinalData, data,  data.Longi, random, id, intercept = TRUE, link="Random-effects",
-                         left.censoring=FALSE, recurrentAG=FALSE, n.knots, kappa, maxit=300, hazard="Splines-per", init.B,init.Random, init.Eta, init.Alpha, 
+                         left.censoring=FALSE, recurrentAG=FALSE, n.knots, kappa, maxit=300, hazard="Splines", init.B,init.Random, init.Eta, init.Alpha, 
                          method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
   
   # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane

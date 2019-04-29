@@ -478,7 +478,7 @@
 #' 
 #' frailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,
 #' cross.validation = FALSE, jointGeneral,n.knots, kappa, maxit = 300, hazard =
-#' "Splines-per", nb.int, RandDist = "Gamma", betaknots = 1, betaorder = 3,
+#' "Splines", nb.int, RandDist = "Gamma", betaknots = 1, betaorder = 3,
 #' initialize = TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi,
 #' init.Eta, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, print.times =
 #' TRUE)
@@ -953,7 +953,7 @@
 #' 
 "frailtyPenal" <-
   function (formula, formula.terminalEvent, data, recurrentAG=FALSE, cross.validation=FALSE, jointGeneral, n.knots, kappa,maxit=300, 
-            hazard="Splines-per", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
+            hazard="Splines", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
             LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
     
     # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
