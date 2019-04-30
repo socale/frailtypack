@@ -224,8 +224,8 @@
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
 #'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
-#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, typecopula =1, 
-#'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
+#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0),
+#'    typecopula =1, nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param data A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
 #'    \itemize{
@@ -333,6 +333,8 @@
 #' The default is \code{0}.
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
+#' @param ckappa Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
+#' to well manage the smoothing parameters in case of convergence issues.
 #' @param typecopula The copula function used, can be 1 for clayton or 2 for Gumbel-Hougaard. The default is \code{1}
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
@@ -476,8 +478,8 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
                       sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, gamma.init = 0.5, 
                       alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
                       random.generator = 1, kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, 
-                      init.kappa = NULL, typecopula = 1, nb.decimal = 4, print.times = TRUE, 
-                      print.iter = FALSE
+                      init.kappa = NULL, ckappa = c(0,0), typecopula = 1, nb.decimal = 4, 
+                      print.times = TRUE, print.iter = FALSE
                       ){
   
  # The initial followup time. The default value is 0
@@ -908,7 +910,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nbre_sim <- random.nb.sim# dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
   graine <- seed # dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
   autreParamSim <- c(weib,param.weibull,frailty_cor,affiche_stat,seed_,une_donnee,donne_reel,gener.only,
-                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine)
+                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa(1),ckappa(2))
   
   # autres dichiers de sortie
   # vecteur des pametres

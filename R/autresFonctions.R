@@ -5,7 +5,7 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
                            seed = 0,alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7,
                            cor = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
                            filter.surr = c(1,1), filter.true = c(1,1), frailt.base = 1,
-                           thetacopule = 6, random.generator = 1){
+                           thetacopule = 6, random.generator = 1, prop.i = rep(1/n.trial, n.trial)){
   # variatio.seed : si = 1, je fais varier le seed, seulement pour des fins de verification des statistiques empirique.
   # afin de reproduire les jeux de donnees utilisees dans le simulations, il faut plutot faire varier nb.reject.data et fixer le seed, 
   # et par consedent cet argument doit prendre pour valeur 0. Toutefois on retient que les stat empirique sont meilleures
@@ -21,6 +21,22 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
   else
     names(d) = c("MuvS", "sigmaS", "MuvT", "sigmaT","SigmaST","Muui", "gamma", 
                  "median.S", "median.T", "prop.S", "propT", "prop.trt")
+  
+  # nombre de sujets par essai:
+  n_i <- as.integer(n.obs*prop.i) # nombre de sujet par essai
+  
+  min_n <- min(n_i)
+  max_n <- max(n_i)
+  if(sum(n_i) < n.obs){
+    n_i[n_i == min_n][1] <- n_i[n_i == min_n][1] + (n.obs-sum(n_i)) # on ajoute au premier essai de plus petite taille le nombre d'individu non encore affecte (1 generalement) a cause des problemes d'arrondi
+  }
+  if(sum(n_i) > n.obs) { 
+    n_i[n_i == max_n][1] <- n_i[n_i == max_n][1]-(sum(n_i)-n.obs) # on soustrait au premier essai de plus grande taille le nombre d'individu affecte en trop (1 generalement) a cause des problemes d'arrondi
+  }
+  
+  sujet.essai <- n_i
+  pour.essai <- rep(0, n.trial)# vecteur des positions des premiers sujets par essai 
+  for (j in 1: n.trial) pour.essai[j] <- (j-1)*sujet.essai[j] +1
   
   for (i in 1:nsim){
     if(variatio.seed == 1){
@@ -38,13 +54,13 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
                                   cor = cor, betas = betas, betat = betat, filter.true= filter.true,
                                   frailt.base = frailt.base, thetacopule = thetacopule, ver = ver,
                                   random.generator = random.generator)
-    d[i,1] <- mean(data.sim$v_Si)
-    d[i,2] <- (sd(data.sim$v_Si))**2
-    d[i,3] <- mean(data.sim$v_Ti)
-    d[i,4] <- (sd(data.sim$v_Ti))**2
-    d[i,5] <- cov(data.sim$v_Si,data.sim$v_Ti)
-    d[i,6] <- mean(data.sim$u_i)
-    d[i,7] <- mean(sd(data.sim$u_i))**2
+    d[i,1] <- mean(data.sim$v_Si[pour.essai])
+    d[i,2] <- var(data.sim$v_Si[pour.essai])
+    d[i,3] <- mean(data.sim$v_Ti[pour.essai])
+    d[i,4] <- var(data.sim$v_Ti[pour.essai])
+    d[i,5] <- cov(data.sim$v_Si[pour.essai],data.sim$v_Ti[pour.essai])
+    d[i,6] <- mean(data.sim$u_i[pour.essai])
+    d[i,7] <- var(data.sim$u_i[pour.essai])
     d[i,8] <- median(data.sim$timeS)
     d[i,9] <- median(data.sim$timeT)
     d[i,10] <- prop.table(table(data.sim$statusS))["1"]
@@ -58,7 +74,7 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
   }
   result = data.frame(names(d))
   names(result) = "Parameters"
-  result$True <- c(0, sigma.s, 0, sigma.t, round(sqrt(cor * sigma.s * sigma.t),dec), 
+  result$True <- c(0, sigma.s, 0, sigma.t, round(cor * sqrt(sigma.s * sigma.t),dec), 
                    0, gamma, "-", "-", "-", "-", rep(0.5, nbre.covar))
   result$Mean <- NA
   result$Median <- NA

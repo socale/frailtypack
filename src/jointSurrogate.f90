@@ -33,7 +33,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer,dimension(5),intent(in)::indice_a_estime
     integer,dimension(5),intent(in):: param_risque_base
     integer,dimension(3),intent(in):: Param_kendall_boot
-    integer,dimension(13),intent(in):: autreParamSim ! indique si l'on estime (1=oui, 0=non) estime ou pas zeta(1), covST(2), alpha(3), gammaST(4). indique en (5) si on prend en compte l'heterogeneite sur le risque de base
+    integer,dimension(15),intent(in):: autreParamSim ! indique si l'on estime (1=oui, 0=non) estime ou pas zeta(1), covST(2), alpha(3), gammaST(4). indique en (5) si on prend en compte l'heterogeneite sur le risque de base
     integer,dimension(nbrevar(3),2), intent(in)::filtre0
     double precision,dimension(nsujet1,5+nbrevar(1)), intent(in):: donnees
     double precision,dimension(ng,5+nbrevar(2)), intent(in):: death
@@ -86,7 +86,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(:,:),allocatable::vaxdc,vaxdct
     double precision,dimension(:),allocatable::tt0,tt1,ttU
     double precision,dimension(:,:),allocatable::vax,vaxt
-    double precision,dimension(2)::k0,k0_save,k01_save
+    double precision,dimension(2)::k0,k0_save,k01_save,ckappa
     double precision,dimension(3)::EPS
     integer,dimension(8)::values
     integer, dimension(0:1)::randomisation,deces,surrogate
@@ -315,6 +315,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     aleatoire = autreParamSim(11)
     nbre_sim = autreParamSim(12)
     graine = autreParamSim(13)
+	ckappa(1) =autreParamSim(14)
+	ckappa(2) =autreParamSim(15)
     
     np=sizeVect(1)
     call date_and_time(dateamj,heure1,zone,values) ! pour la date de debut du programme
@@ -1587,6 +1589,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! call intpr("size(H_hessOut) avant appel joint:", -1, size(H_hessOut,1), 1)
     ! call intpr("size(H_hessOut) avant appel joint:", -1, size(H_hessOut,2), 1)
     ! call dblepr("H_hessOut(17,17) avant appel joint:", -1, H_hessOut(17,17), 1)
+	! j'incremente le kappa d'une constante en cas de precision pour la gestion des probleme de convergence
+	k0(1) = k0(1) +ckappa(1)
+	k0(2) = k0(2) +ckappa(2)
 	Call joint_surrogate(nsujet,ng,ntrials,0,nz,nst,k0,tt0,tt1,ic,groupe,trials,pourtrial,nig_Ts,cdc_Ts,0, &
                         tt0dc,tt1dc,icdc,0,0,nva1,vax,nva2,vaxdc,0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
                         HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,typeof,equidistant,&
