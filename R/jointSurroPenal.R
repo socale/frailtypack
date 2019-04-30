@@ -913,7 +913,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   nbre_sim <- random.nb.sim# dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
   graine <- seed # dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
   autreParamSim <- c(weib,param.weibull,frailty_cor,affiche_stat,seed_,une_donnee,donne_reel,gener.only,
-                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa(1),ckappa(2))
+                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa[1],ckappa[2])
   
   # autres dichiers de sortie
   # vecteur des pametres
