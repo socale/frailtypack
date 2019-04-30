@@ -315,8 +315,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     aleatoire = autreParamSim(11)
     nbre_sim = autreParamSim(12)
     graine = autreParamSim(13)
-	ckappa(1) =autreParamSim(14)
-	ckappa(2) =autreParamSim(15)
+	ckappa(1) =dble(autreParamSim(14))
+	ckappa(2) =dble(autreParamSim(15))
     
     np=sizeVect(1)
     call date_and_time(dateamj,heure1,zone,values) ! pour la date de debut du programme
@@ -1590,8 +1590,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! call intpr("size(H_hessOut) avant appel joint:", -1, size(H_hessOut,2), 1)
     ! call dblepr("H_hessOut(17,17) avant appel joint:", -1, H_hessOut(17,17), 1)
 	! j'incremente le kappa d'une constante en cas de precision pour la gestion des probleme de convergence
-	k0(1) = k0(1) +ckappa(1)
-	k0(2) = k0(2) +ckappa(2)
+	k0(1) = k0(1) + ckappa(1)
+	k0(2) = k0(2) + ckappa(2)
 	Call joint_surrogate(nsujet,ng,ntrials,0,nz,nst,k0,tt0,tt1,ic,groupe,trials,pourtrial,nig_Ts,cdc_Ts,0, &
                         tt0dc,tt1dc,icdc,0,0,nva1,vax,nva2,vaxdc,0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
                         HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,typeof,equidistant,&
