@@ -190,12 +190,6 @@
             
                 
     ! add for current-level interaction with time
-!        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'link0(1)',link0(1)
-!       write(2,*)'numInterac',numInterac
-!       write(2,*)'positionVarTime',positionVarTime
-!     close(2)
-     
     if(link0(1).eq.2) then
     if(positionVarTime(1).lt.400) then
     allocate(positionVarT((numInterac(1)+numInterac(2))*4))
@@ -4121,7 +4115,7 @@ end if
         double precision::bbb,su
         double precision,dimension(np)::bh
     double precision,dimension(nb1)::frail
-            double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY ! add TwoPart
+            double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY,cmGtemp ! add TwoPart
     integer::counter, counter2
             double precision, dimension(1,nvaB)::x2BcurG
     double precision::resultf1, resultf2,f1,f2 !add TwoPart
@@ -4133,6 +4127,7 @@ resultf2=0.d0
         j=0
         su=0.d0
         bbb=0.d0
+        cmGtemp=0.d0
     counter=0
     counter2=1
 
@@ -4282,21 +4277,36 @@ Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
                     
 cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1curG(1, 1:nb1),frail(1:nb1)))
 
-if(boxcoxlambda(1).gt.400) then
+
+if(boxcoxlambda(1).gt.100) then
         current_meanG = cmY*Bcurrentvalue
-else if(boxcoxlambda(1).le.400) then
-        current_meanG = (((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue
+else
+        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)/10
 end if
 
         
                     else if(TwoPart.eq.0) then
+          
+ if(boxcoxlambda(1).gt.100) then
             if(nea.gt.1) then
                 current_meanG =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
                                             +dot_product(z1curG(1,1:nb1),frail(1:nb1))
             else
                 current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
             end if
+else
+            if(nea.gt.1) then
+cmGtemp =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
+                                            +dot_product(z1curG(1,1:nb1),frail(1:nb1))
+current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
+            else
+cmGtemp = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
+   current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
+            end if
+end if
+
                     end if
+                    
 
 
         select case(typeof)
@@ -4385,7 +4395,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision :: resultdc,abserr,resabs,resasc,Xea,vet2
         double precision,parameter::pi=3.141592653589793d0
         double precision :: Bscalar, resultf1, resultf2, f1, f2 ! add TwoPart
-        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY
+        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY,cmGtemp
         integer :: counter, counter2 ! add for current-level interaction
         upper = .false.
         i = numpat
@@ -4393,6 +4403,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
  uiiui=0.d0
  funcG=0.d0
  current_meanG = 0.d0
+ cmGtemp=0.d0
  det=0.d0
 
 resultf1=0.d0
@@ -4762,13 +4773,23 @@ end if
                     
 
         cmY = (MATMUL(x2curG,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1YcurG,Xea22))
-if(boxcoxlambda(1).eq.404) then
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'boxcoxlambda',boxcoxlambda
+!     close(2)
+     
+if(boxcoxlambda(1).gt.100) then
         current_meanG = cmY*Bcurrentvalue
-else if(boxcoxlambda(1).le.404) then
-        current_meanG = (((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue
+else 
+        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)/10
 end if
-                    else if(TwoPart.eq.0) then
-                            current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
+ else if(TwoPart.eq.0) then
+ if(boxcoxlambda(1).gt.100) then
+current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
+else
+cmGtemp=MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
+        current_meanG =((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
+
+end if
 
                     end if    
             end if
@@ -4920,8 +4941,11 @@ end if
     
     funcG = dexp(funcG)
 !open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!         write(2,*)'ping'
-!          close(2)
+ !        write(2,*)'ping'
+ !       write(2,*)'currentmeanG',current_meanG(1)
+ !       write(2,*)'Xea22',Xea22
+ ! write(2,*)'boxcoxlambda(1)',boxcoxlambda(1)
+ !         close(2)
 
  
         return
@@ -5042,14 +5066,14 @@ end if
     function f1(t) result(res)
        double precision, intent(in) :: t !input
        double precision :: res! output
-       res = dexp(-4.7d0*t)
+       res = dexp(-3.5d0*t)
     end function f1
 
 !f2
      function f2(t) result(res)
        double precision, intent(in) :: t !input
        double precision :: res! output
-       res = t**(2.7d0)/(1.0d0+t)**1.7d0
+       res = t
     end function f2
 
   

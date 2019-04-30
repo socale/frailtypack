@@ -2037,7 +2037,6 @@ if(i==1){
   # GH=c(as.integer(GH),as.integer(n.nodes)) = indicator of gauss-hermite (0=standard,1=PA,2=hrmsym) and nodes number
   # paGH=cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)) = matrix of pseudo-adaptive gauss-hermite initialization from LME
 
-
   
         ans <- .Fortran(C_joint_longi,
 			VectNsujet = as.integer(c(1,nsujety, nsujetB)),
@@ -2091,7 +2090,7 @@ if(i==1){
 			MartinGale=as.double(matrix(0,nrow=ng,ncol=3+nRE)),###
 			ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
 			Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
-            bclam0 = as.double(BoxCoxlam), # box-cox lambda
+            bclam0 = as.double(BClam), # box-cox lambda
 			
 			positionVarTime = as.integer(positionVarTime),
 			numInterac = as.integer(c(numInterac, numInteracB)),
