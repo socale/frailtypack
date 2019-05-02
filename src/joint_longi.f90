@@ -4246,15 +4246,26 @@ else if(nb1.eq.3) then
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
 else if(nb1.eq.4) then
+    if(nbY.eq.2) then ! intercept + linear slope in each model
     z1curG(1,1) = 1.d0 !
-    z1curG(1,2) = resultf1
-    z1curG(1,3) = resultf2
+    z1curG(1,2) = tps
+    z1curG(1,3) = 0.d0
     z1curG(1,4) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 0.d0
-    z1BcurG(1,4) = 1.d0
-else if(nb1.eq.5) then
+    z1BcurG(1,3) = 1.d0
+    z1BcurG(1,4) = tps
+    else ! 2 parametric functions of time + random intercept
+        z1curG(1,1) = 1.d0 !
+        z1curG(1,2) = resultf1
+        z1curG(1,3) = resultf2
+        z1curG(1,4) = 0.d0
+        z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+        z1BcurG(1,2) = 0.d0
+        z1BcurG(1,3) = 0.d0
+        z1BcurG(1,4) = 1.d0
+    end if
+    else if(nb1.eq.5) then
             resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
             resultf2=f2(tps)
     z1curG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
@@ -4737,17 +4748,28 @@ else if(nb1.eq.3) then
     z1BcurG(1,2) = 0.d0
     z1BcurG(1,3) = 1.d0
 else if(nb1.eq.4) then
-    resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
-    resultf2=f2(t1dc(i))
-    
-    z1YcurG(1,1) = 1.d0 !
-    z1YcurG(1,2) = resultf1
-    z1YcurG(1,3) = resultf2
-    z1YcurG(1,4) = 0.d0
-    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
-    z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 0.d0
-    z1BcurG(1,4) = 1.d0
+    if(nbY.eq.2) then ! random intercept and slope in each model
+        z1YcurG(1,1) = 1.d0 !
+        z1YcurG(1,2) = t1dc(i)
+        z1YcurG(1,3) = 0.d0
+        z1YcurG(1,4) = 0.d0
+        z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+        z1BcurG(1,2) = 0.d0
+        z1BcurG(1,3) = 1.d0
+        z1BcurG(1,4) = t1dc(i)
+    else
+        resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
+        resultf2=f2(t1dc(i))
+        
+        z1YcurG(1,1) = 1.d0 !
+        z1YcurG(1,2) = resultf1
+        z1YcurG(1,3) = resultf2
+        z1YcurG(1,4) = 0.d0
+        z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+        z1BcurG(1,2) = 0.d0
+        z1BcurG(1,3) = 0.d0
+        z1BcurG(1,4) = 1.d0
+    end if
 else if(nb1.eq.5) then
     resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
     resultf2=f2(t1dc(i))
