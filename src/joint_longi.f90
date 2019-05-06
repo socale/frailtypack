@@ -164,9 +164,7 @@
     nb0=Vectnb0(1)
     nbB0=Vectnb0(2)
         
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'ping'
-!    close(2)
+
     nva10=VectNvar(1)        
     nva20=VectNvar(2)
     nva30=VectNvar(3)
@@ -4299,6 +4297,17 @@ end if
 
         
                     else if(TwoPart.eq.0) then
+if(nb1.eq.2) then
+    z1curG(1,1) = 1.d0 ! random intercept only for now
+    z1curG(1,2) = t1dc(i)!z1Ycur(1,2) = t1dc(i)
+else if(nb1.eq.3) then
+    resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
+    resultf2=f2(t1dc(i))
+    z1curG(1,1) = 1.d0 !
+    z1curG(1,2) = resultf1
+    z1curG(1,3) = resultf2
+
+end if
           
  if(boxcoxlambda(1).gt.100) then
             if(nea.gt.1) then
@@ -4421,7 +4430,9 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
 
 resultf1=0.d0
 resultf2=0.d0
-
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'ping'
+!    close(2)
     if(nb1.eq.1) then
             if(methodGH.eq.1) then
             Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
@@ -4807,6 +4818,20 @@ else
         current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)/10
 end if
  else if(TwoPart.eq.0) then
+ 
+ if(nb1.eq.2) then
+    z1YcurG(1,1) = 1.d0 ! random intercept only for now
+    z1YcurG(1,2) = t1dc(i)!z1Ycur(1,2) = t1dc(i)
+else if(nb1.eq.3) then
+    resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
+    resultf2=f2(t1dc(i))
+    z1YcurG(1,1) = 1.d0 !
+    z1YcurG(1,2) = resultf1
+    z1YcurG(1,3) = resultf2
+
+end if
+ 
+ 
  if(boxcoxlambda(1).gt.100) then
 current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
 else
