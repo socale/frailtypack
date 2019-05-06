@@ -169,7 +169,7 @@
 #' trivPenalNL(formula, formula.terminalEvent, biomarker, formula.KG,
 #' formula.KD, dose, time.biomarker, data, data.Longi, random, id, link =
 #' "Random-effects", BoxCox = FALSE, left.censoring = FALSE, recurrentAG =
-#' FALSE, n.knots, kappa, maxit = 300, hazard = "Splines-per", init.B, init.Random,
+#' FALSE, n.knots, kappa, maxit = 300, hazard = "Splines", init.B, init.Random,
 #' init.Eta, init.Alpha, init.Biomarker, method.GH = "Standard", init.GH =
 #' FALSE, n.nodes, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3,
 #' print.times = TRUE)
@@ -485,7 +485,7 @@
   function (formula, formula.terminalEvent, biomarker, formula.KG, formula.KD, dose, time.biomarker, data,  data.Longi, random, id, 
             link="Random-effects", BoxCox = FALSE,
             left.censoring=FALSE, recurrentAG=FALSE, n.knots, kappa,
-            maxit=300, hazard="Splines-per", init.B,
+            maxit=300, hazard="Splines", init.B,
             init.Random, init.Eta, init.Alpha, init.Biomarker,
             method.GH = "Standard", init.GH = FALSE, n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {

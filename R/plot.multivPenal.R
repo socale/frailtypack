@@ -8,8 +8,8 @@
 #' 
 #' @usage \method{plot}{multivPenal}(x, event = "Both", type.plot = "Hazard",
 #' conf.bands = FALSE, pos.legend = "topright", cex.legend = 0.7, ylim, main,
-#' color1="red", color2="blue", colorEnd="green", median=TRUE, Xlab = "Time", Ylab = "Hazard function",
-#'  ...)
+#' color1="red", color2="blue", colorEnd="green", median=TRUE, Xlab = "Time", 
+#' Ylab = "Hazard function", ...)
 #' @param x A joint multivariate model, i.e. an object of class
 #' \code{multivPenal} (output from calling \code{multivPenal} function).
 #' @param event a character string specifying the type of outcome. Possible

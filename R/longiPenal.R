@@ -101,7 +101,7 @@
 #'
 #' @usage longiPenal(formula, formula.LongitudinalData, data, data.Longi,
 #'   random, id, intercept = TRUE, link = "Random-effects", left.censoring =
-#'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines-per", init.B,
+#'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
 #'   init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam = 1e-3,
 #'   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 #' @param formula a formula object, with the response on the left of a
@@ -350,7 +350,7 @@
 #' 
 "longiPenal" <-
   function (formula, formula.LongitudinalData, data,  data.Longi, random, id, intercept = TRUE, link="Random-effects",left.censoring=FALSE, n.knots, kappa,
-            maxit=350, hazard="Splines-per",   init.B,
+            maxit=350, hazard="Splines",   init.B,
             init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {
     
