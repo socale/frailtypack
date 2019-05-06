@@ -164,7 +164,9 @@
     nb0=Vectnb0(1)
     nbB0=Vectnb0(2)
         
-        
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'ping'
+!    close(2)
     nva10=VectNvar(1)        
     nva20=VectNvar(2)
     nva30=VectNvar(3)
