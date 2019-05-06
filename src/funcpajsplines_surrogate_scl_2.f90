@@ -47,7 +47,7 @@
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
     double precision,dimension(:),allocatable::frail
-    double precision::int,gammaJ,c3,c4,pourgam
+    double precision::int,logGammaJ,c3,c4,pourgam
     double precision,dimension(ntrials)::integrale3
     double precision,dimension(:,:),allocatable:: mat_A
     !double precision,dimension(ng,1)::wij_chap1

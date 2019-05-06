@@ -397,7 +397,7 @@
     double precision::vet,vet2,alpha,theta
     double precision,dimension(2)::su,sut1,sut0,sudc
     double precision::lam,lamdc,temp
-    double precision::gammaJ
+    double precision::logGammaJ
 
     n = 0
     betaR = 0.d0
@@ -572,7 +572,7 @@
     endif
 
     ! densite de la loi gamma pour les effets aleatoires
-    func1E = func1E * (frail**(1.d0/theta-1.d0)*dexp(-frail/theta))/(dexp(gammaJ(1.d0/theta))*theta**(1.d0/theta))
+    func1E = func1E * (frail**(1.d0/theta-1.d0)*dexp(-frail/theta))/(dexp(logGammaJ(1.d0/theta))*theta**(1.d0/theta))
 
 1000 continue
 
@@ -601,7 +601,7 @@
     double precision::vet,vet2,alpha,theta
     double precision,dimension(2)::su,sut1,sut0,sudc
     double precision::lam,lamdc,temp
-    double precision::gammaJ
+    double precision::logGammaJ
 
     n = 0
     betaR = 0.d0
@@ -738,7 +738,7 @@
     end if
 
     ! densite de la loi gamma pour les effets aleatoires
-    func2E = func2E * (frail**(1.d0/theta-1.d0)*dexp(-frail/theta))/(dexp(gammaJ(1.d0/theta))*theta**(1.d0/theta))
+    func2E = func2E * (frail**(1.d0/theta-1.d0)*dexp(-frail/theta))/(dexp(logGammaJ(1.d0/theta))*theta**(1.d0/theta))
 
 1000 continue
 

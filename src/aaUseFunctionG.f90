@@ -112,7 +112,7 @@
     implicit none
 
     double precision::hazrec,cumhazrec,hazdc,cumhazdc,frail,varx,vary,&
-    su,lam,gammaJ
+    su,lam,logGammaJ
 
 ! frail=u
 ! varx=valeur du temps x
@@ -142,12 +142,12 @@
     integrant3 = frail*hazrec*expb1*dexp(-frail*cumhazrec*expb1) &
     *(frail**alpha)*hazdc*expb2*dexp((-frail**alpha)*cumhazdc*expb2) &
     *(frail**(1.d0/theta-1.d0))*(dexp(-frail/theta)) &
-    /(dexp(gammaJ(1.d0/theta))*theta**(1.d0/theta))
+    /(dexp(logGammaJ(1.d0/theta))*theta**(1.d0/theta))
 
 
     if(integrant3.lt.0.d0)then
 !         write(*,*)'dans integrant3',integrant3,frail,theta,alpha ,expb1,expb2,&
-!         cumhazrec,cumhazdc,hazrec,hazdc,gammaJ(1.d0/theta)
+!         cumhazrec,cumhazdc,hazrec,hazdc,logGammaJ(1.d0/theta)
     endif
 
     return
@@ -169,7 +169,7 @@
     implicit none
 
     double precision::hazrec,cumhazrec,hazdc,cumhazdc,frail,varx,vary,su,lam
-    double precision::gammaJ
+    double precision::logGammaJ
 
 ! frail=u
 ! varx=valeur du temps x
@@ -193,7 +193,7 @@
 
     integrant4 = exp(integrant4)
     integrant4 =  integrant4 * (frail**(1.d0/theta-1.d0))*(dexp(-frail/theta)) &
-    /(dexp(gammaJ(1.d0/theta))*theta**(1.d0/theta))
+    /(dexp(logGammaJ(1.d0/theta))*theta**(1.d0/theta))
 
     return
 
@@ -322,7 +322,7 @@
     implicit none
 
     integer::j
-    double precision::hazrec,cumhazrec,hazdc,cumhazdc,ss,ui,su,lam,auxfunca,gammaJ
+    double precision::hazrec,cumhazrec,hazdc,cumhazdc,ss,ui,su,lam,auxfunca,logGammaJ
 ! gauss laguerre
 
     ss=0.d0 
@@ -339,7 +339,7 @@
         cumhazrec = -dlog(su)
         auxfunca=(1.d0/(ui+x(j)))*(1.d0/(ui**alpha+x(j)**alpha))* &
         (ui**(alpha+1)+x(j)**(alpha+1))*(x(j)**(1.d0/theta-1.d0))*(dexp(-x(j)/theta)) &
-        *(ui**(1.d0/theta-1.d0))*(dexp(-ui/theta))/(dexp(gammaJ(1.d0/theta))*theta**(1.d0/theta))**2
+        *(ui**(1.d0/theta-1.d0))*(dexp(-ui/theta))/(dexp(logGammaJ(1.d0/theta))*theta**(1.d0/theta))**2
 
         ss = ss+w(j)*(auxfunca)
     end do

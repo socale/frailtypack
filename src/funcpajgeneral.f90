@@ -12,7 +12,7 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
 
     implicit none
       integer  n,np,id,jd,i,j,k,vj,ig,gap,choix,kk
-      double precision  thi,thj,pe1,pe2,sum,inv,som1,som2,gammaJ
+      double precision  thi,thj,pe1,pe2,sum,inv,som1,som2,logGammaJ
       double precision,dimension(2)::k0
       integer,dimension(ng)::cpt
       double precision,dimension(np)::b,bh
@@ -274,16 +274,16 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
 
                        if(t0dc(k).ne.0) then
                              res= res + res2(k) &
-                                + res2dc(k)+ gammaJ(1./theta+nig(k)+cdc(k)) &
-                                - gammaJ(1./theta) &
+                                + res2dc(k)+ logGammaJ(1./theta+nig(k)+cdc(k)) &
+                                - logGammaJ(1./theta) &
                                 + (nig(k)+cdc(k))*log(theta) &
                                 + log(integrale3(k)) &
                                 - log(integrale4(k))
                         else
                               res= res + res2(k)+ res2dc(k) &
-                                + gammaJ(1./theta+nig(k)+cdc(k)) &
+                                + logGammaJ(1./theta+nig(k)+cdc(k)) &
                                 - 1./eta*log(eta) &
-                                - gammaJ(1./eta)- gammaJ(1./theta) &
+                                - logGammaJ(1./eta)- logGammaJ(1./theta) &
                                 + (nig(k)+cdc(k))*log(theta) &
                                 + log(integrale3(k))
                         endif
@@ -291,9 +291,9 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
                 else
                       res= res + res2(k) &
                         + res2dc(k) &
-                        - gammaJ(1./eta) &
-                        + gammaJ(1./theta+nig(k)+cdc(k)) &
-                        - gammaJ(1./theta)-log(eta)/eta &
+                        - logGammaJ(1./eta) &
+                        + logGammaJ(1./theta+nig(k)+cdc(k)) &
+                        - logGammaJ(1./theta)-log(eta)/eta &
                         + (nig(k)+cdc(k))*log(theta) &
                         + log(integrale3gap(k))
                 endif
