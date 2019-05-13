@@ -98,8 +98,14 @@
     
     if(effet.eq.1) then
         if(logNormal==1)then
-            if(copula_function == 1) theta_copule = dexp(bh(np-nva)) ! claton: exp transform
-            if(copula_function == 2) theta_copule = bh(np-nva)**2.d0  ! Gumbel: choleschy transform
+            if(copula_function == 1) then 
+				theta_copule = dexp(bh(np-nva)) ! clayton: exp transform
+			endif
+            if(copula_function == 2)then 
+				theta_copule = bh(np-nva)**2.d0  ! Gumbel: choleschy transform
+			endif
+			theta_copule = bh(np-nva) ! sans transformation
+			
             varS1 = bh(np-nva-nparamfrail+indice_varS)
             varT1 = bh(np-nva-nparamfrail+indice_varS+indice_varT)
             !sig2=theta2 ! je fais appel a sig2 car c'est la variable utilisee dans la suite des procedures pour le joint classique
