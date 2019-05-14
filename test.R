@@ -159,7 +159,7 @@ joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100
       LIMlogl = 1.01, LIMderiv = 1.000)
 
 joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100, ntrialSimul=10, 
-              int.method = 0, nb.mc = 200, maxit = 2, 
+              int.method = 0, nb.mc = 200, maxit = 40, 
               #nb.gh = 5, nb.gh2 = 9, adaptatif = 1, nb.iterPGH = 0,
               print.iter = T, kappa.use = 0, type.joint.estim = 3,
               type.joint.simul = 3, time.cens = 349, n.knots =  6,
