@@ -105,7 +105,7 @@
 				theta_copule = bh(np-nva)**2.d0  ! Gumbel: choleschy transform
 			endif
 			!theta_copule = bh(np-nva) ! sans transformation
-			
+			!call dblepr("theta_copule = ", -1, theta_copule, 1)
             varS1 = bh(np-nva-nparamfrail+indice_varS)
             varT1 = bh(np-nva-nparamfrail+indice_varS+indice_varT)
             !sig2=theta2 ! je fais appel a sig2 car c'est la variable utilisee dans la suite des procedures pour le joint classique
