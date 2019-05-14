@@ -396,6 +396,11 @@
         select case(methodInt)
         case(0) ! estimation par monte carlo
             posind_i=1
+			! varcov(1,1)=varS
+            ! varcov(1,2)=covST
+            ! varcov(2,1)=covST
+            ! varcov(2,2)=varT
+            ! call matinv(varcov,varcovinv,determinant) ! scl calcul de l'inverse de la matrice de variance-covariance et du determinant
             !call cpu_time(c3)
             if(type_joint==3) then !cas modeles a effets aleatoires partages
                 do ig=1,ntrials 

@@ -122,7 +122,7 @@ contains
 		call dblepr("pi = ", -1, pi, 1)
 		call dblepr("gamma_ui = ", -1, gamma_ui, 1)
 		call dblepr("determinant = ", -1, determinant, 1)
-		call dblepr("varcovinv = ", -1, varcovinv, 9)
+		if (methodInt == 1) call dblepr("varcovinv = ", -1, varcovinv, 9)
 		call intpr("adaptative = ", -1, adaptative, 1)
 		call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
 		call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
