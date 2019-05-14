@@ -364,13 +364,13 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
                 end do
             !$OMP END PARALLEL DO
         else ! cas de 3 points
-           !$OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili)&
-           !$OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
+           ! ! $OMP PARALLEL DO default(none) PRIVATE (ii) SHARED(nsimu,nsujet_trial,i,fraili)&
+           ! ! $OMP    REDUCTION(+:ss) SCHEDULE(Dynamic,1)
                 do ii=1,nsimu
                     ss=ss+func(fraili(ii,1),fraili(ii,2),fraili(ii,3),i,nsujet_trial)
                     ! call dblepr(" dans ss=", -1, ss, 1)
                 end do
-           !$OMP END PARALLEL DO
+           ! !$OMP END PARALLEL DO
         end if
 		! call intpr("cluster i ", -1, i, 1)
 		! call dblepr("integrant ss ", -1, ss, 1)

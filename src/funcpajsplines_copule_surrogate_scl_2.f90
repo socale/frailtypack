@@ -104,7 +104,7 @@
             if(copula_function == 2)then 
 				theta_copule = bh(np-nva)**2.d0  ! Gumbel: choleschy transform
 			endif
-			theta_copule = bh(np-nva) ! sans transformation
+			!theta_copule = bh(np-nva) ! sans transformation
 			
             varS1 = bh(np-nva-nparamfrail+indice_varS)
             varT1 = bh(np-nva-nparamfrail+indice_varS+indice_varT)
