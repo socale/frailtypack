@@ -1830,8 +1830,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
     }
     size2 <- mt1
     
-          # browser()
-
 
 if(link0==2){
 # Current-level association structure:
@@ -1841,7 +1839,6 @@ if(link0==2){
   
   # if interaction terms are not included, get them from survival data:
   columnsT <- colnames(X_T)
-  
 for(i in 1:length(timevar)){
     interact <- 0
     columns <- names(X_L)
@@ -1861,7 +1858,7 @@ for(i in 1:length(timevar)){
       positionVarTime <- NULL
       numInterac <- 0
     }
-    if(!is.null(interact)){ # continuous
+    if(interact!=0){ # continuous
     if(length(interact)==1){ # one time-interaction term in the model
       if(interact!=0){
 
@@ -1905,6 +1902,17 @@ for(i in 1:length(timevar)){
     positionVarTime=0
     numInterac=0
       }
+      
+      if(length(grep(timevar[i],columns))!=0){ # no interaction, only time
+        positionVarTime[count2+1] <- 0
+        positionVarTime[count2+2] <- grep(timevar[i],columns)
+        positionVarTime[count2+3] <- 0
+        positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
+        count=count+1
+        count2=count2+4
+        numInterac=numInterac+count
+        
+      }
     }
 }
 for(i in 1:length(timevar)){
@@ -1922,7 +1930,7 @@ for(i in 1:length(timevar)){
   
     count=0
     if(TwoPart){
-        if(!is.null(interactB)){  # binary
+        if(interactB!=0){  # binary
 if(i==1){
     numInteracB <- 0
 }
@@ -1964,7 +1972,21 @@ if(i==1){
       numInteracB=numInteracB+count
       
     }
-    }
+        }else{
+          if(!exists("numInteracB")){
+            numInteracB=0
+          }
+          if(length(grep(timevar[i],columnsB))!=0){ # no interaction, only time
+            positionVarTime[count2+1] <- 0
+            positionVarTime[count2+2] <- grep(timevar[i],columnsB)
+            positionVarTime[count2+3] <- 0
+            positionVarTime[count2+4] <- ifelse(timevar[i]=="f1", 1, ifelse(timevar[i]=="f2", 2,0))
+            count=count+1
+            count2=count2+4
+            numInteracB=numInteracB+count
+            
+          }
+        }
     }else{
     numInteracB=0
     }
@@ -1973,11 +1995,8 @@ if(i==1){
   numInteracB=0
   numInterac=0
 }
-    
-    if(numInterac+numInteracB==0){
-    numInterac=1
-    positionVarTime=c(404,0,0,0) # 404 means there is no time-interaction
-    }
+
+
 
     if(BClam==F) BoxCoxlam=404
     
@@ -1999,7 +2018,7 @@ if(i==1){
       cat("\n")
       cat("Be patient. The program is computing ... \n")
     }
-    
+
     # call joint_longi.f90
   
   # nsujet0=1 (used for recurrent events models)
@@ -2036,7 +2055,6 @@ if(i==1){
   # EPS=c(LIMparam,LIMlogl,LIMderiv) = convergence threshold for Marquardt
   # GH=c(as.integer(GH),as.integer(n.nodes)) = indicator of gauss-hermite (0=standard,1=PA,2=hrmsym) and nodes number
   # paGH=cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)) = matrix of pseudo-adaptive gauss-hermite initialization from LME
-
         ans <- .Fortran(C_joint_longi,
 			VectNsujet = as.integer(c(1,nsujety, nsujetB)),
             ngnzag=as.integer(c(ng, n.knots, 1)),

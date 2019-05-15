@@ -4154,26 +4154,32 @@ if(numInter.ge.1)then
             do counter = 1,numInter !in case of multiple interactions
             if(positionVarT(counter2+3).eq.0) then ! linear
                 x2curG(1,positionVarT(counter2+1)) =tps
+                if(positionVarT(counter2+2).ne.0) then
                     if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                     x2curG(1,positionVarT(counter2+2)) =tps*dble(vey(it_cur+1,positionVarT(counter2)))
                     else if(positionVarT(counter2).gt.100) then
                     x2curG(1,positionVarT(counter2+2)) =tps*dble(vedc(i,positionVarT(counter2)-100))
                     end if
-                else if(positionVarT(counter2+3).eq.1) then ! f1
+                end if
+            else if(positionVarT(counter2+3).eq.1) then ! f1
                 x2curG(1,positionVarT(counter2+1)) =resultf1
+                if(positionVarT(counter2+2).ne.0) then
                     if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                     x2curG(1,positionVarT(counter2+2)) =resultf1*dble(vey(it_cur+1,positionVarT(counter2)))
                     else if(positionVarT(counter2).gt.100) then
                     x2curG(1,positionVarT(counter2+2)) =resultf1*dble(vedc(i,positionVarT(counter2)-100))
-                    end if            
-                else if(positionVarT(counter2+3).eq.2) then ! f2
+                    end if   
+                end if                    
+            else if(positionVarT(counter2+3).eq.2) then ! f2
                 x2curG(1,positionVarT(counter2+1)) =resultf2
+                if(positionVarT(counter2+2).ne.0) then
                     if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                     x2curG(1,positionVarT(counter2+2)) =resultf2*dble(vey(it_cur+1,positionVarT(counter2)))
                     else if(positionVarT(counter2).gt.100) then
                     x2curG(1,positionVarT(counter2+2)) =resultf2*dble(vedc(i,positionVarT(counter2)-100))
                     end if     
                 end if
+            end if
                 counter2=counter2+4
             end do
         end if
@@ -4198,31 +4204,37 @@ if(numInter.ge.1)then
     X2BcurG(1,k) = dble(veB(it_curB+1,k))
     end do
     if(numInterB.ge.1) then
-    do counter = 1,numInterB ! compute time and interactions at tps
-    if(positionVarT(counter2+3).eq.0) then !linear
-    X2BcurG(1,positionVarT(counter2+1)) =tps ! time effect
-        if(positionVarT(counter2).le.100) then ! if interaction terms not included 
-        X2BcurG(1,positionVarT(counter2+2)) =tps*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-        else if(positionVarT(counter2).gt.100) then
-        X2BcurG(1,positionVarT(counter2+2)) =tps*dble(vedc(i,positionVarT(counter2)-100))
+        do counter = 1,numInterB ! compute time and interactions at tps
+        if(positionVarT(counter2+3).eq.0) then !linear
+        X2BcurG(1,positionVarT(counter2+1)) =tps ! time effect
+            if(positionVarT(counter2+2).ne.0) then
+                if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                X2BcurG(1,positionVarT(counter2+2)) =tps*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+                else if(positionVarT(counter2).gt.100) then
+                X2BcurG(1,positionVarT(counter2+2)) =tps*dble(vedc(i,positionVarT(counter2)-100))
+                end if
+            end if
+        else if(positionVarT(counter2+3).eq.1) then !f1
+        X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
+            if(positionVarT(counter2+2).ne.0) then
+                if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+                else if(positionVarT(counter2).gt.100) then
+                X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(vedc(i,positionVarT(counter2)-100))
+                end if
+            end if
+        else if(positionVarT(counter2+3).eq.2) then !f2
+        X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
+            if(positionVarT(counter2+2).ne.0) then
+                if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+                else if(positionVarT(counter2).gt.100) then
+                X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(vedc(i,positionVarT(counter2)-100))
+                end if
+            end if
         end if
-    else if(positionVarT(counter2+3).eq.1) then !f1
-    X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
-        if(positionVarT(counter2).le.100) then ! if interaction terms not included 
-        X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-        else if(positionVarT(counter2).gt.100) then
-        X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(vedc(i,positionVarT(counter2)-100))
-        end if
-    else if(positionVarT(counter2+3).eq.2) then !f2
-    X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
-        if(positionVarT(counter2).le.100) then ! if interaction terms not included 
-        X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-        else if(positionVarT(counter2).gt.100) then
-        X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(vedc(i,positionVarT(counter2)-100))
-        end if
-    end if
-    counter2=counter2+4  
-    end do
+        counter2=counter2+4  
+        end do
     end if
 end if
 end if
@@ -4659,25 +4671,31 @@ if(numInter.ge.1)then
             do counter = 1,numInter !in case of multiple interactions
             if(positionVarT(counter2+3).eq.0) then ! linear
                 x2curG(1,positionVarT(counter2+1)) =t1dc(i)
+                if(positionVarT(counter2+2).ne.0) then
                     if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                     x2curG(1,positionVarT(counter2+2)) =t1dc(i)*dble(vey(it_cur+1,positionVarT(counter2)))
                     else if(positionVarT(counter2).gt.100) then
                     x2curG(1,positionVarT(counter2+2)) =t1dc(i)*dble(vedc(i,positionVarT(counter2)-100))
                     end if
-                else if(positionVarT(counter2+3).eq.1) then ! f1
+                end if
+            else if(positionVarT(counter2+3).eq.1) then ! f1
                 x2curG(1,positionVarT(counter2+1)) =resultf1
+                if(positionVarT(counter2+2).ne.0) then
                     if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                     x2curG(1,positionVarT(counter2+2)) =resultf1*dble(vey(it_cur+1,positionVarT(counter2)))
                     else if(positionVarT(counter2).gt.100) then
                     x2curG(1,positionVarT(counter2+2)) =resultf1*dble(vedc(i,positionVarT(counter2)-100))
                     end if
-                else if(positionVarT(counter2+3).eq.2) then ! f2
+                end if
+            else if(positionVarT(counter2+3).eq.2) then ! f2
                 x2curG(1,positionVarT(counter2+1)) =resultf2
+                if(positionVarT(counter2+2).ne.0) then
                     if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                     x2curG(1,positionVarT(counter2+2)) =resultf2*dble(vey(it_cur+1,positionVarT(counter2)))
                     else if(positionVarT(counter2).gt.100) then
                     x2curG(1,positionVarT(counter2+2)) =resultf2*dble(vedc(i,positionVarT(counter2)-100))
                     end if
+                end if
             end if
                 counter2=counter2+4
             end do
@@ -4695,29 +4713,35 @@ if(numInter.ge.1)then
     end do
     if(numInterB.ge.1) then
     do counter = 1,numInterB ! compute time and interactions at t1dc(i)
-    if(positionVarT(counter2+3).eq.0) then !linear
-    X2BcurG(1,positionVarT(counter2+1)) =t1dc(i) ! time effect
-        if(positionVarT(counter2).le.100) then ! if interaction terms not included 
-        X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-        else if(positionVarT(counter2).gt.100) then
-        X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(vedc(i,positionVarT(counter2)-100))
+        if(positionVarT(counter2+3).eq.0) then !linear
+            X2BcurG(1,positionVarT(counter2+1)) =t1dc(i) ! time effect
+            if(positionVarT(counter2+2).ne.0) then
+                if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+                else if(positionVarT(counter2).gt.100) then
+                X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(vedc(i,positionVarT(counter2)-100))
+                end if
+            end if
+        else if(positionVarT(counter2+3).eq.1) then !f1
+            X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
+            if(positionVarT(counter2+2).ne.0) then
+                if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+                else if(positionVarT(counter2).gt.100) then
+                X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(vedc(i,positionVarT(counter2)-100))
+                end if
+            end if
+        else if(positionVarT(counter2+3).eq.2) then !f2
+            X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
+            if(positionVarT(counter2+2).ne.0) then
+                if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
+                else if(positionVarT(counter2).gt.100) then
+                X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(vedc(i,positionVarT(counter2)-100))
+                end if
+            end if
         end if
-    else if(positionVarT(counter2+3).eq.1) then !f1
-    X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
-        if(positionVarT(counter2).le.100) then ! if interaction terms not included 
-        X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-        else if(positionVarT(counter2).gt.100) then
-        X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(vedc(i,positionVarT(counter2)-100))
-        end if
-    else if(positionVarT(counter2+3).eq.2) then !f2
-    X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
-        if(positionVarT(counter2).le.100) then ! if interaction terms not included 
-        X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
-        else if(positionVarT(counter2).gt.100) then
-        X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(vedc(i,positionVarT(counter2)-100))
-        end if
-    end if
-    counter2=counter2+4  
+        counter2=counter2+4  
     end do
     end if
 end if
@@ -4729,11 +4753,11 @@ end if
 !          write(2,*)'x2curG',x2curG
 !         write(2,*)' numInterB', numInterB
 !         write(2,*)' X2BcurG', X2BcurG
-     !     write(2,*)'nmescur',nmescur
-     !     write(2,*)'ycurrent',ycurrent
-     !     write(2,*)'yy',yy
-     !     write(2,*)'Bcurrent',Bcurrent
-     !     write(2,*)'bb',bb
+         ! write(2,*)'nmescur',nmescur
+        !  write(2,*)'ycurrent',ycurrent
+      !    write(2,*)'yy',yy
+       !   write(2,*)'Bcurrent',Bcurrent
+         ! write(2,*)'bb',bb
 !             close(2)
 ! no ping here             
              
