@@ -63,7 +63,7 @@
     if (!inherits(x, "jointSurroPenalSimul"))
       stop("Object must be of class 'jointSurroPenalSimul'")
     
-    cat("Simulation and estimation pamareters", "\n")
+    cat("Simulation and estimation parameters", "\n")
     
     cat(c("nb.subject = ", object$nb.subject), "\n")
     cat(c("nb.trials = ", object$nb.trials), "\n")
