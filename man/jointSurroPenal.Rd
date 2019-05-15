@@ -14,8 +14,8 @@ jointSurroPenal(data, maxit=40, indicator.zeta = 1,
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
    random.generator = 1, kappa.use = 4, random = 0, 
-   random.nb.sim = 0, seed = 0, init.kappa = NULL, nb.decimal = 4, 
-   print.times = TRUE, print.iter=FALSE)
+   random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0), 
+   nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
 \item{data}{A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
@@ -165,6 +165,9 @@ The default is \code{0}.}
 
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 are obtain by cross-validation.}
+
+\item{ckappa}{Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
+to well manage the smoothing parameters in case of convergence issues.}
 
 \item{nb.decimal}{Number of decimal required for results presentation.}
 

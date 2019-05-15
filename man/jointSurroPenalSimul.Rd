@@ -20,9 +20,9 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
-   random.nb.sim = 0, seed = 0, init.kappa = NULL,  
-   type.joint.estim = 1, type.joint.simul = 1, mbetast =NULL, 
-   mbetast.init = NULL, typecopula =1, theta.copula = 6,
+   random.nb.sim = 0, seed = 0, init.kappa = NULL, 
+   ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
+   mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
    filter.surr = c(1,1), filter.true = c(1,1), 
    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 }
@@ -214,6 +214,9 @@ The default is \code{0}.}
 
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 are obtain by cross-validation.}
+
+\item{ckappa}{Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
+to well manage the smoothing parameters in case of convergence issues.}
 
 \item{type.joint.estim}{Model to considered for the estimation. If this argument is set to \code{1}, the joint surrogate model
 is used, the default (see \link{joinSurroPenal}). If set to \code{3}, parameters are estimated under the joint frailty-copula model

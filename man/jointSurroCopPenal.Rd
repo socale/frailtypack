@@ -15,8 +15,8 @@ jointSurroPenal(data, maxit=40,
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
    random.generator = 1, kappa.use = 4, random = 0, 
-   random.nb.sim = 0, seed = 0, init.kappa = NULL, typecopula =1, 
-   nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
+   random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0),
+   typecopula =1, nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
 \item{data}{A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
@@ -157,6 +157,9 @@ The default is \code{0}.}
 
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 are obtain by cross-validation.}
+
+\item{ckappa}{Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
+to well manage the smoothing parameters in case of convergence issues.}
 
 \item{typecopula}{The copula function used, can be 1 for clayton or 2 for Gumbel-Hougaard. The default is \code{1}}
 
