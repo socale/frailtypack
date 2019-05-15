@@ -1,177 +1,46 @@
 library(frailtypack)
 
 # test de la fonction de generation des donnees avec les copules
-data.sim <- jointSurrCopSimul()
-summary(data.sim)
-head(data.sim)
-tail(data.sim)
+n.sim = 10
+cens = 349
+n.obs = 600
+n.trial = 30
+lambdas = 1.3
+lambdat = 1.1
+nus = 0.0025
+nut = 0.0025
+nb.mc = 200
+R2 = 0.81
+cor = sqrt(R2)
+true.init.val = 0
+theta.copula = 1
+typecopula = 1
+type.joint.estim = 3
+type.joint.simul = 3
 
-#evaluation de la generation a partir des statistiques empirique 
-result <- frailtypack:::param.empirique(nsim = 400, cens.adm=549, ver =2, 
-                lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
-                seed = 0, dec = 3, betas = c(-1.25, 0.5),betat = c(-1.25, 0.5), 
-                filter.surr = c(1,1), filter.true = c(1,1), variatio.seed = 0,
-                random.generator = 1)
-result
-# censure a 349 jours: remps en jours
-result <- frailtypack:::param.empirique(nsim = 100, n.obs = 1000, cens.adm=349, ver =1, 
-                                        lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
-                                        seed = 0, dec = 3, betas = c(-1.25),betat = c(-1.25), 
-                                        filter.surr = c(1), filter.true = c(1), variatio.seed = 0,
-                                        cor = 0.9, random.generator = 1)
-result
-# censure a 349 jours: remps en jours
-result2 <- frailtypack:::param.empirique(nsim = 100, cens.adm=349, ver =1, 
-                                        lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
-                                        seed = 0, dec = 3, betas = c(-1.25),betat = c(-1.25), 
-                                        filter.surr = c(1), filter.true = c(1), variatio.seed = 0,
-                                        cor = 0.9, random.generator = 2)
-result2
+result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1, n.obs = n.obs, n.trial = n.trial, 
+             lambda.S = lambdas,lambda.T = lambdat, nu.S = nus, nu.T = nut, 
+             seed = 0, dec = 3, betas = c(-1.25),betat = c(-1.25), cor = cor, 
+             filter.surr = c(1), filter.true = c(1))
+result                                        
 
-# censure a 349 jours: remps en jours
-result <- frailtypack:::param.empirique(nsim = 500, cens.adm=349, ver =1, 
-                                        lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
-                                        seed = 0, dec = 3, betas = c(-1.25),betat = c(-1.25), 
-                                        filter.surr = c(1), filter.true = c(1), variatio.seed = 0,
-                                        random.generator = 1)
-result
+# estimation
 
-# censure a 8 ans: lambda =1 ie une exponentielle
-result <- frailtypack:::param.empirique(nsim = 100, cens.adm = 10, ver = 1, 
-                                        lambda.S = 1,lambda.T = 1, nu.S = 1, nu.T = 0.5, 
-                                        seed = 0, dec = 3, betas = c(-1.25),betat = c(-1.25), 
-                                        filter.surr = c(1), filter.true = c(1))
-result
-
-data.sim.cop <- jointSurrCopSimul(n.obs=100, n.trial = 5,cens.adm = 8, 
-                                  alpha = 1, gamma = 2.5, lambda.S = 1, nu.S = 1, lambda.T = 1, nu.T = 0.5, 
-                                  cor = 0.9, betas = c(-1.25), betat = c(-1.25), 
-                                  full.data = 0, random.generator = 1,ver = 1, covar.names = "trt", 
-                                  nb.reject.data = 0, random.nb.sim = 1, thetacopule = 6, filter.surr = c(1), 
-                                  filter.true = c(1), seed = 0)
-
-data.sim.cop$trt <- as.factor(data.sim.cop$trt) 
-data.sim.cop$statusS <- as.factor(data.sim.cop$statusS) 
-data.sim.cop$statusT <- as.factor(data.sim.cop$statusT)
-tapply(data.sim.cop[, "trt"], data.sim.cop$trialID, summary)
-tapply(data.sim.cop[, "statusS"], data.sim.cop$trialID, summary)
-tapply(data.sim.cop[, "statusT"], data.sim.cop$trialID, summary)
-
-describe(data.sim.cop)
-
-# simulation study
-joint.simul <- jointSurroPenalSimul(nb.dataset = 1, nb.mc = 50, nb.gh = 5, true.init.val = 1, 
-                nbSubSimul=300, ntrialSimul=30, type.joint.simul = 3, maxit = 2,
-                  LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001,nb.gh2 = 9, 
-                print.iter=T, kappa.use = 1
-                 )
-
-joint.simul1 <- jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100, 
-                                    ntrialSimul=10, nb.mc = 50, nb.gh = 5, 
-                                    nb.gh2 = 32, print.iter=T, kappa.use = 1)
-
-# results
-summary(joint.simul1, d = 3, R2boot = 1) # bootstrap
-
-joint.simul2 <- jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100, 
-                                     ntrialSimul = 10, nb.mc = 50, nb.gh = 5, 
-                                     nb.gh2 = 32, print.iter = T, kappa.use = 1, type.joint.estim = 1,
-                                     type.joint.simul = 3, time.cens = 549, 
-                                     lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
-                                     seed = 0, betas = c(-1.25), betat = c(-1.25), 
-                                     init.kappa = c(10,20), maxit = 4)
-
-# results
-summary(joint.simul2, d = 3, R2boot = 1) # bootstrap
-
-data.sim.cop <- jointSurrCopSimul(n.obs=100, n.trial = 10,cens.adm=549, 
-                                  alpha = 1, gamma = 2.5, lambda.S = 1.3, nu.S = 0.0025, lambda.T = 1.1, nu.T = 0.0025, 
-                                  cor = 0.9, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
-                                  full.data = 0, random.generator = 1,ver = 2, covar.names = "trt", 
-                                  nb.reject.data = 0, random.nb.sim = 1, thetacopule = 6, filter.surr = c(1,1), 
-                                  filter.true = c(1,1), seed = 0)
-
-head(data.sim.cop)
-
-# integration MC
-joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100, int.method = 0, 
-                                     ntrialSimul = 10, nb.mc = 100,
-                                     print.iter = T, kappa.use = 1, type.joint.estim = 3,
-                                     type.joint.simul = 3, time.cens = 549, 
-                                     lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
-                                     seed = 0, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5),
-                                     betas.init = c(-0.25, 0.25), betat.init = c(-0.25, 0.25),
-                                     init.kappa = c(1000,2000), maxit = 10, true.init.val = 2, 
-                                     typecopula = 1)
-
-# results
-summary(joint.simul2, d = 3, R2boot = 1) # bootstrap
-
-# integration GH
-joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100, 
-   int.method = 0, nb.mc = 50, ntrialSimul = 10, nb.gh = 5, nb.gh2 = 9, adaptatif = 1,
-   nb.iterPGH = 0,
-   print.iter = T, kappa.use = 0, type.joint.estim = 3,
-   type.joint.simul = 3, time.cens = 549, 
-   lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
-   seed = 0, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5),
-   betas.init = c(-0.25, 0.25), betat.init = c(-0.25, 0.25),
-   init.kappa = c(1000,2000), maxit = 10, true.init.val = 1, 
-   typecopula = 1)   
-
-# one covariate
-
-joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100, 
-      int.method = 0, nb.mc = 50, ntrialSimul = 10, nb.gh = 5, nb.gh2 = 9, adaptatif = 1,
-      nb.iterPGH = 0,
-      print.iter = T, kappa.use = 0, type.joint.estim = 3,
-      type.joint.simul = 3, time.cens = 549, 
-      lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
-      seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
-      betas.init = c(-0.25), betat.init = c(-0.25), filter.true = 1,
-      init.kappa = c(1000,2000), maxit = 10, true.init.val = 1, 
-      typecopula = 1)  
-
-# one covariate and simulation using joint-frailty model
-
-joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 4, nbSubSimul=100, 
-      int.method = 0, nb.mc = 5, ntrialSimul = 10, nb.gh = 5, nb.gh2 = 9, adaptatif = 1,
-      nb.iterPGH = 0, maxit = 20,
-      print.iter = T, kappa.use = 0, type.joint.estim = 3,
-      type.joint.simul = 1, time.cens = 549, 
-      lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
-      seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
-      betas.init = c(-0.25), betat.init = c(-0.25), filter.true = 1,
-      init.kappa = NULL, true.init.val = 0, 
-      typecopula = 2, nb.MC.kendall = 10, nboot.kendall = 10, LIMparam = 2.0, 
-      LIMlogl = 1.01, LIMderiv = 1.000)
-                                                  
-joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 1, nbSubSimul=100, 
-      int.method = 0, nb.mc = 5, ntrialSimul = 10, nb.gh = 5, nb.gh2 = 9, adaptatif = 1,
-      nb.iterPGH = 0, maxit = 20,
-      print.iter = T, kappa.use = 0, type.joint.estim = 3,
-      type.joint.simul = 1, time.cens = 549, 
-      lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
-      seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
-      betas.init = c(-0.25), betat.init = c(-0.25), filter.true = 1,
-      init.kappa = NULL, ckappa = c(100,100), true.init.val = 0, 
-      typecopula = 2, nb.MC.kendall = 10, nboot.kendall = 10, LIMparam = 2.0, 
-      LIMlogl = 1.01, LIMderiv = 1.000)
-
-joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = 200, nbSubSimul=600, ntrialSimul=30, 
-              int.method = 0, nb.mc = 200, maxit = 40, 
+joint.simul <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul=n.obs, ntrialSimul=n.trial, 
+              int.method = 0, nb.mc = nb.mc, maxit = 40, R2 = R2,
               #nb.gh = 5, nb.gh2 = 9, adaptatif = 1, nb.iterPGH = 0,
-              print.iter = T, kappa.use = 4, type.joint.estim = 3,
-              type.joint.simul = 3, time.cens = 349, n.knots =  4,
-              lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
+              print.iter = T, kappa.use = 4, type.joint.estim = type.joint.estim,
+              type.joint.simul = type.joint.simul, time.cens = cens, n.knots =  4,
+              lambdas = lambdas, nus = nus, lambdat = lambdat, nut = nut, 
               seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
               betas.init = c(-0.25), betat.init = c(-0.25), filter.true = 1,
-              init.kappa = NULL, ckappa = c(0,0), true.init.val = 0, 
-              typecopula = 1, theta.copula = 1)#, LIMparam = 2.0, LIMlogl = 1.01, LIMderiv = 1.000)                                                  
+              init.kappa = NULL, ckappa = c(0,0), true.init.val = true.init.val, 
+              typecopula = typecopula, theta.copula = theta.copula)#, LIMparam = 2.0, LIMlogl = 1.01, LIMderiv = 1.000)                                                  
 
 
 
 # results
+summary(joint.simul, d = 5)
 summary(joint.simul2, d = 5) 
 summary(joint.simul2, d = 5, R2boot = 1) # bootstrap
 
