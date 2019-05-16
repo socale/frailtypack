@@ -51,20 +51,20 @@ summary(joint.simul2, d = 5, R2boot = 1) # bootstrap
 
 
 # Displaying of the baseline hazards functions
-par(mfrow = c(2,2))
-n.s <- 0.0025
-gamma.s <- 1.3
+par(mfrow = c(1,2))
+n.s <- nus
+gamma.s <- lambdas
 x <- seq(from = 1, to = 100, length.out = 1000)
 y <- n.s * gamma.s * x**(gamma.s-1)
 
-plot(x,y, main = "Surrogate endpoint")
+plot(x,y, main = "Surrogate endpoint", xlab = "Time", ylab = "Baseline hazard")
 
-n.s <- 0.0025
-gamma.s <- 1.1
+n.s <- nut
+gamma.s <- lambdat
 x <- seq(from = 1, to = 100, length.out = 1000)
 y <- n.s * gamma.s * x**(gamma.s-1)
 
-plot(x,y, main = "True endpoint", col = "red")
+plot(x,y, main = "True endpoint", col = "red", xlab = "Time", ylab = "Baseline hazard")
 
 #Censure 5 ans
 n.s <- 3.25
