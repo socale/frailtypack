@@ -3,6 +3,8 @@ o Correction of warnings during installation of package
 o Bug fixed for printing results of longiPenal, trivPenal and trivPenalNL
 o Add of the median survival
 o Bug fixed when characters are used in data for prediction
+o Rename gammaJ as logGammaJ
+o Error message for a bad use of jointGeneral
 
 Changes in Version 3.0.3.1 march 2019
 o Bug fixed in subroutines Fortran for the computation of integrals using the Pseudo-adaptive Gaussian Hermite quadrature. Due to incorrect assignment of memory (variable V_i and V in the subroutines funcpajsplines_surrogate, funcpafrailtyPred_Essai and MC_Gauss_MultInd_Essai), the program encountered in the previous version a fatal error with Windows OS. However, this problem did not impact model estimates based on other OS. 
