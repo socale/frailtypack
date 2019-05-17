@@ -1112,7 +1112,7 @@
         res=0.d0
         select case(methodInt)
         case(0) ! estimation par monte carlo
-            
+            !call dblepr("integrale3=", -1, integrale3, ntrials)
 			res = sum(dlog(integrale3))
 			if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
