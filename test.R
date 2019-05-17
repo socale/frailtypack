@@ -1,7 +1,7 @@
 library(frailtypack)
 
 # test de la fonction de generation des donnees avec les copules
-n.sim = 200
+n.sim = 1
 cens = 349
 n.obs = 600
 n.trial = 30
@@ -9,7 +9,7 @@ lambdas = 1.3
 lambdat = 1.1
 nus = 0.0025
 nut = 0.0025
-nb.mc = 200
+nb.mc = 1000
 R2 = 0.81
 n.knots =  6
 cor = sqrt(R2)
@@ -18,7 +18,8 @@ theta.copula = 3
 typecopula = 1
 type.joint.estim = 3
 type.joint.simul = 3
-print.iter = F
+kappa.use = 0
+print.iter = T
 
 result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1, n.obs = n.obs, n.trial = n.trial, 
              lambda.S = lambdas,lambda.T = lambdat, nu.S = nus, nu.T = nut, 
@@ -31,7 +32,7 @@ result
 joint.simul4 <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul=n.obs, ntrialSimul=n.trial, 
               int.method = 0, nb.mc = nb.mc, maxit = 40, R2 = R2,
               #nb.gh = 5, nb.gh2 = 9, adaptatif = 1, nb.iterPGH = 0,
-              print.iter = print.iter, kappa.use = 4, type.joint.estim = type.joint.estim,
+              print.iter = print.iter, kappa.use = kappa.use, type.joint.estim = type.joint.estim,
               type.joint.simul = type.joint.simul, time.cens = cens, n.knots =  n.knots,
               lambdas = lambdas, nus = nus, lambdat = lambdat, nut = nut, 
               seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
@@ -43,6 +44,7 @@ joint.simul4 <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul
 
 # results
 summary(joint.simul4, d = 5)
+
 summary(joint.simul2, d = 5) 
 summary(joint.simul2, d = 5, R2boot = 1) # bootstrap
 
