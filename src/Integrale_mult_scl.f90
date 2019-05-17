@@ -405,11 +405,11 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
         ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
     endif
     MC_Copula_Essai=ss/dble(nsimu)
-	if(control_affichage == 0)then
-		control_affichage = 1
-	    call intpr("ss=", -1, ss, 1)
-	    call intpr("MC_Copula_Essai=", -1, MC_Copula_Essai, 1)
-	endif
+	! if(control_affichage == 0)then
+		! control_affichage = 1
+	    ! call intpr("ss=", -1, ss, 1)
+	    ! call intpr("MC_Copula_Essai=", -1, MC_Copula_Essai, 1)
+	! endif
 
     deallocate(vi,usim,vc,fraili)
     return
