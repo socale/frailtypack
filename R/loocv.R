@@ -142,9 +142,9 @@ loocv <- function (object, unusedtrial, var.used = "error.estim", alpha. = 0.05,
     }
       
     # Prediction
-    if(is.null(joint.surro)) 
+    if(is.null(joint.surro)){ 
       if(!(i %in% unusedtrial)) cat(c("===Model without trial", i, "did not converge===: \n"))
-    else{
+    }else{
       d1 <- predict.jointSurroPenal(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],], dec = dec)
       # Merger of the results
       d <- rbind(d,d1)
