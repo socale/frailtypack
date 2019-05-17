@@ -3,13 +3,13 @@ library(frailtypack)
 # test de la fonction de generation des donnees avec les copules
 n.sim = 1
 cens = 349
-n.obs = 600
-n.trial = 30
+n.obs = 100
+n.trial = 10
 lambdas = 1.3
 lambdat = 1.1
 nus = 0.0025
 nut = 0.0025
-nb.mc = 1000
+nb.mc = 300
 R2 = 0.81
 n.knots =  6
 cor = sqrt(R2)
