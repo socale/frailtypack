@@ -4,7 +4,7 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
                            nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
                            seed = 0,alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7,
                            cor = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
-                           filter.surr = c(1,1), filter.true = c(1,1), frailt.base = 1,
+                           filter.surr = c(1,1), filter.true = c(1,1), frailt.base = 1, typecopula = 1,
                            thetacopule = 6, random.generator = 1, prop.i = rep(1/n.trial, n.trial)){
   # variatio.seed : si = 1, je fais varier le seed, seulement pour des fins de verification des statistiques empirique.
   # afin de reproduire les jeux de donnees utilisees dans le simulations, il faut plutot faire varier nb.reject.data et fixer le seed, 
@@ -12,15 +12,15 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
   # lorque cet argumet est fixe a 0
   nbre.covar = ver
   full.data = 1
-  np = 11 + nbre.covar
+  np = 12 + nbre.covar
   d = data.frame(matrix(0, nrow = nsim, ncol = np))
   if(nbre.covar > 1) 
     names(d) = c("MuvS", "sigmaS", "MuvT", "sigmaT","SigmaST","Muui", "gamma",
                  "median.S", "median.T", "prop.S", "propT", "prop.trt",
-               paste("propVar",seq(2,nbre.covar),sep=""))
+               paste("propVar",seq(2,nbre.covar),sep=""), "Ktau")
   else
     names(d) = c("MuvS", "sigmaS", "MuvT", "sigmaT","SigmaST","Muui", "gamma", 
-                 "median.S", "median.T", "prop.S", "propT", "prop.trt")
+                 "median.S", "median.T", "prop.S", "propT", "prop.trt", "Ktau")
   
   # nombre de sujets par essai:
   n_i <- as.integer(n.obs*prop.i) # nombre de sujet par essai
@@ -71,19 +71,37 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
         
         d[i,12+j] <- prop.table(table(data.sim[,10+j]))["1"]
       }
+    
+    ## Compute Kendall's tau at each study ##
+    Tau <- numeric(n.trial)
+    for(k in 1:n.trial){
+      Tau[k] <- cor(data.sim$timeS[(data.sim$trialID == k) & (data.sim$trt == 1)],
+                 data.sim$timeT[(data.sim$trialID == k) & (data.sim$trt == 1)],method="kendall")
+    }
+    
+    ## difference at most 0.01##
+    d[i,np] <- mean(Tau)
+    #print(d[i,])
+    
   }
   result = data.frame(names(d))
   names(result) = "Parameters"
-  result$True <- c(0, sigma.s, 0, sigma.t, round(cor * sqrt(sigma.s * sigma.t),dec), 
-                   0, gamma, "-", "-", "-", "-", rep(0.5, nbre.covar))
+  if(typecopula == 1)
+    result$True <- c(0, sigma.s, 0, sigma.t, round(cor * sqrt(sigma.s * sigma.t),dec), 
+                     0, gamma, "-", "-", "-", "-", rep(0.5, nbre.covar), thetacopule/(thetacopule+2))
+  
+  if(typecopula == 2)
+    result$True <- c(0, sigma.s, 0, sigma.t, round(cor * sqrt(sigma.s * sigma.t),dec), 
+                     0, gamma, "-", "-", "-", "-", rep(0.5, nbre.covar), thetacopule/(thetacopule+1))
+  
   result$Mean <- NA
   result$Median <- NA
   result$SD <- NA
   
   for(k in 1 : np){
-    result$Mean[k] <- round(mean(d[,k]),dec)
-    result$Median[k] <- round(median(d[,k]),dec)
-    result$SD[k] <- round(sd(d[,k]),dec)
+    result$Mean[k] <- round(mean(na.omit(d[,k])),dec)
+    result$Median[k] <- round(median(na.omit(d[,k])),dec)
+    result$SD[k] <- round(sd(na.omit(d[,k])),dec)
   }
   
   #prettyR::describe(d)
