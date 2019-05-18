@@ -42,7 +42,7 @@ joint.simul4 <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul
 
 
 
-# results
+# resultsw
 summary(joint.simul4, d = 5)
 
 summary(joint.simul2, d = 5) 
