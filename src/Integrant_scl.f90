@@ -27,7 +27,7 @@ contains
     integer::j,n
     double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
                       sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T,&
-					  f_V, tempon
+					  f_V, tempon, logfbar_Sij, logfbar_Tij
     double precision, dimension(:,:),allocatable::m1,m3  
     double precision, dimension(:,:),allocatable::m	
 	 
@@ -54,20 +54,22 @@ contains
                 phiprimphimun_S = - fbar_Sij**(1.d0 + theta_copule)
 				phiprimphimun_T = - fbar_Tij**(1.d0 + theta_copule)
             case(2) ! Gumbel copula
-                C_theta = dexp(-((-dlog(fbar_Sij))**(theta_copule + 1.d0) + (- dlog(fbar_Tij))**&
+				logfbar_Sij = - const_res4(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1)))
+				logfbar_Tij = - const_res5(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1)))
+                C_theta = dexp(-((-logfbar_Sij)**(theta_copule + 1.d0) + (- logfbar_Tij)**&
                         (theta_copule + 1.d0))**(1.d0/(theta_copule + 1.d0)))
-                phimun_S = (-dlog(fbar_Sij))**(1.d0 + theta_copule)
-                phimun_T = (-dlog(fbar_Tij))**(1.d0 + theta_copule)
-                phiprim_ST = - 1.d0/(1.d0+theta_copule) * ((- dlog(fbar_Sij))**(1.d0+theta_copule) + &
-                          (-dlog(fbar_Tij))**(1.d0+theta_copule))**(-theta_copule/(1.d0+theta_copule)) &
+                phimun_S = (-logfbar_Sij)**(1.d0 + theta_copule)
+                phimun_T = (-logfbar_Tij)**(1.d0 + theta_copule)
+                phiprim_ST = - 1.d0/(1.d0+theta_copule) * ((- logfbar_Sij)**(1.d0+theta_copule) + &
+                          (-logfbar_Tij)**(1.d0+theta_copule))**(-theta_copule/(1.d0+theta_copule)) &
                           * C_theta
                 sumphimun_ST = phimun_S + phimun_T
                 phisecond_ST = (1.d0 / (1.d0 + theta_copule)**2.d0) * (theta_copule * sumphimun_ST**&
                              (-(2.d0 * theta_copule + 1.d0)/(theta_copule + 1.d0)) + sumphimun_ST**&
                              (-(2.d0 * theta_copule)/(theta_copule + 1.d0))) * dexp(- sumphimun_ST**&
                              (1.d0/(1.d0 + theta_copule)))
-				phiprimphimun_S = (-fbar_Sij/(1.d0 + theta_copule)) * (- dlog(fbar_Sij))**(- theta_copule)
-                phiprimphimun_T = (-fbar_Tij/(1.d0 + theta_copule)) * (- dlog(fbar_Tij))**(- theta_copule)
+				phiprimphimun_S = (-fbar_Sij/(1.d0 + theta_copule)) * (- logfbar_Sij)**(- theta_copule)
+                phiprimphimun_T = (-fbar_Tij/(1.d0 + theta_copule)) * (- logfbar_Tij)**(- theta_copule)
         end select
         
         ! expression with derrivatives
