@@ -272,6 +272,7 @@
 #'    \item{datab}{Dataframe of the estimates for all simulations which rich convergence}
 #'    \item{type.joint}{the estimation model; 1 for the joint surrogate and 3 for joint frailty-copula model}
 #'    \item{type.joint.simul}{The model used for data generation; 1 for joint surrogate and 3 for joint frailty-copula}
+#'    \item{true.init.val}{Indicates if the real parameter values have been used as initial values for the model \code{(1)}, or the given initial values \code{(0)}}
 #'   
 #' @seealso \code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}
 #' 
@@ -883,6 +884,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   names(result$dataR2boot) <- c("R2.boot","inf.95%CI","sup.95%CI")
   result$dataHessian <- data.frame(ans$dataHessian)
   result$datab <- data.frame(ans$datab)
+  result$true.init.val <- true.init.val
   
  #  cat("result$datab", fill = TRUE)
  #  print(result$datab)

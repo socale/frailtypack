@@ -292,6 +292,7 @@ This function return an object of class jointSurroPenalSimul with elements :
    \item{datab}{Dataframe of the estimates for all simulations which rich convergence}
    \item{type.joint}{the estimation model; 1 for the joint surrogate and 3 for joint frailty-copula model}
    \item{type.joint.simul}{The model used for data generation; 1 for joint surrogate and 3 for joint frailty-copula}
+   \item{true.init.val}{Indicates if the real parameter values have been used as initial values for the model \code{(1)}, or the given initial values \code{(0)}}
 }
 \description{
 {

@@ -76,6 +76,7 @@
     if(object$int.method %in% c(0, 2, 4)) cat(c("nb.mc = ", object$nb.mc), "\n")
     cat(c("kappa.use = ", object$kappa.use), "\n")
     cat(c("n.knots = ", object$n.knots), "\n")
+    cat(c("true.init.val = ", object$true.init.val), "\n")
     cat(c("n.iter = ", object$n.iter), "\n")
     cat(" ", "\n")
     if(object$type.joint.simul==1)
