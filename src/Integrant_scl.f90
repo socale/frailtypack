@@ -77,16 +77,14 @@ contains
                     (1.d0 - dble(deltastar(posind_i-1+j))) * C_theta
         
         ! individual contributions
-        contri_indiv = derivphi_ij * (f_Sij / minval((/phiprimphimun_S,-1.d-8/)))**dble(delta(posind_i-1+j)) * &
-		             (f_Tij / minval((/phiprimphimun_T,-1.d-8/)))&
-                     **dble(deltastar(posind_i-1+j))
+		if(phiprimphimun_S > -1.d-299) phiprimphimun_S = -1.d-299
+		if(phiprimphimun_T > -1.d-299) phiprimphimun_T = -1.d-299
 		
-		! contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**dble(delta(posind_i-1+j)) * &
-		               ! (f_Tij / phiprimphimun_T)&
-					   ! **dble(deltastar(posind_i-1+j))
+		contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**dble(delta(posind_i-1+j)) * &
+		               (f_Tij / phiprimphimun_T)&
+					   **dble(deltastar(posind_i-1+j))
 		
 		tempon = integrant
-        ! integrant = minval((/integrant, dexp(500.d0)/)) * contri_indiv
 		integrant = integrant * contri_indiv
 		
 		if(adaptative .and. integrant==0) then
@@ -133,9 +131,9 @@ contains
 			call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
 			call dblepr("phiprimphimun_S = ", -1, phiprimphimun_S, 1)
 			call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1) 
-			call dblepr("f_Sij / minval((/phiprimphimun_S,-1.d-8/)) = ", -1, f_Sij / minval((/phiprimphimun_S,-1.d-8/)), 1)
+			call dblepr("f_Sij / phiprimphimun_S = ", -1, f_Sij / phiprimphimun_S, 1)
 			call dblepr("dble(delta(posind_i-1+j)) = ", -1, dble(delta(posind_i-1+j)), 1)
-			call dblepr("f_Tij / minval((/phiprimphimun_T,-1.d-8/)) = ", -1, f_Tij / minval((/phiprimphimun_T,-1.d-8/)), 1)
+			call dblepr("f_Tij /phiprimphimun_T = ", -1, f_Tij / phiprimphimun_T, 1)
 			call dblepr("dble(deltastar(posind_i-1+j)) = ", -1, dble(deltastar(posind_i-1+j)), 1)
 			call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
 			call dblepr("contri_indiv = ", -1, contri_indiv, 1)
@@ -182,9 +180,9 @@ contains
 			call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
 			call dblepr("phiprimphimun_S = ", -1, phiprimphimun_S, 1)
 			call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
-			call dblepr("f_Sij / minval((/phiprimphimun_S,-1.d-8/)) = ", -1, f_Sij / minval((/phiprimphimun_S,-1.d-8/)), 1)
+			call dblepr("f_Sij / phiprimphimun_S = ", -1, f_Sij / phiprimphimun_S, 1)
 			call dblepr("dble(delta(posind_i-1+j)) = ", -1, dble(delta(posind_i-1+j)), 1)
-			call dblepr("f_Tij / minval((/phiprimphimun_T,-1.d-8/)) = ", -1, f_Tij / minval((/phiprimphimun_T,-1.d-8/)), 1)
+			call dblepr("f_Tij /phiprimphimun_T = ", -1, f_Tij / phiprimphimun_T, 1)
 			call dblepr("dble(deltastar(posind_i-1+j)) = ", -1, dble(deltastar(posind_i-1+j)), 1)
 			call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
 			call dblepr("contri_indiv = ", -1, contri_indiv, 1)

@@ -3,22 +3,23 @@ library(frailtypack)
 # test de la fonction de generation des donnees avec les copules
 n.sim = 1
 cens = 349 # DOIT ETRE FIXE EXTREMEMENT GRAND POUR TESTER LE TAU DE KENDALL
-n.obs = 100
+n.obs = 300
 n.trial = 10
 lambdas = 1.3
 lambdat = 1.1
 nus = 0.0025
 nut = 0.0025
-nb.mc = 300
+nb.mc = 200
 R2 = 0.81
-n.knots =  6
+n.knots =  8
 cor = sqrt(R2)
-true.init.val = 1
+true.init.val = 0
 theta.copula = 3
 typecopula = 1
 type.joint.estim = 3
 type.joint.simul = 3
 kappa.use = 0
+maxit = 100
 print.iter = T
 
 result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1, n.obs = n.obs, n.trial = n.trial, 
@@ -30,13 +31,13 @@ result
 # estimation
 
 joint.simul4 <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul=n.obs, ntrialSimul=n.trial, 
-              int.method = 0, nb.mc = nb.mc, maxit = 40, R2 = R2,
+              int.method = 0, nb.mc = nb.mc, maxit = maxit, R2 = R2,
               #nb.gh = 5, nb.gh2 = 9, adaptatif = 1, nb.iterPGH = 0,
               print.iter = print.iter, kappa.use = kappa.use, type.joint.estim = type.joint.estim,
               type.joint.simul = type.joint.simul, time.cens = cens, n.knots =  n.knots,
               lambdas = lambdas, nus = nus, lambdat = lambdat, nut = nut, 
               seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
-              betas.init = c(-0.25), betat.init = c(-0.25), filter.true = 1,
+              betas.init = c(0.25), betat.init = c(0.25), filter.true = 1,
               init.kappa = NULL, ckappa = c(0,0), true.init.val = true.init.val, 
               typecopula = typecopula, theta.copula = theta.copula)#, LIMparam = 2.0, LIMlogl = 1.01, LIMderiv = 1.000)                                                  
 
