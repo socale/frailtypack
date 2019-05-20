@@ -3,13 +3,13 @@ library(frailtypack)
 # test de la fonction de generation des donnees avec les copules
 n.sim = 1
 cens = 349 # DOIT ETRE FIXE EXTREMEMENT GRAND POUR TESTER LE TAU DE KENDALL
-n.obs = 300
+n.obs = 100
 n.trial = 10
 lambdas = 1.3
 lambdat = 1.1
 nus = 0.0025
 nut = 0.0025
-nb.mc = 200
+nb.mc = 400
 R2 = 0.81
 n.knots =  8
 cor = sqrt(R2)
@@ -19,7 +19,7 @@ typecopula = 1
 type.joint.estim = 3
 type.joint.simul = 3
 kappa.use = 0
-maxit = 100
+maxit = 35
 print.iter = T
 
 result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1, n.obs = n.obs, n.trial = n.trial, 

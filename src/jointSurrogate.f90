@@ -1595,7 +1595,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 	
 	if(affiche_itteration == 1) then
 		!call dblepr("avant appel joint:ckappa", -1,ckappa , 2)
-		call dblepr("avant appel joint:k0", -1,k0 , 2)
+		! call dblepr("avant appel joint:k0", -1,k0 , 2)
 		! call intpr("avant appel joint:nsujet", -1, nsujet, 1)
 		! call intpr("avant appel joint:ng", -1, ng, 1)
 		! call intpr("avant appel joint:ntrials", -1, ntrials, 1)
