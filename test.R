@@ -9,7 +9,7 @@ lambdas = 1.3
 lambdat = 1.1
 nus = 0.0025
 nut = 0.0025
-nb.mc = 400
+nb.mc = 300
 R2 = 0.81
 n.knots =  8
 cor = sqrt(R2)
@@ -20,7 +20,7 @@ type.joint.estim = 3
 type.joint.simul = 3
 kappa.use = 0
 maxit = 35
-print.iter = T
+print.iter = F
 
 result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1, n.obs = n.obs, n.trial = n.trial, 
              lambda.S = lambdas,lambda.T = lambdat, nu.S = nus, nu.T = nut, 
