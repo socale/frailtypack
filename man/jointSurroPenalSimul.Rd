@@ -20,7 +20,7 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
-   random.nb.sim = 0, seed = 0, init.kappa = NULL, 
+   random.nb.sim = 0, seed = 0, nb.reject.dataset = 0, init.kappa = NULL, 
    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
    mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
    filter.surr = c(1,1), filter.true = c(1,1), 
@@ -211,6 +211,15 @@ of generations that will be made, equal to \code{nb.dataset} in this case.}
 
 \item{seed}{The seed to use for data generation. Required if \code{random} is set to \code{0}. 
 The default is \code{0}.}
+
+\item{nb.reject.dataset}{When the simulations have been split into several packets, this argument 
+indicates the number of generated datasets to reject before starting the simulations studies. 
+This prevents to reproduce the same datasets for all simulation packages. It must be set to 
+\code{0} if just one packet is considered, the default. Otherwise for each packet of simulation 
+run, this value must be updated. 
+ e.g. If 10 packets are considered for a total of 100 datasets, one can assigned 0 for the first packet run, 
+ 10 for the second, 20 for the 3rd, ... , 90 for the 10th. If this argument is different to \code{0},
+ the argument \code{nb.dataset} must be set to the number of dataset to consider in the packet.}
 
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 are obtain by cross-validation.}

@@ -1,7 +1,12 @@
 Changes in Version 3.0.4 march 2019
-o Bugg fixed in the jointSurroPenalSimul() R function for the parameters of the jointSurrSimul() function, when one generate data to estimate kappas by cross validation. Some parameters were taken let fixed by default. Argument "cor" is set to "sqrt(R2)"  
+o Inclusion of the nb.reject.dataset argument in the jointSurroPenalSimul() R function to allow simulations to be performed by considering multiple data packets. 
+
+o Bugg fixed in the jointSurroPenalSimul() R function for the parameters of the jointSurrSimul() function, when one generate data to estimate kappas by cross validation. Some parameters were taken let fixed by default. Argument "cor" is set to "sqrt(R2)" 
+
 o New model added: Joint frailty-copula models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints (vignettes file updated)
+
 o Rename of the argument "rsqrt" in the jointSurrSimul() function by "cor".
+
 o Bugg fixd in the Fortran subroutine "jointSurrogate" in the calculation of R2_trial and Kendall_tau using the parametric bootstrap. The argument "vcdiag" for the subroutine "rmvnorm" is fixed to 1 instead of 0 when data are generated following the multivariate normal distribution.
 
 
