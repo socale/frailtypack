@@ -62,7 +62,7 @@
 #'    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
 #'    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
-#'    random.nb.sim = 0, seed = 0, nb.reject.dataset = 0, init.kappa = NULL, 
+#'    random.nb.sim = 0, seed = 0, nb.reject.data = 0, init.kappa = NULL, 
 #'    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
 #'    mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
 #'    filter.surr = c(1,1), filter.true = c(1,1), 
@@ -204,7 +204,7 @@
 #' of generations that will be made, equal to \code{nb.dataset} in this case.
 #' @param seed The seed to use for data generation. Required if \code{random} is set to \code{0}. 
 #' The default is \code{0}.
-#' @param nb.reject.dataset When the simulations have been split into several packets, this argument 
+#' @param nb.reject.data When the simulations have been split into several packets, this argument 
 #' indicates the number of generated datasets to reject before starting the simulations studies. 
 #' This prevents to reproduce the same datasets for all simulation packages. It must be set to 
 #' \code{0} if just one packet is considered, the default. Otherwise for each packet of simulation 
@@ -325,7 +325,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                       prop.subj.trt = NULL, theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, 
                       betat = -1.25, lambdas = 1.8, nus = 0.0045, lambdat = 3, nut = 0.0025, time.cens = 549, 
                       R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, random.nb.sim = 0, 
-                      seed = 0, nb.reject.dataset = 0, init.kappa = NULL, ckappa = c(0,0), 
+                      seed = 0, nb.reject.data = 0, init.kappa = NULL, ckappa = c(0,0), 
                       type.joint.estim = 1, type.joint.simul = 1, mbetast = NULL, mbetast.init = NULL, typecopula = 1, 
                       theta.copula = 6, thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), nb.decimal = 4, 
                       print.times = TRUE, print.iter = FALSE){
@@ -513,6 +513,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     # nom du fichier pour les kappas obtenues par validation croisee
     kapa <- "kappa_valid_crois.txt"
     vect_kappa <- matrix(0,nrow = n_sim1,ncol = 2)
+    nb.reject.data2 <- nb.reject.data
     for(j in 1:n_sim1){
       if(type.joint.simul == 1){ # joint surrogate model
         data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
@@ -522,18 +523,19 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt, full.data = 0, 
                         random.generator = random.generator, random = random, 
-                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = j-1)
+                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1)
       }else{ # joint frailty copula model
-          data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
-                                        alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
-                                        sigma.t = sigma.t, cor = sqrt(R2), betas = mbetast[,1], betat = mbetast[,2],
-                                        lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
-                                        equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
-                                        prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
-                                        full.data = 0, random.generator = random.generator, random = random, 
-                                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = j-1,
-                                        thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
-                                        covar.names = nomvarl)
+         data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
+                       alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
+                       sigma.t = sigma.t, cor = sqrt(R2), betas = mbetast[,1], betat = mbetast[,2],
+                       lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
+                       equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
+                       prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
+                       full.data = 0, random.generator = random.generator, random = random, 
+                       random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1,
+                       thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
+                       covar.names = nomvarl)
+                                        
       }
       data.sim$initTime <- 0
       donnees <- data.sim[,c("trialID","patienID","trt","initTime","timeS","statusS")]
@@ -691,7 +693,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   donne_reel <- real.data # dit si 1 a la question precedente dit s'il sagit du jeux de donnees reel (1) ou non (0)
   #gener.only <- # dit si on voudrait seulement generer les donnees(1) ou generer et faire des simulation(0)
   #kappa.use <- # dit si on utilise un kappa a chaque generation de donnee (1) ou le premier kappa pour tous les jeux de donnees(0)
-  decoup_simul <- nb.reject.dataset# dans le cas ou l'on a decoupe les simulations en plusieurs paquets, donne le nombre de generation de donnees a ne pas considerer avant d'engager les simulations. ceci empeche de reproduire les meme jeux de donnees pour tous les paquets de simulation. vaut 0 si pas de decoupage pevu sinon pour chaque jeux de simulation mettre cette valeur a jour. Exp si 10 paquets de simul pour un total de 100, on affecte 0 pour le premier paquet, 10 pour le second, 20 pour le 3 ieme, ... 90 pour le 10ieme
+  decoup_simul <- nb.reject.data# dans le cas ou l'on a decoupe les simulations en plusieurs paquets, donne le nombre de generation de donnees a ne pas considerer avant d'engager les simulations. ceci empeche de reproduire les meme jeux de donnees pour tous les paquets de simulation. vaut 0 si pas de decoupage pevu sinon pour chaque jeux de simulation mettre cette valeur a jour. Exp si 10 paquets de simul pour un total de 100, on affecte 0 pour le premier paquet, 10 pour le second, 20 pour le 3 ieme, ... 90 pour le 10ieme
   aleatoire <- random# dit si on reinitialise la generation des nombre aleatoire avec un environnement different a chaque appel (1) ou non(O).En cas de generation differente, on utilise l'horloge (heure) de l'ordinateur comme graine. Dans ce cas, il n'est pas possible de reproduire les donnees simulees
   nbre_sim <- random.nb.sim# dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
   graine <- seed # dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation

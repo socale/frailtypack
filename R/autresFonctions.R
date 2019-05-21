@@ -1,14 +1,15 @@
 # autres fonctions
-param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
+param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 0,
                            n.obs = 600, n.trial = 30, cens.adm=549, lambda.S = 1.3,
                            nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
                            seed = 0,alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7,
                            cor = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
                            filter.surr = c(1,1), filter.true = c(1,1), frailt.base = 1, typecopula = 1,
-                           thetacopule = 6, random.generator = 1, prop.i = rep(1/n.trial, n.trial)){
+                           thetacopule = 6, random.generator = 1, prop.i = rep(1/n.trial, n.trial),
+                           nb.reject.data = 0){
   # variatio.seed : si = 1, je fais varier le seed, seulement pour des fins de verification des statistiques empirique.
-  # afin de reproduire les jeux de donnees utilisees dans le simulations, il faut plutot faire varier nb.reject.data et fixer le seed, 
-  # et par consedent cet argument doit prendre pour valeur 0. Toutefois on retient que les stat empirique sont meilleures
+  # afin de reproduire les jeux de donnees utilisees dans les simulations, il faut plutot faire varier nb.reject.data et fixer le seed, 
+  # et par consequent cet argument doit avoir la valeur 0. Toutefois on retient que les stat empirique sont meilleures
   # lorque cet argumet est fixe a 0
   nbre.covar = ver
   full.data = 1
@@ -41,11 +42,11 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 1,
   for (i in 1:nsim){
     if(variatio.seed == 1){
       seed1 <- seed + i 
-      nb.reject.data1 <- 0
+      nb.reject.data1 <- nb.reject.data
     }
     else{
       seed1 <- seed 
-      nb.reject.data1 <-  i -1
+      nb.reject.data1 <-  nb.reject.data + i -1
     }
     data.sim <- jointSurrCopSimul(n.obs = n.obs, n.trial = n.trial, cens.adm = cens.adm, lambda.S = lambda.S, nu.S = nu.S, 
                                   lambda.T = lambda.T, nu.T = nu.T, full.data = full.data,
