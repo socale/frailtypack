@@ -6,13 +6,15 @@
 ##' 
 ##' 
 ##' @aliases summary.jointSurroPenalSimul print.summary.jointSurroPenalSimul
-##' @usage \method{summary}{jointSurroPenalSimul}(object, d = 3, R2boot = 0,  ...)
+##' @usage \method{summary}{jointSurroPenalSimul}(object, d = 3, R2boot = 0, printResult = 1,  ...)
 ##' 
 ##' @param object an object inheriting from \code{jointSurroPenalSimul} class.
 ##' @param d The desired number of digits after the decimal point f. Default of 3 
 ##' @param R2boot A binary that specifies whether the confidence interval of \eqn{R^2_{trial}} 
 ##' should be computed using parametric bootstrap (\code{1}) or Delta-method (\code{0}). 
 ##' The default is \code{0}
+##' @param printResult A binary that indicates if the summary of the results should be displayed \code{(1)}
+##' or not \code{(0)}. If this argument is set to 0, resuls are just returned to the user
 ##' @param \dots other unused arguments.
 ##'  
 ##' @return For each parameter of the joint surrogate model , we print the true simulation value,  
@@ -23,7 +25,8 @@
 ##' by Delta-method and the 95\% Confidence interval could be obtained directly or by 
 ##' parametric bootstrap. We also display the total number of non convergence case with 
 ##' the associated percentage (R : n(\%)), the mean number of iterations to reach convergence,
-##' and other estimation and simulation parameters
+##' and other estimation and simulation parameters. We also return a dataframe of the simulations
+##' results
 ##' .
 ##' @seealso \code{\link{jointSurroPenalSimul}}
 ##' 
@@ -51,7 +54,7 @@
 ##' 
 ##' 
 "summary.jointSurroPenalSimul"<-
-  function(object, d =3, R2boot = 0,  ...){
+  function(object, d =3, R2boot = 0, printResult = 1,  ...){
     
     ick=1 # on tien compte (1) ou non (0) du calcul de l'IC du tau de kendall
     n_bootstrap <- 1000 # mais pas utilise car tout le calcul sed fait dans la subroutine jointSurogate
@@ -63,22 +66,24 @@
     if (!inherits(x, "jointSurroPenalSimul"))
       stop("Object must be of class 'jointSurroPenalSimul'")
     
-    cat("Simulation and estimation parameters", "\n")
-    
-    cat(c("nb.subject = ", object$nb.subject), "\n")
-    cat(c("nb.trials = ", object$nb.trials), "\n")
-    cat(c("nb.simul = ", object$nb.simul), "\n")
-    cat(c("int.method = ", object$int.method), "\n")
-    if(object$int.method != 0) {
-      cat(c("nb.gh = ", object$nb.gh), "\n")
-      cat(c("nb.gh2 = ", object$nb.gh2), "\n")
+    if(printResult == 1){
+      cat("Simulation and estimation parameters", "\n")
+      
+      cat(c("nb.subject = ", object$nb.subject), "\n")
+      cat(c("nb.trials = ", object$nb.trials), "\n")
+      cat(c("nb.simul = ", object$nb.simul), "\n")
+      cat(c("int.method = ", object$int.method), "\n")
+      if(object$int.method != 0) {
+        cat(c("nb.gh = ", object$nb.gh), "\n")
+        cat(c("nb.gh2 = ", object$nb.gh2), "\n")
+      }
+      if(object$int.method %in% c(0, 2, 4)) cat(c("nb.mc = ", object$nb.mc), "\n")
+      cat(c("kappa.use = ", object$kappa.use), "\n")
+      cat(c("n.knots = ", object$n.knots), "\n")
+      cat(c("true.init.val = ", object$true.init.val), "\n")
+      cat(c("n.iter = ", object$n.iter), "\n")
+      cat(" ", "\n")
     }
-    if(object$int.method %in% c(0, 2, 4)) cat(c("nb.mc = ", object$nb.mc), "\n")
-    cat(c("kappa.use = ", object$kappa.use), "\n")
-    cat(c("n.knots = ", object$n.knots), "\n")
-    cat(c("true.init.val = ", object$true.init.val), "\n")
-    cat(c("n.iter = ", object$n.iter), "\n")
-    cat(" ", "\n")
     if(object$type.joint.simul==1)
       tau <- jointSurroTKendall(theta = object$theta2, gamma = object$gamma.ui, alpha = object$alpha.ui, zeta = object$zeta)
     else{
@@ -105,8 +110,10 @@
     resultSimul[-nrow(resultSimul),1] <- substr(resultSimul[-nrow(resultSimul),1],1,nchar(resultSimul[-nrow(resultSimul),1])-6)
     if(is.na(resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1] <- "-"
     if(is.na(resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1] <- "-"
-    cat("Simulation results", "\n")
-    print(resultSimul[-nrow(resultSimul),])
-    cat(c("Rejected datasets : n(%) = ",resultSimul[nrow(resultSimul),3]), "\n")
-    
+    if(printResult == 1){
+      cat("Simulation results", "\n")
+      print(resultSimul[-nrow(resultSimul),])
+      cat(c("Rejected datasets : n(%) = ",resultSimul[nrow(resultSimul),3]), "\n")
+    }
+    return(resultSimul)
   }
