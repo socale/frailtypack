@@ -1,28 +1,32 @@
 library(frailtypack)
 
 # test de la fonction de generation des donnees avec les copules
-n.sim = 1
+n.sim = 2
 cens = 349 # DOIT ETRE FIXE EXTREMEMENT GRAND POUR TESTER LE TAU DE KENDALL
-n.obs = 100
-n.trial = 10
+n.obs = 600
+n.trial = 30
 lambdas = 1.3
 lambdat = 1.1
 nus = 0.0025
 nut = 0.0025
 nb.mc = 300
 R2 = 0.81
-n.knots =  8
+n.knots =  6
 cor = sqrt(R2)
-true.init.val = 0
+true.init.val = 1
 theta.copula = 3
 typecopula = 1
 type.joint.estim = 3
 type.joint.simul = 3
 kappa.use = 0
 maxit = 35
-print.iter = F
+equi.subj.trial = 1
+prop.subj.trial = NULL
+print.iter = T
 
-result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1, n.obs = n.obs, n.trial = n.trial, 
+
+result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1, 
+             n.obs = n.obs, n.trial = n.trial, gamma = 0.8, 
              lambda.S = lambdas,lambda.T = lambdat, nu.S = nus, nu.T = nut, 
              seed = 0, dec = 3, betas = c(-1.25),betat = c(-1.25), cor = cor, 
              typecopula = typecopula, filter.surr = c(1), filter.true = c(1))
@@ -46,10 +50,32 @@ joint.simul4 <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul
 # resultsw
 summary(joint.simul4, d = 5)
 
-summary(joint.simul2, d = 5) 
-summary(joint.simul2, d = 5, R2boot = 1) # bootstrap
+# resultat issu des paquets de simulation :
+    # mes .RData sont places dans le dossier indique par wd
+joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = 2, envir.name = "joint.simul2_", envir.num.base = 500,
+                  wd = "G:/socale/PHD-Thesis/programmes/Creation_Package/package_CRAN/Version_github/frailtypack/EspacePaquetsSimul")
+summary(joint.simul, printResult = 1)
 
-#integer
+# pour l'introduction dans l'article, je recupere plutot le dataframe
+result <- summary(joint.simul, printResult = 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
