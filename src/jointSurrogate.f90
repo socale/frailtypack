@@ -880,25 +880,16 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 endif
             enddo
             ! on met à jour le nombre d'essais
-		!==================================================================
-        !==================22/05/2019==== ================================= 
-		!==================================================================
-		
-		 ! je commente ces lignes qui ne sont plus utilisees, car le vecteur des kappas produit correspond exactement au nombre de simulation a faire dans le pacquet ourant.
-         ! ces lignes seraient a decommenter si j'utilisais mon programme fortran qui prend en entree le fichier de tous les kappas issus de la falidation croisee sur R		 
-            ! 20041 continue
+            20041 continue
             
-            ! ! pour la gestion des paquets de simulation, avance dans le fichier des kappas pour se placer au bon endroit
-            ! if(incre_decoup<decoup_simul) then !incre_decoup<decoup_simul c'est pour gerer le cas des simpulations par paquet
-                ! ax1 = vect_kappa(indice_kapa,1)
-                ! ax2 = vect_kappa(indice_kapa,2)
-                ! indice_kapa = indice_kapa +1
-                ! incre_decoup=incre_decoup+1
-                ! goto 20041 ! pour etre sur qu'on n'utilise pas les kappas des jeux de donnee a ne pas considerer dans ce paquet de simulation
-            ! endif
-		!==================================================================
-        !==================22/05/2019 Fin commentaires==== ================================= 
-		!==================================================================
+            ! pour la gestion des paquets de simulation, avance dans le fichier des kappas pour se placer au bon endroit
+            if(incre_decoup<decoup_simul) then !incre_decoup<decoup_simul c'est pour gerer le cas des simpulations par paquet
+                ax1 = vect_kappa(indice_kapa,1)
+                ax2 = vect_kappa(indice_kapa,2)
+                indice_kapa = indice_kapa +1
+                incre_decoup=incre_decoup+1
+                goto 20041 ! pour etre sur qu'on n'utilise pas les kappas des jeux de donnee a ne pas considerer dans ce paquet de simulation
+            endif
 
             
             if((s_i<init_i).or.s_i>max_i) then 
@@ -980,17 +971,27 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         ! n_essai,rsqrt,sigma_s,sigma_t,prop_i,gamma_ui,theta2_t,rsqrt_theta,&
                         ! gamma_uit,rsqrt_gamma_ui,indice_gamma_st)    
                 endif
-                
-                2004    continue                
-                ! pour la gestion des paquets de simulation, on genere sans utiliser les decoup_simul premiers jeux de donnees
-                if(incre_decoup<decoup_simul) then !incre_decoup<decoup_simul c'est pour gerer le cas des simpulations par paquet
-                    ! read(15,*)ax1,ax2 ! on incremente les kappa pour etre sur que pour les jeux donnees a utiliser on utilise le kappa correspondant
-                    ax1 = vect_kappa(indice_kapa,1)
-                    ax2 = vect_kappa(indice_kapa,2)
-                    indice_kapa = indice_kapa+1
-                    incre_decoup=incre_decoup+1
-                    goto 2004 ! pour etre sur qu'on n'utilise pas le jeu de donnee
-                endif
+     
+		!==================================================================
+        !==================22/05/2019==== ================================= 
+		!==================================================================
+		
+		 ! je commente ces lignes qui ne sont plus utilisees, car le vecteur des kappas produit correspond exactement au nombre de simulation a faire dans le pacquet ourant.
+         ! ces lignes seraient a decommenter si j'utilisais mon programme fortran qui prend en entree le fichier de tous les kappas issus de la falidation croisee sur R		 
+
+                ! 2004    continue                
+                ! ! pour la gestion des paquets de simulation, on genere sans utiliser les decoup_simul premiers jeux de donnees
+                ! if(incre_decoup<decoup_simul) then !incre_decoup<decoup_simul c'est pour gerer le cas des simpulations par paquet
+                    ! ! read(15,*)ax1,ax2 ! on incremente les kappa pour etre sur que pour les jeux donnees a utiliser on utilise le kappa correspondant
+                    ! ax1 = vect_kappa(indice_kapa,1)
+                    ! ax2 = vect_kappa(indice_kapa,2)
+                    ! indice_kapa = indice_kapa+1
+                    ! incre_decoup=incre_decoup+1
+                    ! goto 2004 ! pour etre sur qu'on n'utilise pas le jeu de donnee
+                ! endif
+		!==================================================================
+        !==================22/05/2019 Fin commentaires==== ================================= 
+		!==================================================================
                 
                 ! si je suis avec des paquets de simulation, alors quand je suis la, je genere les premier jeu de donnees a ne pas considere, apres reinitialisation de l'environnement de generation
                 indice_seed=indice_seed+1
