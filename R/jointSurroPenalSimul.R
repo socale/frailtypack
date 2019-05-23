@@ -513,7 +513,15 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     # nom du fichier pour les kappas obtenues par validation croisee
     kapa <- "kappa_valid_crois.txt"
     vect_kappa <- matrix(0,nrow = n_sim1,ncol = 2)
-    nb.reject.data2 <- nb.reject.data
+    # kappa.use = =0 en cas de simulation par paquets, alors on utilise les premiers jeux de donnees pour rechercher 
+    # le kappa par validation croisee et pas les premiers jeux de donnees du paquet courant. ceci permet d'avoir les meme resultats 
+    # de simulation qu'on le fasse par paquet ou non, avec kappa.use == 0
+    
+    if(kappa.use != 0){
+      nb.reject.data2 <- nb.reject.data 
+      # ceci permet d'utiliser les bon jeux de donnees pour la recherche kes kappas par validation croisee
+    }
+    
     for(j in 1:n_sim1){
       if(type.joint.simul == 1){ # joint surrogate model
         data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
