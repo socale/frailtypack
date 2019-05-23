@@ -520,6 +520,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     if(kappa.use != 0){
       nb.reject.data2 <- nb.reject.data 
       # ceci permet d'utiliser les bon jeux de donnees pour la recherche kes kappas par validation croisee
+    }else{
+      nb.reject.data2 <- 0
     }
     
     for(j in 1:n_sim1){
