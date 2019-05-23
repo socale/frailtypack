@@ -535,7 +535,6 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1,
                        thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
                        covar.names = nomvarl)
-         !print(summary(data.sim))
                                         
       }
       data.sim$initTime <- 0
