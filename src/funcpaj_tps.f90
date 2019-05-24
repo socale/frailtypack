@@ -21,7 +21,7 @@
     double precision,dimension(ngmax)::res2,res1dc,res2dc
     double precision,dimension(ngmax)::integrale1,integrale2,integrale3,integrale3gap
     double precision,dimension(ngmax)::integrale4
-    double precision::gammaJ,int
+    double precision::logGammaJ,int
     double precision,dimension(2)::k0
     double precision::result,result3,abserr,resabs,resasc,resultdc
     double precision,external::risqindivrec,risqindivdc
@@ -164,7 +164,7 @@
                 res= res + res2(k) &
 !--      pour le deces:
                 + res2dc(k)  &
-                - gammaJ(1./theta)-dlog(theta)/theta  &
+                - logGammaJ(1./theta)-dlog(theta)/theta  &
                 + dlog(integrale3(k))
             else
 !*************************************************************************
@@ -173,7 +173,7 @@
 !                   write(*,*)'************** TAYLOR *************'
                 res= res + res2(k) &
                 + res2dc(k) &
-                - gammaJ(1./theta)-dlog(theta)/theta  &
+                - logGammaJ(1./theta)-dlog(theta)/theta  &
                 + dlog(integrale3(k))
 
             endif

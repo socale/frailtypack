@@ -197,7 +197,7 @@
 !                   write(*,*)'************** TAYLOR *************'
             !    res= res + res2(k) &
             !    + res2dc(k)  &
-            !    - gammaJ(1./theta)-dlog(theta)/theta  &
+            !    - logGammaJ(1./theta)-dlog(theta)/theta  &
             !    + dlog(integrale3(k))
             !endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then

@@ -18,7 +18,7 @@
 
     integer::n,np,id,jd,i,j,k,vj,ig,choix
     integer,dimension(ngmax)::cpt
-    double precision::thi,thj,pe1,pe2,inv,som1,som2,res,h1,int,gammaJ
+    double precision::thi,thj,pe1,pe2,inv,som1,som2,res,h1,int,logGammaJ
     double precision,dimension(ngmax)::res2,res1dc,res2dc,res3dc
     double precision,dimension(np)::b,bh
     double precision,dimension(2)::k0
@@ -252,7 +252,7 @@
                 dlog(integrale1(k))-dlog(integrale2(k))
             else
                 res = res + res2dc(k) - &
-                gammaJ(1.d0/theta)-dlog(theta)/theta + &
+                logGammaJ(1.d0/theta)-dlog(theta)/theta + &
                 dlog(integrale1(k))
             endif
 !*******************************************************
@@ -260,7 +260,7 @@
 !*******************************************************
 !        write(*,*)'******* TAYLOR *************'
             !    res= res + res2(k)+ res2dc(k) &
-            !    - gammaJ(1.d0/theta)-dlog(theta)/theta  &
+            !    - logGammaJ(1.d0/theta)-dlog(theta)/theta  &
             !    + dlog(integrale3(k))
             !endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then

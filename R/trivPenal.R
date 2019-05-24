@@ -649,7 +649,7 @@
   
   mt <- attr(m, "terms") #m devient de class "formula" et "terms"
   
-  X <- if (!is.empty.model(mt))model.matrix(mt, m, contrasts) #idem que mt sauf que ici les factor sont divise en plusieurs variables
+  X <- if (!is.empty.model(mt))model.matrix(mt, m) #idem que mt sauf que ici les factor sont divise en plusieurs variables
   
   ind.place <- unique(attr(X,"assign")[duplicated(attr(X,"assign"))]) ### unique : changement au 25/09/2014
   
@@ -1993,12 +1993,9 @@
   for (i in (1:fit$n.strat)) upperR[i] <- ifelse(typeof==0, minmin(fit$survR[,3,i],fit$xR), minmin(fit$survR[,3,i],fit$xSuR))
   fit$medianR <- cbind(lowerR,medianR,upperR)
   
-  medianD <- NULL
-  for (i in (1:fit$n.strat)) medianD[i] <- ifelse(typeof==0, minmin(fit$survD[,1,i],fit$xD), minmin(fit$survD[,1,i],fit$xSuD))
-  lowerD <- NULL
-  for (i in (1:fit$n.strat)) lowerD[i] <- ifelse(typeof==0, minmin(fit$survD[,2,i],fit$xD), minmin(fit$survD[,2,i],fit$xSuD))
-  upperD <- NULL
-  for (i in (1:fit$n.strat)) upperD[i] <- ifelse(typeof==0, minmin(fit$survD[,3,i],fit$xD), minmin(fit$survD[,3,i],fit$xSuD))
+  medianD <- ifelse(typeof==0, minmin(fit$survD[,1],fit$xD), minmin(fit$survD[,1],fit$xSuD))
+  lowerD <- ifelse(typeof==0, minmin(fit$survD[,2],fit$xD), minmin(fit$survD[,2],fit$xSuD))
+  upperD <- ifelse(typeof==0, minmin(fit$survD[,3],fit$xD), minmin(fit$survD[,3],fit$xSuD))
   fit$medianD <- cbind(lowerD,medianD,upperD)
   
   #AD:

@@ -2730,7 +2730,7 @@ end if
 !============================    GAMMA      ==============================
 
 !       function qui calcule le log de  Gamma
-    double precision function gammaJ(xx)
+    double precision function logGammaJ(xx)
 
     use donnees,only:cof,stp,half,one,fpf
 
@@ -2750,11 +2750,11 @@ end if
         x = x + one
         ser = ser + cof(j)/x
     end do
-    gammaJ = tmp + dlog(stp*ser)
+    logGammaJ = tmp + dlog(stp*ser)
 
     return
 
-    end function gammaJ
+    end function logGammaJ
 
 
 !==================================================================
@@ -2787,10 +2787,10 @@ end if
     IMPLICIT NONE
 
     double precision,intent(in)::frail
-    double precision::gammaJ
+    double precision::logGammaJ
 
     func2J = dexp(-(frail**alpha)*aux2(auxig))*dexp(-frail/theta)*(frail) &
-    /(exp(gammaJ(1.d0/theta))*(theta**(1./theta)))
+    /(exp(logGammaJ(1.d0/theta))*(theta**(1./theta)))
 
     return
 
@@ -2831,19 +2831,19 @@ end if
     IMPLICIT NONE
 
     double precision,intent(in)::frail, frail2
-    double precision::gammaJ
+    double precision::logGammaJ
     !double precision:: xi
 
     if(indic_xi.eq.0) xi = 0.d0
 
-    func3Jf =  - gammaJ(1./theta)-dlog(theta)/theta &
+    func3Jf =  - logGammaJ(1./theta)-dlog(theta)/theta &
     + (xi*nig(auxig)+cdc(auxig))*dlog(frail2) &
     + (nig(auxig)+ alpha*cdc(auxig)+ 1./theta-1.)*dlog(frail) &
     - frail*(frail2**xi)*(res1(auxig)-res3(auxig)) & !res3=0 si AG=0
     - (frail**alpha)*frail2*aux1(auxig)-frail/theta
     
 !if(auxig.eq.140.and.frail2.eq.0.91658210754394531)then 
-!    write(*,*)- gammaJ(1./theta)-dlog(theta)/theta ,&
+!    write(*,*)- logGammaJ(1./theta)-dlog(theta)/theta ,&
 !     (xi*nig(auxig)+cdc(auxig))*dlog(frail2) ,&
 !    (nig(auxig)+ alpha*cdc(auxig)+ 1./theta-1.)*dlog(frail) ,&
 !    - frail,(frail2**xi),(res1(auxig)-res3(auxig)) ,& !res3=0 si AG=0
@@ -2872,10 +2872,10 @@ end if
         IMPLICIT NONE
 
         double precision,intent(in)::term, frail2
-        double precision::gammaJ
+        double precision::logGammaJ
 
         func3Jf2 = dlog(term)+(1./eta-1)*dlog(frail2)-frail2/eta &
-         - gammaJ(1./eta)-dlog(eta)/eta 
+         - logGammaJ(1./eta)-dlog(eta)/eta 
 
          func3Jf2 =exp(func3Jf2)
 !        write(*,*) 'func3Jf2: term', term, 'frail2', frail2, 'eta', eta

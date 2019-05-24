@@ -4,8 +4,8 @@
 ^\.travis\.yml$
 ^.*\.Rdd$
 ^.*\.aux$
-^.*\.html$
 ^.*\.md$
+^.*\.mod$
 ^.*\.log$
 ^.*\.out$
 ^.*\.pdf$

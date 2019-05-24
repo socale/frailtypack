@@ -2474,7 +2474,7 @@ deallocate(res2s_sujet,res2_dcs_sujet)
 ! !============================    GAMMA      ==============================
 
 ! !       function qui calcule le log de  Gamma
-    ! double precision function gammaJ(xx)
+    ! double precision function logGammaJ(xx)
     
     ! use donnees,only:cof,stp,half,one,fpf 
     
@@ -2494,11 +2494,11 @@ deallocate(res2s_sujet,res2_dcs_sujet)
         ! x = x + one
         ! ser = ser + cof(j)/x
     ! end do
-    ! gammaJ = tmp + dlog(stp*ser)
+    ! logGammaJ = tmp + dlog(stp*ser)
     
     ! return
     
-    ! end function gammaJ
+    ! end function logGammaJ
 
 
 ! !==================================================================
@@ -2531,10 +2531,10 @@ deallocate(res2s_sujet,res2_dcs_sujet)
     ! IMPLICIT NONE
 
     ! double precision,intent(in)::frail
-    ! double precision::gammaJ
+    ! double precision::logGammaJ
 
     ! func2J = dexp(-(frail**alpha)*aux2(auxig))*dexp(-frail/theta)*(frail) &
-    ! /(exp(gammaJ(1.d0/theta))*(theta**(1./theta)))
+    ! /(exp(logGammaJ(1.d0/theta))*(theta**(1./theta)))
 
     ! return
 

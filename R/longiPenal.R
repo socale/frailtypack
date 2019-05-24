@@ -1096,7 +1096,7 @@
     
     mt <- attr(m, "terms") #m devient de class "formula" et "terms"
     
-    X_T <- if (!is.empty.model(mt))model.matrix(mt, m, contrasts) #idem que mt sauf que ici les factor sont divise en plusieurs variables
+    X_T <- if (!is.empty.model(mt))model.matrix(mt, m) #idem que mt sauf que ici les factor sont divise en plusieurs variables
     
     ind.placeT <- unique(attr(X_T,"assign")[duplicated(attr(X_T,"assign"))]) ### unique : changement au 25/09/2014
     

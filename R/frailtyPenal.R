@@ -955,7 +955,7 @@
   function (formula, formula.terminalEvent, data, recurrentAG=FALSE, cross.validation=FALSE, jointGeneral, n.knots, kappa,maxit=300, 
             hazard="Splines", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
             LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
-    
+
     # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
     minmin <- function(y, x) {
       tolerance <- .Machine$double.eps^.5   #same as used in all.equal()
@@ -993,7 +993,7 @@
     logNormal <- switch(RandDist,"Gamma"=0,"LogN"=1)
     
     if (RandDist=="LogN" & jointGeneral==TRUE)        stop("Log normal distribution is not available for the Joint General Model !")
-    if ((hazard=='Weibull') & jointGeneral== TRUE)    stop("No parametrical general joint frailty model allowed here!")
+    if ((hazard!="Splines") & jointGeneral== TRUE)    stop("No general joint frailty model allowed here! Only 'Splines' is allowed")
     
     ##### hazard specification ######
     haztemp <- hazard
@@ -1245,7 +1245,7 @@
     
     mt <- attr(m, "terms") #m devient de class "formula" et "terms"
     
-    X <- if (!is.empty.model(mt))model.matrix(mt, m, contrasts) #idem que mt sauf que ici les factor sont divise en plusieurs variables
+    X <- if (!is.empty.model(mt)) model.matrix(mt, m) #, contrasts) #idem que mt sauf que ici les factor sont divise en plusieurs variables
     
     ind.place <- unique(attr(X,"assign")[duplicated(attr(X,"assign"))]) ### unique : changement au 25/09/2014
     

@@ -476,13 +476,13 @@
     double precision::XbetapredRi,XbetapredDCi
     double precision,dimension(2)::survDC
     double precision,dimension(nrec0+2)::survRi
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     func1pred1 = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi)) &
     - survDC(2)**((frail**palpha) * exp(XbetapredDCi))) &
     * (frail**recj) &
     * (survRi(1)**(frail * exp(XbetapredRi))) &
-    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta)))) 
+    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta)))) 
     
       
     return
@@ -498,12 +498,12 @@
     double precision::XbetapredRi,XbetapredDCi
     double precision,dimension(2)::survDC
     double precision,dimension(nrec0+2)::survRi
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     func2pred1 = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi))) &
     * (frail**recj) &
     * (survRi(1)**(frail * exp(XbetapredRi))) &
-    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) *dexp( gammaJ(1.d0/ptheta))) )
+    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) *dexp( logGammaJ(1.d0/ptheta))) )
     return
 
     end function func2pred1
@@ -520,13 +520,13 @@
     double precision::XbetapredRi,XbetapredDCi
     double precision,dimension(2)::survDC
     double precision,dimension(nrec0+2)::survRi
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     func1pred2 = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi)) &
     - survDC(2)**((frail**palpha) * exp(XbetapredDCi))) &
     * (frail**recj) &
     * ((survRi(recj+1))**(frail * exp(XbetapredRi))) &
-    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta)))) 
+    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta)))) 
 
     return
 
@@ -541,12 +541,12 @@
     double precision::XbetapredRi,XbetapredDCi
     double precision,dimension(2)::survDC
     double precision,dimension(nrec0+2)::survRi
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     func2pred2 = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi))) &
     * (frail**recj) &
     * ((survRi(recj+1))**(frail * exp(XbetapredRi))) & !!
-    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))))
+    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))))
 
     return
 
@@ -564,7 +564,7 @@
     double precision::XbetapredRi,XbetapredDCi
     double precision,dimension(2)::survDC
     double precision::survLT,survL,survU !!
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     if ((survL.eq.1.d0).or.(survU.eq.1.d0)) then
         func1pred2ic = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi)) &
@@ -572,13 +572,13 @@
         !* (frail**recj) &
         !* ((survL**(frail * exp(XbetapredRi))-survU**(frail * exp(XbetapredRi)))
         /(survLT**(frail * exp(XbetapredRi))) & !!
-        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))))
+        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))))
     else
         func1pred2ic = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi)) &
         - survDC(2)**((frail**palpha) * exp(XbetapredDCi))) &
         !* (frail**recj) &
         * ((survL**(frail * exp(XbetapredRi))-survU**(frail * exp(XbetapredRi)))/survLT**(frail * exp(XbetapredRi))) & !!
-        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))))
+        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))))
     endif
 
     return
@@ -594,19 +594,19 @@
     double precision::XbetapredRi,XbetapredDCi
     double precision,dimension(2)::survDC
     double precision::survLT,survL,survU!!
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     if ((survL.eq.1.d0).or.(survU.eq.1.d0)) then
         func2pred2ic = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi))) &
         !* (frail**recj) &
         !* ((survL**(frail * exp(XbetapredRi))-survU**(frail * exp(XbetapredRi)))
         /(survLT**(frail * exp(XbetapredRi))) & !!
-        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))))
+        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))))
     else
         func2pred2ic = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi))) &
         !* (frail**recj) &
         * ((survL**(frail * exp(XbetapredRi))-survU**(frail * exp(XbetapredRi)))/survLT**(frail * exp(XbetapredRi))) & !!
-        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))))
+        * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))))
     endif
 
     return
@@ -623,11 +623,11 @@
     double precision,intent(in)::frail
     double precision::XbetapredDCi
     double precision,dimension(2)::survDC
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     func1pred3 = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi)) &
     - survDC(2)**((frail**palpha) * exp(XbetapredDCi))) &
-    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))) )
+    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))) )
 
     return
 
@@ -640,10 +640,10 @@
     double precision,intent(in)::frail
     double precision::XbetapredDCi
     double precision,dimension(2)::survDC
-    double precision::ptheta,palpha,gammaJ
+    double precision::ptheta,palpha,logGammaJ
 
     func2pred3 = ((survDC(1)**((frail**palpha) * exp(XbetapredDCi))) &
-    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))))
+    * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))))
 
     return
 
@@ -662,7 +662,7 @@
       double precision::XbetapredRi,XbetapredDCi
       double precision,dimension(2)::survDC
       double precision,dimension(nrec0+2)::survRi
-      double precision::ptheta,palpha,gammaJ
+      double precision::ptheta,palpha,logGammaJ
 
       func1pred1_rec = ((survRi(1)**(frail* exp(XbetapredRi)) &
       - survRi(nrec0+2)**(frail* exp(XbetapredRi))) &
@@ -670,7 +670,7 @@
       * (frail**recj) &
       * (survRi(recj+1)**(frail * exp(XbetapredRi))) &
       * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta)) / &
-      (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta))))
+      (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta))))
       return
 
       end function func1pred1_rec
@@ -684,14 +684,14 @@
       double precision::XbetapredRi,XbetapredDCi
       double precision,dimension(2)::survDC
       double precision,dimension(nrec0+2)::survRi
-      double precision::ptheta,palpha,gammaJ
+      double precision::ptheta,palpha,logGammaJ
 
       func2pred1_rec = (survRi(1)**(frail* exp(XbetapredRi)) &
       * (survDC(1)**((frail**palpha) * exp(XbetapredDCi))) &
       * (frail**recj) &
       * (survRi(recj+1)**(frail * exp(XbetapredRi))) &
       * (frail**(1.d0/ptheta -1.d0) * exp(-frail/ptheta))/ &
-      (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta)))) 
+      (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta)))) 
 
       return
     

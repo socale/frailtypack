@@ -367,7 +367,7 @@
     
     mt <- attr(m, "terms")
     X <- if (!is.empty.model(mt)) 
-      model.matrix(mt, m, contrasts)
+      model.matrix(mt, m)
     
     
     strats <- attr(Terms, "specials")$strata

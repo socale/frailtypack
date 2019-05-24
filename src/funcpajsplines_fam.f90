@@ -42,7 +42,7 @@
     double precision,dimension(0:ndatemax,nstRec)::ut1T
     double precision,dimension(0:ndatemaxdc)::ut2
     double precision::int
-    !deleted unused gammaJ argument %myriam
+    !deleted unused logGammaJ argument %myriam
         
     kkapa=k0
     choix=0
@@ -329,7 +329,7 @@
 
             endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-!                 print*,"here",k,res2(k),res2dc(k),gammaJ(1./theta),dlog(theta),dlog(integrale3(k))
+!                 print*,"here",k,res2(k),res2dc(k),logGammaJ(1./theta),dlog(theta),dlog(integrale3(k))
                 funcpajsplines_fam=-1.d9
                 goto 123
             end if

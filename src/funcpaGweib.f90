@@ -14,7 +14,7 @@
 
     integer::nb,np,id,jd,i,j,k,cptg,l,ig,choix
     integer,dimension(ngmax)::cpt
-    double precision::thi,thj,dnb,sum,inv,res,int,gammaJ
+    double precision::thi,thj,dnb,sum,inv,res,int,logGammaJ
     double precision,dimension(ngmax)::res2,res1dc,res2dc,res3dc
     double precision,dimension(np)::b,bh
     double precision,dimension(2)::k0
@@ -293,7 +293,7 @@
             sum=0.d0
             if(cpt(k).gt.0)then
                 res= res + res2(k)+ res2dc(k) &
-                - gammaJ(1.d0/theta)-dlog(theta)/theta  &
+                - logGammaJ(1.d0/theta)-dlog(theta)/theta  &
                 + dlog(integrale3(k))
 
                 if ((res.ne.res).or.(abs(res).ge. 1.d30)) then

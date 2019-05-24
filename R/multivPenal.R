@@ -546,7 +546,7 @@
     Y <- model.extract(m.formula, "response") 
     if (!inherits(Y, "Surv"))stop("Response must be a survival object") 	
     ll <- attr(Terms, "term.labels")	
-    X <- if (!is.empty.model(attr(m.formula,"terms")))model.matrix(attr(m.formula,"terms"),m.formula,contrasts) 
+    X <- if (!is.empty.model(attr(m.formula,"terms")))model.matrix(attr(m.formula,"terms"),m.formula) 
     
     ind.place <- attr(X,"assign")[duplicated(attr(X,"assign"))]
     

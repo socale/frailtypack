@@ -37,7 +37,7 @@
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
     double precision,dimension(:),allocatable::frail
-    double precision::int,gammaJ,c3,c4,pourgam
+    double precision::int,logGammaJ,c3,c4,pourgam
     double precision,dimension(ntrials)::integrale3
 
 !    !print*,'debut funcpa'
@@ -476,11 +476,11 @@
         do k=1,ntrials!ng  
             if(cpt(k).gt.0)then
                 if(theta2.gt.(1.d-8)) then  
-                    pourgam=nsujeti(k)*(gammaJ(1./theta)+(1./theta)*dlog(theta)) 
+                    pourgam=nsujeti(k)*(logGammaJ(1./theta)+(1./theta)*dlog(theta)) 
                     res= res + res2s(k)+ res2_dcs(k)-pourgam &
                     + integrale3(k)
                 else
-                    pourgam=nsujeti(k)*(gammaJ(1./theta)+(1./theta)*dlog(theta)) 
+                    pourgam=nsujeti(k)*(logGammaJ(1./theta)+(1./theta)*dlog(theta)) 
                     res= res + res2s(k)+ res2_dcs(k)-pourgam &
                     + integrale3(k)
                 endif
@@ -490,7 +490,7 @@
                     goto 123
                 end if    
             endif
-            !!print*,nsujeti(k),(gammaJ(1./theta)+(1./theta)*dlog(theta))
+            !!print*,nsujeti(k),(logGammaJ(1./theta)+(1./theta)*dlog(theta))
             !!print*,'res',res,'dlog(integrale3(k))', dlog(integrale3(k))     
         end do
 
