@@ -5,7 +5,7 @@ Title: General Frailty Models: Shared, Joint and Nested Frailty Models
         with Prediction; Evaluation of Failure-Time Surrogate Endpoints
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
-        Agnieszka Krol and Casimir L. Sofeu
+        Agnieszka Krol, Casimir L. Sofeu and Julien Dumerc.
 Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
 Depends: R (>= 2.10), survival, boot, MASS, survC1, doBy
 Imports: statmod, nlme
