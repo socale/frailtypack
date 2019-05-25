@@ -4303,8 +4303,10 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
 
 if(boxcoxlambda(1).gt.100) then
         current_meanG = cmY*Bcurrentvalue
-else
+else if(boxcoxlambda(1).gt.0) then
         current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)/10
+else if(boxcoxlambda(1).lt.0) then
+current_meanG = dexp(current_meanG)/10
 end if
 
         
@@ -4328,7 +4330,7 @@ end if
             else
                 current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
             end if
-else
+else  if(boxcoxlambda(1).gt.0) then
             if(nea.gt.1) then
 cmGtemp =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
                                             +dot_product(z1curG(1,1:nb1),frail(1:nb1))
@@ -4337,6 +4339,16 @@ current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
 cmGtemp = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
    current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
             end if
+else if(boxcoxlambda(1).lt.0) then
+                  if(nea.gt.1) then
+cmGtemp =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
+                                            +dot_product(z1curG(1,1:nb1),frail(1:nb1))
+current_meanG = dexp(cmGtemp)/10
+            else
+cmGtemp = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
+   current_meanG = dexp(cmGtemp)/10
+            end if      
+            
 end if
 
                     end if
@@ -4838,9 +4850,11 @@ end if
      
 if(boxcoxlambda(1).gt.100) then
         current_meanG = cmY*Bcurrentvalue
-else 
+else if(boxcoxlambda(1).gt.0) then
         current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)/10
-end if
+else if(boxcoxlambda(1).lt.0) then
+        current_meanG = dexp(cmY)/10
+        end if
  else if(TwoPart.eq.0) then
  
  if(nb1.eq.2) then
@@ -4858,10 +4872,12 @@ end if
  
  if(boxcoxlambda(1).gt.100) then
 current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
-else
+else if(boxcoxlambda(1).gt.0) then
 cmGtemp=MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
         current_meanG =((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
-
+else if(boxcoxlambda(1).lt.0) then
+cmGtemp=MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
+        current_meanG =dexp(cmGtemp)/10
 end if
 
                     end if    
@@ -5139,7 +5155,7 @@ end if
     function f1(t) result(res)
        double precision, intent(in) :: t !input
        double precision :: res! output
-       res = dexp(-3.5d0*t)
+       res = dexp(-2.5d0*t)
     end function f1
 
 !f2
