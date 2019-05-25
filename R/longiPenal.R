@@ -378,12 +378,12 @@
 }
     
     #### Link function specification ####
-    if(!(link %in% c("Random-effects","Current-level"))){
+    if(!(link %in% c("Random-effects","Current-level","Two-part"))){
     stop("Only 'Random-effects' or 'Current-level' link function can be specified in link argument.")
     }
     
     ### Time variable
-    if(link=="Current-level" & FALSE %in% timevar){
+    if(link %in% c("Current-level","Two-part") & FALSE %in% timevar){
       stop("You must indicate the time variable in 'timevar' argument in order to use the current-level association")
     }
     
@@ -1403,7 +1403,8 @@ if(TwoPart) max_repB <- max(table(clusterB))
     
     if(link=="Random-effects") link0 <- 1
     if(link=="Current-level") link0 <- 2
-        
+       if(link=="Two-part") link0 <- 3
+     
     if(TwoPart){
       nREY <- length(random)
       nREB <- length(random.Binary)
@@ -1448,7 +1449,8 @@ if(TwoPart) max_repB <- max(table(clusterB))
     if(link0==1)netadc <- ncol(matzy)
     if(link0==1)if(TwoPart) netadc <- netadc+ncol(matzB) #add TwoPart
     if(link0==2)netadc <- 1
-    
+    if(link0==3)netadc <- 2
+
     
     #== Left-censoring ==
     cag <- c(0,0)
@@ -1831,7 +1833,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
     size2 <- mt1
     
 
-if(link0==2){
+if(link0 %in% c(2,3)){
 # Current-level association structure:
 # we need to evaluate the biomarker value at multiple time-points to approximate the cumulative hazard
 # time-interactions are particularly tricky to handle (especially in case of non-linear time trend)

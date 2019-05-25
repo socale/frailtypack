@@ -190,7 +190,7 @@
             
                 
     ! add for current-level interaction with time
-    if(link0(1).eq.2) then
+    if(link0(1).ge.2) then
     if(positionVarTime(1).lt.400) then
     allocate(positionVarT((numInterac(1)+numInterac(2))*4))
     positionVarT = positionVarTime
@@ -1744,7 +1744,7 @@ end if
         if (typeof .ne. 0)deallocate(vvv) !,t1dc,kkapa)
         deallocate(etaydc,etayr,b_lme,invBi_chol,invBi_cholDet)
     deallocate(chol) !Monte-carlo
-    if(link.eq.2) then
+    if(link.ge.2) then
     if(positionVarTime(1).lt.400) deallocate(positionVarT)
 end if
         return
@@ -4659,7 +4659,7 @@ else if(nb1.eq.5) then
                 auxG(i)=ut2cur*vet2!*dexp(etaydc1*frail)
             end if
         !end if
-        else !********** Current Mean ****************
+        else if(link.ge.2) then !********** Current Mean ****************
         counter=0
         counter2=1
       if(nb1.eq.1) then
@@ -4885,6 +4885,8 @@ end if
     
         end if
     
+
+
         yscalar = 0.d0
         !********* Left-censoring ***********
             prod_cag = 1.d0
@@ -4955,13 +4957,20 @@ end if
                         -auxG(i)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
                         + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
-        else
+        else if(link.eq.2) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
+        else if(link.eq.3) then
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+                        -uiiui(1)/2.d0-0.5d0*dlog(det)&
+                        -dlog(2.d0*pi)&
+                        +Bscalar& ! add TwoPart
+                        -auxG(i)&
+                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
         end if
         else 
         if(link.eq.1) then
@@ -4971,12 +4980,18 @@ end if
                      +Bscalar& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
-        else
+        else if(link.eq.2) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
+        else if(link.eq.3) then
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+                        -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
+                        +Bscalar& ! add TwoPart
+                        -auxG(i)&
+                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
         end if
         end if
         else ! Monte-carlo
@@ -4992,8 +5007,6 @@ end if
                     !- dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
                         + cdc(i)*etaydc(1)*current_meanG(1)
-    
-        
         end if
         else if(nb1.eq.2) then
         if(link.eq.1) then
@@ -5004,13 +5017,20 @@ end if
                         -auxG(i)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
                         + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
-        else
+        else if(link.eq.2) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         !-uiiui(1)/2.d0-0.5d0*dlog(det)&
                         !-dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
+        else if(link.eq.3) then
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+                        !-uiiui(1)/2.d0-0.5d0*dlog(det)&
+                        !-dlog(2.d0*pi)&
+                        +Bscalar& ! add TwoPart
+                        -auxG(i)&
+                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
         end if
         else if(nb1.gt.2) then
         if(link.eq.1) then
@@ -5018,11 +5038,16 @@ end if
                      +Bscalar& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
-        else
+        else if(link.eq.2) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
+        else if(link.eq.3) then
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+                        +Bscalar& ! add TwoPart
+                        -auxG(i)&
+                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
         end if
         end if
         end if
@@ -5155,7 +5180,7 @@ end if
     function f1(t) result(res)
        double precision, intent(in) :: t !input
        double precision :: res! output
-       res = dexp(-2.5d0*t)
+       res = dexp(-3.5d0*t)
     end function f1
 
 !f2
