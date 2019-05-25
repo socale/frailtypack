@@ -4386,8 +4386,22 @@ end if
     
             if(res_ind.eq.1) bbb = Rdc_res(i)
     
+    if(link.eq.2) then
             survdcCM =bbb*vet2*dexp(etaydc(1)*current_meanG(1))!+cdc(i)*etaydc1*current_meanG(1)  
-
+else if(link.eq.3) then
+            survdcCM =bbb*vet2*dexp(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))!+cdc(i)*etaydc1*current_meanG(1) 
+            end if
+            
+          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+         write(2,*)'etaydc(1)',etaydc(1)
+         write(2,*)'cmY(1)',cmY(1)
+          write(2,*)'etaydc(2)',etaydc(2)
+           write(2,*)'Bcurrentvalue(1)',Bcurrentvalue(1)
+!           write(2,*)'ss',ss
+!            write(2,*)'nsimu',nsimu
+!            write(2,*)'ss',ss
+     close(2)
+    stop            
         return
     
         end function survdcCM
@@ -5052,7 +5066,6 @@ end if
         end if
         end if
         
-    
     funcG = dexp(funcG)
 !open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
  !        write(2,*)'ping'
@@ -5160,15 +5173,7 @@ end if
                   
     end select
     ss=ss/dble(nsimu) 
-!          open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
-!         write(2,*)' intpoints(l,1)', intpoints(:,1)
-!         write(2,*)'intpoints(l,2)',intpoints(:,2)
-!          write(2,*)'intpoints(l,3)',intpoints(:,3)
-!           write(2,*)'intpoints(l,4)',intpoints(:,4)
-!           write(2,*)'ss',ss
-!            write(2,*)'nsimu',nsimu
-!            write(2,*)'ss',ss
-!     close(2)
+
     return 
   end subroutine MC_JointModels
   
