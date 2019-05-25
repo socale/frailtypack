@@ -315,7 +315,11 @@
      # tab.Asso[which,4]<-"<1e-16"
      # tab.Asso <- round(tab.Asso,digits)
      # tab.Asso[which(tab.Asso[,4]==0),4]<-noquote("<1e-16")
-      dimnames(tab.Asso) <- list("Current level",c("coef",  "SE", "z", "p"))
+if(x$link=='Current-level'){
+     dimnames(tab.Asso) <- list("Current level",c("coef",  "SE", "z", "p"))
+     }else if (x$link=="Two-part"){
+     dimnames(tab.Asso) <- list(c("Binary part", "Continuous part"),c("coef",  "SE", "z", "p"))
+     }
       prmatrix(tab.Asso,quote=FALSE,right=TRUE)
     }
 

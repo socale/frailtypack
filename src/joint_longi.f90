@@ -4389,7 +4389,7 @@ end if
     if(link.eq.2) then
             survdcCM =bbb*vet2*dexp(etaydc(1)*current_meanG(1))!+cdc(i)*etaydc1*current_meanG(1)  
 else if(link.eq.3) then
-            survdcCM =bbb*vet2*dexp(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))!+cdc(i)*etaydc1*current_meanG(1) 
+            survdcCM =bbb*vet2*dexp(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))!+cdc(i)*etaydc1*current_meanG(1) 
             end if
                
         return
@@ -4974,7 +4974,7 @@ end if
                         -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
-                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
+                        + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
         else 
         if(link.eq.1) then
@@ -4995,7 +4995,7 @@ end if
                         -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
-                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
+                        + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
         end if
         else ! Monte-carlo
@@ -5034,7 +5034,7 @@ end if
                         !-dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
-                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
+                        + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
         else if(nb1.gt.2) then
         if(link.eq.1) then
@@ -5051,7 +5051,7 @@ end if
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
-                        + cdc(i)*(etaydc(1)*cmY(1)+etaydc(2)*Bcurrentvalue(1))
+                        + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
         end if
         end if
