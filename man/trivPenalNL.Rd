@@ -360,7 +360,7 @@ includes the effect of the natural net growth and the treatment effect:
 
 \deqn{\left\{ \begin{array}{ll}
 \frac{dy_{i}(t)}{dt}&=\exp(K_{G,0}+b_{G,i}+\bold{X}_{G,i}(t)^\top\bold{\beta}_G)y_{i}(t)\\
-&-d_i\exp(K_{D,0}+b_{D,i}-t\times\exp(\lambda+b_{\lambda,i})+\bold{X}_{D,i}(t)^\top\bold{\beta}_D)\\
+&-d_i\exp(K_{D,0}+b_{D,i}-t\times\exp(\lambda+b_{\lambda,i})+\bold{X}_{D,i}(t)^\top\bold{\beta}_D)y_{i}(t)\\
 y_{i}(0)&=\exp(y_0+b_{y_0,i}) \\ \end{array}, \right. }
 
 The model includes the following parameters (using the interpretation of
