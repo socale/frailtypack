@@ -1,4 +1,5 @@
 library(frailtypack)
+library(epiDisplay)
 
 # test de la fonction de generation des donnees avec les copules
 n.sim = 1
@@ -33,19 +34,55 @@ result <- frailtypack:::param.empirique(nsim = n.sim, cens.adm = cens, ver = 1,
 result                                        
 
 # estimation
-
 joint.simul4 <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul=n.obs, ntrialSimul=n.trial, 
-              int.method = 0, nb.mc = nb.mc,
-              #nb.gh = 5, nb.gh2 = 9, adaptatif = 1, nb.iterPGH = 0,
-              n.knots =  n.knots, kappa.use = kappa.use, type.joint.estim = type.joint.estim,print.iter = print.iter,
-              type.joint.simul = type.joint.simul, time.cens = cens, 
-              lambdas = lambdas, nus = nus, lambdat = lambdat, nut = nut, 
-              seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
-              filter.true = 1, betas.init = c(-0.25), betat.init = c(-0.25), 
-              init.kappa = NULL, maxit = maxit, true.init.val = true.init.val, theta.copula = theta.copula,
-              thetacopula.init = 3, R2 = R2, typecopula = typecopula, ckappa = c(0,0), gamma.ui = 0.8
-              )                                               
+                                                  int.method = 0, nb.mc = nb.mc,
+                                                  #nb.gh = 5, nb.gh2 = 9, adaptatif = 1, nb.iterPGH = 0,
+                                                  n.knots =  n.knots, kappa.use = kappa.use, type.joint.estim = type.joint.estim,print.iter = print.iter,
+                                                  type.joint.simul = type.joint.simul, time.cens = cens, 
+                                                  lambdas = lambdas, nus = nus, lambdat = lambdat, nut = nut, 
+                                                  seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
+                                                  filter.true = 1, betas.init = c(-0.25), betat.init = c(-0.25), 
+                                                  init.kappa = NULL, maxit = maxit, true.init.val = true.init.val, theta.copula = theta.copula,
+                                                  thetacopula.init = 3, R2 = R2, typecopula = typecopula, ckappa = c(0,0), gamma.ui = 0.8
+)                                               
 
+#proportion de sujets variable
+library(frailtypack)
+data(dataOvarian)
+prop = epiDisplay::tab1(dataOvarian$trialID,graph = F)$output.table[-51,2]
+nsim=1
+nsubjet=1000
+ntrial=50
+int.method=0
+nb.mc=1000
+nb.gh=20
+nb.gh2=32
+adaptatif=0
+nspline=6
+kappa.use=0
+type.joint.estim=3
+type.joint.simul=3
+time.cens=349
+theta.copula=3
+true.init.val=1
+typecopula=1
+ckappa1=0
+ckappa2=0
+R2=0.81
+maxit=35
+nb.reject.data = 0
+
+joint.simul2 <- frailtypack::jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul=nsubjet, ntrialSimul = ntrial,
+                int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif,
+                n.knots = nspline, kappa.use = kappa.use, type.joint.estim = type.joint.estim, print.iter = F,
+                type.joint.simul = type.joint.simul, time.cens = time.cens, lambdas = 1.3, nus = 0.0025, 
+                lambdat = 1.1, nut = 0.0025, seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
+                filter.true = 1, betas.init = c(-0.25), betat.init = c(-0.25), init.kappa = NULL, maxit = maxit, 
+                true.init.val = true.init.val, theta.copula = theta.copula, thetacopula.init = 3, R2 = R2, 
+                typecopula = typecopula, ckappa = c(ckappa1, ckappa2), gamma.ui = 0.8, 
+                nb.reject.data = nb.reject.data, equi.subj.trial = 0, prop.subj.trial = prop)
+
+                                                  
 
 
 # resultsw
