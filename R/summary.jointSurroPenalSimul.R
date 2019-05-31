@@ -115,5 +115,5 @@
       print(resultSimul[-nrow(resultSimul),])
       cat(c("Rejected datasets : n(%) = ",resultSimul[nrow(resultSimul),3]), "\n")
     }
-    return(resultSimul)
+    if(printResult == 0) return(resultSimul)
   }

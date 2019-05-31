@@ -1,10 +1,10 @@
 library(frailtypack)
 
 # test de la fonction de generation des donnees avec les copules
-n.sim = 2
+n.sim = 1
 cens = 349 # DOIT ETRE FIXE EXTREMEMENT GRAND POUR TESTER LE TAU DE KENDALL
-n.obs = 600
-n.trial = 30
+n.obs = 100
+n.trial = 10
 lambdas = 1.3
 lambdat = 1.1
 nus = 0.0025
@@ -18,8 +18,8 @@ theta.copula = 3
 typecopula = 1
 type.joint.estim = 3
 type.joint.simul = 3
-kappa.use = 0
-maxit = 35
+kappa.use = 1
+maxit = 3
 equi.subj.trial = 1
 prop.subj.trial = NULL
 print.iter = T
@@ -35,15 +35,16 @@ result
 # estimation
 
 joint.simul4 <- frailtypack::jointSurroPenalSimul(nb.dataset = n.sim, nbSubSimul=n.obs, ntrialSimul=n.trial, 
-              int.method = 0, nb.mc = nb.mc, maxit = maxit, R2 = R2,
+              int.method = 0, nb.mc = nb.mc,
               #nb.gh = 5, nb.gh2 = 9, adaptatif = 1, nb.iterPGH = 0,
-              print.iter = print.iter, kappa.use = kappa.use, type.joint.estim = type.joint.estim,
-              type.joint.simul = type.joint.simul, time.cens = cens, n.knots =  n.knots,
+              n.knots =  n.knots, kappa.use = kappa.use, type.joint.estim = type.joint.estim,print.iter = print.iter,
+              type.joint.simul = type.joint.simul, time.cens = cens, 
               lambdas = lambdas, nus = nus, lambdat = lambdat, nut = nut, 
               seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1,
-              betas.init = c(0.25), betat.init = c(0.25), filter.true = 1,
-              init.kappa = NULL, ckappa = c(0,0), true.init.val = true.init.val, 
-              typecopula = typecopula, theta.copula = theta.copula)#, LIMparam = 2.0, LIMlogl = 1.01, LIMderiv = 1.000)                                                  
+              filter.true = 1, betas.init = c(-0.25), betat.init = c(-0.25), 
+              init.kappa = NULL, maxit = maxit, true.init.val = true.init.val, theta.copula = theta.copula,
+              thetacopula.init = 3, R2 = R2, typecopula = typecopula, ckappa = c(0,0), gamma.ui = 0.8
+              )                                               
 
 
 
@@ -52,8 +53,11 @@ summary(joint.simul4, d = 5)
 
 # resultat issu des paquets de simulation :
     # mes .RData sont places dans le dossier indique par wd
-joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = 2, envir.name = "joint.simul2_", envir.num.base = 500,
-                  wd = "G:/socale/PHD-Thesis/programmes/Creation_Package/package_CRAN/Version_github/frailtypack/EspacePaquetsSimul")
+num.paquet = 49
+nb.packet = 10
+wd = paste("G:/socale/PHD-Thesis/programmes/Creation_Package/package_CRAN/Version_github/frailtypack/EspacePaquetsSimul/CopulaSimul",num.paquet,sep="")
+joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = nb.packet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
+                  wd = wd)
 summary(joint.simul, printResult = 1)
 
 # pour l'introduction dans l'article, je recupere plutot le dataframe
