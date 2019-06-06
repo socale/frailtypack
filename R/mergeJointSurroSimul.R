@@ -23,7 +23,10 @@ mergeJointSurroSimul = function(nb.packet = 2, envir.name = "joint.simul2_", env
   for(i in 2:(nb.packet)){
     filename <- paste(envir.name, envir.num.base, i , ".RData", sep = "")
     loadwd = try(load(filename),silent=TRUE)
-    if(!(class(loadwd)=="try-error")){
+    if(class(loadwd)=="try-error"){
+      cat(paste("packet",i,"is missing", sep = " "), fill = T)
+    }
+    else{
       joint.simul$dataParamEstim <- rbind(joint.simul$dataParamEstim, joint.simul2$dataParamEstim)
       joint.simul$dataTkendall <- rbind(joint.simul$dataTkendall, joint.simul2$dataTkendall)
       joint.simul$dataR2boot <- rbind(joint.simul$dataR2boot, joint.simul2$dataR2boot)
