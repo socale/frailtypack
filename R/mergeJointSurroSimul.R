@@ -8,11 +8,13 @@
 # un repertioire de travail dont le nom sera par la suite fourni dans l'argument wd de la fonction
 
 mergeJointSurroSimul = function(nb.packet = 2, envir.name = "joint.simul2_", envir.num.base = 500,
-                           wd = "G:/socale/PHD-Thesis/programmes/Creation_Package/package_CRAN/Version_github/frailtypack/EspacePaquetsSimul"){
+                           wd = "G:/socale/PHD-Thesis/programmes/Creation_Package/package_CRAN/Version_github/frailtypack/EspacePaquetsSimul",
+                           reject = NULL){
   # nb.packet = number of packets of simulation, correspond to the number of .RData files
   # envir.name = the main part of the .RData names
   # envir.num.base = the reference number of the packets
   # wd = the work directory that contains the .RData files
+  # reject =  contien une liste des numeros de paquet a ne pas prendre en compte dans la fusion, peut etre pour cause de problement de convergence et de disponibilite
   
   setwd(wd)
   filename <- paste(envir.name, envir.num.base,1, ".RData", sep = "")
@@ -20,13 +22,15 @@ mergeJointSurroSimul = function(nb.packet = 2, envir.name = "joint.simul2_", env
   joint.simul <- joint.simul2
   joint.simul2 <- NULL
   for(i in 2:(nb.packet)){
-    filename <- paste(envir.name, envir.num.base, i , ".RData", sep = "")
-    load(filename)
-    joint.simul$dataParamEstim <- rbind(joint.simul$dataParamEstim, joint.simul2$dataParamEstim)
-    joint.simul$dataTkendall <- rbind(joint.simul$dataTkendall, joint.simul2$dataTkendall)
-    joint.simul$dataR2boot <- rbind(joint.simul$dataR2boot, joint.simul2$dataR2boot)
-    joint.simul$nb.simul <- joint.simul$nb.simul + joint.simul2$nb.simul
-    joint.simul2 <- NULL
+    if(! (i %in% reject)){
+      filename <- paste(envir.name, envir.num.base, i , ".RData", sep = "")
+      load(filename)
+      joint.simul$dataParamEstim <- rbind(joint.simul$dataParamEstim, joint.simul2$dataParamEstim)
+      joint.simul$dataTkendall <- rbind(joint.simul$dataTkendall, joint.simul2$dataTkendall)
+      joint.simul$dataR2boot <- rbind(joint.simul$dataR2boot, joint.simul2$dataR2boot)
+      joint.simul$nb.simul <- joint.simul$nb.simul + joint.simul2$nb.simul
+      joint.simul2 <- NULL
+    }
   }
   return(joint.simul)
 }
