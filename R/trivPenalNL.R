@@ -500,7 +500,6 @@
     m2$formula <- m2$formula.terminalEvent <- m2$formula.LongitudinalData <- m2$formula.KG <- m2$formula.KD <- m2$biomarker <- m2$dose <- m2$data.Longi <- m2$recurrentAG <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <-  m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$init.Alpha <- m2$method.GH <- m2$n.nodes <- m2$time.biomarker <- m2$init.GH <- m2$BoxCox <-  m2$init.Biomarker <- NULL
     Names.data.Terminal <- m2$data
     
-    
     #### Frailty distribution specification ####
     if (!(all(random %in% c("y0","KG","KD","lambda")))) { stop("Random effects can be only related to variables from the longitudinal data or the intercept (1)") }
     if (!(id %in% c(names(data.Longi))) || !(id %in% c(1,names(data)))) { stop("Identification for individuals can be only related to variables from both data set") }
@@ -2063,7 +2062,6 @@
         X_T <- X_T[, -1, drop = FALSE]
         noVarT <- 0
       }
-      
       nvarT <- ncol(X_T)
       
       vartimedepT <- attr(TermsT, "specials")$timedep #nbre de var en fonction de timedep()
@@ -2085,7 +2083,7 @@
       
       #filtretpsT <- rep(0,nvarT)
       #filtretpsT[grep("timedep",colnames(X_T))] <- 1
-      X_T <- X_T[order(data[,id]),]
+      if(sum(X_T!=0)) X_T <- X_T[order(data[,id]),]
       varT.temp<-matrix(c(X_T),nrow=nrow(X_T),ncol=nvarT)
       
       
