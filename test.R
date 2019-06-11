@@ -90,8 +90,8 @@ summary(joint.simul4, d = 5)
 
 # resultat issu des paquets de simulation :
     # mes .RData sont places dans le dossier indique par wd
-num.paquet = 57
-nb.packet = 50
+num.paquet = 59
+nb.packet = 47
 wd = paste("G:/socale/PHD-Thesis/programmes/Creation_Package/package_CRAN/Version_github/frailtypack/EspacePaquetsSimul/CopulaSimul",num.paquet,sep="")
 joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = nb.packet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
                   wd = wd)
