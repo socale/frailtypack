@@ -2680,11 +2680,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     ! gamma_st_2(1,1)= matrice_generation(1,rangparam_gamma)**2.d0  ! gamma simule
                     
                     if(nsim_node(8).ne.3) then 
-						call rmvnorm(t_chap_kendall,v_chap_kendall,1,1,theta_chap_kendall)
+						call rmvnorm(t_chap_kendall,v_chap_kendall,1,0,theta_chap_kendall)
 						theta_ST_2(1,1)= theta_chap_kendall(1,1)**2.d0 !theta simule
 						gamma_st_2(1,1)= theta_chap_kendall(1,2)**2.d0  ! gamma simule
 					else
-						call rmvnorm((/b(rangparam_copula)/),v_chap_copula,1,1,theta_chap_copula)
+						call rmvnorm((/b(rangparam_copula)/),v_chap_copula,1,0,theta_chap_copula)
 					endif
                     
                     if(indice_alpha==0 .and. indice_eta==0)then
@@ -2740,7 +2740,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     moy_tau_boots=moy_tau_boots+vect_kendall_tau(i)        
                     !R2
 					!call dblepr("Avant ", -1, v_chap_R2, size(v_chap_R2,2)**2)
-                    call rmvnorm(t_chap_R2,v_chap_R2,1,1,theta_chap_R2)
+                    call rmvnorm(t_chap_R2,v_chap_R2,1,0,theta_chap_R2)
                     Chol_R2=0.d0 
                     Chol_R2(1,1)=theta_chap_R2(1,1) ! associe a sigma S
                     Chol_R2(2,2)=theta_chap_R2(1,2) ! associe a sigma T
