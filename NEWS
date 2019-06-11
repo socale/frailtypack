@@ -9,9 +9,6 @@ o New model added: Joint frailty-copula models for the validation of surrogate e
 
 o Rename of the argument "rsqrt" in the jointSurrSimul() function by "cor".
 
-o Bugg fixd in the Fortran subroutine "jointSurrogate" in the calculation of R2_trial and Kendall_tau using the parametric bootstrap. The argument "vcdiag" for the subroutine "rmvnorm" is fixed to 1 instead of 0 when data are generated following the multivariate normal distribution.
-
-
 Changes in Version 3.0.3.1 march 2019
 o Bug fixed in subroutines Fortran for the computation of integrals using the Pseudo-adaptive Gaussian Hermite quadrature. Due to incorrect assignment of memory (variable V_i and V in the subroutines funcpajsplines_surrogate, funcpafrailtyPred_Essai and MC_Gauss_MultInd_Essai), the program encountered in the previous version a fatal error with Windows OS. However, this problem did not impact model estimates based on other OS.
 
