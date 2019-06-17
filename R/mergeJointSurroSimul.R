@@ -20,7 +20,7 @@ mergeJointSurroSimul = function(nb.packet = 2, envir.name = "joint.simul2_", env
   load(filename)
   joint.simul <- joint.simul2
   joint.simul2 <- NULL
-  if(i>1){
+  if(nb.packet>1){
     for(i in 2:(nb.packet)){
       filename <- paste(envir.name, envir.num.base, i , ".RData", sep = "")
       loadwd = try(load(filename),silent=TRUE)
