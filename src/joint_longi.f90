@@ -365,7 +365,7 @@
         allocate(nmesrec(ng),nmesrec1(ng),nmesy(ng),nmes_o(ng))
         allocate(groupee(nsujet),groupeey(nsujety))
         nmesrec =1
-        nmesy = 0
+        nmesy = 1
         nmes_o = 0
         groupeey = groupey0
         groupee = groupe0
@@ -398,35 +398,25 @@
         i = 1
         do j=2,nsujety
         if(groupeey(j-1).eq.i) then
-            if(nmesy(i).eq.0) then
-                nmesy(i)=1
-            end if
             if(groupeey(j).eq.groupeey(j-1))then
                 nmesy(i)=nmesy(i)+1
             else
                 i = i+1
             end if
             else
-            !nmesy(i)=0
+            nmesy(i)=0
             if(groupeey(j).eq.groupeey(j-1))then
             nmesy(i+1)=2
             end if
             i=i+1
             end if
-if(groupeey(j).eq.i) then
-    if(nmesy(i).eq.0) then
-        nmesy(i)=1
-    end if
-end if
+      !              call intpr('j',-1,j,1)
+     !   call intpr('nsujety',-1,nsujety,1)
+     !   call intpr('groupeey(j-1)',-1,groupeey(j-1),1)
+     !   call intpr('groupeey(j)',-1,groupeey(j),1)
+     !   call intpr('nmesy(i)',-1,nmesy(i),1)
         end do
     
-    
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'nmesy', nmesy
-!       write(2,*)'groupeey', groupeey
-!       write(2,*)'nsujety', nsujety
-!close(2)
-!    stop
         maxmesy=0
     
         do i=1,ng
@@ -444,29 +434,21 @@ end if
         end do
     
     if(TwoPart.eq.1)then
-        !nmesB = 1
+        nmesB = 1
         i = 1
         do j=2,nsujetB
         if(groupeeB(j-1).eq.i) then
-            if(nmesB(i).eq.0) then
-                nmesB(i)=1
-            end if
             if(groupeeB(j).eq.groupeeB(j-1))then
                 nmesB(i)=nmesB(i)+1 ! number of observations per individual (length=ng)
             else
                 i = i+1
             end if
             else
-            !nmesB(i)=0
+            nmesB(i)=0
             if(groupeeB(j).eq.groupeeB(j-1))then
            nmesB(i+1)=2
            end if
             i=i+1
-            end if
-            if(groupeeB(j).eq.i) then
-                if(nmesB(i).eq.0) then
-                    nmesB(i)=1
-                end if
             end if
         end do
         maxmesB=0
