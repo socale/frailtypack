@@ -421,23 +421,24 @@
         end do
     
     if(TwoPart.eq.1)then
-        nmesB = 1
+        nmesB = 0
         i = 1
         do j=2,nsujetB
         if(groupeeB(j-1).eq.i) then
+            if(nmesB(i).eq.0) then
+                nmesB(i)=1
+            end if
+        end if
+        
             if(groupeeB(j).eq.groupeeB(j-1))then
-                nmesB(i)=nmesB(i)+1 ! number of observations per individual (length=ng)
+                nmesB(i)=nmesB(i)+1
             else
                 i = i+1
             end if
-            else
-            nmesB(i)=0
-            if(groupeeB(j).eq.groupeeB(j-1))then
-           nmesB(i+1)=2
-           end if
-            i=i+1
-            end if
         end do
+
+        
+        
         maxmesB=0
         do i=1,ng
             if (nmesB(i).gt.maxmesB) then
