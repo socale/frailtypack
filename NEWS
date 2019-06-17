@@ -1,4 +1,6 @@
 Changes in Version 3.0.4 march 2019
+o Added the possibility when summarizing the results of the simulation studies, to display the bias and the MSE for kendall Tau and R2 
+
 o Inclusion of the nb.reject.dataset argument in the jointSurroPenalSimul() R function to allow simulations to be performed by considering multiple data packets. 
 
 o Add of the argument printResult in the S3 method summary.jointSurroPenal.simul() to manage the display of the results after the summary. This function currently returns a dataframe of the simulations results
