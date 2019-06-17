@@ -11,8 +11,8 @@ simulationBiasMSE <- function(param.estim, R2 = 0.81, ktau = 0.378, nb.simul, de
   donnee <- param.estim[somme_row!=0,]
   
   
-  d <- data.frame(parametre = c("Ktau","R2_adj","R:n(%)"))
-  d$True <- c(ktau, R2, "")
+  d <- data.frame(parametre = c("R2_adj","Ktau","R:n(%)"))
+  d$True <- c(R2, ktau, "")
   d$Mean <- NA
   d$Biais <- NA
   d$MSE <- NA
@@ -28,18 +28,11 @@ simulationBiasMSE <- function(param.estim, R2 = 0.81, ktau = 0.378, nb.simul, de
                 
   #NA
   n_NA <- nb.simul - nrow(donnee)
-  cat(c("nb.simul", nb.simul) , "\n")
-  cat(c("nrow(donnee)", nrow(donnee)), "\n")
-  # affichage
-  #cat(c("Ktau",round(m_ktau,3),round(b_tau,3),round(mse_tau,3)),sep='&',fill=T)
-  #cat(c("R2_adj",round(m_r2_ad,3),round(b_r2_ad,3),round(mse_r2_ad,3)),sep='&',fill=T)
-  #cat(c("R:n(%)","",paste(n_NA,"(",round(100*n_NA/nrow(donnee)),")",sep=""),""),sep='&',fill=T)
-                
+          
   #sauvagarde dans d
-  d[1,3:5] <- c(round(m_ktau, dec),round(b_tau, dec),round(mse_tau, dec))
-  d[2,3:5] <- c(round(m_r2_ad, dec),round(b_r2_ad, dec),round(mse_r2_ad, dec))
-  #d[3,3:5] <- c(NA,paste(n_NA,"(",round(100*n_NA/nrow(donnee)),")",sep = ""),NA)
-  d[3,3:5] <- c("",paste(n_NA,"(",round(100*n_NA/nrow(donnee)),")",sep = ""),"")
+  d[1,3:5] <- c(round(m_r2_ad, dec),round(b_r2_ad, dec),round(mse_r2_ad, dec))
+  d[2,3:5] <- c(round(m_ktau, dec),round(b_tau, dec),round(mse_tau, dec))
+  d[3,3:5] <- c("",paste(n_NA,"(",round(100*n_NA/nb.simul),")",sep = ""),"")
 
   return(d)
 }
