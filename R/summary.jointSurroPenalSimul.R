@@ -6,13 +6,17 @@
 ##' 
 ##' 
 ##' @aliases summary.jointSurroPenalSimul print.summary.jointSurroPenalSimul
-##' @usage \method{summary}{jointSurroPenalSimul}(object, d = 3, R2boot = 0, printResult = 1,  ...)
+##' @usage \method{summary}{jointSurroPenalSimul}(object, d = 3, R2boot = 0, displayMSE = 0, printResult = 1,  ...)
 ##' 
 ##' @param object an object inheriting from \code{jointSurroPenalSimul} class.
 ##' @param d The desired number of digits after the decimal point f. Default of 3 
 ##' @param R2boot A binary that specifies whether the confidence interval of \eqn{R^2_{trial}} 
 ##' should be computed using parametric bootstrap (\code{1}) or Delta-method (\code{0}). 
 ##' The default is \code{0}
+##' @param displayMSE A binary that indicates if the results include bias and mean square errors (MSE), 
+##' case 1, or the standard errors with the coverage percentage, case 0. By default this argument 
+##' is set to 0. In case of 1 the results just include the individual level and the trial level 
+##' association measurements. 
 ##' @param printResult A binary that indicates if the summary of the results should be displayed \code{(1)}
 ##' or not \code{(0)}. If this argument is set to 0, resuls are just returned to the user
 ##' @param \dots other unused arguments.
@@ -54,7 +58,7 @@
 ##' 
 ##' 
 "summary.jointSurroPenalSimul"<-
-  function(object, d =3, R2boot = 0, printResult = 1,  ...){
+  function(object, d =3, R2boot = 0, displayMSE = 0, printResult = 1,  ...){
     
     ick=1 # on tien compte (1) ou non (0) du calcul de l'IC du tau de kendall
     n_bootstrap <- 1000 # mais pas utilise car tout le calcul sed fait dans la subroutine jointSurogate
@@ -90,30 +94,39 @@
       if(object$typecopula == 1) tau <- object$theta.copula/(object$theta.copula + 2)
       else tau <- object$theta.copula/(object$theta.copula + 1)
     }
-      
-    if(object$type.joint.simul==1){
-    resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
-                                                object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
-                                                object$theta2, object$zeta, object$gamma.ui, object$alpha.ui, 
-                                                object$sigma.s, object$sigma.t, object$sigma.st, object$betas,
-                                                object$betat, object$R2, tau, n_bootstrap, ick, R2parboot,
-                                                object$type.joint)
-    }else{
-      resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
-                                                   object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
-                                                   object$theta.copula, object$zeta, object$gamma.ui, object$alpha.ui, 
-                                                   object$sigma.s, object$sigma.t, object$sigma.st, object$betas,
-                                                   object$betat, object$R2, tau, n_bootstrap, ick, R2parboot,
-                                                   object$type.joint)
-    }
     
-    resultSimul[-nrow(resultSimul),1] <- substr(resultSimul[-nrow(resultSimul),1],1,nchar(resultSimul[-nrow(resultSimul),1])-6)
-    if(is.na(resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1] <- "-"
-    if(is.na(resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1] <- "-"
-    if(printResult == 1){
-      cat("Simulation results", "\n")
-      print(resultSimul[-nrow(resultSimul),])
-      cat(c("Rejected datasets : n(%) = ",resultSimul[nrow(resultSimul),3]), "\n")
+    if(displayMSE == 0){
+      if(object$type.joint.simul==1){
+      resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
+                                                  object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
+                                                  object$theta2, object$zeta, object$gamma.ui, object$alpha.ui, 
+                                                  object$sigma.s, object$sigma.t, object$sigma.st, object$betas,
+                                                  object$betat, object$R2, tau, n_bootstrap, ick, R2parboot,
+                                                  object$type.joint)
+      }else{
+        resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
+                                                     object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
+                                                     object$theta.copula, object$zeta, object$gamma.ui, object$alpha.ui, 
+                                                     object$sigma.s, object$sigma.t, object$sigma.st, object$betas,
+                                                     object$betat, object$R2, tau, n_bootstrap, ick, R2parboot,
+                                                     object$type.joint)
+      }
+      
+      resultSimul[-nrow(resultSimul),1] <- substr(resultSimul[-nrow(resultSimul),1],1,nchar(resultSimul[-nrow(resultSimul),1])-6)
+      if(is.na(resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-2,ncol(resultSimul)-1] <- "-"
+      if(is.na(resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1]))resultSimul[nrow(resultSimul)-1,ncol(resultSimul)-1] <- "-"
+      if(printResult == 1){
+        cat("Simulation results", "\n")
+        print(resultSimul[-nrow(resultSimul),])
+        cat(c("Rejected datasets : n(%) = ",resultSimul[nrow(resultSimul),3]), "\n")
+      }
+    }
+    else{
+      resultSimul <- simulationBiasMSE(param.estim = object$dataParamEstim, R2 = object$R2, ktau = round(tau,d), object$nb.simul, d)
+      if(printResult == 1){
+        cat("Simulation results", "\n")
+        print(resultSimul)
+      }
     }
     if(printResult == 0) return(resultSimul)
   }
