@@ -397,6 +397,7 @@
 
         i = 1
         do j=2,nsujety
+        if(i.ne.nsujety) then
         if(groupeey(j-1).eq.i) then
             if(groupeey(j).eq.groupeey(j-1))then
                 nmesy(i)=nmesy(i)+1
@@ -415,6 +416,7 @@
      !   call intpr('groupeey(j-1)',-1,groupeey(j-1),1)
      !   call intpr('groupeey(j)',-1,groupeey(j),1)
      !   call intpr('nmesy(i)',-1,nmesy(i),1)
+     end if
         end do
     
         maxmesy=0
@@ -437,6 +439,7 @@
         nmesB = 1
         i = 1
         do j=2,nsujetB
+        if(i.ne.nsujetB) then
         if(groupeeB(j-1).eq.i) then
             if(groupeeB(j).eq.groupeeB(j-1))then
                 nmesB(i)=nmesB(i)+1 ! number of observations per individual (length=ng)
@@ -449,6 +452,7 @@
            nmesB(i+1)=2
            end if
             i=i+1
+            end if
             end if
         end do
         maxmesB=0

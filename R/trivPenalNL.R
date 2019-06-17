@@ -2085,7 +2085,7 @@
       
       #filtretpsT <- rep(0,nvarT)
       #filtretpsT[grep("timedep",colnames(X_T))] <- 1
-      X_T <- X_T[order(data[,id]),]
+      if(sum(X_T!=0)) X_T <- X_T[order(data[,id]),]
       varT.temp<-matrix(c(X_T),nrow=nrow(X_T),ncol=nvarT)
       
       
