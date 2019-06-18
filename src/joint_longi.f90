@@ -4292,9 +4292,9 @@ cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(
 if(boxcoxlambda(1).gt.100) then
         current_meanG = cmY*Bcurrentvalue
 else if(boxcoxlambda(1).gt.0) then
-        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)/10
+        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)
 else if(boxcoxlambda(1).lt.0) then
-current_meanG = dexp(current_meanG)/10
+current_meanG = dexp(current_meanG)
 end if
 
         
@@ -4322,19 +4322,19 @@ else  if(boxcoxlambda(1).gt.0) then
             if(nea.gt.1) then
 cmGtemp =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
                                             +dot_product(z1curG(1,1:nb1),frail(1:nb1))
-current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
+current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))
             else
 cmGtemp = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
-   current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
+   current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))
             end if
 else if(boxcoxlambda(1).lt.0) then
                   if(nea.gt.1) then
 cmGtemp =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
                                             +dot_product(z1curG(1,1:nb1),frail(1:nb1))
-current_meanG = dexp(cmGtemp)/10
+current_meanG = dexp(cmGtemp)
             else
 cmGtemp = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
-   current_meanG = dexp(cmGtemp)/10
+   current_meanG = dexp(cmGtemp)
             end if      
             
 end if
@@ -4843,9 +4843,9 @@ end if
 if(boxcoxlambda(1).gt.100) then
         current_meanG = cmY*Bcurrentvalue
 else if(boxcoxlambda(1).gt.0) then
-        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)/10
+        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)
 else if(boxcoxlambda(1).lt.0) then
-        current_meanG = dexp(cmY)/10
+        current_meanG = dexp(cmY)
         end if
  else if(TwoPart.eq.0) then
  
@@ -4866,10 +4866,10 @@ end if
 current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
 else if(boxcoxlambda(1).gt.0) then
 cmGtemp=MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
-        current_meanG =((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))/10
+        current_meanG =((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))
 else if(boxcoxlambda(1).lt.0) then
 cmGtemp=MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
-        current_meanG =dexp(cmGtemp)/10
+        current_meanG =dexp(cmGtemp)
 end if
 
                     end if    
@@ -4911,18 +4911,7 @@ end if
             Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
         end do
     end if
-      
      
-!    open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
-!         write(2,*)' z1YcurG', z1YcurG
-!          write(2,*)'z1BcurG',z1BcurG
-!          write(2,*)'x2curG',x2curG
-!          write(2,*)'X2BcurG',X2BcurG
-!            write(2,*)'positionVarT',positionVarT
-!             write(2,*)'yscalar',yscalar
-!            write(2,*)'Bscalar',Bscalar
-!    close(2)
-
 
        if (methodGH.ne.3) then
     if(nb1.eq.1) then
