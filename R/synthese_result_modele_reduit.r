@@ -129,8 +129,8 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       param_esti$couverture_beta_S = ifelse((param_init["beta_S1"] >=param_esti$bi_se_theta) & (param_init["beta_S1"]<=param_esti$bs_se_theta),1,0)
 
       for(h in 2:ves){
-        param_esti$bi_se_theta= as.numeric(param_esti[paste("beta_S_", h, sep = "")]-1.96*param_esti[paste("se_beta_S_", h, sep = "")])
-        param_esti$bs_se_theta= as.numeric(param_esti[paste("beta_S_", h, sep = "")]+1.96*param_esti[paste("se_beta_S_", h, sep = "")])
+        param_esti$bi_se_theta= as.numeric(as.matrix(param_esti[paste("beta_S_", h, sep = "")]-1.96*param_esti[paste("se_beta_S_", h, sep = "")]))
+        param_esti$bs_se_theta= as.numeric(as.matrix(param_esti[paste("beta_S_", h, sep = "")]+1.96*param_esti[paste("se_beta_S_", h, sep = "")]))
         param_esti$couverture_beta_S_e = as.numeric(ifelse((param_init[paste("beta_S", h, sep = "")]>=param_esti$bi_se_theta) & (param_init[paste("beta_S", h, sep = "")]<=param_esti$bs_se_theta),1,0))
         names(param_esti)[ncol(param_esti)] <- paste("couverture_beta_S_", h, sep = "")
       }
@@ -146,8 +146,8 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       param_esti$bs_se_theta=param_esti$beta_T+1.96*param_esti$se_beta_T
       param_esti$couverture_beta_T = ifelse((param_init["beta_T1"] >=param_esti$bi_se_theta) & (param_init["beta_T1"]<=param_esti$bs_se_theta),1,0)
       for(h in 2:vet){
-        param_esti$bi_se_theta=as.numeric(param_esti[paste("beta_T_", h, sep = "")]-1.96*param_esti[paste("se_beta_T_", h, sep = "")])
-        param_esti$bs_se_theta=as.numeric(param_esti[paste("beta_T_", h, sep = "")]+1.96*param_esti[paste("se_beta_T_", h, sep = "")])
+        param_esti$bi_se_theta=as.numeric(as.matrix(param_esti[paste("beta_T_", h, sep = "")]-1.96*param_esti[paste("se_beta_T_", h, sep = "")]))
+        param_esti$bs_se_theta=as.numeric(as.matrix(param_esti[paste("beta_T_", h, sep = "")]+1.96*param_esti[paste("se_beta_T_", h, sep = "")]))
         param_esti$temp = as.numeric(ifelse((param_init[paste("beta_T", h, sep = "")]>=param_esti$bi_se_theta) & (param_init[paste("beta_T", h, sep = "")]<=param_esti$bs_se_theta),1,0))
         names(param_esti)[ncol(param_esti)] <- paste("couverture_beta_T_", h, sep = "")
       }
