@@ -97,7 +97,7 @@
     
     if(displayMSE == 0){
       if(object$type.joint.simul==1){
-      resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
+        resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
                                                   object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
                                                   object$theta2, object$zeta, object$gamma.ui, object$alpha.ui, 
                                                   object$sigma.s, object$sigma.t, object$sigma.st, object$betas,

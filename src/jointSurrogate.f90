@@ -2430,8 +2430,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 					parametre_estimes(s_i-nbre_rejet,5)=b(rangparam) !beta_s_chap
 					parametre_estimes(s_i-nbre_rejet,6)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_s_chap
 				else ! sauvegarde des autres covariables
-					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva+2*(i-1)+1)=b(rangparam) 
-					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
+					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+1)=b(rangparam) 
+					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
 				endif
 				if(betas>=bi2 .and. betas<=bs2)then ! taux de couverture
 					taux_couvertureS(i)=taux_couvertureS(i)+1.d0
@@ -2856,7 +2856,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             
             !!print*,"suis là 4 s_i=",s_i
             
-            if(nsim_node(8)==1 .or. nsim_node(8)==3)then
+            !if(nsim_node(8)==1 .or. nsim_node(8)==3)then
+			if(nsim_node(8)==1)then
                 parametre_estimes(s_i-nbre_rejet,21)=tau_kendal_11    !tau de kendal des traites z_11=1,z_21=1
                 parametre_estimes(s_i-nbre_rejet,22)=tau_kendal_10    !tau de kendal des 1 traite et l'autre non traite z_11=1,z_21=0
                 parametre_estimes(s_i-nbre_rejet,23)=tau_kendal_01    !tau de kendal des traite z_11=0,z_21=1
@@ -2870,20 +2871,33 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             endif
 			
 			if(nsim_node(8)==3)then
-                parametre_estimes(s_i-nbre_rejet,24)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
+                if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
+					parametre_estimes(s_i-nbre_rejet,22)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
+				else
+					parametre_estimes(s_i-nbre_rejet,24)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
+				endif
 				! SE de kendall_tau par delta method. voir cahier le 18/04/2019 pour demonstration
 				if(copula_function == 1) then
-					parametre_estimes(s_i-nbre_rejet,25) =  2.d0 * dexp(b(rangparam_copula))/&
-						(dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
-					
+					if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
+						parametre_estimes(s_i-nbre_rejet,23) =  2.d0 * dexp(b(rangparam_copula))/&
+							(dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+					else
+						parametre_estimes(s_i-nbre_rejet,25) =  2.d0 * dexp(b(rangparam_copula))/&
+							(dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+					endif
 					bi_sigmas = dexp(b(rangparam_copula)) - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					bs_sigmas = dexp(b(rangparam_copula)) + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					!taux de couverture
 					vrai_tau_copula = thetacopule/(thetacopule + 2.d0)
 				endif
 				if(copula_function == 2) then
-					parametre_estimes(s_i-nbre_rejet,25) =   2.d0 * b(rangparam_copula)/&
-						(b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+					if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
+						parametre_estimes(s_i-nbre_rejet,23) =   2.d0 * b(rangparam_copula)/&
+							(b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+					else
+						parametre_estimes(s_i-nbre_rejet,25) =   2.d0 * b(rangparam_copula)/&
+							(b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+					endif
 					bi_sigmas = b(rangparam_copula)**2.d0 - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					bs_sigmas = b(rangparam_copula)**2.d0  + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
 					!taux de couverture

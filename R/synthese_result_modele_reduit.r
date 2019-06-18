@@ -21,7 +21,7 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
   # synthese resultats simulations avec 500 boucles MC
   
   # estimates du model complet
-    param_esti=param_esti
+    param_esti = param_esti
     
     # recherche des lignes correspondantes aux simulations qui n'ont pas convergees (concerne le cas des programmes esimees par MPI-OpenMP)
     somme_row=NULL
@@ -31,28 +31,28 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
     #on les exclu du dataframe
     estimates_complet2=param_esti[somme_row!=0,]
     
-    
+    ves <- length(beta_S)
+    vet <- length(beta_T)
     #str(estimates_complet2)
     if(type.joint == 1){
       names(estimates_complet2)=c("Theta_S","se_theta_S","zeta","se_zeta","beta_S","se_beta_S","beta_T","se_beta_T","sigma_S",
                                   "se_sigma_S","sigma_T","se_sigma_T","sigma_ST","se_sigma_ST","gamma_S","se_gamma_S","alpha","se_alpha",
                                   "R2trial","se_R2trial","tau_00")
     }else{
-      ves <- length(beta_S)
-      vet <- length(beta_T)
+      
       entete <- c("Theta_S","se_theta_S","zeta","se_zeta","beta_S","se_beta_S","beta_T","se_beta_T","sigma_S",
                   "se_sigma_S","sigma_T","se_sigma_T","sigma_ST","se_sigma_ST","gamma_S","se_gamma_S","alpha","se_alpha",
                   "R2trial","se_R2trial","tau_00","SE.KendTau")
       if(ves>1){
         for(h in 2:ves){
           entete <- c(entete, paste("beta_S_", h, sep = ""))
-          entete <- c(entete, paste("se.beta_S_", h, sep = ""))
+          entete <- c(entete, paste("se_beta_S_", h, sep = ""))
         }
       }
       if(vet>1){
         for(h in 2:vet){
           entete <- c(entete, paste("beta_T_", h, sep = ""))
-          entete <- c(entete, paste("se.beta_T_", h, sep = ""))
+          entete <- c(entete, paste("se_beta_T_", h, sep = ""))
         }
       }
       names(estimates_complet2) <- entete
@@ -123,15 +123,41 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
     param_esti$couverture_alpha=ifelse((param_init["alpha"]>=param_esti$bi_se_theta) & (param_init["alpha"]<=param_esti$bs_se_theta),1,0)
     
     # taux de couverture beta_S
-    param_esti$bi_se_theta=param_esti$beta_S-1.96*param_esti$se_beta_S
-    param_esti$bs_se_theta=param_esti$beta_S+1.96*param_esti$se_beta_S
-    param_esti$couverture_beta_S=ifelse((param_init["beta_S"]>=param_esti$bi_se_theta) & (param_init["beta_S"]<=param_esti$bs_se_theta),1,0)
+    if(ves>1){
+      param_esti$bi_se_theta=param_esti$beta_S-1.96*param_esti$se_beta_S
+      param_esti$bs_se_theta=param_esti$beta_S+1.96*param_esti$se_beta_S
+      param_esti$couverture_beta_S = ifelse((param_init["beta_S1"] >=param_esti$bi_se_theta) & (param_init["beta_S1"]<=param_esti$bs_se_theta),1,0)
+
+      for(h in 2:ves){
+        param_esti$bi_se_theta= as.numeric(param_esti[paste("beta_S_", h, sep = "")]-1.96*param_esti[paste("se_beta_S_", h, sep = "")])
+        param_esti$bs_se_theta= as.numeric(param_esti[paste("beta_S_", h, sep = "")]+1.96*param_esti[paste("se_beta_S_", h, sep = "")])
+        param_esti$couverture_beta_S_e = as.numeric(ifelse((param_init[paste("beta_S", h, sep = "")]>=param_esti$bi_se_theta) & (param_init[paste("beta_S", h, sep = "")]<=param_esti$bs_se_theta),1,0))
+        names(param_esti)[ncol(param_esti)] <- paste("couverture_beta_S_", h, sep = "")
+      }
+    }else{
+      param_esti$bi_se_theta=param_esti$beta_S-1.96*param_esti$se_beta_S
+      param_esti$bs_se_theta=param_esti$beta_S+1.96*param_esti$se_beta_S
+      param_esti$couverture_beta_S=ifelse((param_init["beta_S"]>=param_esti$bi_se_theta) & (param_init["beta_S"]<=param_esti$bs_se_theta),1,0)
+    }
     
     # taux de couverture beta_T
-    param_esti$bi_se_theta=param_esti$beta_T-1.96*param_esti$se_beta_T
-    param_esti$bs_se_theta=param_esti$beta_T+1.96*param_esti$se_beta_T
-    param_esti$couverture_beta_T=ifelse((param_init["beta_T"]>=param_esti$bi_se_theta) & (param_init["beta_T"]<=param_esti$bs_se_theta),1,0)
-    
+    if(vet>1){
+      param_esti$bi_se_theta=param_esti$beta_T-1.96*param_esti$se_beta_T
+      param_esti$bs_se_theta=param_esti$beta_T+1.96*param_esti$se_beta_T
+      param_esti$couverture_beta_T = ifelse((param_init["beta_T1"] >=param_esti$bi_se_theta) & (param_init["beta_T1"]<=param_esti$bs_se_theta),1,0)
+      for(h in 2:vet){
+        param_esti$bi_se_theta=as.numeric(param_esti[paste("beta_T_", h, sep = "")]-1.96*param_esti[paste("se_beta_T_", h, sep = "")])
+        param_esti$bs_se_theta=as.numeric(param_esti[paste("beta_T_", h, sep = "")]+1.96*param_esti[paste("se_beta_T_", h, sep = "")])
+        param_esti$temp = as.numeric(ifelse((param_init[paste("beta_T", h, sep = "")]>=param_esti$bi_se_theta) & (param_init[paste("beta_T", h, sep = "")]<=param_esti$bs_se_theta),1,0))
+        names(param_esti)[ncol(param_esti)] <- paste("couverture_beta_T_", h, sep = "")
+      }
+    }else{
+      param_esti$bi_se_theta=param_esti$beta_T-1.96*param_esti$se_beta_T
+      param_esti$bs_se_theta=param_esti$beta_T+1.96*param_esti$se_beta_T
+      param_esti$couverture_beta_T=ifelse((param_init["beta_T"]>=param_esti$bi_se_theta) & (param_init["beta_T"]<=param_esti$bs_se_theta),1,0)
+     }
+
+
     # taux de couverture R2trial
     #param_esti$se_R2trial= param_esti$se_R2trial*sqrt(2)
     param_esti$bi_se_theta=param_esti$R2trial-1.96*param_esti$se_R2trial
@@ -144,6 +170,7 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       param_esti$bi_se_theta=param_esti$tau_00-1.96*param_esti$SE.KendTau
       param_esti$bs_se_theta=param_esti$tau_00+1.96*param_esti$SE.KendTau
       param_esti$couverture_KTau=ifelse((param_init["tau"]>=param_esti$bi_se_theta) & (param_init["tau"]<=param_esti$bs_se_theta),1,0)
+      
       # reorganisation des donnees
       entete <- c("Theta_S","se_theta_S","couverture_thetaS","gamma_S","se_gamma_S","couverture_gamma_S",
                   "alpha","se_alpha","couverture_alpha","sigma_S","se_sigma_S","couverture_sigma_S","sigma_T","se_sigma_T","couverture_sigma_T",
@@ -151,7 +178,8 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       if(ves>1){
         for(h in 2:ves){
           entete <- c(entete, paste("beta_S_", h, sep = ""))
-          entete <- c(entete, paste("se.beta_S_", h, sep = ""))
+          entete <- c(entete, paste("se_beta_S_", h, sep = ""))
+          entete <- c(entete, paste("couverture_beta_S_", h, sep = ""))
         }
         
       }
@@ -160,6 +188,7 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
         for(h in 2:vet){
           entete <- c(entete, paste("beta_T_", h, sep = ""))
           entete <- c(entete, paste("se_beta_T_", h, sep = ""))
+          entete <- c(entete, paste("couverture_beta_T_", h, sep = ""))
         }
       }
       
@@ -170,14 +199,16 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
                    "sigma_ST"=sigma_ST,"beta_S" = beta_S[1])
       if(ves>1){
         for(h in 2:ves){
-          param_init <- c(param_init, paste("beta_S_", h, "=", beta_S[h], sep = ""))
+          param_init <- c(param_init, "aaa" = beta_S[h])
+          names(param_init)[length(param_init)] = paste("beta_S_", h, sep = "")
         }
       }
       param_init=c(param_init,"beta_T"=beta_T[1])
       
       if(vet>1){
         for(h in 2:vet){
-          param_init <- c(param_init, paste("beta_T_", h, "=", beta_T[h], sep = ""))
+          param_init <- c(param_init, "aaa" = beta_T[h])
+          names(param_init)[length(param_init)] <- paste("beta_T_", h, sep = "")
         }
       }
       
@@ -189,9 +220,9 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       
       if(ves>1){
         for(h in 2:ves){
-          entete <- c(entete, paste("beta.S.latex.", h, "=", beta_S(h), sep = "")
-                          , paste("se.beta.S.", h, "=", beta_S(h), sep = "")
-                          , paste("couverture.beta.S.", h, "=", beta_S(h), sep = ""))
+          entete <- c(entete, paste("beta.S.latex.", h, "=", beta_S[h], sep = "")
+                          , paste("se.beta.S.", h, "=", beta_S[h], sep = "")
+                          , paste("couverture.beta.S.", h, "=", beta_S[h], sep = ""))
         }
       }
       
@@ -199,9 +230,9 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       
       if(vet>1){
         for(h in 2:vet){
-          entete <- c(entete, paste("beta.T.latex.", h, "=", beta_S(h), sep = "")
-                          , paste("se.beta.T.", h, "=", beta_S(h), sep = "")
-                          , paste("couverture.beta.T.", h, "=", beta_S(h), sep = ""))
+          entete <- c(entete, paste("beta.T.latex.", h, "=", beta_S[h], sep = "")
+                          , paste("se.beta.T.", h, "=", beta_S[h], sep = "")
+                          , paste("couverture.beta.T.", h, "=", beta_S[h], sep = ""))
         }
       }
       
@@ -232,7 +263,7 @@ synthese_result_modele_reduit=function(param_esti,ktauboot,R2boot,nb_paquet=1,nd
       #if(j==1) cat("Parameters","True value","Mean","Mean SE","Empirical Se","CP(%)",fill=T,append=T,sep=";")
       #cat(names(param_esti2)[i],round(param_init[j],2),round(mean(param_esti2[,i]),ndec),round(mean(param_esti2[,i+1]),ndec),round(sd(param_esti2[,i]),ndec),
       #    round(prop.table(table(param_esti2[,i+2])),2)["1"],fill=T,append=T,sep=";")
-      d=rbind(d,(c(names(param_esti2)[i],round(param_init[j],ndec),round(mean(param_esti2[,i]),ndec),round(mean(param_esti2[,i+1]),ndec),round(sd(param_esti2[,i]),ndec),
+      d=rbind(d,(c(names(param_esti2)[i],round(as.numeric(param_init[j]),ndec),round(mean(param_esti2[,i]),ndec),round(mean(param_esti2[,i+1]),ndec),round(sd(param_esti2[,i]),ndec),
                    100*round(prop.table(table(param_esti2[,i+2])),2)["1"])))
       i=i+3
       j=j+1
