@@ -397,11 +397,20 @@
 
         i = 1
         do j=2,nsujety
+        if(groupeey(j-1).eq.i) then
             if(groupeey(j).eq.groupeey(j-1))then
                 nmesy(i)=nmesy(i)+1
             else
                 i = i+1
             end if
+            else
+            nmesy(i)=0
+            if(groupeey(j).eq.groupeey(j-1))then
+            nmesy(i+1)=2
+            end if
+            i=i+1
+            end if
+
         end do
     
         maxmesy=0
