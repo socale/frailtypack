@@ -398,6 +398,9 @@
         i = 1
         do j=2,nsujety
         if(groupeey(j-1).eq.i) then
+            if(nmesy(i).eq.0) then
+            nmesy(i)=1
+            end if
             if(groupeey(j).eq.groupeey(j-1))then
                 nmesy(i)=nmesy(i)+1
             else
