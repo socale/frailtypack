@@ -365,7 +365,7 @@
         allocate(nmesrec(ng),nmesrec1(ng),nmesy(ng),nmes_o(ng))
         allocate(groupee(nsujet),groupeey(nsujety))
         nmesrec =1
-        nmesy = 1
+        nmesy = 0
         nmes_o = 0
         groupeey = groupey0
         groupee = groupe0
@@ -396,20 +396,15 @@
     
 
         i = 1
-        do j=2,nsujety
-        if(groupeey(j-1).eq.i) then
-            if(nmesy(i).eq.0) then
-            nmesy(i)=1
-            end if
-            if(groupeey(j).eq.groupeey(j-1))then
-                nmesy(i)=nmesy(i)+1
-            else
-                i = i+1
-            end if
-            else
-            nmesy(i)=0
-            end if
-
+        do j=1,nsujety
+            if(groupeey(j).eq.i) then
+                    nmesy(i)=nmesy(i)+1
+                else
+                    i = i+1
+                    if(groupeey(j).eq.i) then
+                        nmesy(i)=nmesy(i)+1
+                    end if
+                end if
         end do
     
         maxmesy=0
@@ -445,6 +440,15 @@
             end if
         end do
 
+        
+!             open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!         write(2,*)' nmesB', nmesB
+!         write(2,*)' nmesy', nmesy
+!         write(2,*)' groupeeB', groupeeB
+!         write(2,*)' groupeey', groupeey
+
+!             close(2)
+!stop
         
         
         maxmesB=0
