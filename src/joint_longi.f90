@@ -4760,19 +4760,8 @@ if(numInter.ge.1)then
 end if
 end if    
 
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!         write(2,*)' positionVarT', positionVarT
-!         write(2,*)' numInter', numInter
-!          write(2,*)'x2curG',x2curG
-!         write(2,*)' numInterB', numInterB
-!         write(2,*)' X2BcurG', X2BcurG
-         ! write(2,*)'nmescur',nmescur
-        !  write(2,*)'ycurrent',ycurrent
-      !    write(2,*)'yy',yy
-       !   write(2,*)'Bcurrent',Bcurrent
-         ! write(2,*)'bb',bb
-!             close(2)
-! no ping here             
+
+             ! no ping here             
              
             z1YcurG(1,1) = 1.d0
             if(nb1.eq.2) then
@@ -4921,6 +4910,20 @@ end if
         end do
     end if
      
+!     open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!         write(2,*)' positionVarT', positionVarT
+!         write(2,*)' numInter', numInter
+!          write(2,*)'x2curG',x2curG
+!         write(2,*)' numInterB', numInterB
+!         write(2,*)' X2BcurG', X2BcurG
+! write(2,*)'nmescur',nmescur
+!  write(2,*)'ycurrent',ycurrent
+!    write(2,*)'current_meanG',current_meanG
+!   write(2,*)'Bcurrent',Bcurrent
+! write(2,*)'cmY',cmY
+! write(2,*)'Bcurrentvalue',Bcurrentvalue
+!             close(2)
+!stop
 
        if (methodGH.ne.3) then
     if(nb1.eq.1) then
