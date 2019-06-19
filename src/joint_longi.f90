@@ -405,9 +405,6 @@
             end if
             else
             nmesy(i)=0
-            if(groupeey(j).eq.groupeey(j-1))then
-            nmesy(i+1)=2
-            end if
             end if
 
         end do
