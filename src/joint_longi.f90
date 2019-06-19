@@ -408,7 +408,6 @@
             if(groupeey(j).eq.groupeey(j-1))then
             nmesy(i+1)=2
             end if
-            i=i+1
             end if
 
         end do
