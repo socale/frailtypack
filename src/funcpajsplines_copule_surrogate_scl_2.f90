@@ -21,6 +21,7 @@
     ! !$ use OMP_LIB
     !use mpi ! module pour l'environnement MPI
     use Autres_fonctions, only:init_random_seed
+	use func_laplace, only: funcpaLaplace_copula
     
     IMPLICIT NONE
 
@@ -33,7 +34,7 @@
     
     integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial,dimint,dimint_Ind,erreur,code,compteur,init_i,max_i
     integer,dimension(ngmax)::cpt
-    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc,varS1,varT1,covST1,som_cont_0
+    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc,varS1,varT1,covST1,som_cont_0, v_si, v_ti, ui
     double precision,dimension(3):: resultatInt
     
     double precision,dimension(-2:npmax):: the1,the2
@@ -57,7 +58,7 @@
              np_2,indice_B_essai,indice_ind_util_essai,non_conv,control_est,rang,n_par_pro
     integer::frail_essai_deja_est,lm ! variable qui dit si pour un essai donne l'on a deja estimes les vsi et vti (1) ou non (0)
     integer,parameter::effet2=0,np_1=1
-    double precision::ca,cb,dd,som_cont,usim,x22,SX, jacobien
+    double precision::ca,cb,dd,som_cont,usim,x22,SX, jacobien, f_vi
     !double precision::res
     double precision, dimension(2)::k0_2
     !double precision, dimension(1)::v,b_2
@@ -66,6 +67,8 @@
     double precision, allocatable, dimension(:,:)::H_hessOut,HIH,HIHOut,IH,invBi_chol_2,H_hess_scl,I_hess_scl
     double precision,dimension(:,:), allocatable::hess_scl
     double precision,dimension(:), allocatable::vvv_scl
+	double precision, dimension(:,:),allocatable::m1,m3  
+    double precision, dimension(:,:),allocatable::m	
 
 !    !print*,'debut funcpa'
         
@@ -661,10 +664,10 @@
             model = 9 !scl pour le model effet aleatoires
             maxiter=10
             non_conv=0
-            ui_chap=0.d0
             i=1
             nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
             
+			! call intpr("je vais pour le calcul integral=", -1, posind_i, 1)
 			posind_i=1 
             do k=1,ntrials
                 essai_courant=k
@@ -686,9 +689,11 @@
                 v_i=0.d0
                         
                 100 continue
-                call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_copula,&
+                call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpaLaplace_copula,&
                                   I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
-							
+				
+				! call intpr("istop=", -1, istop, 1)		
+				! call dblepr("b_i=", -1, b_i, 3)				
                 if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
                     b_i=-0.5*non_conv
                     non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
@@ -708,19 +713,33 @@
                 endif
                 
 				jacobien=Determinant_2(I_hess_scl,3) ! determinant de la hesienne
+				v_si = b_i(1)
+				v_ti = b_i(2)
 				if(frailt_base==1) then
-					integrale3(k) = (2.d0 * pi)**(3.d0/2.d0) * 1/(Integrant_Copula(b_i(1),b_i(2),b_i(3),essai_courant,nsujeti(essai_courant)))*&
-									jacobien**(-1/2)
+					ui = b_i(3)
 				else
-					integrale3(k) = (2.d0 * pi)**(3.d0/2.d0) * 1/(Integrant_Copula(b_i(1),b_i(2),0.d0,essai_courant,nsujeti(essai_courant)))*&
-									jacobien**(-1/2)	
+					ui = 0.d0
 				endif
+				
+				allocate(m(1,1),m1(1,2),m3(1,2))
+				m1(1,1)= v_si
+				m1(1,2)= v_ti
+				m3=MATMUL(m1,varcovinv)
+				m=MATMUL(m3,TRANSPOSE(m1))
+				f_vi = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * &
+				       dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
+				
+				deallocate(m,m1,m3) 
+				integrale3(k) = f_vi * (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,u_i,essai_courant,nsujeti(essai_courant))*&
+									jacobien**(-1.d0/2.d0)
 				
                 deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,I_hess_scl,H_hess_scl,hess_scl,vvv_scl,b_i,v_i)
                 posind_i=posind_i+nsujeti(k) ! a utiliser dans funcpafrailtyPred_Essai
                 i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
             enddo ! fin calcul integral    
-                    
+            
+			! call dblepr("integrale3=", -1, integrale3, ntrials)
+			
 			model=model_save
             nparamfrail=nparamfrail_save
             maxiter=maxiter_save                   

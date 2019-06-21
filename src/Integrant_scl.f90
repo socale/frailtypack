@@ -246,7 +246,7 @@ contains
 		! call dblepr("integrant = ", -1, integrant, 1)		
 	! endif
 		
-    if (methodInt == 0) Integrant_Copula = integrant
+    if (methodInt == 0 .or. methodInt == 3) Integrant_Copula = integrant
     return
     end function Integrant_Copula
     
