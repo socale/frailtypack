@@ -1219,7 +1219,6 @@
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_surrogate_1)
                 case(1)                
                     if(methodInt==3) then !integration par laplace
-                        !!print*,"nb_procs",nb_procs
                         !!call MPI_ABORT(MPI_COMM_WORLD,erreur,code)! on stop tous les programmes appartenant au communicateur code, equivalent de l'instruction stop en sequantiel
                         !========= gestion du nombre d'essai a manipuler par processus dans le cas de laplace=========== 
                         n_par_pro=INT(ntrials/nb_procs)

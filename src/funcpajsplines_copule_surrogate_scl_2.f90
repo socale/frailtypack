@@ -661,8 +661,8 @@
             model_save=model
             nparamfrail_save=nparamfrail
             maxiter_save=maxiter
-            model = 9 !scl pour le model effet aleatoires
-            maxiter=10
+            model = 10 !scl pour le model effet aleatoires
+            maxiter=30
             non_conv=0
             i=1
             nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
