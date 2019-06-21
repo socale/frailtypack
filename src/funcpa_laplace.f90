@@ -53,18 +53,6 @@ module func_laplace
             - const_res4(individu_j)*dexp(wij + ui + vsi*dble(ve(individu_j,1)))&
             - const_res5(individu_j)*dexp(zeta*wij + alpha_ui*ui + vti*dble(ve(individu_j,1)))
             
-        ! !print*,"res2s_sujet(individu_j)",res2s_sujet(individu_j)
-        ! !print*,"delta(individu_j)",delta(individu_j)
-        ! !print*,"deltastar(individu_j)",deltastar(individu_j)
-        ! !print*,"ui",ui
-        ! !print*,"alpha_ui",alpha_ui
-        ! !print*,"vsi",vsi
-        ! !print*,"vti",vti
-        ! !print*,"res2_dcs_sujet(individu_j)",res2_dcs_sujet(individu_j)
-        ! !print*,"dble(ve(individu_j,1))",dble(ve(individu_j,1))
-        ! !print*,"theta2",theta2
-        ! !print*,"res",res
-        !stop
         if(Test==1)then ! je fais ceci pour evaluer le calcul integral par laplace
             res=-bh(1) + 5.d0*dlog(bh(1))
         endif
