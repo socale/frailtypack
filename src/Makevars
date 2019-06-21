@@ -103,7 +103,7 @@ aaOptim_New_scl2.o: Aparameters.o
 autres_fonctions.o: Adonnees.o Aparameters.o
 Integrant_scl.o: Aparameters.o Adonnees.o autres_fonctions.o
 funcpa_adaptative.o: Aparameters.o aaOptim_New_scl.o Integrant_scl.o
-funcpa_laplace.o: Aparameters.o aaOptim_New_scl.o
+funcpa_laplace.o: Aparameters.o aaOptim_New_scl.o Integrant_scl.o
 Integrale_mult_scl.o: Aparameters.o autres_fonctions.o aaOptim_New_scl2.o funcpa_laplace.o funcpa_adaptative.o Adonnees.o Integrant_scl.o
 funcpajsplines_surrogate_scl_1.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o
 funcpajsplines_surrogate_scl_2.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o
