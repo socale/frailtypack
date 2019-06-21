@@ -400,9 +400,6 @@ module func_laplace
 		else
 			funcpaLaplace_copula = res
 		end if
-		!res = -(bh(1)**2.d0 + bh(2)**2.d0 + bh(3)**2.d0)
-		!call dblepr("res = ", -1, res, 1)
-		funcpaLaplace_copula = res
     
 		124    continue
 		

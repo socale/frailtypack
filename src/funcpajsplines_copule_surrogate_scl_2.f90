@@ -712,7 +712,8 @@
                     non_conv=0
                 endif
                 
-				jacobien=Determinant_2(I_hess_scl,3) ! determinant de la hesienne
+				jacobien = Determinant_2(I_hess_scl,3) ! determinant de la hesienne
+				
 				v_si = b_i(1)
 				v_ti = b_i(2)
 				if(frailt_base==1) then
@@ -730,7 +731,7 @@
 				       dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
 				
 				deallocate(m,m1,m3) 
-				integrale3(k) = f_vi * (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,u_i,essai_courant,nsujeti(essai_courant))*&
+				integrale3(k) = f_vi * (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
 									jacobien**(-1.d0/2.d0)
 				
                 deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,I_hess_scl,H_hess_scl,hess_scl,vvv_scl,b_i,v_i)
