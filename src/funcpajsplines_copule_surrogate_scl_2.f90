@@ -100,12 +100,12 @@
         if(logNormal==1)then
 		    !== 17/05/2019== introduction of some corrections on the value of theta, to avoid very high values==
             if(copula_function == 1) then 
-				!theta_copule = dexp(bh(np-nva)) ! clayton: exp transform
-				theta_copule = dexp(minval((/6.d0,bh(np-nva)/))) ! clayton: exp transform
+				theta_copule = dexp(bh(np-nva)) ! clayton: exp transform
+				!theta_copule = dexp(minval((/6.d0,bh(np-nva)/))) ! clayton: exp transform
 			endif
             if(copula_function == 2)then 
-				!theta_copule = (bh(np-nva))**2.d0  ! Gumbel: choleschy transform
-				theta_copule = minval((/bh(np-nva),15.d0/))**2.d0
+				theta_copule = (bh(np-nva))**2.d0  ! Gumbel: choleschy transform
+				!theta_copule = minval((/bh(np-nva),15.d0/))**2.d0
 			endif
 			!theta_copule = bh(np-nva) ! sans transformation
 			!call dblepr("theta_copule = ", -1, theta_copule, 1)
