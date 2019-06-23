@@ -396,12 +396,12 @@ module func_laplace
 		if ((res.ne.res).or.(abs(res).ge. 1.d30)) then ! pour test infini et NaN
 			funcpaLaplace_copula =-1.d9
 			!call dblepr("log res funcpaadaptativ = ", -1, res, 1)
-			goto 124
+			goto 126
 		else
 			funcpaLaplace_copula = res
 		end if
     
-		124    continue
+		126    continue
 		
 		return
     
