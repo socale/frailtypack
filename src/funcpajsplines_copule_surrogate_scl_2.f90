@@ -633,7 +633,6 @@
                 end do    
             endif
         case(3) ! estimation par Approximation de Laplace
-            l=1
             res = 0.d0
             ! matrice des variances-covariance
             varcov(1,1)=varS
@@ -664,8 +663,8 @@
             model = 10 !scl pour le model effet aleatoires
             maxiter=30
             non_conv=0
-            i=1
-            nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
+            !i=1
+            !nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
             
 			! call intpr("je vais pour le calcul integral=", -1, posind_i, 1)
 			posind_i=1 
@@ -736,7 +735,7 @@
 				
                 deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,I_hess_scl,H_hess_scl,hess_scl,vvv_scl,b_i,v_i)
                 posind_i=posind_i+nsujeti(k) ! a utiliser dans funcpafrailtyPred_Essai
-                i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
+                !i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
             enddo ! fin calcul integral    
             
 			! call dblepr("integrale3=", -1, integrale3, ntrials)
