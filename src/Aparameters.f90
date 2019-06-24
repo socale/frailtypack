@@ -346,7 +346,7 @@
         double precision,dimension(:,:),allocatable,save:: vc,vcinv !vc= matrice de var-cov des enffet aleatoires MC, invBi_chol=inverse de la matrice de cholesky pour l'adaptative,vcinv=matrice inverse des vc
         double precision,dimension(:),allocatable,save:: invBi_chol_Essai,invBi_chol_Individuel! contient les element de la cholesky du determinant de la hessienne, niveau essai et individuel
         double precision,dimension(:,:),allocatable,save:: ui_chap,ui_chap_Essai ! ui_chap=matrice des effets aleatoires estimes pour l'adaptative, ui_chap_Essai pour les estimation au niveau essai
-        double precision,dimension(:),allocatable,save:: invBi_cholDet_Essai ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky au niveau essa
+        double precision,dimension(:),allocatable,save:: invBi_cholDet_Essai, I_hess_laplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky au niveau essa
         !double precision,dimension(:),allocatable,save:: invBi_cholDet ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky: utiliser la subroutine dmfsd pour le calcul de la matrice de cholesky, niveau individuel
         integer,save::a_deja_simul! dit si on a deja simule une fois les donnees pour le calcul integrale par MC
         integer,save::sujet_essai_max,vectorisation,individu_j ! taille du plus grand essai, vectorisation= indique si l'on fait de la vectorisation dans le calcul integral pour reduire les temps de calcul ou pas
@@ -368,7 +368,7 @@
         integer, save::nbre_itter_PGH ! nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
         integer,save::random_generator ! generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
         ! Add for the joint frailty-copula model -scl - 05-04-2019
-        integer,save:: copula_function, control_affichage ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
+        integer,save:: copula_function, control_affichage, control_adaptative_laplace ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
         double precision, save:: theta_copule ! copula parameters
     end module var_surrogate
     

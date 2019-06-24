@@ -84,7 +84,7 @@
     double precision,external::funcpaj_tps,funcpaG_tps,funcpajsplines_copule_surrogate
     double precision,dimension(100)::xSu1,xSu2
 !cpm
-    integer::indd,ent,entdc,typeof0,nbintervR0,nbintervDC0
+    integer::indd,ent,entdc,typeof0,nbintervR0,nbintervDC0, np_2
     double precision::temp    
 !predictor
     double precision,dimension(ng0)::Resmartingale,Resmartingaledc,frailtypred,frailtyvar
@@ -136,6 +136,7 @@
     param_weibull=param_weibull0
     estim_wij_chap=0
 	control_affichage = 0
+	control_adaptative_laplace = 0
     
    ! 100 continue
     !rang=0
@@ -236,6 +237,14 @@
     if(methodInt==3) then !integration par laplace
         allocate(wij_chap(nsujet0,1),control_wij_chap(nsujet0))
         control_wij_chap=0
+		if(frailt_base == 1) then
+			np_2 = 3
+			
+		else
+			np_2 = 2
+		endif
+		allocate(I_hess_laplace(np_2,np_2),H_hess_laplace(np_2,np_2),&
+				b_i_laplace(np_2),v_i_laplace(np_2*(np_2+3)/2),hess_laplace(np_2,np_2),vvv_laplace(np_2*(np_2+1)/2))
         ! !print*,"suis dans joint",size(wij_chap),size(wij_chap,1),size(wij_chap,2)
     endif
     
@@ -1785,6 +1794,8 @@ deallocate(res2s_sujet,res2_dcs_sujet)
         mm3,mm2,mm1,mm,im3,im2,im1,im,zi,zidc,m3m3,m2m2,m1m1,mmm,&
         m3m2,m3m1,m3m,m2m1,m2m,m1m)
     end if
+	
+	if(methodInt==3) deallocate(I_hess_laplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace)
 
     if (typeof .ne. 0)deallocate(vvv) !,kkapa)
     

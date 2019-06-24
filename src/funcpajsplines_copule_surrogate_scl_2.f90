@@ -649,7 +649,7 @@
             !estimation des fragilites a posteriori, a utiliser dans le calcul integral
             !================================================================================
             if(rang==0)then
-			!call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
+				!call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
             endif
             k0_2=k0                     
             !initialisation des variables de module
@@ -667,63 +667,65 @@
             !nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
             
 			! call intpr("je vais pour le calcul integral=", -1, posind_i, 1)
+			if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
+                np_2=2
+                nparamfrail=2
+            else
+                np_2=3
+                nparamfrail=3
+            endif
+			if(control_adaptative_laplace == 0) then
+				b_i_laplace=0.5d0
+				v_i_laplace=0.d0
+			endif
+				
 			posind_i=1 
             do k=1,ntrials
                 essai_courant=k
                 ! ====================================================================================================
                 ! estimation des ui_chapeau, vs_i_chapeau et vt_i_chapeau
                 ! ====================================================================================================
-                        
-                if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
-                    np_2=2
-                    nparamfrail=2
-                else
-                    np_2=3
-                    nparamfrail=3
-                endif
-                allocate(I_hess_scl(np_2,np_2),H_hess_scl(np_2,np_2),invBi_chol_2(np_2,np_2),H_hessOut(np_2,np_2),&
-                         b_i(np_2),v_i(np_2*(np_2+3)/2),HIH(np_2,np_2),HIHOut(np_2,np_2),IH(np_2,np_2),&
-                         hess_scl(np_2,np_2),vvv_scl(np_2*(np_2+1)/2))
-                b_i=0.5d0
-                v_i=0.d0
-                        
-                100 continue
-                call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpaLaplace_copula,&
-                                  I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
-				
-				if(control_affichage == 0) then
-					control_affichage = 1
-					call intpr("istop=", -1, istop, 1)		
-					call dblepr("b_i=", -1, b_i, np_2)	
-				endif
-                if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
-                    b_i=-0.5*non_conv
-                    non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
-                    goto 100
-                endif
-                                
-                if(non_conv==11 .and. istop .ne. 1)then
-                    !print*,"le nombre de tentative sans convergence vaut:",non_conv
-                    !print*,"istop=",istop,"essai k=",k
-                    non_conv=0
-                    funcpajsplines_copule_surrogate=-1.d9
-                    goto 123
-                endif
-                                
-                if(non_conv>0 .and. non_conv<=10) then
-                    non_conv=0
-                endif
                 
-				jacobien = Determinant_2(I_hess_scl,3) ! determinant de la hesienne
-				!call dblepr("jacobien=", -1, jacobien, 1)
+				if(control_adaptative_laplace == 0) then	! ici on voudrait estimer les une seule fois les v_i 			
+					100 continue
+					call marq98J_scl2(k0_2,b_i_laplace,np_2,ni,v_i_laplace,res,ier,istop,effet2,ca,cb,dd,funcpaLaplace_copula,&
+									  I_hess_laplace,H_hess_laplace,hess_laplace,vvv_laplace)
+					
+					if(control_affichage == 0) then
+						control_affichage = 1
+						call intpr("istop=", -1, istop, 1)		
+						call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
+					endif
+					if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
+						b_i_laplace=-0.5*non_conv
+						non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
+						goto 100
+					endif
+									
+					if(non_conv==11 .and. istop .ne. 1)then
+						!print*,"le nombre de tentative sans convergence vaut:",non_conv
+						!print*,"istop=",istop,"essai k=",k
+						non_conv=0
+						funcpajsplines_copule_surrogate=-1.d9
+						goto 123
+					endif
+									
+					if(non_conv>0 .and. non_conv<=10) then
+						non_conv=0
+						! il y'a eu concergence
+						control_adaptative_laplace = 1
+					endif 
+				endif	
 				
-				v_si = b_i(1)
-				v_ti = b_i(2)
+				jacobien = Determinant_2(I_hess_laplace,3) ! determinant de la hesienne
+				v_si = b_i_laplace(1)
+				v_ti = b_i_laplace(2)
 				if(frailt_base==1) then
-					ui = b_i(3)
+					ui = b_i_laplace(3)
 				else
 					ui = 0.d0
 				endif
+				
 				
 				! allocate(m(1,1),m1(1,2),m3(1,2))
 				! m1(1,1)= v_si
@@ -739,11 +741,11 @@
 				integrale3(k) = (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
 									jacobien**(-1.d0/2.d0)
 				
-                deallocate(H_hessOut,HIH,HIHOut,IH,invBi_chol_2,I_hess_scl,H_hess_scl,hess_scl,vvv_scl,b_i,v_i)
-                posind_i=posind_i+nsujeti(k) ! a utiliser dans funcpafrailtyPred_Essai
-                !i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
+               !i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
             enddo ! fin calcul integral    
             
+                posind_i=posind_i+nsujeti(k) ! a utiliser dans funcpafrailtyPred_Essai
+ 
 			! call dblepr("integrale3=", -1, integrale3, ntrials)
 			
 			model=model_save
