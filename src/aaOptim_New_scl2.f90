@@ -124,10 +124,12 @@
 !  2: nb max d'iterations atteints
 !  4: Erreur
     use residusM,only:indg
-    use parameters
-    use comon,only:t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc, &
-    nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,model, &
-    PEN_deri,Hspl_hess,indic_ALPHA,typeof,indic_eta
+    ! use parameters
+    ! use comon,only:t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc, &
+    ! nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,model, &
+    ! PEN_deri,Hspl_hess,indic_ALPHA,typeof,indic_eta
+	use parameters,only:epsa,epsb,epsd,maxiter
+    use comon,only:nva,model,indic_ALPHA,typeof
 
 !add additive
     use additiv,only:correl

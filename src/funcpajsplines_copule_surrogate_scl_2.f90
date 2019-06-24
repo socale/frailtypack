@@ -15,6 +15,7 @@
     use func_adaptative
     use parameters, only: maxiter
     use optim_scl2, only:marq98j_scl2  ! pour faire appel a marquard
+	use optim_scl, only:marq98j_scl  ! pour faire appel a marquard
     use Autres_fonctions,only:Determinant_2,cholesky_factorisation
     !use func_laplace  ! pour tout ce qui est de l'approximation de laplace: fichier funcpa_laplace.f90
     use Laplace_contribution ! pour tout ce qui est de l'approximation de laplace: fichier Integrale_mult_scl.f90
@@ -732,6 +733,7 @@
 					control_affichage = 1
 					call intpr("jacobien=", -1, jacobien, 1)		
 					call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
+					call dblepr("IhessLaplace=", -1, IhessLaplace, 9)	
 				endif
 				
 				! allocate(m(1,1),m1(1,2),m3(1,2))
