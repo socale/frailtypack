@@ -691,11 +691,11 @@
                 call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpaLaplace_copula,&
                                   I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
 				
-				! if(control_affichage == 0) then
-					! control_affichage = 1
-					! call intpr("istop=", -1, istop, 1)		
-					! call dblepr("b_i=", -1, b_i, 3)	
-				! endif
+				if(control_affichage == 0) then
+					control_affichage = 1
+					call intpr("istop=", -1, istop, 1)		
+					call dblepr("b_i=", -1, b_i, np_2)	
+				endif
                 if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
                     b_i=-0.5*non_conv
                     non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
@@ -877,15 +877,15 @@
     pe = k0(1)*pe1 + k0(2)*pe2 
     resnonpen = res
     res = res - pe
-	if(control_affichage == 0) then
-		control_affichage = 1
-		call dblepr("resnonpen=", -1, resnonpen, 1)		
-		call dblepr("k0=", -1, k0, 2)	
-		call dblepr("pe2=", -1, pe2, 1)
-		call dblepr("pe1=", -1, pe1, 1)
-		call dblepr("pe=", -1, pe, 1)
-		call dblepr("res=", -1, res, 1)	
-	endif
+	! if(control_affichage == 0) then
+		! control_affichage = 1
+		! call dblepr("resnonpen=", -1, resnonpen, 1)		
+		! call dblepr("k0=", -1, k0, 2)	
+		! call dblepr("pe2=", -1, pe2, 1)
+		! call dblepr("pe1=", -1, pe1, 1)
+		! call dblepr("pe=", -1, pe, 1)
+		! call dblepr("res=", -1, res, 1)	
+	! endif
     ! call dblepr("k0 ", -1, k0, 2)
 	! call dblepr("res ", -1, res, 1)
     deallocate(mat_A)
