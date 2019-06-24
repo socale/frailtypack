@@ -692,11 +692,11 @@
 					    effet2,ca,cb,dd,funcpaLaplace_copula,IhessLaplace,H_hess_laplace,&
 					    hess_laplace,vvv_laplace)
 					
-					if(control_affichage == 0) then
-						control_affichage = 1
-						call intpr("istop=", -1, istop, 1)		
-						call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
-					endif
+					! if(control_affichage == 0) then
+						! control_affichage = 1
+						! call intpr("istop=", -1, istop, 1)		
+						! call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
+					! endif
 					if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
 						b_i_laplace=-0.5*non_conv
 						non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
@@ -727,6 +727,11 @@
 					ui = 0.d0
 				endif
 				
+				if(control_affichage == 0) then
+					control_affichage = 1
+					call intpr("jacobien=", -1, jacobien, 1)		
+					call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
+				endif
 				
 				! allocate(m(1,1),m1(1,2),m3(1,2))
 				! m1(1,1)= v_si
