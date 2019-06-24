@@ -835,7 +835,7 @@
             res = sum(dlog(integrale3))
 			if(control_affichage == 0) then
 				control_affichage = 1
-				call intpr("integrale3=", -1, integrale3, ntrials)		
+				call dblepr("integrale3=", -1, integrale3, ntrials)		
 				call dblepr("dlog(integrale3)=", -1, dlog(integrale3), ntrials)	
 			endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
