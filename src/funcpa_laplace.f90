@@ -403,7 +403,7 @@ module func_laplace
     
 		126    continue
 		
-		funcpaLaplace_copula = -((bh(1)+1.d0) ** 2.d0 + (bh(2)+2.d0) ** 2.d0 + (bh(3)-6.d0) ** 2.d0 )
+		!funcpaLaplace_copula = -((bh(1)+1.d0) ** 2.d0 + (bh(2)+2.d0) ** 2.d0 + (bh(3)-6.d0) ** 2.d0 )
 		return
     
     endfunction funcpaLaplace_copula
