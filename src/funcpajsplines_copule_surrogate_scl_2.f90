@@ -837,6 +837,7 @@
 				control_affichage = 1
 				call dblepr("integrale3=", -1, integrale3, ntrials)		
 				call dblepr("dlog(integrale3)=", -1, dlog(integrale3), ntrials)	
+				call dblepr("res=", -1, res, 1)
 			endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
@@ -878,7 +879,7 @@
     res = res - pe
 	! if(control_affichage == 0) then
 		! control_affichage = 1
-		! call intpr("resnonpen=", -1, resnonpen, 1)		
+		! call dblepr("resnonpen=", -1, resnonpen, 1)		
 		! call dblepr("res=", -1, res, 1)	
 	! endif
     ! call dblepr("k0 ", -1, k0, 2)
