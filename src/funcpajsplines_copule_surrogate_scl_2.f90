@@ -693,7 +693,6 @@
 				
 				if(control_affichage == 0) then
 					control_affichage = 1
-					call dblepr("vsi = ", -1, vsi, 1)
 					call intpr("istop=", -1, istop, 1)		
 					call dblepr("b_i=", -1, b_i, 3)	
 				endif
