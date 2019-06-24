@@ -833,6 +833,11 @@
             end if 
         case(3) ! estimation par approximation de laplace
             res = sum(dlog(integrale3))
+			if(control_affichage == 0) then
+				control_affichage = 1
+				call intpr("integrale3=", -1, integrale3, ntrials)		
+				call dblepr("dlog(integrale3)=", -1, dlog(integrale3), ntrials)	
+			endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
                 goto 123
@@ -871,11 +876,11 @@
     pe = k0(1)*pe1 + k0(2)*pe2 
     resnonpen = res
     res = res - pe
-	if(control_affichage == 0) then
-		control_affichage = 1
-		call intpr("resnonpen=", -1, resnonpen, 1)		
-		call dblepr("res=", -1, res, 3)	
-	endif
+	! if(control_affichage == 0) then
+		! control_affichage = 1
+		! call intpr("resnonpen=", -1, resnonpen, 1)		
+		! call dblepr("res=", -1, res, 1)	
+	! endif
     ! call dblepr("k0 ", -1, k0, 2)
 	! call dblepr("res ", -1, res, 1)
     deallocate(mat_A)
