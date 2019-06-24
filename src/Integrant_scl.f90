@@ -94,7 +94,8 @@ contains
 		    ! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
 			! call dblepr("integrant = ", -1, integrant, 1)
 		endif
-		if((integrant .ne. integrant) .and. (control_affichage == 0)) then
+		!if((integrant .ne. integrant) .and. (control_affichage == 0)) then
+		if(control_affichage == 0) then
 			control_affichage = 1
 			call dblepr("vsi = ", -1, vsi, 1)
 			call dblepr("vti = ", -1, vti, 1)
