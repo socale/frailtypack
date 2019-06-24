@@ -691,8 +691,12 @@
                 call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpaLaplace_copula,&
                                   I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
 				
-				! call intpr("istop=", -1, istop, 1)		
-				! call dblepr("b_i=", -1, b_i, 3)				
+				if(control_affichage == 0) then
+					control_affichage = 1
+					call dblepr("vsi = ", -1, vsi, 1)
+					call intpr("istop=", -1, istop, 1)		
+					call dblepr("b_i=", -1, b_i, 3)	
+				endif
                 if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
                     b_i=-0.5*non_conv
                     non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
