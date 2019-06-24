@@ -731,9 +731,8 @@
 				
 				if(control_affichage == 0) then
 					control_affichage = 1
-					call intpr("jacobien=", -1, jacobien, 1)		
+					call dblepr("jacobien=", -1, jacobien, 1)		
 					call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
-					call dblepr("IhessLaplace=", -1, IhessLaplace, 9)	
 				endif
 				
 				! allocate(m(1,1),m1(1,2),m3(1,2))
