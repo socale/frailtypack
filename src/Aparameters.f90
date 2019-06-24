@@ -346,7 +346,8 @@
         double precision,dimension(:,:),allocatable,save:: vc,vcinv !vc= matrice de var-cov des enffet aleatoires MC, invBi_chol=inverse de la matrice de cholesky pour l'adaptative,vcinv=matrice inverse des vc
         double precision,dimension(:),allocatable,save:: invBi_chol_Essai,invBi_chol_Individuel! contient les element de la cholesky du determinant de la hessienne, niveau essai et individuel
         double precision,dimension(:,:),allocatable,save:: ui_chap,ui_chap_Essai ! ui_chap=matrice des effets aleatoires estimes pour l'adaptative, ui_chap_Essai pour les estimation au niveau essai
-        double precision,dimension(:),allocatable,save:: invBi_cholDet_Essai, I_hess_laplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky au niveau essa
+        double precision,dimension(:),allocatable,save:: invBi_cholDet_Essai, I_hess_laplace,H_hess_laplace,hess_laplace,&
+		        vvv_laplace,b_i_laplace,v_i_laplace ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky au niveau essa
         !double precision,dimension(:),allocatable,save:: invBi_cholDet ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky: utiliser la subroutine dmfsd pour le calcul de la matrice de cholesky, niveau individuel
         integer,save::a_deja_simul! dit si on a deja simule une fois les donnees pour le calcul integrale par MC
         integer,save::sujet_essai_max,vectorisation,individu_j ! taille du plus grand essai, vectorisation= indique si l'on fait de la vectorisation dans le calcul integral pour reduire les temps de calcul ou pas

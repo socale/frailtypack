@@ -675,8 +675,8 @@
                 nparamfrail=3
             endif
 			if(control_adaptative_laplace == 0) then
-				b_i_laplace=0.5d0
-				v_i_laplace=0.d0
+				b_i_laplace = 0.5d0
+				v_i_laplace = 0.d0
 			endif
 				
 			posind_i=1 
@@ -688,8 +688,9 @@
                 
 				if(control_adaptative_laplace == 0) then	! ici on voudrait estimer les une seule fois les v_i 			
 					100 continue
-					call marq98J_scl2(k0_2,b_i_laplace,np_2,ni,v_i_laplace,res,ier,istop,effet2,ca,cb,dd,funcpaLaplace_copula,&
-									  I_hess_laplace,H_hess_laplace,hess_laplace,vvv_laplace)
+					call marq98J_scl2(k0_2,b_i_laplace,np_2,ni,v_i_laplace,res,ier,istop,&
+					    effet2,ca,cb,dd,funcpaLaplace_copula,I_hess_laplace,H_hess_laplace,&
+					    hess_laplace,vvv_laplace)
 					
 					if(control_affichage == 0) then
 						control_affichage = 1
