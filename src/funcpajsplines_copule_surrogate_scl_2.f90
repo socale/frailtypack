@@ -715,7 +715,7 @@
 					if(non_conv>0 .and. non_conv<=10) then
 						non_conv=0
 						! il y'a eu concergence
-						control_adaptative_laplace = 1
+						if(adaptative)control_adaptative_laplace = 1
 					endif 
 				endif	
 
@@ -729,11 +729,11 @@
 					ui = 0.d0
 				endif
 				
-				if(control_affichage == 0) then
-					control_affichage = 1
-					call dblepr("jacobien=", -1, jacobien, 1)		
-					call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
-				endif
+				! if(control_affichage == 0) then
+					! control_affichage = 1
+					! call dblepr("jacobien=", -1, jacobien, 1)		
+					! call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
+				! endif
 				
 				! allocate(m(1,1),m1(1,2),m3(1,2))
 				! m1(1,1)= v_si
@@ -887,15 +887,15 @@
     pe = k0(1)*pe1 + k0(2)*pe2 
     resnonpen = res
     res = res - pe
-	! if(control_affichage == 0) then
-		! control_affichage = 1
-		! call dblepr("resnonpen=", -1, resnonpen, 1)		
-		! call dblepr("k0=", -1, k0, 2)	
-		! call dblepr("pe2=", -1, pe2, 1)
-		! call dblepr("pe1=", -1, pe1, 1)
-		! call dblepr("pe=", -1, pe, 1)
-		! call dblepr("res=", -1, res, 1)	
-	! endif
+	if(control_affichage == 0) then
+		control_affichage = 1
+		call dblepr("resnonpen=", -1, resnonpen, 1)		
+		call dblepr("k0=", -1, k0, 2)	
+		call dblepr("pe2=", -1, pe2, 1)
+		call dblepr("pe1=", -1, pe1, 1)
+		call dblepr("pe=", -1, pe, 1)
+		call dblepr("res=", -1, res, 1)	
+	endif
     ! call dblepr("k0 ", -1, k0, 2)
 	! call dblepr("res ", -1, res, 1)
     deallocate(mat_A)
