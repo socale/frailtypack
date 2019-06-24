@@ -717,6 +717,7 @@
 						control_adaptative_laplace = 1
 					endif 
 				endif	
+
 				
 				jacobien = Determinant_2(IhessLaplace,3) ! determinant de la hesienne
 				v_si = b_i_laplace(1)
