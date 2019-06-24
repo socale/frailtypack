@@ -720,7 +720,7 @@
 				endif	
 
 				
-				jacobien = Determinant_2(IhessLaplace,3) ! determinant de la hesienne
+				jacobien = Determinant_2(IhessLaplace,np_2) ! determinant de la hesienne
 				v_si = b_i_laplace(1)
 				v_ti = b_i_laplace(2)
 				if(frailt_base==1) then
@@ -748,12 +748,10 @@
 									! jacobien**(-1.d0/2.d0)
 				integrale3(k) = (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
 									jacobien**(-1.d0/2.d0)
-				
+				posind_i=posind_i+nsujeti(k)
                !i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
             enddo ! fin calcul integral    
-            
-                posind_i=posind_i+nsujeti(k) ! a utiliser dans funcpafrailtyPred_Essai
- 
+
 			! call dblepr("integrale3=", -1, integrale3, ntrials)
 			
 			model=model_save

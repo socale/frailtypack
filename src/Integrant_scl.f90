@@ -204,6 +204,8 @@ contains
 		Integrant_Copula = integrant * f_V
 		deallocate(m,m1,m3)
 	endif
+	
+	if (methodInt == 0) Integrant_Copula = integrant
 
 	! if(control_affichage == 0)then
 		! control_affichage = 1
@@ -246,8 +248,6 @@ contains
 		! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
 		! call dblepr("integrant = ", -1, integrant, 1)		
 	! endif
-		
-    if (methodInt == 0 .or. methodInt == 3) Integrant_Copula = integrant
     return
     end function Integrant_Copula
     
