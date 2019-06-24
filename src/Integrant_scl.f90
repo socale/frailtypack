@@ -193,7 +193,7 @@ contains
 		endif
     enddo
 	
-	if (methodInt == 1)then
+	if (methodInt == 1 .or. methodInt == 3)then
 		allocate(m(1,1),m1(1,2),m3(1,2))
 		m1(1,1)=vsi
 		m1(1,2)=vti
