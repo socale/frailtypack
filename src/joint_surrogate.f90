@@ -243,7 +243,7 @@
 		else
 			np_2 = 2
 		endif
-		allocate(I_hess_laplace(np_2,np_2),H_hess_laplace(np_2,np_2),&
+		allocate(IhessLaplace(np_2,np_2),H_hess_laplace(np_2,np_2),&
 				b_i_laplace(np_2),v_i_laplace(np_2*(np_2+3)/2),hess_laplace(np_2,np_2),vvv_laplace(np_2*(np_2+1)/2))
         ! !print*,"suis dans joint",size(wij_chap),size(wij_chap,1),size(wij_chap,2)
     endif
@@ -1795,7 +1795,7 @@ deallocate(res2s_sujet,res2_dcs_sujet)
         m3m2,m3m1,m3m,m2m1,m2m,m1m)
     end if
 	
-	if(methodInt==3) deallocate(I_hess_laplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace)
+	if(methodInt==3) deallocate(IhessLaplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace)
 
     if (typeof .ne. 0)deallocate(vvv) !,kkapa)
     

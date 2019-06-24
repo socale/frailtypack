@@ -143,10 +143,10 @@
     ! double precision,dimension(size(vvv)),intent(out)::vvv
     
     !double precision,dimension(:,:),intent(inout)::wij_chap
-    double precision,dimension(:,:),intent(inout)::I_hess
-    double precision,dimension(:,:),intent(inout)::H_hess
-    double precision,dimension(:,:),intent(inout)::hess
-    double precision,dimension(:),intent(inout)::vvv
+    double precision,dimension(m,m),intent(inout)::I_hess
+    double precision,dimension(m,m),intent(inout)::H_hess
+    double precision,dimension(m,m),intent(inout)::hess
+    double precision,dimension(m*(m+1)/2),intent(inout)::vvv
 
     integer,intent(in) :: m,effet
     integer,intent(inout)::ni,ier,istop

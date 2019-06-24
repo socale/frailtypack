@@ -689,7 +689,7 @@
 				if(control_adaptative_laplace == 0) then	! ici on voudrait estimer les une seule fois les v_i 			
 					100 continue
 					call marq98J_scl2(k0_2,b_i_laplace,np_2,ni,v_i_laplace,res,ier,istop,&
-					    effet2,ca,cb,dd,funcpaLaplace_copula,I_hess_laplace,H_hess_laplace,&
+					    effet2,ca,cb,dd,funcpaLaplace_copula,IhessLaplace,H_hess_laplace,&
 					    hess_laplace,vvv_laplace)
 					
 					if(control_affichage == 0) then
@@ -718,7 +718,7 @@
 					endif 
 				endif	
 				
-				jacobien = Determinant_2(I_hess_laplace,3) ! determinant de la hesienne
+				jacobien = Determinant_2(IhessLaplace,3) ! determinant de la hesienne
 				v_si = b_i_laplace(1)
 				v_ti = b_i_laplace(2)
 				if(frailt_base==1) then
