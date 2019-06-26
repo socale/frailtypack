@@ -328,7 +328,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 
     ! initialisation de l'environnement de travail pour le parallelisme MPI 
 	if(nsim_node(4)==3) then
-		call MPI_INIT(code) ! cet environnement est desactive a la fin du programme a l'aide de MPI_FINALIZE
+		!call MPI_INIT(code) ! cet environnement est desactive a la fin du programme a l'aide de MPI_FINALIZE
 		call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code) ! commaitre le nombre de processus associe a l'identificateur code
 		call MPI_COMM_RANK(MPI_COMM_WORLD,rang_proc,code)
 	endif
@@ -3906,7 +3906,7 @@ end do
     
     !desactivation de l'environnement de travail pour le programme parallele
     if(nsim_node(4).ne.3) then
-        call MPI_FINALIZE(code)  
+        !call MPI_FINALIZE(code)  
     endif
     !call MPI_FINALIZE(code) 
     !!print*,"suis là================="
