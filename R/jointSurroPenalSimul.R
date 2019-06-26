@@ -858,7 +858,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   
   param_estimes <- NULL
   
-  mpi.spawn.Rslaves(nslaves = 1)
+  mpi.spawn.Rslaves(nslaves = 8)
   mpi.bcast.Robj2slave(funcforMPI)
   mpi.bcast.Robj2slave(.Fortran)
   mpi.bcast.Robj2slave(nsujet1)
