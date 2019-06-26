@@ -20,7 +20,7 @@
     !use func_laplace  ! pour tout ce qui est de l'approximation de laplace: fichier funcpa_laplace.f90
     use Laplace_contribution ! pour tout ce qui est de l'approximation de laplace: fichier Integrale_mult_scl.f90
     ! !$ use OMP_LIB
-    !use mpi ! module pour l'environnement MPI
+    use mpi ! module pour l'environnement MPI
     use Autres_fonctions, only:init_random_seed
 	use func_laplace, only: funcpaLaplace_copula
     
@@ -681,7 +681,38 @@
 			endif
 				
 			posind_i=1 
+			!call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_pro2,code)
+            call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code)
+                
+            !call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code)
+            !call MPI_COMM_RANK(MPI_COMM_WORLD,rang2,code)! pour chaque processus associe a l'identificateur code retourne son rang
+                
+            !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
+            !call MPI_ABORT(comm2,erreur,code)
+            n_par_pro=table_par_pro(rang+1) ! nombre de simulations a effectuer par le processus courant
+                
+            ! indice des calculs a effectuer par le processus courant
+            if (rang==0) then
+				! !print*, "table_par_pro=",table_par_pro
+				init_i=1 ! ce processus commence a la premiere simulation
+            else
+				init_i=sum(table_par_pro(1:rang))+1 ! ce processus commence a la simulation qui respecte son ordre et doit s'arreter au nombre de simultation dont il a le droit d'executer
+            endif
+                
+            max_i=init_i+table_par_pro(rang+1)-1!rang maximale de la simulation a executer (-1 car on a deja incrementer init_i de 1)
+    
+			som_cont = 0.d0
+			som_cont_0 = 0.d0
             do k=1,ntrials
+				if((k<init_i).or.k>max_i) then 
+                    goto 1001 ! pour dire le processus ne considere pas ce jeu de donnee
+                endif
+                        
+                if(k==1)then
+                    position_i=1
+                else
+                    position_i=sum(nsujeti(1:(k-1)))+1
+                endif
                 essai_courant=k
                 ! ====================================================================================================
                 ! estimation des ui_chapeau, vs_i_chapeau et vt_i_chapeau
@@ -718,7 +749,6 @@
 						if(adaptative)control_adaptative_laplace = 1
 					endif 
 				endif	
-
 				
 				jacobien = Determinant_2(IhessLaplace,np_2) ! determinant de la hesienne
 				v_si = b_i_laplace(1)
@@ -729,96 +759,25 @@
 					ui = 0.d0
 				endif
 				
-				! if(control_affichage == 0) then
-					! control_affichage = 1
-					! call dblepr("jacobien=", -1, jacobien, 1)		
-					! call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
-				! endif
-				
-				! allocate(m(1,1),m1(1,2),m3(1,2))
-				! m1(1,1)= v_si
-				! m1(1,2)= v_ti
-				! m3=MATMUL(m1,varcovinv)
-				! m=MATMUL(m3,TRANSPOSE(m1))
-				! f_vi = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * &
-				       ! dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
-				
-				! deallocate(m,m1,m3) 
-				! integrale3(k) = f_vi * (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
-									! jacobien**(-1.d0/2.d0)
 				integrale3(k) = (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
 									jacobien**(-1.d0/2.d0)
-				posind_i=posind_i+nsujeti(k)
-               !i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
+				!posind_i=posind_i+nsujeti(k)
+                som_cont=som_cont+dlog(integrale3(k))
+				1001 continue
             enddo ! fin calcul integral    
+            ! synthese des contributions
+            call MPI_ALLREDUCE(som_cont,som_cont_0,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,code)
+            !call sleep(1)
+            som_cont=som_cont_0
+            !call MPI_ABORT(MPI_COMM_WORLD,erreur,comm)
+            !call MPI_Barrier(MPI_COMM_WORLD,comm2) ! pour la synchronisation globale avant
 
 			! call dblepr("integrale3=", -1, integrale3, ntrials)
 			
 			model=model_save
             nparamfrail=nparamfrail_save
             maxiter=maxiter_save                   
-
-            if(rang==0)then
-				!call dblepr("Fin estimation des fragilites a posteriorie", -1, integrale3(1), 1)
-            endif
- 
-                ! !call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_pro2,code)
-                 !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code)
-                
-                ! !call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code)
-                ! !call MPI_COMM_RANK(MPI_COMM_WORLD,rang2,code)! pour chaque processus associe a l'identificateur code retourne son rang
-                
-                ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
-                !!call MPI_ABORT(comm2,erreur,code)
-                ! n_par_pro=table_par_pro(rang+1) ! nombre de simulations a effectuer par le processus courant
-                
-                ! ! indice des calculs a effectuer par le processus courant
-                ! if (rang==0) then
-                    ! ! !print*, "table_par_pro=",table_par_pro
-                    ! init_i=1 ! ce processus commence a la premiere simulation
-                ! else
-                    ! init_i=sum(table_par_pro(1:rang))+1 ! ce processus commence a la simulation qui respecte son ordre et doit s'arreter au nombre de simultation dont il a le droit d'executer
-                ! endif
-                
-                ! max_i=init_i+table_par_pro(rang+1)-1!rang maximale de la simulation a executer (-1 car on a deja incrementer init_i de 1)
-    
-                ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)! on stop tous les programmes appartenant au communicateur code, equivalent de l'instruction stop en sequantiel
-                
-                !compteur=compteur+1
-                ! !$OMP PARALLEL DO default(none) firstprivate (model) PRIVATE (ig,resultatInt)& 
-                ! !$OMP shared(ntrials,nsujeti,integrale3,determinant) REDUCTION(+:som_cont)
-                    ! do ig=1,ntrials 
-                        ! if((ig<init_i).or.ig>max_i) then 
-                            ! goto 1000 ! pour dire le processus ne considere pas ce jeu de donnee
-                        ! endif
-                        
-                        ! if(ig==1)then
-                            ! position_i=1
-                        ! else
-                            ! position_i=sum(nsujeti(1:(ig-1)))+1
-                        ! endif
-
-                        ! essai_courant=ig
-                        ! resultatInt=0.d0
-                        ! resultatInt=Cont_Laplace_Essai(determinant)                    
-                        ! if(resultatInt(1) .ne. -1.d9) then
-                             ! som_cont=som_cont+resultatInt(1) + res2s(ig) &
-                                ! + res2_dcs(ig)&
-                                ! -(1/2.d0)*(nsujeti(ig)*dlog(2.d0*pi*theta2)+(2.d0*dlog(2.d0*pi))+dlog(determinant)&
-                                ! +dlog(2.d0*pi*gamma_ui))
-                        ! endif
-                        ! integrale3(ig) = resultatInt(1) ! on recupere le premier element car les deux autres sont supposes etre la precision et la variance 
-                        ! 1000 continue
-                    ! end do
-                     ! ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
-                ! ! !$OMP END PARALLEL DO
-                ! ! synthese des contributions
-                ! ! !call MPI_REDUCE(som_cont,som_cont_0,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD,code)
-                ! !call MPI_ALLREDUCE(som_cont,som_cont_0,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,code)
-                ! ! call sleep(1)
-                ! som_cont=som_cont_0
-                ! !!call MPI_ABORT(MPI_COMM_WORLD,erreur,comm)
-                ! !!call MPI_Barrier(MPI_COMM_WORLD,comm2) ! pour la synchronisation globale avant 	
+                      	
         end select
     
     !************* FIN INTEGRALES **************************
@@ -840,13 +799,8 @@
                 goto 123
             end if 
         case(3) ! estimation par approximation de laplace
-            res = sum(dlog(integrale3))
-			! if(control_affichage == 0) then
-				! control_affichage = 1
-				! call dblepr("integrale3=", -1, integrale3, ntrials)		
-				! call dblepr("dlog(integrale3)=", -1, dlog(integrale3), ntrials)	
-				! call dblepr("res=", -1, res, 1)
-			! endif
+            ! res = sum(dlog(integrale3))
+			res = som_cont
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
                 goto 123
