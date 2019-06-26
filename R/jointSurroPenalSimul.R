@@ -906,7 +906,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   # dyn.load("/gpfs/home/csofeu/R/x86_64-pc-linux-gnu-library/3.5/frailtypack/libs/frailtypack.so")
   # dyn.load("/gpfs/home/csofeu/R/x86_64-pc-linux-gnu-library/3.5/frailtypack/libs/libmpi.so")
   dyn.load("frailtypack.so")
-  dyn.load("Rmpi.so")
+  dyn.load("libmpi.so")
+  #dyn.load("Rmpi.so")
   ans <- mpi.remote.exec(funcforMPI(
                                     nsujet1, 
                                     ng, 
