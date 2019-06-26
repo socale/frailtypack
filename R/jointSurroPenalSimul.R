@@ -903,7 +903,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   mpi.bcast.Robj2slave(affiche.itter)
   mpi.bcast.Robj2slave(vbetast)
   mpi.bcast.Robj2slave(vbetastinit)
-  #dyn.load("frailtypack.so")
+  dyn.load("frailtypack/scr/frailtypack.so")
   dyn.load("libmpi.so")
   
   ans <- mpi.remote.exec(funcforMPI(
