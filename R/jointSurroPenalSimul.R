@@ -315,77 +315,6 @@
 #' 
 #' }
 #' 
-
-# j'ajoute cette fonction pour l'appel avec MPI
-funcforMPI <- function(nsujet1, ng, ntrials1, maxiter, nst, nparamfrail, indice_a_estime, param_risque_base,
-                       nbrevar, filtre0, donnees, death, p, prop_i, n_sim1, LIMparam, LIMlogl, LIMderiv, kappa0,
-                       vect_kappa, logNormal, nsim_node, Param_kendall_boot, true.init.val, param_init,
-                       revision_echelle, random.generator, sujet_equi, prop_trait, paramSimul, autreParamSim,
-                       ncol_param_estim, sizeVect, np, mt1, mt11, mt2, mt12, nz, affiche.itter, vbetast,
-                       vbetastinit){
-  
-  ans <- .Fortran(C_jointsurrogate,
-                  as.integer(nsujet1),
-                  as.integer(ng),
-                  as.integer(ntrials1),
-                  as.integer(maxiter),
-                  as.integer(nst),
-                  as.integer(nparamfrail),
-                  as.integer(indice_a_estime),
-                  as.integer(param_risque_base),
-                  as.integer(nbrevar),
-                  as.integer(filtre0),
-                  as.matrix(donnees),
-                  as.matrix(death),
-                  as.double(p),
-                  as.double(prop_i),
-                  as.integer(n_sim1),
-                  EPS2 = as.double(c(LIMparam, LIMlogl, LIMderiv)),
-                  as.double(kappa0),
-                  as.double(vect_kappa),
-                  as.integer(logNormal),
-                  nsim_node = as.integer(nsim_node),
-                  as.integer(Param_kendall_boot),
-                  as.integer(true.init.val),
-                  as.double(param_init),
-                  as.double(revision_echelle),
-                  as.integer(random.generator),
-                  as.integer(sujet_equi),
-                  as.double(prop_trait),
-                  as.double(paramSimul),
-                  as.integer(autreParamSim),
-                  fichier_kendall = matrix (0,nrow = n_sim1, ncol = 3), # debut section des parametres de sortie
-                  fichier_R2 = matrix (0,nrow = n_sim1, ncol = 3),
-                  param_estimes = matrix (0,nrow = n_sim1, ncol = ncol_param_estim),
-                  as.integer(sizeVect),
-                  b = rep(0,np),
-                  H_hessOut = matrix(0,np,np),
-                  HIHOut = matrix(0,np,np),
-                  resOut = 0,
-                  LCV = c(0,0),
-                  x1Out = rep(0, mt1),
-                  lamOut = matrix(0, nrow = mt1, ncol= 3),
-                  xSu1 = matrix(0, mt11),
-                  suOut = matrix(0, nrow = mt11 , ncol=3),
-                  x2Out = rep(0, mt2),
-                  lam2Out = matrix(0, nrow = mt2, ncol= 3),
-                  xSu2 = matrix(0, mt11),
-                  su2Out = matrix(0, nrow = mt12 , ncol = 3),
-                  ni= as.integer(0),
-                  ier = 0,
-                  istop = 0,
-                  ziOut = rep(0,nz+6),
-                  as.integer(affiche.itter),
-                  Varcov = matrix(0, nrow = 3, ncol = 3),
-                  dataHessian = matrix(0, nrow = np*n_sim1, ncol = np),
-                  dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
-                  datab = matrix(0, nrow = n_sim1, ncol = np),
-                  as.double(vbetast),
-                  as.double(vbetastinit),
-                  PACKAGE="frailtypack"
-  )
-}
-
 jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, n.knots = 6,
                       nb.dataset = 1, nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001,
                       LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, 
@@ -858,157 +787,66 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   
   param_estimes <- NULL
   
-  mpi.spawn.Rslaves(nslaves = 1)
-  mpi.bcast.Robj2slave(funcforMPI)
-  mpi.bcast.Robj2slave(.Fortran)
-  mpi.bcast.Robj2slave(nsujet1)
-  mpi.bcast.Robj2slave(ng)
-  mpi.bcast.Robj2slave(ntrials1)
-  mpi.bcast.Robj2slave(maxiter)
-  mpi.bcast.Robj2slave(nst)
-  mpi.bcast.Robj2slave(nparamfrail)
-  mpi.bcast.Robj2slave(indice_a_estime)
-  mpi.bcast.Robj2slave(param_risque_base)
-  mpi.bcast.Robj2slave(nbrevar)
-  mpi.bcast.Robj2slave(filtre0)
-  mpi.bcast.Robj2slave(donnees)
-  mpi.bcast.Robj2slave(death)
-  mpi.bcast.Robj2slave(p)
-  mpi.bcast.Robj2slave(prop_i)
-  mpi.bcast.Robj2slave(n_sim1)
-  mpi.bcast.Robj2slave(LIMparam)
-  mpi.bcast.Robj2slave(LIMlogl)
-  mpi.bcast.Robj2slave(LIMderiv)
-  mpi.bcast.Robj2slave(kappa0)
-  mpi.bcast.Robj2slave(vect_kappa)
-  mpi.bcast.Robj2slave(logNormal)
-  mpi.bcast.Robj2slave(nsim_node)
-  mpi.bcast.Robj2slave(Param_kendall_boot)
-  mpi.bcast.Robj2slave(true.init.val)
-  mpi.bcast.Robj2slave(param_init)
-  mpi.bcast.Robj2slave(revision_echelle)
-  mpi.bcast.Robj2slave(random.generator)
-  mpi.bcast.Robj2slave(sujet_equi)
-  mpi.bcast.Robj2slave(prop_trait)
-  mpi.bcast.Robj2slave(paramSimul)
-  mpi.bcast.Robj2slave(autreParamSim)
-  mpi.bcast.Robj2slave(ncol_param_estim)
-  mpi.bcast.Robj2slave(sizeVect)
-  mpi.bcast.Robj2slave(np)
-  mpi.bcast.Robj2slave(mt1)
-  mpi.bcast.Robj2slave(mt11)
-  mpi.bcast.Robj2slave(mt2)
-  mpi.bcast.Robj2slave(mt12)
-  mpi.bcast.Robj2slave(nz)
-  mpi.bcast.Robj2slave(affiche.itter)
-  mpi.bcast.Robj2slave(vbetast)
-  mpi.bcast.Robj2slave(vbetastinit)
-  dyn.load("frailtypack.so")
-  dyn.load("libmpi.so")
-  
-  ans <- mpi.remote.exec(funcforMPI(
-                                    nsujet1, 
-                                    ng, 
-                                    ntrials1, 
-                                    maxiter, 
-                                    nst, 
-                                    nparamfrail, 
-                                    indice_a_estime, 
-                                    param_risque_base,
-                                    nbrevar, 
-                                    filtre0, 
-                                    donnees, 
-                                    death, 
-                                    p, 
-                                    prop_i, 
-                                    n_sim1, 
-                                    LIMparam, 
-                                    LIMlogl, 
-                                    LIMderiv, 
-                                    kappa0,
-                                    vect_kappa, 
-                                    logNormal, 
-                                    nsim_node, 
-                                    Param_kendall_boot, 
-                                    true.init.val, 
-                                    param_init,
-                                    revision_echelle, 
-                                    random.generator,
-                                    sujet_equi, 
-                                    prop_trait, 
-                                    paramSimul, 
-                                    autreParamSim,
-                                    ncol_param_estim, 
-                                    sizeVect, 
-                                    np, 
-                                    mt1,
-                                    mt11,
-                                    mt2, 
-                                    mt12, 
-                                    nz, 
-                                    affiche.itter, 
-                                    vbetast,
-                                    vbetastinit))
-  # ans <- .Fortran(C_jointsurrogate,
-  #                 as.integer(nsujet1),
-  #                 as.integer(ng),
-  #                 as.integer(ntrials1),
-  #                 as.integer(maxiter),
-  #                 as.integer(nst),
-  #                 as.integer(nparamfrail),
-  #                 as.integer(indice_a_estime),
-  #                 as.integer(param_risque_base),
-  #                 as.integer(nbrevar),
-  #                 as.integer(filtre0),
-  #                 as.matrix(donnees),
-  #                 as.matrix(death),
-  #                 as.double(p),
-  #                 as.double(prop_i),
-  #                 as.integer(n_sim1),
-  #                 EPS2 = as.double(c(LIMparam, LIMlogl, LIMderiv)),
-  #                 as.double(kappa0),
-  #                 as.double(vect_kappa),
-  #                 as.integer(logNormal),
-  #                 nsim_node = as.integer(nsim_node),
-  #                 as.integer(Param_kendall_boot),
-  #                 as.integer(true.init.val),
-  #                 as.double(param_init),
-  #                 as.double(revision_echelle),
-  #                 as.integer(random.generator),
-  #                 as.integer(sujet_equi),
-  #                 as.double(prop_trait),
-  #                 as.double(paramSimul),
-  #                 as.integer(autreParamSim),
-  #                 fichier_kendall = matrix (0,nrow = n_sim1, ncol = 3), # debut section des parametres de sortie
-  #                 fichier_R2 = matrix (0,nrow = n_sim1, ncol = 3),
-  #                 param_estimes = matrix (0,nrow = n_sim1, ncol = ncol_param_estim),
-  #                 as.integer(sizeVect),
-  #                 b = rep(0,np),
-  #                 H_hessOut = matrix(0,np,np),
-  #                 HIHOut = matrix(0,np,np),
-  #                 resOut = 0,
-  #                 LCV = c(0,0),
-  #                 x1Out = rep(0, mt1),
-  #                 lamOut = matrix(0, nrow = mt1, ncol= 3),
-  #                 xSu1 = matrix(0, mt11),
-  #                 suOut = matrix(0, nrow = mt11 , ncol=3),
-  #                 x2Out = rep(0, mt2),
-  #                 lam2Out = matrix(0, nrow = mt2, ncol= 3),
-  #                 xSu2 = matrix(0, mt11),
-  #                 su2Out = matrix(0, nrow = mt12 , ncol = 3),
-  #                 ni= as.integer(0),
-  #                 ier = 0,
-  #                 istop = 0,
-  #                 ziOut = rep(0,nz+6),
-  #                 as.integer(affiche.itter),
-  #                 Varcov = matrix(0, nrow = 3, ncol = 3),
-  #                 dataHessian = matrix(0, nrow = np*n_sim1, ncol = np),
-  #                 dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
-  #                 datab = matrix(0, nrow = n_sim1, ncol = np),
-  #                 as.double(vbetast),
-  #                 as.double(vbetastinit),
-  #                 PACKAGE="frailtypack"
-  # )
+  ans <- .Fortran(C_jointsurrogate,
+                  as.integer(nsujet1),
+                  as.integer(ng),
+                  as.integer(ntrials1),
+                  as.integer(maxiter),
+                  as.integer(nst),
+                  as.integer(nparamfrail),
+                  as.integer(indice_a_estime),
+                  as.integer(param_risque_base),
+                  as.integer(nbrevar),
+                  as.integer(filtre0),
+                  as.matrix(donnees),
+                  as.matrix(death),
+                  as.double(p),
+                  as.double(prop_i),
+                  as.integer(n_sim1),
+                  EPS2 = as.double(c(LIMparam, LIMlogl, LIMderiv)),
+                  as.double(kappa0),
+                  as.double(vect_kappa),
+                  as.integer(logNormal),
+                  nsim_node = as.integer(nsim_node),
+                  as.integer(Param_kendall_boot),
+                  as.integer(true.init.val),
+                  as.double(param_init),
+                  as.double(revision_echelle),
+                  as.integer(random.generator),
+                  as.integer(sujet_equi),
+                  as.double(prop_trait),
+                  as.double(paramSimul),
+                  as.integer(autreParamSim),
+                  fichier_kendall = matrix (0,nrow = n_sim1, ncol = 3), # debut section des parametres de sortie
+                  fichier_R2 = matrix (0,nrow = n_sim1, ncol = 3),
+                  param_estimes = matrix (0,nrow = n_sim1, ncol = ncol_param_estim),
+                  as.integer(sizeVect),
+                  b = rep(0,np),
+                  H_hessOut = matrix(0,np,np),
+                  HIHOut = matrix(0,np,np),
+                  resOut = 0,
+                  LCV = c(0,0),
+                  x1Out = rep(0, mt1),
+                  lamOut = matrix(0, nrow = mt1, ncol= 3),
+                  xSu1 = matrix(0, mt11),
+                  suOut = matrix(0, nrow = mt11 , ncol=3),
+                  x2Out = rep(0, mt2),
+                  lam2Out = matrix(0, nrow = mt2, ncol= 3),
+                  xSu2 = matrix(0, mt11),
+                  su2Out = matrix(0, nrow = mt12 , ncol = 3),
+                  ni= as.integer(0),
+                  ier = 0,
+                  istop = 0,
+                  ziOut = rep(0,nz+6),
+                  as.integer(affiche.itter),
+                  Varcov = matrix(0, nrow = 3, ncol = 3),
+                  dataHessian = matrix(0, nrow = np*n_sim1, ncol = np),
+                  dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
+                  datab = matrix(0, nrow = n_sim1, ncol = np),
+                  as.double(vbetast),
+                  as.double(vbetastinit),
+                  PACKAGE="frailtypack"
+  )
   
   # resultats a retourner:
   result <- NULL
