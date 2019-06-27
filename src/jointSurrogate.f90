@@ -17,7 +17,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     use var_surrogate, only: graine,aleatoire,nbre_sim,nbre_itter_PGH,nb_procs,random_generator,affiche_itteration, &
          copula_function
     use Autres_fonctions, only:pos_proc_domaine
-    !use mpi ! module pour l'environnement MPI
+    use mpi ! module pour l'environnement MPI
     !$ use OMP_LIB 
 
     implicit none
@@ -328,6 +328,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 
     ! initialisation de l'environnement de travail pour le parallelisme MPI 
 <<<<<<< HEAD
+<<<<<<< HEAD
     !call MPI_INIT(code) ! cet environnement est desactive a la fin du programme a l'aide de MPI_FINALIZE
     !call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code) ! commaitre le nombre de processus associe a l'identificateur code
     !call MPI_COMM_RANK(MPI_COMM_WORLD,rang_proc,code)
@@ -338,6 +339,13 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 		call MPI_COMM_RANK(MPI_COMM_WORLD,rang_proc,code)
 	endif
 >>>>>>> parent of e18cbf8... update of the R function jointSurroPenalSimul to take into account the Rmpi command
+=======
+	if(nsim_node(4)==3)
+		! call MPI_INIT(code) ! cet environnement est desactive a la fin du programme a l'aide de MPI_FINALIZE
+		call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code) ! commaitre le nombre de processus associe a l'identificateur code
+		call MPI_COMM_RANK(MPI_COMM_WORLD,rang_proc,code)
+	endif
+>>>>>>> parent of adb89dd... Revert "first commit with mpi"
     !desactivation de l'environnement de travail pour le programme parallele
     !!call MPI_FINALIZE(comm) 
 
