@@ -1,11 +1,4 @@
 # -*- Makefile -*-
-# nouvel ajout pour mpi ==scl 26/06/2019==
-# This file is derived from Rmpi package
-
-PKG_CFLAGS   = $(ARCHCFLAGS)
-PKG_FCFLAGS  = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -I/usr/lib/openmpi/include -pthread -I/usr/lib/openmpi/lib -I -DMPI2 -DOPENMPI -Wl,-rpath  $(ARCHCFLAGS)
-PKG_LIBS     = -pthread -I/usr/lib/openmpi/lib -Wl,-rpath -Wl,/usr/lib/openmpi/lib -Wl,--enable-new-dtags -L/usr/lib/openmpi/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi  -lutil -lpthread $(ARCHLIB) $(BLAS_LIBS) $(FLIBS)
-# fin ajout ==scl 26/06/2019==
 
 # important command about parallel make
 $(SHLIB): $(OBJECTS)

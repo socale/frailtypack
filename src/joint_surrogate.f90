@@ -1253,17 +1253,6 @@
                 case(2)
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_surrogate)    
                 case(3) ! the joint frailty-copula model
-					!!call MPI_ABORT(MPI_COMM_WORLD,erreur,code)! on stop tous les programmes appartenant au communicateur code, equivalent de l'instruction stop en sequantiel
-                    !========= gestion du nombre d'essai a manipuler par processus dans le cas de laplace=========== 
-                    n_par_pro=INT(ntrials/nb_procs)
-                    suplement=ntrials-n_par_pro*nb_procs ! donne le nombre de simulation a partager entre les premiers processus seulement
-                        
-                    ! remplissage du table du nombre de simulation a effectuer par processus
-                    !!print*,nb_procs,n_sim,suplement
-                    allocate(table_par_pro(nb_procs))
-                    table_par_pro(1:nb_procs)=n_par_pro
-                    !!print*,tableNsim
-                    table_par_pro(1:suplement)=n_par_pro+1 ! tous les essais jusqu'au rang supplement-1 recoivent une tâche supplementaire a realiser
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_copule_surrogate)    
             endselect
         case(1) ! fonctions de risque de base supposees constantes par morceau
