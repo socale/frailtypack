@@ -103,7 +103,7 @@
 #' y(t_{ik})&=\exp[y_0+b_{y_0,i}+t_{ik}\times\exp(K_{G,0}+b_{G,i}+\bold{X}_{G,i}(t)^\top\bold\beta_{G})\\
 #' &+d_i\times
 #' \exp(K_{D,0}+b_{D,i}-\lambda-b_{\lambda,i}+\bold{X}_{D,i}(t)^\top\bold{\beta}_{D})\\
-#' &\times(\exp((\lambda+b_{\lambda,i})t_{ik})-1)]+\epsilon_{ik}\\
+#' &\times(\exp(-\exp(\lambda+b_{\lambda,i})t_{ik})-1)]+\epsilon_{ik}\\
 #' r_{ij}(t|\bold{b}_i)&=r_0(t)\exp(v_i+\bold{X}_{Rij}(t)^\top\bold{\beta}_R+g(y_i(t))^\top
 #' \bold{\eta}_R ) \\ \lambda_i(t|\bold{b}_i)&=\lambda_0(t)\exp(\alpha
 #' v_i+\bold{X}_{Ti}(t)^\top\bold{\beta}_T+h(y_i(t))^\top \bold{\eta}_T ) \\
