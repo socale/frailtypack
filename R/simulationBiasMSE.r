@@ -1,6 +1,6 @@
 # Function used to summarize the simulation results. results in this case just include Biase and MSE
 # param.estim is the dataset of the estimates from the simulation study
-simulationBiasMSE <- function(param.estim, R2 = 0.81, ktau = 0.378, nb.simul, dec = 3){
+simulationBiasMSE <- function(param.estim, R2 = 0.81, ktau = 0.378, nb.simul, dec = 3, CP = 0, cpR, cpT){
   
   # recherche des lignes correspondantes aux simulations qui n'ont pas convergees (concerne le cas des programmes esimees par MPI-OpenMP)
   somme_row <- NULL
@@ -16,6 +16,7 @@ simulationBiasMSE <- function(param.estim, R2 = 0.81, ktau = 0.378, nb.simul, de
   d$Mean <- NA
   d$Biais <- NA
   d$MSE <- NA
+  if(CP == 1) d$CP <- NA
   #Ktau
   m_ktau <- mean(donnee$tau[!is.na(donnee$tau)])
   b_tau <- ktau-m_ktau # biais Ktau
@@ -30,9 +31,15 @@ simulationBiasMSE <- function(param.estim, R2 = 0.81, ktau = 0.378, nb.simul, de
   n_NA <- nb.simul - nrow(donnee)
           
   #sauvagarde dans d
-  d[1,3:5] <- c(round(m_r2_ad, dec),round(b_r2_ad, dec),round(mse_r2_ad, dec))
-  d[2,3:5] <- c(round(m_ktau, dec),round(b_tau, dec),round(mse_tau, dec))
-  d[3,3:5] <- c("",paste(n_NA,"(",round(100*n_NA/nb.simul),")",sep = ""),"")
+  if(CP == 0){
+    d[1,3:5] <- c(round(m_r2_ad, dec),round(b_r2_ad, dec),round(mse_r2_ad, dec))
+    d[2,3:5] <- c(round(m_ktau, dec),round(b_tau, dec),round(mse_tau, dec))
+    d[3,3:5] <- c("",paste(n_NA,"(",round(100*n_NA/nb.simul),")",sep = ""),"")
+  }else{
+    d[1,3:6] <- c(round(m_r2_ad, dec),round(b_r2_ad, dec),round(mse_r2_ad, dec), cpR)
+    d[2,3:6] <- c(round(m_ktau, dec),round(b_tau, dec),round(mse_tau, dec), cpT)
+    d[3,3:6] <- c("",paste(n_NA,"(",round(100*n_NA/nb.simul),")",sep = ""),"","")
+  }
 
   return(d)
 }
