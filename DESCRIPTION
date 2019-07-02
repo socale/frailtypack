@@ -5,7 +5,7 @@ Title: General Frailty Models: Shared, Joint and Nested Frailty Models
         with Prediction; Evaluation of Failure-Time Surrogate Endpoints
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
-        Agnieszka Krol and Casimir L. Sofeu
+        Agnieszka Krol, Casimir L. Sofeu, Julien Dumerc
 Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
 Depends: R (>= 2.10), survival, boot, MASS, survC1, doBy
 Imports: statmod, nlme
@@ -22,9 +22,11 @@ Description: The following several classes of frailty models using a penalized l
 		9) Trivariate joint models for longitudinal data, recurrent events and a terminal event. 
 		10) Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints 
 		Prediction values are available (for a terminal event or for a new recurrent event). Left-truncated (not for Joint model), right-censored data, interval-censored data (only for Cox proportional hazard and shared frailty model) and strata are allowed. In each model, the random effects have the gamma or normal distribution. Now, you can also consider time-varying covariates effects in Cox, shared and joint frailty models (1-5). The package includes concordance measures for Cox proportional hazards models and for shared frailty models.
+		Moreover, frailtypack can be used with its shiny application, in a local mode or by following the link below.
 License: GPL (>= 2.0)
 URL:
         https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
+        https://frailtypack.shinyapps.io/frailtypack
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 Repository: CRAN
