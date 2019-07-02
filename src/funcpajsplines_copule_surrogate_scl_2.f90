@@ -20,11 +20,12 @@
     !use func_laplace  ! pour tout ce qui est de l'approximation de laplace: fichier funcpa_laplace.f90
     use Laplace_contribution ! pour tout ce qui est de l'approximation de laplace: fichier Integrale_mult_scl.f90
     ! !$ use OMP_LIB
-    use mpi ! module pour l'environnement MPI
+    !use mpi ! module pour l'environnement MPI
     use Autres_fonctions, only:init_random_seed
 	use func_laplace, only: funcpaLaplace_copula
     
     IMPLICIT NONE
+	include '/gpfs/softs/cluster/mpi/openmpi/3.1.3/include/mpif.h'
 
 ! *** NOUVELLLE DECLARATION F90 :
     
@@ -766,6 +767,7 @@
 				1001 continue
             enddo ! fin calcul integral    
             ! synthese des contributions
+			call MPI_Barrier(MPI_COMM_WORLD,code) !pour la synchronisation globale avant
             call MPI_ALLREDUCE(som_cont,som_cont_0,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,code)
             !call sleep(1)
             som_cont=som_cont_0

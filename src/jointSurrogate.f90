@@ -17,10 +17,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     use var_surrogate, only: graine,aleatoire,nbre_sim,nbre_itter_PGH,nb_procs,random_generator,affiche_itteration, &
          copula_function
     use Autres_fonctions, only:pos_proc_domaine
-    use mpi ! module pour l'environnement MPI
-    !$ use OMP_LIB 
+    !use mpi ! module pour l'environnement MPI
+    !!$ use OMP_LIB 
 
     implicit none
+	include '/gpfs/softs/cluster/mpi/openmpi/3.1.3/include/mpif.h'
 
     ! =======debut declaration des variables================
     
@@ -325,27 +326,16 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     nb_processus=1
     nb_procs=1
     controlgoto=0
+	rang_proc = 0
 
     ! initialisation de l'environnement de travail pour le parallelisme MPI 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    !call MPI_INIT(code) ! cet environnement est desactive a la fin du programme a l'aide de MPI_FINALIZE
-    !call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code) ! commaitre le nombre de processus associe a l'identificateur code
-    !call MPI_COMM_RANK(MPI_COMM_WORLD,rang_proc,code)
-=======
+
 	if(nsim_node(4)==3) then
-		!call MPI_INIT(code) ! cet environnement est desactive a la fin du programme a l'aide de MPI_FINALIZE
-		call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code) ! commaitre le nombre de processus associe a l'identificateur code
-		call MPI_COMM_RANK(MPI_COMM_WORLD,rang_proc,code)
-	endif
->>>>>>> parent of e18cbf8... update of the R function jointSurroPenalSimul to take into account the Rmpi command
-=======
-	if(nsim_node(4)==3)
 		! call MPI_INIT(code) ! cet environnement est desactive a la fin du programme a l'aide de MPI_FINALIZE
 		call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_procs,code) ! commaitre le nombre de processus associe a l'identificateur code
 		call MPI_COMM_RANK(MPI_COMM_WORLD,rang_proc,code)
 	endif
->>>>>>> parent of adb89dd... Revert "first commit with mpi"
+	
     !desactivation de l'environnement de travail pour le programme parallele
     !!call MPI_FINALIZE(comm) 
 
@@ -1618,7 +1608,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 	k0(1) = k0(1) + ckappa(1)
 	k0(2) = k0(2) + ckappa(2)
 	
-	if(affiche_itteration == 1) then
+	if(affiche_itteration == 1 .and. rang_proc == 0) then
 		!call dblepr("avant appel joint:ckappa", -1,ckappa , 2)
 		call dblepr("avant appel joint:k0", -1,k0 , 2)
 		! call intpr("avant appel joint:nsujet", -1, nsujet, 1)

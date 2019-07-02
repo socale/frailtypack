@@ -120,9 +120,12 @@
 
 !add additive
     use additiv,only:correl
-    use var_surrogate, only:nparamfrail,nbre_itter_PGH,control_adaptative, affiche_itteration
+    use var_surrogate, only:nparamfrail,nbre_itter_PGH,control_adaptative, affiche_itteration,&
+	                    methodInt
 
     IMPLICIT NONE
+	include '/gpfs/softs/cluster/mpi/openmpi/3.1.3/include/mpif.h'
+	
 !   variables globales
     integer,intent(in) :: m,effet
     integer,intent(inout)::ni,ier,istop
@@ -146,8 +149,9 @@
     double precision, dimension(5)::convcrit
     
     rang=0 ! utile en cas de programmation MPI pour gerer l'affichage
-    !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,comm) !pour chaque processus associe a l'identificateur code retourne son rang
-    
+	if(methodInt == 3) then
+		call MPI_COMM_RANK(MPI_COMM_WORLD,rang,comm) !pour chaque processus associe a l'identificateur code retourne son rang
+    endif
     convcrit = 0.d0
     zero=0.d0
     id=0
