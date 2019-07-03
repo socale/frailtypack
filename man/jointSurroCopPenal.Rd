@@ -5,18 +5,17 @@
 \alias{jointSurroPenal}
 \title{Fit the one-step Joint frailty-copula model for the evaluation of a canditate surrogate endpoint}
 \usage{
-jointSurroPenal(data, maxit=40, 
-   indicator.alpha = 1, frail.base = 1, n.knots = 6, 
-   LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, 
-   nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, 
-   int.method = 0, nb.iterPGH = 5, nb.MC.kendall = 10000, 
+jointSurroPenal(data, maxit=40, indicator.alpha = 1, 
+   frail.base = 1, n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, 
+   LIMderiv = 0.001, nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, 
+   adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
    nboot.kendall = 1000, true.init.val = 0, 
-   theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
+   thetacopula.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
-   zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
+   betas.init = 0.5, betat.init = 0.5, scale = 1, 
    random.generator = 1, kappa.use = 4, random = 0, 
    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0),
-   typecopula =1, nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
+   typecopula = 1, nb.decimal = 4, print.times = TRUE, print.iter = FALSE)
 }
 \arguments{
 \item{data}{A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
@@ -60,9 +59,8 @@ log-likelihood, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for mor
 (See \code{\link{frailtyPenal}} for more details).}
 
 \item{nb.mc}{Number of samples considered in the Monte-Carlo integration. Required in case 
-\code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 100 and 300 most often gives 
-good results. However, beyond 300, the program takes a lot of time to estimate the parameters.
-The default is \code{300}.}
+\code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 500 and 1000 most often gives 
+good results. The default is \code{1000}.}
 
 \item{nb.gh}{Number of nodes for the Gaussian-Hermite quadrature. It can
 be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 32.}
@@ -74,15 +72,11 @@ in case of non-convergence, defined as previously. The default is \code{20}.}
 Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.}
 
 \item{int.method}{A numeric, indicates the integration method: \code{0} for Monte carlo, 
-\code{1} for Gaussian-Hermite quadrature. The default is \code{0}.}
+\code{1} for Gaussian-Hermite quadrature, \code{3} for Laplace approximation. The default is \code{0}.}
 
 \item{nb.iterPGH}{Number of iterations before the re-estimation of the posterior random effects,
 in case of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
 re-estimation". The default is \code{5}.}
-
-\item{nb.MC.kendall}{Number of generated points used with the Monte-Carlo to estimate
-integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
-stable reseults. The default is \code{10000}.}
 
 \item{nboot.kendall}{Number of samples considered in the parametric bootstrap to estimate the confidence
 interval of the Kendall's \eqn{\tau}. The default is \code{1000}.}
@@ -98,7 +92,7 @@ two shared frailty models.  In all others scenarios, if the simplified model doe
 default given parameters values are used. Initial values for spline's associated parameters 
 are fixed to \code{0.5}. The default for this argument is \code{0}.}
 
-\item{theta.init}{Initial values for \eqn{\theta}, required if \code{true.init.val} 
+\item{thetacopula.init}{Initial values for the copula parameter (\eqn{\theta}), required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{1}.}
 
 \item{sigma.ss.init}{Initial values for \eqn{\sigma^2_{v_S}}, required if \code{true.init.val} 
@@ -114,9 +108,6 @@ is set to \code{0} or \code{2}. The default is \code{0.48}.}
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
 \item{alpha.init}{Initial values for \eqn{\alpha}, required if \code{true.init.val} 
-is set to \code{0} or \code{2}. The default is \code{1}.}
-
-\item{zeta.init}{Initial values for \eqn{\zeta}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{1}.}
 
 \item{betas.init}{Initial values for \eqn{\beta_S}, required if \code{true.init.val} 
@@ -170,6 +161,9 @@ is TRUE.}
 
 \item{print.iter}{a logical parameter to print iteration process. Default
 is FALSE.}
+
+\item{zeta.init}{Initial values for \eqn{\zeta}, required if \code{true.init.val} 
+is set to \code{0} or \code{2}. The default is \code{1}.}
 }
 \value{
 This function return an object of class jointSurroPenal with elements :

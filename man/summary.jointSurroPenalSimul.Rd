@@ -5,7 +5,7 @@
 \alias{print.summary.jointSurroPenalSimul}
 \title{Short summary of the simulation studies based on a joint surrogate model}
 \usage{
-\method{summary}{jointSurroPenalSimul}(object, d = 3, R2boot = 0, displayMSE = 0, printResult = 1,  ...)
+\method{summary}{jointSurroPenalSimul}(object, d = 3, R2boot = 0, displayMSE = 0, printResult = 1, CP = 0,  ...)
 }
 \arguments{
 \item{object}{an object inheriting from \code{jointSurroPenalSimul} class.}
@@ -23,6 +23,9 @@ association measurements.}
 
 \item{printResult}{A binary that indicates if the summary of the results should be displayed \code{(1)}
 or not \code{(0)}. If this argument is set to 0, resuls are just returned to the user}
+
+\item{CP}{A binary that indicate in case of \code{displayMSE = 1} if the percentage of coverage should be
+display (1) or not (0). The default is 0}
 
 \item{\dots}{other unused arguments.}
 }

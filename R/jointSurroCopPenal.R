@@ -214,18 +214,17 @@
 #' 
 #' @aliases jointSurroPenal
 #' @usage 
-#' jointSurroPenal(data, maxit=40, 
-#'    indicator.alpha = 1, frail.base = 1, n.knots = 6, 
-#'    LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, 
-#'    nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, 
-#'    int.method = 0, nb.iterPGH = 5, nb.MC.kendall = 10000, 
+#' jointSurroPenal(data, maxit=40, indicator.alpha = 1, 
+#'    frail.base = 1, n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, 
+#'    LIMderiv = 0.001, nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, 
+#'    adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
 #'    nboot.kendall = 1000, true.init.val = 0, 
-#'    theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
+#'    thetacopula.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
-#'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
+#'    betas.init = 0.5, betat.init = 0.5, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0),
-#'    typecopula =1, nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
+#'    typecopula = 1, nb.decimal = 4, print.times = TRUE, print.iter = FALSE)
 #'
 #' @param data A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
 #'    \itemize{
@@ -260,9 +259,8 @@
 #' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, \eqn{10^{-3}} by default 
 #' (See \code{\link{frailtyPenal}} for more details).
 #' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in case 
-#' \code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 100 and 300 most often gives 
-#' good results. However, beyond 300, the program takes a lot of time to estimate the parameters.
-#' The default is \code{300}.
+#' \code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 500 and 1000 most often gives 
+#' good results. The default is \code{1000}.
 #' @param nb.gh Number of nodes for the Gaussian-Hermite quadrature. It can
 #' be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 32.
 #' @param nb.gh2 Number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, 
@@ -270,13 +268,10 @@
 #' @param adaptatif A binary, indicates whether the pseudo adaptive Gaussian-Hermite quadrature \code{(1)} or the classical
 #' Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.
 #' @param int.method A numeric, indicates the integration method: \code{0} for Monte carlo, 
-#' \code{1} for Gaussian-Hermite quadrature. The default is \code{0}.
+#' \code{1} for Gaussian-Hermite quadrature, \code{3} for Laplace approximation. The default is \code{0}.
 #' @param nb.iterPGH Number of iterations before the re-estimation of the posterior random effects,
 #' in case of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
 #' re-estimation". The default is \code{5}.
-#' @param nb.MC.kendall Number of generated points used with the Monte-Carlo to estimate
-#' integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
-#' stable reseults. The default is \code{10000}.
 #' @param nboot.kendall Number of samples considered in the parametric bootstrap to estimate the confidence
 #' interval of the Kendall's \eqn{\tau}. The default is \code{1000}. 
 #' @param true.init.val Numerical value. Indicates if the given initial values to parameters \code{(0)} should be considered. 
@@ -289,7 +284,7 @@
 #' two shared frailty models.  In all others scenarios, if the simplified model does not converge,
 #' default given parameters values are used. Initial values for spline's associated parameters 
 #' are fixed to \code{0.5}. The default for this argument is \code{0}.
-#' @param theta.init Initial values for \eqn{\theta}, required if \code{true.init.val} 
+#' @param thetacopula.init Initial values for the copula parameter (\eqn{\theta}), required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{1}.
 #' @param sigma.ss.init Initial values for \eqn{\sigma^2_{v_S}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
@@ -472,19 +467,23 @@
 #' }
 #' 
 jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base = 1, 
-                      n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, 
-                      nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
-                      nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, theta.init = 1, 
+                      n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 1000, 
+                      nb.gh = 20, nb.gh2 = 32, adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
+                      nboot.kendall = 1000, true.init.val = 0, thetacopula.init = 1, 
                       sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, gamma.init = 0.5, 
-                      alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
+                      alpha.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
                       random.generator = 1, kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, 
                       init.kappa = NULL, ckappa = c(0,0), typecopula = 1, nb.decimal = 4, 
                       print.times = TRUE, print.iter = FALSE
                       ){
   
  # The initial followup time. The default value is 0
+  # some initializations jointSurroPenal()
   data$initTime <- 0 
-  indicator.zeta = 0
+  indicator.zeta <- 0
+  nb.MC.kendall <- 10000
+  zeta.init <- 1
+  theta.init <- thetacopula.init
   
  # list of models parameters:
   parameter <- c(maxit = maxit,indicator.zeta = indicator.zeta, indicator.alpha = indicator.alpha,
@@ -498,7 +497,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
                  random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, 
                  nb.decimal = nb.decimal, print.times = print.times, print.iter = print.iter)
   
- # some initializations: for all these parameters, refers to the function jointSurroPenalSimul for help (or descriptions)
+ # some initializations: for all these parameters, refers to the function jointSurroPenalSimulfor help (or descriptions)
   nb.dataset <- 1
   ntrialSimul <- 30
   nbSubSimul <- 1000
@@ -659,9 +658,9 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   param_risque_base <- c(typeof,nbintervR,nbintervDC,equidistant,nz)
   
   #nombre de variables explicatives
-  ves <- 2 # nombre variables explicative surrogate
-  vet <- 2 # nombre variables explicative deces/evenement terminal
-  ver <- 2 # nombre total de variables explicative
+  ves <- 1 # nombre variables explicative surrogate
+  vet <- 1 # nombre variables explicative deces/evenement terminal
+  ver <- 1 # nombre total de variables explicative
   nbrevar <- c(ves,vet,ver) 
   
   # vecteur des noms de variables
@@ -669,8 +668,8 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   # matrice d'indicatrice de prise en compte des variables explicatives pour le surrogate et le tru
   # filtre = vecteur associe au surrogate
   # filtre2 = vecteur associe au true
-  filtre  <- c(1,1)
-  filtre2 <- c(1,1)
+  filtre  <- c(1)
+  filtre2 <- c(1)
   filtre0 <- as.matrix(data.frame(filtre,filtre2))
   
   # gestion de l'affichage a l'ecran
@@ -775,7 +774,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   #betas.init  # valeur initiale de betas
   #betat.init  # valeur initiale de betat
   vbetast = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
-  vbetast_init = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
+  vbetastinit = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
   
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
