@@ -9,11 +9,11 @@
 #' @references Rizopoulos D. (2016)
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' 
 #' runShiny()
 #' 
-#' ## End(Not run)
+#' }
 #' 
 runShiny <- function () {
   if (requireNamespace("shiny", quietly = TRUE)) {
