@@ -730,8 +730,8 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nsim_node[5] <- nparamfrail
   nsim_node[6] <- 1 # indique si lon fait de la vectorisation dans le calcul integral (1) ou non (0). rmq: la vectorisation permet de reduire le temps de calcul
   nsim_node[7] <- nb.frailty # indique le nombre d'effet aleatoire cas quadrature adaptative
-  type.joint <- 1 # type de modele a estimer: 0=joint classique avec un effet aleatoire partage au niveau individuel,1=joint surrogate avec 1 frailty partage indiv et 2 frailties correles essai
-  # 2=joint surrogate sans effet aleatoire partage donc deux effets aleatoires a chaque fois"
+  type.joint <- 3 # type de modele a estimer: 0=joint classique avec un effet aleatoire partage au niveau individuel,1=joint surrogate avec 1 frailty partage indiv et 2 frailties correles essai
+  # 2=joint surrogate sans effet aleatoire partage donc deux effets aleatoires a chaque fois, 3= joint frailty copula model"
   nsim_node[8] <- type.joint 
   nsim_node[9] <- nb.gh2 # nombre de point de quadrature a utiliser en cas de non convergence de prefenrence 7 ou 9 pour la pseudo adaptative et 32 pour la non adaptative
   nsim_node[10] <- nb.iterPGH # nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
