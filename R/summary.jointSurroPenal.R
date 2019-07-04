@@ -131,7 +131,11 @@
     
     validation <- coef[c(nrow(coef) - 1, nrow(coef) - 2,nrow(coef)),]
     validation[,2] <- as.character(validation[,2])
-    validation[1,2] <- "--"
+    if(x$type.joint == 1) {
+      validation[1,2] <- "--"
+    }else{
+      validation[1,2] <- as.character(round(as.numeric(validation[1,2]), len))
+    }
     validation[3,2] <- "--"
     validation[,1] <- round(validation[,1], len)
     validation[,3] <- round(validation[,3], len)

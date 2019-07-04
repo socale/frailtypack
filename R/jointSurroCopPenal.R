@@ -1056,13 +1056,13 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   
   names(ans$param_estim) <- c("theta","SE_theta","zeta","SE_zeta","beta_S","SE_beta_S","beta_T","SE_beta_T","sigma_s",
                               "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","gamma","SE_gamma",
-                              "alpha","SE_alpha","R2trial","SE_R2trial","Ktau")
+                              "alpha","SE_alpha","R2trial","SE_R2trial","Ktau", "SE_Ktau")
   # reorganisation des donnees
   param.estim <- ans$param_estim[,c("theta","SE_theta","zeta","SE_zeta","gamma","SE_gamma","alpha","SE_alpha","sigma_s",
                                     "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","beta_S","SE_beta_S",
-                                    "beta_T","SE_beta_T", "R2trial","SE_R2trial","Ktau")]
+                                    "beta_T","SE_beta_T", "R2trial","SE_R2trial","Ktau", "SE_Ktau")]
   
-  param.estim$SE_Ktau <- NA
+   #param.estim$SE_Ktau <- NA
   
   if(n_sim1==1){
     # calcul des intervalles de confiance des parametres. on ne le fait que si on a un seul jeu de donnees.
@@ -1085,7 +1085,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
     param.estim2$"Inf.95%CI"=param.estim2[,1]-1.96*param.estim2[,2]
     param.estim2$"Sup.95%CI"=param.estim2[,1]+1.96*param.estim2[,2]
     
-    param.estim2["Ktau",c("Inf.95%CI","Sup.95%CI")] <- ans$ktau[,c(2,3)]
+   # param.estim2["Ktau",c("Inf.95%CI","Sup.95%CI")] <- ans$ktau[,c(2,3)]
     
     if(indicator.zeta == 0) param.estim2 <- param.estim2[!(row.names(param.estim2) =="zeta"),]
     if(indicator.alpha == 0) param.estim2 <- param.estim2[!(row.names(param.estim2) == "alpha"),]
@@ -1128,6 +1128,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   result$data <- dataUse
   result$varcov.Sigma <- ans$Varcov
   result$parameter <- parameter
+  result$type.joint <- type.joint
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
   

@@ -1132,6 +1132,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   result$data <- dataUse
   result$varcov.Sigma <- ans$Varcov
   result$parameter <- parameter
+  result$type.joint <- type.joint
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
   
