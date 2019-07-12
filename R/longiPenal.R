@@ -1996,6 +1996,7 @@ if(i==1){
 }else{
   numInteracB=0
   numInterac=0
+  positionVarTime=404
 }
 
 
