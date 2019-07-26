@@ -193,24 +193,42 @@
       
       bio_pam <- cbind(c(x$y_0, x$K_G0, x$K_D0, x$lambda),c(x$se.y_0, x$se.K_G0, x$se.K_D0, x$se.lambda),
                        c(x$y_0/x$se.y_0, x$K_G0/x$se.K_G0, x$K_D0/x$se.K_D0, x$lambda/x$se.lambda),
-                       c(ifelse(signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1)),
-                         ifelse(signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1)),
-                         ifelse(signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1)),
-                         ifelse(signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1))))
+                       c(signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1), signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1),
+                         signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1), signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1)))
+      #        c(ifelse(signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$y_0/x$se.y_0)^2, 1), digits - 1)),
+      #           ifelse(signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$K_G0/x$se.K_G0)^2, 1), digits - 1)),
+      #           ifelse(signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$K_D0/x$se.K_D0)^2, 1), digits - 1)),
+      #           ifelse(signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((x$lambda/x$se.lambda)^2, 1), digits - 1))))
+      
+      if(sum(bio_pam[,4]<1e-16)>=1){
+        d1 <- dim(bio_pam)[1]
+        d2 <- dim(bio_pam)[2]
+        which <- which(bio_pam[,4]<1e-16)
+        
+        sprint<-paste("%.",digits-2,"e",sep="")
+        bio_pam2 <- matrix(c(sprintf(sprint,bio_pam[,4])),d1,1)
+        
+        bio_pam2[which,1]<-"<1e-16"
+        
+        sprint<-paste("%.",digits,"f",sep="")
+        bio_pam <- matrix(c(sprintf(sprint,bio_pam[,-4])),d1,d2-1)
+        bio_pam <- cbind(bio_pam,bio_pam2)
+      }
       
       dimnames(bio_pam) <- list(c("Initial level: y_0", "Natural net growth: K_G0",
                                   "Drug induced decline: K_D0", "Resistance to the drug: lambda" )
                                 , c("estimation", "SE estimation (H)", "z", "p"))
       cat("Biomarker parameters:\n")
       cat("\n")
-      prmatrix(bio_pam)
+      prmatrix(bio_pam, quote = FALSE, right = TRUE)
+      cat("\n")
       
       if (x$noVarKG == 0){
         cat("Longitudinal outcome (tumor growth):\n")
         cat("---------------- \n")
         prmatrix(tmp[(x$nvarR+x$nvarEnd+1):(x$nvarR+x$nvarEnd + x$nvarKG),-2 ,drop=FALSE],quote=FALSE,right=TRUE)
+        cat("\n")
         if(x$global_chisq.testKG==1){
-          cat("\n")
           prmatrix(tmpwaldKG)
         }
       }else{
@@ -224,8 +242,8 @@
         cat("Longitudinal outcome (tumor decline):\n")
         cat("---------------- \n")
         prmatrix(tmp[-c(1:(x$nvarR+x$nvarEnd+x$nvarKG)),-2 ,drop=FALSE],quote=FALSE,right=TRUE)
+        cat("\n")
         if(x$global_chisq.testKD==1){
-          cat("\n")
           prmatrix(tmpwaldKD)
         }
       }else{
@@ -383,7 +401,7 @@
     
     cat("\n")
     
-    cat("Residual standard error: ",round(x$ResidualSE,6), " (SE (H): ", round(x$se.ResidualSE,6), ") \n \n")
+    cat("Residual measurement error (variance): ",round(x$ResidualSE,6), " (SE (H): ", round(x$se.ResidualSE,6), ") \n \n")
     
     cat(" Frailty parameter for the association between recurrent events and terminal event: \n")
     temp <- diag(x$varH)[1]
