@@ -441,14 +441,7 @@
         end do
 
         
-!             open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!         write(2,*)' nmesB', nmesB
-!         write(2,*)' nmesy', nmesy
-!         write(2,*)' groupeeB', groupeeB
-!         write(2,*)' groupeey', groupeey
 
-!             close(2)
-!stop
         
         
         maxmesB=0
@@ -459,7 +452,13 @@
         end do
     end if
     
-
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!         write(2,*)' nmesB', nmesB
+!         write(2,*)' nmesy', nmesy
+!         write(2,*)' groupeeB', groupeeB
+!         write(2,*)' groupeey', groupeey
+!             close(2)
+!stop
     
         if(TwoPart.eq.1) allocate(mu1_resB(maxmesB), varcov_margB(nsujetB,maxmesB))
 
@@ -4313,10 +4312,10 @@ end if
                     else if(TwoPart.eq.0) then
 if(nb1.eq.2) then
     z1curG(1,1) = 1.d0 ! random intercept only for now
-    z1curG(1,2) = t1dc(i)!z1Ycur(1,2) = t1dc(i)
+    z1curG(1,2) = tps!z1Ycur(1,2) = t1dc(i)
 else if(nb1.eq.3) then
-    resultf1=f1(t1dc(i)) ! need to compute function of time at each point of gauss-kronrod approx.
-    resultf2=f2(t1dc(i))
+    resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
+    resultf2=f2(tps)
     z1curG(1,1) = 1.d0 !
     z1curG(1,2) = resultf1
     z1curG(1,3) = resultf2
