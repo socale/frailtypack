@@ -704,7 +704,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       death[,i] <- as.double(death[,i])
     }
     if(is.null(kappa0)){
-      if(print.iter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
+      if(print.iter) cat("+++++++++++estimation of Kappas by cross-validation +++++++++++")
       # kappas obtenus par validation croisee correspondant sur le jeu de donnees reelles
       #kappa0 <- frailtypack:::kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0)
       kappa0 <- kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0, print.times = F, scale = scale)
