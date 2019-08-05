@@ -486,7 +486,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   theta.init <- thetacopula.init
   
  # list of models parameters:
-  parameter <- c(maxit = maxit,indicator.zeta = indicator.zeta, indicator.alpha = indicator.alpha,
+  parameter <- c(maxit = maxit,indicator.zeta = 0, indicator.alpha = indicator.alpha,
                  frail.base = frail.base, n.knots = n.knots, LIMparam = LIMparam, LIMlogl = LIMlogl, 
                  LIMderiv = LIMderiv, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif, 
                  int.method = int.method, nb.iterPGH = nb.iterPGH, nb.MC.kendall = nb.MC.kendall, 
@@ -494,7 +494,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
                  sigma.ss.init = sigma.ss.init, sigma.tt.init = sigma.tt.init, sigma.st.init = sigma.st.init, 
                  gamma.init = gamma.init, alpha.init = alpha.init, zeta.init = zeta.init, betas.init = betas.init, 
                  betat.init = betat.init, scale = scale, random.generator = random.generator, kappa.use = kappa.use, 
-                 random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, 
+                 random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, typecopula = typecopula, 
                  nb.decimal = nb.decimal, print.times = print.times, print.iter = print.iter)
   
  # some initializations: for all these parameters, refers to the function jointSurroPenalSimulfor help (or descriptions)
@@ -698,7 +698,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
       death[,i] <- as.double(death[,i])
     }
     if(is.null(kappa0)){
-      if(print.iter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
+      if(print.iter) cat("+++++++++++estimation of Kappas by cross-validation +++++++++++")
       # kappas obtenus par validation croisee correspondant sur le jeu de donnees reelles
       #kappa0 <- frailtypack:::kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0)
       kappa0 <- kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0, print.times = F, scale = scale)
