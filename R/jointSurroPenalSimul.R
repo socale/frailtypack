@@ -65,7 +65,7 @@
 #'    random.nb.sim = 0, seed = 0, nb.reject.data = 0, init.kappa = NULL, 
 #'    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
 #'    mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
-#'    filter.surr = c(1,1), filter.true = c(1,1), 
+#'    thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), 
 #'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
