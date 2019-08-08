@@ -27,12 +27,15 @@
 ##' and confidence intervals. Default of 3 digits is used.
 ##' @param print.times a logical parameter to print estimation time. Default is TRUE.
 ##' 
-##' @return Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
+##' @return This function returns an object of class \code{jointSurroPenalloocv} containing:
+##' \item{result}{A dataframe 
 ##' including for each trial the number of included subjects, the observed 
 ##' treatment effect on the surrogate endpoint, the observed treatment effect on
 ##' the true endpoint and the predicted treatment effect on the 
 ##' true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
-##' endpoint is included into the prediction interval, the last columns contains "*".
+##' endpoint is included into the prediction interval, the last columns contains "*".} 
+##' \item{ntrial}{The number of trials in the meta-analysis
+##' \item{notconvtrial}{The vector of trials that have not converged}
 ##' @seealso \code{\link{jointSurroPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -91,7 +94,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
   # init of the result
   d <- data.frame(matrix(rep(NA,8), nrow = 1, ncol = 8))[-1,]
   names(d) <- c("trialID","ntrial","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
-  
+  notconvtrial = unusedtrial
   for(i in 1:length(trial)){
     if(!(i %in% unusedtrial)){ # one can identifie trials that pose problem when they are removed, and then ignore them
       dataUseloo <- dataUse[!(dataUse$trialID %in% trial[i]),]
@@ -188,7 +191,11 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
       
     # Prediction
     if(is.null(joint.surro)){ 
-      if(!(i %in% unusedtrial)) cat(c("===Model without trial", i, "did not converge===: \n"))
+      if(!(i %in% unusedtrial)) 
+        {
+        cat(c("===Model without trial", i, "did not converge===: \n"))
+        notconvtrial[length(notconvtrial)+1] <- i
+      }
     }else{
       d1 <- predict.jointSurroPenal(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],], dec = dec)
       # Merger of the results
@@ -206,6 +213,8 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
   if(!is.null(d)){
     result <- NULL
     result$result <- d
+    result$ntrial <- length(trial)
+    result$notconvtrial <- notconvtrial
     class(result) <- "jointSurroPenalloocv"
   }
   
