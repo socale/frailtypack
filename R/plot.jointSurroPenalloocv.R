@@ -97,9 +97,9 @@
   }
   
   doBy::orderBy(~ trialID+ordre,data.plot2)
-  
   trialnotused <- sort(c(unusedtrial, object$notconvtrial))
   if(length(trialnotused)>=1) mainlabel <- trialnotused[1]
+  if(length(trialnotused)>1)
   for(i in 2:length(trialnotused))
     mainlabel <- paste(mainlabel,trialnotused[i], sep = ", ")
   
@@ -116,3 +116,4 @@
   legend(x = x, y = y, c("Beta observed", "Beta predict"), cex = 1, pch= c(1,15))
   abline(h = 0)
 }
+plot(loocv.result.Gumbel)
