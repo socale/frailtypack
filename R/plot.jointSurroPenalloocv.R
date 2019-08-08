@@ -116,4 +116,3 @@
   legend(x = x, y = y, c("Beta observed", "Beta predict"), cex = 1, pch= c(1,15))
   abline(h = 0)
 }
-plot(loocv.result.Gumbel)
