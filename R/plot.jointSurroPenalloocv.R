@@ -6,9 +6,7 @@
 ##' }
 ##' 
 ##' @aliases plot.jointSurroPenalloocv
-##' @usage
-##' 
-##' \method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
+##' @usage \method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
 ##' 
 ##' @param x Coordinate for the location of the legend
 ##' @param y Coordinate for the location of the legend, the default is \code{NULL}
@@ -52,7 +50,9 @@
 ##' plot.jointSurroPenalloocv(object = loocv.result, unusedtrial = c(22, 30, 33, 38, 42, 47, 49), x = "bottomleft", y = NULL)
 ##' }
 ##' 
-"plot.jointSurroPenalloocv" <- function(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...){
+"plot.jointSurroPenalloocv" <- 
+  function(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...){
+  cat("socaleYes")
   data.gumbel = object$result
   data.gumbel <- data.gumbel[!(data.gumbel$trialID %in% unusedtrial),]
   data.plot <- data.frame(matrix(NA, nrow = 3 * nrow(data.gumbel), ncol = 4))
@@ -109,7 +109,7 @@
             main = paste("Unused trials = ", mainlabel, sep = ""))
   }
   else{
-    boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 
+    boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials",
             ylab = "Log Hazard ration of the true endpoint")
   }
   points(data.plot2$trialID[!(data.plot2$trialID %in% unusedtrial)],data.plot2$beta.T[!(data.plot2$trialID %in% unusedtrial)])

@@ -34,7 +34,7 @@
 ##' the true endpoint and the predicted treatment effect on the 
 ##' true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
 ##' endpoint is included into the prediction interval, the last columns contains "*".} 
-##' \item{ntrial}{The number of trials in the meta-analysis
+##' \item{ntrial}{The number of trials in the meta-analysis}
 ##' \item{notconvtrial}{The vector of trials that have not converged}
 ##' @seealso \code{\link{jointSurroPenal}}
 ##' 

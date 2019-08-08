@@ -31,12 +31,15 @@ and confidence intervals. Default of 3 digits is used.}
 \item{print.times}{a logical parameter to print estimation time. Default is TRUE.}
 }
 \value{
-Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
+This function returns an object of class \code{jointSurroPenalloocv} containing:
+\item{result}{A dataframe 
 including for each trial the number of included subjects, the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint and the predicted treatment effect on the 
 true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
-endpoint is included into the prediction interval, the last columns contains "*".
+endpoint is included into the prediction interval, the last columns contains "*".} 
+\item{ntrial}{The number of trials in the meta-analysis}
+\item{notconvtrial}{The vector of trials that have not converged}
 }
 \description{
 {

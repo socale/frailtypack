@@ -130,7 +130,7 @@
           print(resultSimul)
         }
       }else{ # on ajoute le tau de couverture
-        # recherche des taux de coverture
+        # recherche des taux de couverture
         if(object$type.joint.simul==1){
           resultSimul <- synthese_result_modele_reduit(object$dataParamEstim, object$dataTkendall, 
                                                        object$dataR2boot, nb.paquet, nb.decimal, object$nb.simul,
