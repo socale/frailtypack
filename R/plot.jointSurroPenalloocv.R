@@ -8,18 +8,20 @@
 ##' @aliases plot.jointSurroPenalloocv
 ##' @usage \method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
 ##' 
+##' @param object Object inherent from the \code{jointSurroPenalloocv} Class
+##' @param unusedtrial Vector of unconsidered trials, may be due to the fact that the predicted treatment effects on the true 
 ##' @param x Coordinate for the location of the legend
 ##' @param y Coordinate for the location of the legend, the default is \code{NULL}
-##' @param unusedtrial Vector of unconsidered trials, may be due to the fact that the predicted treatment effects on the true 
 ##' endpoint have an outlier. In this case, one can drop from the data the trials with very hight absolute predicted value
-##' @param object = Object inherent from the \code{jointSurroPenalloocv} Class
+##' @param main The main
 ##' @param ... other unused arguments.
 ##' 
 ##' @return This function displays the boxplots corresponding to the number of trials in the 
 ##' dataset. Each boxplot included 3 elements correnponding to the predicted treatment effect on the true endpoint
 ##' with the prediction interval. The circle inside or outside the boxplot represents the observed
 ##' treatment effect on the true endpoint. For all unused trials due to convergence issues or outliers, the boxplot is just represents
-##' by a adsh. it the last case, we display in the main of the figure a vector of unused trials.
+##' by a dash. In the last case, we display in the main of the figure a vector of unused trials, is the argumets \code{main} 
+##' is set to \code{NULL}. The function retruns the list of unused trials.
 ##' @seealso \code{\link{loocv}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -51,8 +53,7 @@
 ##' }
 ##' 
 "plot.jointSurroPenalloocv" <- 
-  function(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...){
-  cat("socaleYes")
+  function(object, unusedtrial = NULL, x = "bottomleft", y = NULL, main = NULL, ...){
   data.gumbel = object$result
   data.gumbel <- data.gumbel[!(data.gumbel$trialID %in% unusedtrial),]
   data.plot <- data.frame(matrix(NA, nrow = 3 * nrow(data.gumbel), ncol = 4))
@@ -103,16 +104,23 @@
   for(i in 2:length(trialnotused))
     mainlabel <- paste(mainlabel,trialnotused[i], sep = ", ")
   
-  if(length(mainlabel) > 0){ # to avoid to display the main in cases where all trials have been used
+  if(is.null(main)){
+    if(length(mainlabel) > 0){ # to avoid to display the main in cases where all trials have been used
+      boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 
+              ylab = "Log Hazard ration of the true endpoint",
+              main = paste("Unused trials = ", mainlabel, sep = ""))
+    }
+    else{
+      boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials",
+              ylab = "Log Hazard ration of the true endpoint")
+    }
+  }else{
     boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 
             ylab = "Log Hazard ration of the true endpoint",
-            main = paste("Unused trials = ", mainlabel, sep = ""))
-  }
-  else{
-    boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials",
-            ylab = "Log Hazard ration of the true endpoint")
+            main = main)
   }
   points(data.plot2$trialID[!(data.plot2$trialID %in% unusedtrial)],data.plot2$beta.T[!(data.plot2$trialID %in% unusedtrial)])
   legend(x = x, y = y, c("Beta observed", "Beta predict"), cex = 1, pch= c(1,15))
   abline(h = 0)
+  return(paste("Unused trials = ", mainlabel, sep = ""))
 }
