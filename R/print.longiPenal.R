@@ -180,7 +180,6 @@
         dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
                                              "SE coef (H)", "z", "p"))
       }
-      
     if(x$TwoPart==1){
         if (x$noVarB == 0){
           cat("Binary outcome:\n")
@@ -195,7 +194,11 @@
         if (x$noVarY == 0){
           cat("Semi-continuous outcome:\n")
           cat("---------------- \n")
-          prmatrix(tmp[c((x$nvarEnd+1):(x$nvarY+x$nvarEnd)),-2 ,drop=FALSE],quote=FALSE,right=TRUE)
+          if(!x$GLMlog){
+            prmatrix(tmp[c((x$nvarEnd+1):(x$nvarY+x$nvarEnd)),-2 ,drop=FALSE],quote=FALSE,right=TRUE)
+          }else if(x$GLMlog){
+            prmatrix(tmp[c((x$nvarEnd+1):(x$nvarY+x$nvarEnd)),,drop=FALSE],quote=FALSE,right=TRUE)
+          }
           if(x$global_chisq.test==1){
             cat("\n")
             prmatrix(tmpwald)
@@ -206,7 +209,11 @@
         if (x$noVarY == 0){
           cat("Longitudinal outcome:\n")
           cat("---------------- \n")
+          if(!x$GLMlog){
           prmatrix(tmp[-c(1:(x$nvarEnd)),-2 ,drop=FALSE],quote=FALSE,right=TRUE)
+          }else if(x$GLMlog){
+            prmatrix(tmp[-c(1:(x$nvarEnd)),,drop=FALSE],quote=FALSE,right=TRUE)
+          }
           if(x$global_chisq.test==1){
             cat("\n")
             prmatrix(tmpwald)

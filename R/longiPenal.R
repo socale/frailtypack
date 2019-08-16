@@ -348,14 +348,14 @@
 #' 
 "longiPenal" <-
   function (formula, formula.LongitudinalData, formula.Binary=FALSE, data,  data.Longi, random, random.Binary=FALSE, 
-  id, intercept = TRUE, link="Random-effects",timevar=FALSE,left.censoring=FALSE,BClam=FALSE, n.knots, kappa, maxit=350, hazard="Splines",
+  id, intercept = TRUE, link="Random-effects",timevar=FALSE,left.censoring=FALSE,GLMlog=FALSE, MTP=FALSE, n.knots, kappa, maxit=350, hazard="Splines",
   init.B, init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, 
   print.times=TRUE)
   {
     OrderLong <- data.Longi[,id]
     OrderDat <- data[,id]
     m2 <- match.call()
-    m2$formula <-  m2$data <- m2$random <- m2$random.Binary  <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$BClam <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
+    m2$formula <-  m2$data <- m2$random <- m2$random.Binary  <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$GLMlog <- m2$MTP <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$intercept <- m2$n.nodes <- NULL
     Names.data.Longi <- m2$data.Longi
 
     # TWO-PART indicator
@@ -363,6 +363,11 @@
     # more generally, variables related to the two-part model systematically contains the 
     # letter B as for 'binary part', which is the main addition compared to a standard joint model.
     
+    # association proba + current level only with two-part
+        if(link=="Two-part"){
+    if (TwoPart==F) { 
+    stop("The link Two-part can only be used with a Two-part model.") }
+}
     
     #### Frailty distribution specification ####
     if (!(all(random %in% c(1,names(data.Longi))))){
@@ -376,6 +381,8 @@
     if (!(all(random.Binary %in% c(1,names(data.Longi))))) { 
     stop("Random effects (binary part) can be only related to variables from the longitudinal data or the intercept (1)") }
 }
+    if(MTP & (!TwoPart | !GLMlog)){
+    stop("Marginal two-part model requires activation of two-part and GLMlog")}    
     
     #### Link function specification ####
     if(!(link %in% c("Random-effects","Current-level","Two-part"))){
@@ -390,14 +397,7 @@
     ### Left-censoring
     if(!is.null(left.censoring) && left.censoring!=FALSE){
       if(!is.numeric(left.censoring))stop("If you want to include left-censored longitudinal outcome you must give the threshold value as the argument of 'left.censoring'")
-    }
-    
-    ### Box-cox
-        if(!is.null(BClam) && BClam!=FALSE){
-      if(!is.numeric(BClam))stop("Numeric value for Box-cox transformation required (FALSE if no tranformation)")
-    }
-    
-    
+    }    
     
     ### Intercept
     if(!is.logical(intercept))stop("The argument 'intercept' must be logical")
@@ -514,7 +514,7 @@
     
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur
     
-    m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$BClam <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- NULL
+    m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$GLMlog <- m$MTP <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$intercept <- m$n.nodes <- NULL
     
     
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")
@@ -541,9 +541,6 @@
     biom <- which(names(data.Longi)==as.character(attr(TermsY, "variables")[[2]])) # identifying biomarker
     data.Longi=data.Longi[data.Longi[,biom]>min(data.Longi[,biom]),]  # only positive biomarker values for semi-continuous part
     
-    #if(BClam!=F){ # perform transformation box box
-    #data.Longi[,biom]=(data.Longi[,biom]^BClam-1)/BClam
-    #}
     
     OrderLong <- data.Longi[, id]
     OrderBinary <- data.Binary[, id]
@@ -1464,10 +1461,7 @@ if(TwoPart) max_repB <- max(table(clusterB))
       prop.censored <- n.censored/nsujety
     }
     
-    # Box-cox
-    
-    BoxCoxlam <- BClam
-    
+
     
     #============= pseudo-adaptive Gauss Hermite ==============
     #m <- lme(measuret ~ time+interact+treatment, data = data, random = ~ 1| idd)
@@ -2001,8 +1995,8 @@ if(i==1){
 
 
 
-    if(BClam==F) BoxCoxlam=404
-    
+    if(GLMlog==F) GLMloglink=0 else GLMloglink=1
+    if(MTP==F) Mtwopart=0 else Mtwopart=1
     
   if(!TwoPart){ # initialize TwoPart variables if not activated to avoid memory allocation problems
     Binary <- rep(0, length(nsujety))
@@ -2110,7 +2104,7 @@ if(i==1){
 			MartinGale=as.double(matrix(0,nrow=ng,ncol=3+nRE)),###
 			ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
 			Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
-            bclam0 = as.double(BoxCoxlam), # box-cox lambda
+            GLMlog0 = as.integer(c(GLMloglink,Mtwopart)), # glm with log link + marginal two-part
 			
 			positionVarTime = as.integer(positionVarTime),
 			numInterac = as.integer(c(numInterac, numInteracB)),
@@ -2438,7 +2432,10 @@ if(TwoPart){
     fit$methodGH <- method.GH
     fit$n.nodes <- n.nodes
     fit$TwoPart <- TwoPart # add TwoPart
-    class(fit) <- "longiPenal"
+    
+    if(GLMloglink==1) fit$GLMlog <- TRUE else fit$GLMlog <- FALSE
+     if(MTP==1) fit$MTP <- TRUE else fit$MTP <- FALSE
+   class(fit) <- "longiPenal"
     
     if (print.times){
       cost<-proc.time()-ptm

@@ -15,7 +15,7 @@
         ,np,neta0,b,H_hessOut,HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out &
         ,typeof0,equidistant,mtaille &
         ,counts,ier_istop,paraweib &
-        ,MartinGales,ResLongi,Pred_y0,bclam0 &
+        ,MartinGales,ResLongi,Pred_y0,GLMlog0 &
         ,positionVarTime,numInterac &
         ,linearpred,linearpreddc,ziOut &
     ,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc,BetaTpsMatY,EPS,GH,paGH)
@@ -86,7 +86,7 @@
         double precision,dimension(2),intent(out)::LCV
         double precision,dimension(2)::shapeweib,scaleweib
         double precision,dimension(4),intent(out)::paraweib
-    double precision, dimension(1),intent(in)::bclam0
+    integer, dimension(2),intent(in)::GLMlog0 ! for glm with log link + marginal two-part
     
         integer,dimension(4),intent(in)::noVar ! modif TwoPart
         integer::noVar1,noVar2,noVar3!! rajout
@@ -154,8 +154,11 @@
    nz0=ngnzag(2)
    ag0=ngnzag(3)
    
-   boxcoxlambda(1)=0.d0
-   boxcoxlambda(1)=bclam0(1) ! lambda box-cox transformation
+   GLMloglink0=0
+   GLMloglink0=GLMlog0(1) ! lambda box-cox transformation
+   MTP0=0
+   MTP0=GLMlog0(2)
+   
    
     nsujet0=VectNsujet(1)
     nsujety0=VectNsujet(2)
@@ -4149,7 +4152,6 @@ x2curG=0.d0
             resultf1=f1(tps) ! maybe remove this calculus if not needed (non-linear slopes)
             resultf2=f2(tps)
 if(numInter.ge.1)then
-
             do counter = 1,numInter !in case of multiple interactions
             if(positionVarT(counter2+3).eq.0) then ! linear
                 x2curG(1,positionVarT(counter2+1)) =tps
@@ -4299,60 +4301,45 @@ Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
                     
 cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1curG(1, 1:nb1),frail(1:nb1)))
 
-
-if(boxcoxlambda(1).gt.100) then
+if(GLMloglink0.eq.0) then
         current_meanG = cmY*Bcurrentvalue
-else if(boxcoxlambda(1).gt.0) then
-        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)
-else if(boxcoxlambda(1).lt.0) then
-current_meanG = dexp(current_meanG)
+else if(GLMloglink0.eq.1) then
+        current_meanG = dexp(cmY)*Bcurrentvalue
 end if
 
         
-                    else if(TwoPart.eq.0) then
-if(nb1.eq.2) then
-    z1curG(1,1) = 1.d0 ! random intercept only for now
-    z1curG(1,2) = tps!z1Ycur(1,2) = t1dc(i)
-else if(nb1.eq.3) then
-    resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
-    resultf2=f2(tps)
-    z1curG(1,1) = 1.d0 !
-    z1curG(1,2) = resultf1
-    z1curG(1,3) = resultf2
+else if(TwoPart.eq.0) then
+    if(nb1.eq.2) then
+        z1curG(1,1) = 1.d0 ! random intercept only for now
+        z1curG(1,2) = tps!z1Ycur(1,2) = t1dc(i)
+    else if(nb1.eq.3) then
+        resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
+        resultf2=f2(tps)
+        z1curG(1,1) = 1.d0 !
+        z1curG(1,2) = resultf1
+        z1curG(1,3) = resultf2
 
+    end if
+              
+     if(GLMloglink0.eq.0) then
+                if(nea.gt.1) then
+                    current_meanG =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
+                                                +dot_product(z1curG(1,1:nb1),frail(1:nb1))
+                else
+                    current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
+                end if
+    else  if(GLMloglink0.eq.1) then
+                if(nea.gt.1) then
+                    cmY =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
+                    +dot_product(z1curG(1,1:nb1),frail(1:nb1))
+                    current_meanG=dexp(cmY)
+                else
+                    cmY = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
+                    current_meanG=dexp(cmY)
+                end if
+    end if
 end if
-          
- if(boxcoxlambda(1).gt.100) then
-            if(nea.gt.1) then
-                current_meanG =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
-                                            +dot_product(z1curG(1,1:nb1),frail(1:nb1))
-            else
-                current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
-            end if
-else  if(boxcoxlambda(1).gt.0) then
-            if(nea.gt.1) then
-cmGtemp =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
-                                            +dot_product(z1curG(1,1:nb1),frail(1:nb1))
-current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))
-            else
-cmGtemp = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
-   current_meanG = ((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))
-            end if
-else if(boxcoxlambda(1).lt.0) then
-                  if(nea.gt.1) then
-cmGtemp =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
-                                            +dot_product(z1curG(1,1:nb1),frail(1:nb1))
-current_meanG = dexp(cmGtemp)
-            else
-cmGtemp = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
-   current_meanG = dexp(cmGtemp)
-            end if      
-            
-end if
-
-                    end if
                     
-
 
         select case(typeof)
             case(0) ! calcul du risque splines
@@ -4437,7 +4424,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,dimension(1)::uiiui
         double precision,dimension(nb1,nb1)::mat,matb_chol
         double precision, dimension(1)::current_meanG
-        double precision :: yscalar,eps,finddet,det,alnorm,prod_cag
+        double precision :: yscalar,yscalarlog,eps,finddet,det,alnorm,prod_cag,yscaltemp
         integer :: j,jj,i,k,ier
         logical :: upper
         double precision,external::survdcCM
@@ -4840,13 +4827,11 @@ end if
 !       write(2,*)'boxcoxlambda',boxcoxlambda
 !     close(2)
      
-if(boxcoxlambda(1).gt.100) then
-        current_meanG = cmY*Bcurrentvalue
-else if(boxcoxlambda(1).gt.0) then
-        current_meanG = ((((cmY*boxcoxlambda(1))+1)**(1/boxcoxlambda(1)))*Bcurrentvalue)
-else if(boxcoxlambda(1).lt.0) then
-        current_meanG = dexp(cmY)
-        end if
+    if(GLMloglink0.eq.0) then
+            current_meanG = cmY*Bcurrentvalue
+    else if(GLMloglink0.eq.1) then
+            current_meanG = dexp(cmY)*Bcurrentvalue
+    end if
  else if(TwoPart.eq.0) then
  
  if(nb1.eq.2) then
@@ -4862,14 +4847,11 @@ else if(nb1.eq.3) then
 end if
  
  
- if(boxcoxlambda(1).gt.100) then
+ if(GLMloglink0.eq.0) then
 current_meanG = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
-else if(boxcoxlambda(1).gt.0) then
-cmGtemp=MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
-        current_meanG =((((cmGtemp*boxcoxlambda(1))+1)**(1/boxcoxlambda(1))))
-else if(boxcoxlambda(1).lt.0) then
-cmGtemp=MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
-        current_meanG =dexp(cmGtemp)
+else if(GLMloglink0.eq.1) then
+cmY = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
+current_meanG = dexp(cmY)
 end if
 
                     end if    
@@ -4880,6 +4862,8 @@ end if
 
 
         yscalar = 0.d0
+        yscaltemp = 0.d0
+        yscalarlog = 0.d0
         !********* Left-censoring ***********
             prod_cag = 1.d0
     
@@ -4888,27 +4872,62 @@ end if
             do k = 1,nmescur
     
                 if(ycurrent(k).le.s_cag) then
-                prod_cag = prod_cag*(1.d0-alnorm((mu1G(k,1)-s_cag)/sqrt(sigmae),upper))
-                !(0.5d0*(1.d0-erf((mu1G(k)-s_cag)/(sigmae*dsqrt(2.d0)))))
-    
-                    else
-                yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
+                    prod_cag = prod_cag*(1.d0-alnorm((mu1G(k,1)-s_cag)/sqrt(sigmae),upper))
+                    !(0.5d0*(1.d0-erf((mu1G(k)-s_cag)/(sigmae*dsqrt(2.d0)))))
+                else
+                    if(GLMloglink0.eq.0) then
+                        yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
+                    else if(GLMloglink0.eq.1) then
+                        if(TwoPart.eq.0) then
+                            yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                            yscalarlog = yscalarlog - dlog(ycurrent(k))
+                        else if(TwoPart.eq.1) then
+                            if(ycurrent(k).ne.0) then
+                                if(MTP0.eq.0) then
+                                    yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                                    yscalarlog = yscalarlog - dlog(ycurrent(k))
+                                else if (MTP0.eq.1) then
+                   yscaltemp= (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)+dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
+                                yscalar = yscalar + yscaltemp
+                                yscalarlog = yscalarlog - dlog(ycurrent(k))
+                                end if
+                            end if
+                        end if
+                    end if
                 end if
             end do
-        else
+        else ! no left censoring
             do k=1,nmescur
-        yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
-        end do
+                if(GLMloglink0.eq.0) then ! original scale (no transformation of the longi outcome)
+                        yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
+                else if(GLMloglink0.eq.1) then ! lognormal density
+                    if(TwoPart.eq.0) then
+                        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                        yscalarlog = yscalarlog - dlog(ycurrent(k))
+                    else if(TwoPart.eq.1) then ! two-part model for the longitudinal outcome
+                        if(ycurrent(k).ne.0) then
+                            if(MTP0.eq.0) then
+                                yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                                yscalarlog = yscalarlog - dlog(ycurrent(k))
+                            else if (MTP0.eq.1) then ! marginal two-part model
+             yscaltemp= (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)+dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
+                           yscalar = yscalar + yscaltemp
+                            yscalarlog = yscalarlog - dlog(ycurrent(k))
+                            end if
+                        end if
+                    end if
+               end if
+            end do
         end if
-    
+
         yscalar = dsqrt(yscalar)    
         if(prod_cag.lt.0.1d-321)prod_cag= 0.1d-321
 
         
            Bscalar=0.d0
-    if(TwoPart.eq.1) then
+    if(TwoPart.eq.1) then ! binary part contribution
         do k=1,nmescurB
-            Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
+            Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
         end do
     end if
      
@@ -4927,15 +4946,15 @@ end if
 !             close(2)
 !stop
 
-       if (methodGH.ne.3) then
+       if (methodGH.ne.3) then ! loglikelihood
     if(nb1.eq.1) then
             if(link.eq.1) then
-        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)& !longi part
+        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog& !longi part
                     - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
                         -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
         else
-        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
@@ -4945,7 +4964,7 @@ end if
         end if
         else if(nb1.eq.2) then
         if(link.eq.1) then
-        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                     -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
@@ -4953,14 +4972,14 @@ end if
                         + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
         else if(link.eq.2) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
@@ -4969,20 +4988,20 @@ end if
         end if
         else 
         if(link.eq.1) then
-        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                   -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dble(nb1)/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
                      +Bscalar& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
         else if(link.eq.2) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
@@ -4992,12 +5011,12 @@ end if
         else ! Monte-carlo
             if(nb1.eq.1) then
             if(link.eq.1) then
-        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)& !longi part
+        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog& !longi part
                    ! - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
                    ! - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
                         -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
         else
-        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                     !    - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
                     !- dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
@@ -5005,7 +5024,7 @@ end if
         end if
         else if(nb1.eq.2) then
         if(link.eq.1) then
-        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                     !-uiiui(1)/2.d0-0.5d0*dlog(det)&
                     !    -dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
@@ -5013,14 +5032,14 @@ end if
                         + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
         else if(link.eq.2) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         !-uiiui(1)/2.d0-0.5d0*dlog(det)&
                         !-dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         !-uiiui(1)/2.d0-0.5d0*dlog(det)&
                         !-dlog(2.d0*pi)&
                         +Bscalar& ! add TwoPart
@@ -5029,17 +5048,17 @@ end if
         end if
         else if(nb1.gt.2) then
         if(link.eq.1) then
-        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                      +Bscalar& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
         else if(link.eq.2) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
-        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         +Bscalar& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
@@ -5055,7 +5074,25 @@ end if
  ! write(2,*)'boxcoxlambda(1)',boxcoxlambda(1)
  !         close(2)
 
- 
+!     open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'GLMloglink0',GLMloglink0
+!       write(2,*)'cmY',cmY
+!       write(2,*)'yscalarlog',yscalarlog
+!       write(2,*)'current_meanG',current_meanG
+!       write(2,*)'yscalar',yscalar
+!         write(2,*)' positionVarT', positionVarT
+!         write(2,*)' numInter', numInter
+!          write(2,*)'x2curG',x2curG
+!          write(2,*)'funcG',funcG
+!          write(2,*)'sigmae',sigmae
+!         write(2,*)' numInterB', numInterB
+!         write(2,*)' X2BcurG', X2BcurG
+! write(2,*)'nmescur',nmescur
+!  write(2,*)'ycurrent',ycurrent
+!   write(2,*)'Bcurrent',Bcurrent
+! write(2,*)'Bcurrentvalue',Bcurrentvalue
+!    close(2)
+!stop
         return
     
         end function funcG

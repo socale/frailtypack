@@ -78,8 +78,7 @@
     double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,mu1B,x2Bcur,z1Bcur ! add TwoPart
     double precision,dimension(:),allocatable,save :: Bcurrent, current_meanRaw ! add TwoPart
     integer,save::nmescurB, it_curB !add TwoPart
-    integer, save::item ! remove this
-    double precision,dimension(1),save::boxcoxlambda ! lambda for longiPenal current-level box cox retransformation
+    integer, save::GLMloglink0,MTP0 ! glm log lionk + marginal two part
     end module donnees_indiv
 
 
