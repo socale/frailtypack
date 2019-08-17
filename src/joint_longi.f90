@@ -4245,67 +4245,71 @@ end if
         if(nb1.eq.2)  z1curG(1,2) =tps
      
             current_meanG = 0.d0
-                    if(TwoPart.eq.1) then
-if(nb1.eq.2) then
-    z1curG(1,1) = 1.d0 ! random intercept only for now
-    z1curG(1,2) = 0.d0!z1Ycur(1,2) = tps
-    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
-    z1BcurG(1,2) = 1.d0
-else if(nb1.eq.3) then
-    z1curG(1,1) = 1.d0 !
-    z1curG(1,2) = tps
-    z1curG(1,3) = 0.d0
-    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
-    z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 1.d0
-else if(nb1.eq.4) then
-    if(nbY.eq.2) then ! intercept + linear slope in each model
-    z1curG(1,1) = 1.d0 !
-    z1curG(1,2) = tps
-    z1curG(1,3) = 0.d0
-    z1curG(1,4) = 0.d0
-    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
-    z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 1.d0
-    z1BcurG(1,4) = tps
-    else ! 2 parametric functions of time + random intercept
+if(TwoPart.eq.1) then
+    if(nb1.eq.2) then
+        z1curG(1,1) = 1.d0 ! random intercept only for now
+        z1curG(1,2) = 0.d0!z1Ycur(1,2) = tps
+        z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+        z1BcurG(1,2) = 1.d0
+    else if(nb1.eq.3) then
         z1curG(1,1) = 1.d0 !
+        z1curG(1,2) = tps
+        z1curG(1,3) = 0.d0
+        z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+        z1BcurG(1,2) = 0.d0
+        z1BcurG(1,3) = 1.d0
+    else if(nb1.eq.4) then
+        if(nbY.eq.2) then ! intercept + linear slope in each model
+        z1curG(1,1) = 1.d0 !
+        z1curG(1,2) = tps
+        z1curG(1,3) = 0.d0
+        z1curG(1,4) = 0.d0
+        z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+        z1BcurG(1,2) = 0.d0
+        z1BcurG(1,3) = 1.d0
+        z1BcurG(1,4) = tps
+        else ! 2 parametric functions of time + random intercept
+            z1curG(1,1) = 1.d0 !
+            z1curG(1,2) = resultf1
+            z1curG(1,3) = resultf2
+            z1curG(1,4) = 0.d0
+            z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+            z1BcurG(1,2) = 0.d0
+            z1BcurG(1,3) = 0.d0
+            z1BcurG(1,4) = 1.d0
+        end if
+        else if(nb1.eq.5) then
+                resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
+                resultf2=f2(tps)
+        z1curG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
         z1curG(1,2) = resultf1
         z1curG(1,3) = resultf2
-        z1curG(1,4) = 0.d0
+        z1curG(1,4) = 0.d0 
+        z1curG(1,5) = 0.d0
         z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
         z1BcurG(1,2) = 0.d0
         z1BcurG(1,3) = 0.d0
         z1BcurG(1,4) = 1.d0
+        z1BcurG(1,5) = tps
+
     end if
-    else if(nb1.eq.5) then
-            resultf1=f1(tps) ! need to compute function of time at each point of gauss-kronrod approx.
-            resultf2=f2(tps)
-    z1curG(1,1) = 1.d0 !intercept continuous WATCHOUT ORDER OF RE!!
-    z1curG(1,2) = resultf1
-    z1curG(1,3) = resultf2
-    z1curG(1,4) = 0.d0 
-    z1curG(1,5) = 0.d0
-    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
-    z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 0.d0
-    z1BcurG(1,4) = 1.d0
-    z1BcurG(1,5) = tps
-
-end if
+                            
+    Bcurrentvalue=0.d0
+    Bcv=0.d0
+    Bcv=dot_product(X2BcurG(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1BcurG(1,1:nb1),frail(1:nb1))
+    Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
                         
-Bcurrentvalue=0.d0
-Bcv=0.d0
-Bcv=dot_product(X2BcurG(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1BcurG(1,1:nb1),frail(1:nb1))
-Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
-                    
-cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1curG(1, 1:nb1),frail(1:nb1)))
+    cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1curG(1, 1:nb1),frail(1:nb1)))
 
-if(GLMloglink0.eq.0) then
+    if(GLMloglink0.eq.0) then
         current_meanG = cmY*Bcurrentvalue
-else if(GLMloglink0.eq.1) then
-        current_meanG = dexp(cmY)*Bcurrentvalue
-end if
+    else if(GLMloglink0.eq.1) then
+        if(MTP0.eq.0) then
+            current_meanG = dexp(cmY)*Bcurrentvalue
+        else if(MTP0.eq.1) then
+            current_meanG = dexp(cmY)    
+        end if
+    end if
 
         
 else if(TwoPart.eq.0) then
@@ -4318,7 +4322,6 @@ else if(TwoPart.eq.0) then
         z1curG(1,1) = 1.d0 !
         z1curG(1,2) = resultf1
         z1curG(1,3) = resultf2
-
     end if
               
      if(GLMloglink0.eq.0) then
@@ -4830,7 +4833,11 @@ end if
     if(GLMloglink0.eq.0) then
             current_meanG = cmY*Bcurrentvalue
     else if(GLMloglink0.eq.1) then
+        if(MTP0.eq.0) then
             current_meanG = dexp(cmY)*Bcurrentvalue
+        else if(MTP0.eq.1) then
+            current_meanG = dexp(cmY)    
+        end if
     end if
  else if(TwoPart.eq.0) then
  
