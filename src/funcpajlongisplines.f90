@@ -431,7 +431,7 @@
                 if(nmescur.gt.0) then
                     do i= 1,nmescur
                         ycurrent(i) = yy(it+i)
-                                                    mat_sigma(i,i) = sigmae**2.d0
+                        mat_sigma(i,i) = sigmae**2.d0
                         if(s_cag_id.eq.1)then
                             if(ycurrent(i).gt.s_cag) then
                                 nmes_o(ig) = nmes_o(ig)+1

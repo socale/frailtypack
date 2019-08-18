@@ -4427,7 +4427,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,dimension(1)::uiiui
         double precision,dimension(nb1,nb1)::mat,matb_chol
         double precision, dimension(1)::current_meanG
-        double precision :: yscalar,yscalarlog,eps,finddet,det,alnorm,prod_cag,yscaltemp
+        double precision :: yscalar,yscalarlog,eps,finddet,det,alnorm,prod_cag,yscal1,yscal2
         integer :: j,jj,i,k,ier
         logical :: upper
         double precision,external::survdcCM
@@ -4860,7 +4860,6 @@ else if(GLMloglink0.eq.1) then
 cmY = MATMUL(X2curG,b1((npp-nva3+1):npp))+Matmul(z1YcurG,Xea22)
 current_meanG = dexp(cmY)
 end if
-
                     end if    
             end if
     
@@ -4869,7 +4868,8 @@ end if
 
 
         yscalar = 0.d0
-        yscaltemp = 0.d0
+        yscal1 = 0.d0
+        yscal2 = 0.d0
         yscalarlog = 0.d0
         !********* Left-censoring ***********
             prod_cag = 1.d0
@@ -4886,16 +4886,17 @@ end if
                         yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                     else if(GLMloglink0.eq.1) then
                         if(TwoPart.eq.0) then
-                            yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                            yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                             yscalarlog = yscalarlog - dlog(ycurrent(k))
                         else if(TwoPart.eq.1) then
                             if(ycurrent(k).ne.0) then
                                 if(MTP0.eq.0) then
-                                    yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                                    yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                                     yscalarlog = yscalarlog - dlog(ycurrent(k))
                                 else if (MTP0.eq.1) then
-                   yscaltemp= (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)+dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
-                                yscalar = yscalar + yscaltemp
+                   yscal1= mu1G(k,1)-mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))-(sigmae/2)
+                   yscal2= (dlog(ycurrent(k))-yscal1)**2
+                                yscalar = yscalar + yscal2
                                 yscalarlog = yscalarlog - dlog(ycurrent(k))
                                 end if
                             end if
@@ -4909,16 +4910,17 @@ end if
                         yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                 else if(GLMloglink0.eq.1) then ! lognormal density
                     if(TwoPart.eq.0) then
-                        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                        yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                         yscalarlog = yscalarlog - dlog(ycurrent(k))
                     else if(TwoPart.eq.1) then ! two-part model for the longitudinal outcome
                         if(ycurrent(k).ne.0) then
                             if(MTP0.eq.0) then
-                                yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+                                yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                                 yscalarlog = yscalarlog - dlog(ycurrent(k))
                             else if (MTP0.eq.1) then ! marginal two-part model
-             yscaltemp= (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)+dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
-                           yscalar = yscalar + yscaltemp
+                   yscal1= mu1G(k,1)-mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))-(sigmae/2)
+                   yscal2= (dlog(ycurrent(k))-yscal1)**2
+                                yscalar = yscalar + yscal2
                             yscalarlog = yscalarlog - dlog(ycurrent(k))
                             end if
                         end if
