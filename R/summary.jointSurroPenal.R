@@ -167,7 +167,7 @@
     cat("Surrogacy evaluation criterion", "\n")
     print(validation2)
     cat("---","\n")
-    cat("Correlation strength: <= 0.7 'Low'; ]0.7 - 0.85[ 'Medium'; >= 0.85 'High' ","\n")
+    cat("Correlation strength: <= 0.49 'Low'; ]0.49 - 0.72[ 'Medium'; >= 0.72 'High' ","\n")
     cat("---","\n")
     
     cat(c("Surrogate threshold effect (STE) :",round(ste(object),len),"(HR =",round(exp(ste(object)),len),")"),"\n")
