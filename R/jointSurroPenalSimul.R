@@ -550,6 +550,14 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                        covar.names = nomvarl, pfs = pfs)
                                         
       }
+      
+      # just for test
+      data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
+                                 alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
+                                 zeta = 1, sigma.t = 0.7, cor = 0.8, betas = -1.25, 
+                                 betat = -1.25, full.data = 0, random.generator = 1, 
+                                 seed = 0, nb.reject.data = 0)
+      
       data.sim$initTime <- 0
       donnees <- data.sim[,c("trialID","patienID","trt","initTime","timeS","statusS")]
       death   <- data.sim[,c("trialID","patienID","trt","initTime","timeT","statusT")]
