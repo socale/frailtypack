@@ -52,7 +52,6 @@
 ##' 
 "plot.jointSurroPenalloocv" <- 
   function(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...){
-  cat("socaleYes")
   data.gumbel = object$result
   data.gumbel <- data.gumbel[!(data.gumbel$trialID %in% unusedtrial),]
   data.plot <- data.frame(matrix(NA, nrow = 3 * nrow(data.gumbel), ncol = 4))
@@ -63,7 +62,7 @@
     if(data.plot$trialID[i] %in% unusedtrial){
       data.plot$trialID[j:(j+2)] <- data.gumbel$trial[i]
       data.plot$beta.T[j:(j+2)] <- 0
-      data.plot$beta[j:(j+2)] <- c(0, 0,0)
+      data.plot$beta[j:(j+2)] <- c(0,0,0)
     }else{
       data.plot$trialID[j:(j+2)] <- data.gumbel$trial[i]
       data.plot$beta.T[j:(j+2)] <- data.gumbel$beta.T[i]
@@ -82,7 +81,7 @@
   while (k <= length(unusedtrial)){
     data.plot2$trialID[j:(j+2)] <- unusedtrial[k]
     data.plot2$beta.T[j:(j+2)] <- 0
-    data.plot2$beta[j:(j+2)] <- c(0, 0,0)
+    data.plot2$beta[j:(j+2)] <- c(0,0,0)
     j <- j+3
     k <- k+1
   }
@@ -99,9 +98,10 @@
   doBy::orderBy(~ trialID+ordre,data.plot2)
   trialnotused <- sort(c(unusedtrial, object$notconvtrial))
   if(length(trialnotused)>=1) mainlabel <- trialnotused[1]
-  if(length(trialnotused)>1)
-  for(i in 2:length(trialnotused))
-    mainlabel <- paste(mainlabel,trialnotused[i], sep = ", ")
+  if(length(trialnotused)>1){
+    for(i in 2:length(trialnotused))
+      mainlabel <- paste(mainlabel,trialnotused[i], sep = ", ")
+  }
   
   if(length(mainlabel) > 0){ # to avoid to display the main in cases where all trials have been used
     boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 

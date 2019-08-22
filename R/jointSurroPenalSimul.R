@@ -66,7 +66,7 @@
 #'    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
 #'    mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
 #'    thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), 
-#'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
+#'    nb.decimal = 4, pfs = 1, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' Default is \code{40}. 
@@ -240,6 +240,8 @@
 #' should have the same size
 #' @param thetacopula.init Initial value for the copula parameter. The default is 3 
 #' @param nb.decimal Number of decimal required for results presentation.
+#' @param pfs Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
+#' The default is 1. In this case, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
 #' @param print.times a logical parameter to print estimation time. Default
 #' is TRUE.
 #' @param print.iter a logical parameter to print iteration process. Default
@@ -328,7 +330,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                       seed = 0, nb.reject.data = 0, init.kappa = NULL, ckappa = c(0,0), 
                       type.joint.estim = 1, type.joint.simul = 1, mbetast = NULL, mbetast.init = NULL, typecopula = 1, 
                       theta.copula = 6, thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), nb.decimal = 4, 
-                      print.times = TRUE, print.iter = FALSE){
+                      pfs = 1, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL
   scale <- 1
@@ -533,7 +535,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt, full.data = 0, 
                         random.generator = random.generator, random = random, 
-                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1)
+                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1, 
+                        pfs = pfs)
       }else{ # joint frailty copula model
          data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
                        alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
@@ -544,7 +547,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                        full.data = 0, random.generator = random.generator, random = random, 
                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1,
                        thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
-                       covar.names = nomvarl)
+                       covar.names = nomvarl, pfs = pfs)
                                         
       }
       data.sim$initTime <- 0
@@ -708,7 +711,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   nbre_sim <- random.nb.sim# dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
   graine <- seed # dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
   autreParamSim <- c(weib,param.weibull,frailty_cor,affiche_stat,seed_,une_donnee,donne_reel,gener.only,
-                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa[1],ckappa[2])
+                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa[1],ckappa[2],pfs)
   
   # autres dichiers de sortie
   # vecteur des pametres

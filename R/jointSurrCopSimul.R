@@ -67,6 +67,8 @@
 #' should have the same size
 #' @param covar.names Vector of the names of covariables. By default it contains "trt" for the 
 #' tratment arm. Should contains the names of all covarites wished in the generated dataset.
+#' @param pfs Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
+#' The default is 1. In this case, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
 # @param param.weibull A binary for the Weibull parametrization used. The default is \code{0}, as in 
 # the frailtypack package. If \code{1} the function 
 # \eqn{f(x)=\nu^\lambda . \lambda . x^{\lambda-1} . \exp(-(\nu x)^\lambda)} is used.
@@ -119,7 +121,7 @@ jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549, alpha =
                            frailt.base = 1, lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, ver = 2, typeOf = 1,
                            equi.subj.trial = 1 ,equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
                            full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, nb.reject.data = 0,
-                           thetacopule = 6, filter.surr = c(1,1), filter.true = c(1,1), covar.names = "trt"){
+                           thetacopule = 6, filter.surr = c(1,1), filter.true = c(1,1), covar.names = "trt", pfs = 1){
   
   param.weibull <- 0
   theta <- 3.5
@@ -229,6 +231,7 @@ jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549, alpha =
                     as.integer(filtre), 
                     as.integer(filtre2),
                     as.integer(type.joint.simul),
+                    as.integer(pfs),
                     PACKAGE="frailtypack"
                     )
     

@@ -280,7 +280,7 @@ F77_SUB(surrosim)(double *don_simul, double *don_simulS1, int *n_obs, int *n_col
               double *sigma_t, double *p, double *prop_i, double *gamma, double *alpha,
               int *frailt_base, int *random_generator0, int *aleatoire, int *nbre_sim , 
               int *graine, int *nbre_don_non_cons, int *param_weibull, int *thetacopule, int *filtre, 
-              int *filtre2, int *type_joint_simul);
+              int *filtre2, int *type_joint_simul, int *pfs);
 
 void
 F77_SUB(jointsurrokendall)(

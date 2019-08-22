@@ -34,7 +34,7 @@ static const R_FortranMethodDef FortEntries[] = {
 	{"somme",                (DL_FUNC) &F77_SUB(somme),                 5},
     {"jointsurrogate",       (DL_FUNC) &F77_SUB(jointsurrogate),       57},
     {"test",                 (DL_FUNC) &F77_SUB(test),       3},
-    {"surrosim",             (DL_FUNC) &F77_SUB(surrosim), 40},
+    {"surrosim",             (DL_FUNC) &F77_SUB(surrosim), 41},
     {"jointsurrokendall",    (DL_FUNC) &F77_SUB(jointsurrokendall), 24},
     {NULL, NULL, 0}
 };

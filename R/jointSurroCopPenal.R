@@ -484,6 +484,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nb.MC.kendall <- 10000
   zeta.init <- 1
   theta.init <- thetacopula.init
+  pfs <- 1 # pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 1. In this case, death is included in the surrogate endpoint. 
   
  # list of models parameters:
   parameter <- c(maxit = maxit,indicator.zeta = 0, indicator.alpha = indicator.alpha,
@@ -909,7 +910,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nbre_sim <- random.nb.sim# dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
   graine <- seed # dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
   autreParamSim <- c(weib,param.weibull,frailty_cor,affiche_stat,seed_,une_donnee,donne_reel,gener.only,
-                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa[1],ckappa[2])
+                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa[1],ckappa[2],pfs)
   
   # autres dichiers de sortie
   # vecteur des pametres

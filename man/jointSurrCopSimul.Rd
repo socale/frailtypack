@@ -12,7 +12,7 @@ jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549,
   prop.subj.trial = NULL, prop.subj.trt = NULL, full.data = 0,
   random.generator = 1, random = 0, random.nb.sim = 0, seed = 0,
   nb.reject.data = 0, thetacopule = 6, filter.surr = c(1, 1),
-  filter.true = c(1, 1), covar.names = "trt")
+  filter.true = c(1, 1), covar.names = "trt", pfs = 1)
 }
 \arguments{
 \item{n.obs}{Number of considered  subjects. The default is \code{600}.}
@@ -100,6 +100,9 @@ should have the same size}
 
 \item{covar.names}{Vector of the names of covariables. By default it contains "trt" for the 
 tratment arm. Should contains the names of all covarites wished in the generated dataset.}
+
+\item{pfs}{Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
+The default is 1. In this case, death is included in the surrogate endpoint as in the definition of PFS or DFS.}
 
 \item{theta.copule}{The copula parameter. The default is \code{6}, for an individual-level
 association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula}

@@ -3,7 +3,7 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
             ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
             betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,random_generator0,&
             aleatoire, nbre_sim , graine, nbre_don_non_cons,param_weibull0,thetacopule,filtre, filtre2,&
-			type_joint_simul)
+			type_joint_simul, pfs)
     
     ! nbre_don_non_cons : nombre de jeux de donnees a jeter avant de simuler les donnees a retourner 
     ! ceci permet de se rassurer que les donner geneger lors de simulation tiennent compte du seed fixe a la base
@@ -19,7 +19,7 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
 
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver,&
                             random_generator0, aleatoire,nbre_sim , graine, param_weibull0,&
-							type_joint_simul
+							type_joint_simul,pfs
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t,&
 									thetacopule
@@ -41,27 +41,27 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
 		     do i = 1, nbre_don_non_cons
 				call Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
 					 ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
-					 betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
+					 betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,pfs)
 			 enddo
 		  endif
 		  
 		  call Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
 				ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
-				betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
+				betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,pfs)
 	  else ! joint frailty copula model
 	     if(nbre_don_non_cons > 0) then
 		     do i = 1, nbre_don_non_cons
 				call Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
 					 ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
 					 betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,thetacopule, filtre,&
-					 filtre2)
+					 filtre2,pfs)
 			 enddo
 		  endif
 		  
 		  call Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
 				ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
 				betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,thetacopule, filtre,&
-				filtre2)
+				filtre2,pfs)
 	  endif
       ! avec ceci on est certain de retourner le bon jeu de donnees 
 

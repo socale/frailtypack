@@ -1669,7 +1669,7 @@ endsubroutine generation_Gamma !FIN prog principal
 
 subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
             ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
-            betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base)
+            betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base, pfs)
     ! lognormal: dit si la distribution des effets aleatoires est lognormal pour le modele complet (1) ou lognormal pour le joint classique de 2007 (2) ou gamma pour le joint classique de 2007(0)
     ! use Autres_fonctions
     ! theta2: variance des frailties gaussiens associe a S
@@ -1685,9 +1685,10 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
     ! gamma: variance de l'effet aleatoire u_i associe au risque de base chez S
     ! alpha: parametre de puissance (zeta) associe a u_i pour les deces
     ! frailt_base: dit si l'on prend en compte l'heterogeneite sur le risque de base aussi bien dans la generation des donnes que dans l'estimation(1) ou non (0)
+	! pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 0 as in sofeu et al. (2019). In this case, death is not included in the surrogate endpoint. 
      use var_surrogate, only: random_generator
 
-      integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver
+      integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver, pfs
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t
       double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
@@ -1968,9 +1969,21 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
                         nb_recur =nb_recur + 1
                         nig(ig) = nig(ig)+1 !nb events recurrents
                     else ! progression le meme jour que le deces ou sans progression
-                        delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
-                        temps1_S=temps1! et on censure a la date de deces(ou censure)
-                    endif
+						if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
+							delta=0.d0           
+                            temps1_S=temps1
+						else ! le patient fait la progression le meme jour que le deces
+							if(pfs == 0) then ! le deces censure la progression et donc on considere qu'il n'ya pas eu de progression
+								delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+								temps1_S=temps1! et on censure a la date de deces(ou censure)
+							else ! dans ce cas la progression inclue le deces: cas de la PFS ou DFS
+								delta=1.d0
+								temps1_S = temps1
+								nb_recur =nb_recur + 1
+								nig(ig) = nig(ig)+1 !nb events recurrents
+							endif
+						endif
+					endif
                 endif
         !c****** for gap time :         
                  t0(nobs) = 0.d0
@@ -2044,7 +2057,8 @@ endsubroutine Generation_surrogate
 
 subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
             ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
-            betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,thetacopule,filtre, filtre2)
+            betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,thetacopule,filtre, filtre2,&
+			pfs)
     ! lognormal: dit si la distribution des effets aleatoires est lognormal pour le modele complet (1) ou lognormal pour le joint classique de 2007 (2) ou gamma pour le joint classique de 2007(0)
     ! use Autres_fonctions
     ! theta2: variance des frailties gaussiens associe a S
@@ -2063,10 +2077,11 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     ! thetacopule : parametre de la copule de clayton
     ! filtre: vecteur qui dit si une variable est prise en compte pour le surrogate
     ! filtre2: vecteur qui dit si une variable est prise en compte pour le true endpoint
+	! pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 0 as in sofeu et al. (2019). In this case, death is not included in the surrogate endpoint. 
     
      use var_surrogate, only: random_generator
 
-      integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver
+      integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver, pfs
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t,&
                                     thetacopule
@@ -2380,8 +2395,20 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
                         nb_recur =nb_recur + 1
                         nig(ig) = nig(ig)+1 !nb events recurrents
                     else ! progression le meme jour que le deces ou sans progression
-                        delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
-                        temps1_S=temps1! et on censure a la date de deces(ou censure)
+					    if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
+							delta=0.d0           
+                            temps1_S=temps1
+						else ! le patient fait la progression le meme jour que le deces
+							if(pfs == 0) then ! le deces censure la progression et donc on considere qu'il n'ya pas eu de progression
+								delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+								temps1_S=temps1! et on censure a la date de deces(ou censure)
+							else ! dans ce cas la progression inclue le deces: cas de la PFS ou DFS
+								delta=1.d0
+								temps1_S = temps1
+								nb_recur =nb_recur + 1
+								nig(ig) = nig(ig)+1 !nb events recurrents
+							endif
+						endif
                     endif
                 endif
         !c****** for gap time :         

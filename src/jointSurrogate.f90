@@ -33,7 +33,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer,dimension(5),intent(in)::indice_a_estime
     integer,dimension(5),intent(in):: param_risque_base
     integer,dimension(3),intent(in):: Param_kendall_boot
-    integer,dimension(15),intent(in):: autreParamSim ! indique si l'on estime (1=oui, 0=non) estime ou pas zeta(1), covST(2), alpha(3), gammaST(4). indique en (5) si on prend en compte l'heterogeneite sur le risque de base
+    integer,dimension(16),intent(in):: autreParamSim ! indique si l'on estime (1=oui, 0=non) estime ou pas zeta(1), covST(2), alpha(3), gammaST(4). indique en (5) si on prend en compte l'heterogeneite sur le risque de base
     integer,dimension(nbrevar(3),2), intent(in)::filtre0
     double precision,dimension(nsujet1,5+nbrevar(1)), intent(in):: donnees
     double precision,dimension(ng,5+nbrevar(2)), intent(in):: death
@@ -121,7 +121,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 rangparam_gammast,rangparam_alpha,decoup_simul,incre_decoup,method_int_kendal,N_MC_kendall,&
                 param_weibull,donne_reel,indice_seed,npoint1,npoint2,rangparam_eta,nboot_kendal,nparam_kendall,&
                 rangparam_theta,erreur_fichier,indicCP,controlgoto,remplnsim,indice_kapa, type_joint_estim,&
-				rangparam_copula
+				rangparam_copula,pfs
                 
                 
     double precision::theta,eta,betas,alpha,betat,lambdas,nus,lambdat,nut,temps_cens,&
@@ -317,6 +317,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     graine = autreParamSim(13)
 	ckappa(1) =dble(autreParamSim(14))
 	ckappa(2) =dble(autreParamSim(15))
+	pfs = autreParamSim(16)
     
     np=sizeVect(1)
     call date_and_time(dateamj,heure1,zone,values) ! pour la date de debut du programme
@@ -944,7 +945,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                    
                     call Generation_surrogate(don_simul,don_simulS1,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
-                        n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base)    
+                        n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,pfs)    
                 endif
                 
 				! call dblepr("sigma_s", -1, sigma_s, 1)	
@@ -955,7 +956,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
-                        filtre2)  
+                        filtre2,pfs)  
 					don_simul(:,1:4) = don_simultamp(:,1:4)
 					don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
 					don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:(size(don_simultamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
