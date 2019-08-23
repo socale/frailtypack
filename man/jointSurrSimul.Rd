@@ -11,7 +11,7 @@ jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
   nu.T = 0.0025, ver = 1, typeOf = 1, equi.subj.trial = 1,
   equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
   full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
-  seed = 0, nb.reject.data = 0, pfs)
+  seed = 0, nb.reject.data = 0, pfs = 1)
 }
 \arguments{
 \item{n.obs}{Number of considered  subjects. The default is \code{600}.}
