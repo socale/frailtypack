@@ -9,11 +9,12 @@
 ##' @usage \method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
 ##' 
 ##' @param object Object inherent from the \code{jointSurroPenalloocv} Class
-##' @param unusedtrial Vector of unconsidered trials, may be due to the fact that the predicted treatment effects on the true 
+##' @param unusedtrial Vector of unconsidered trials, may be due to the fact that the 
+##' predicted treatment effects on the true endpoint have an outlier. In this case, 
+##' one can drop from the data the trials with very hight absolute predicted value 
 ##' @param x Coordinate for the location of the legend
 ##' @param y Coordinate for the location of the legend, the default is \code{NULL}
-##' endpoint have an outlier. In this case, one can drop from the data the trials with very hight absolute predicted value
-##' @param main The main
+##' @param main The desired main
 ##' @param ... other unused arguments.
 ##' 
 ##' @return This function displays the boxplots corresponding to the number of trials in the 

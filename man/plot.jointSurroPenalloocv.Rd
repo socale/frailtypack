@@ -8,14 +8,17 @@ canditate surrogate endpoint.}
 \method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
 }
 \arguments{
-\item{object}{= Object inherent from the \code{jointSurroPenalloocv} Class}
+\item{object}{Object inherent from the \code{jointSurroPenalloocv} Class}
 
-\item{unusedtrial}{Vector of unconsidered trials, may be due to the fact that the predicted treatment effects on the true 
-endpoint have an outlier. In this case, one can drop from the data the trials with very hight absolute predicted value}
+\item{unusedtrial}{Vector of unconsidered trials, may be due to the fact that the 
+predicted treatment effects on the true endpoint have an outlier. In this case, 
+one can drop from the data the trials with very hight absolute predicted value}
 
 \item{x}{Coordinate for the location of the legend}
 
 \item{y}{Coordinate for the location of the legend, the default is \code{NULL}}
+
+\item{main}{The desired main}
 
 \item{...}{other unused arguments.}
 }
@@ -24,7 +27,8 @@ This function displays the boxplots corresponding to the number of trials in the
 dataset. Each boxplot included 3 elements correnponding to the predicted treatment effect on the true endpoint
 with the prediction interval. The circle inside or outside the boxplot represents the observed
 treatment effect on the true endpoint. For all unused trials due to convergence issues or outliers, the boxplot is just represents
-by a adsh. it the last case, we display in the main of the figure a vector of unused trials.
+by a dash. In the last case, we display in the main of the figure a vector of unused trials, is the argumets \code{main} 
+is set to \code{NULL}. The function retruns the list of unused trials.
 }
 \description{
 {
