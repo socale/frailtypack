@@ -551,7 +551,40 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                                         
       }
       
+      print(nbSubSimul )
+      print(ntrialSimul )
+      print(time.cens )
+      print(alpha.ui )
+      print(gamma.ui )
+      print(sigma.s )
+      print(sigma.t )
+      print(sqrt(R2) )
+      print(mbetast[,1] )
+      print(mbetast[,2] )
+      print(lambdas )
+      print(nus )
+      print(lambdat )
+      print(nut )
+      print(ver )
+      print(equi.subj.trial )
+      print(equi.subj.trt )
+      print(prop.subj.trial )
+      print(prop.subj.trt )
+      print(0 )
+      print(random.generator )
+      print(random )
+      print(random.nb.sim )
+      print(seed )
+      print(nb.reject.data2 + j-1 )
+      print(theta.copula )
+      print(filtre )
+      print(filtre2 )
+      print(nomvarl )
+      print(pfs)
+      
       print(summary(data.sim))
+      print(head(data.sim,20))
+      print(tail(data.sim,20))
       data.sim$initTime <- 0
       donnees <- data.sim[,c("trialID","patienID","trt","initTime","timeS","statusS")]
       death   <- data.sim[,c("trialID","patienID","trt","initTime","timeT","statusT")]
