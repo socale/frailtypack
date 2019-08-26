@@ -581,7 +581,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       # print(filtre2 )
       # print(nomvarl )
       # print(pfs)
-      
+      # print(table(data.sim$statusS, data.sim$trialID))
+      # 
       data.sim$initTime <- 0
       donnees <- data.sim[,c("trialID","patienID","trt","initTime","timeS","statusS")]
       death   <- data.sim[,c("trialID","patienID","trt","initTime","timeT","statusT")]

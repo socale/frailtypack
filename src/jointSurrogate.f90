@@ -318,6 +318,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 	ckappa(1) =dble(autreParamSim(14))
 	ckappa(2) =dble(autreParamSim(15))
 	pfs = autreParamSim(16)
+	! call intpr("avant appel joint:pfs", -1,pfs, 1)
     
     np=sizeVect(1)
     call date_and_time(dateamj,heure1,zone,values) ! pour la date de debut du programme

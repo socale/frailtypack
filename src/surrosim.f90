@@ -32,6 +32,10 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
       random_generator = random_generator0
       param_weibull = param_weibull0
       
+	  ! call intpr("voile graine", -1, graine, 1)
+      ! call intpr("voile aleatoire", -1, aleatoire, 1)
+	  ! call intpr("voile nbre_sim", -1, nbre_sim, 1)
+
       if(random_generator==1) then
           if(graine >= 0) call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environement de generation
       endif

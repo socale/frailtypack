@@ -2125,7 +2125,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       double precision,dimension(n_essai)::n_i
       double precision,dimension(:,:),allocatable::sigma,x_ 
     
-      ! some print
+     ! ! some print
 	  ! call intpr("n_obs", -1,n_obs , 1)	
 	  ! call intpr("n_col", -1,n_col , 1)
 	  ! call intpr("lognormal", -1, lognormal, 1)	
@@ -2156,7 +2156,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
 	  ! call dblepr("thetacopule", -1,thetacopule , 1)
 	  ! call intpr("filtre", -1,filtre,size(filtre))	
 	  ! call intpr("filtre2", -1,filtre, size(filtre2))
-
+	  ! call intpr("frailt_base", -1, pfs, 1)
 !CCCCCCCCCCCCCCCCChosur9.f CCCCCCCCCCCCCCCCCCCCCCCC
       allocate(v1(ver))
       don_simulS1 = 0.d0
@@ -2292,7 +2292,6 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
         ! endif
         
 !!c---  variables explicatives par sujet
-        !call intpr("voile ver", -1, ver, 1)
          do 111 j=1,ver
             if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
                 tempon= uniran()
@@ -2309,6 +2308,8 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
          111        continue
          
         ! if(ig==1) then 
+		   ! call intpr("voile random_generator", -1, random_generator, 1)
+		   ! call dblepr("voile tempon", -1, tempon, 1)
            ! call realpr("voile v1", -1, v1, ver)
            ! call realpr("voile piece", -1, piece, 1)
            ! call dblepr("voile tempon", -1, tempon, 1)
@@ -2395,6 +2396,8 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
                         nb_recur =nb_recur + 1
                         nig(ig) = nig(ig)+1 !nb events recurrents
                     else ! progression le meme jour que le deces ou sans progression
+						! delta=0.d0           
+                        ! temps1_S=temps1
 					    if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
 							delta=0.d0           
                             temps1_S=temps1
