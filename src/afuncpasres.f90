@@ -392,7 +392,7 @@
     
             use optim
         use comon
-            use donnees_indiv,only:z1cur,x2cur,current_mean,b1
+            use donnees_indiv,only:z1cur,x2cur,current_mean,b1,GLMloglink0,MTP0
             use residusM
     
         implicit none
@@ -400,7 +400,7 @@
         integer,intent(in)::id,jd,np
         double precision,intent(in)::thi,thj
         double precision,dimension(np)::uu,bh
-        double precision::res,yscalar,prod_cag,eps
+        double precision::res,yscalar,prod_cag,eps,yscalarlog,currentmeanlog
             double precision::finddet,alnorm
             double precision,dimension(nb1)::b_vec,uii
             double precision,dimension(nb1*(nb1+1)/2)::matv
@@ -413,6 +413,12 @@
             double precision :: resultdc
     double precision,external::survdcCM
         double precision :: abserr,resabs,resasc
+double precision, dimension(1,nvaB)::x2BcurG
+        double precision, dimension(1,nb1)::z1YcurG
+        double precision, dimension(1,nb1)::z1BcurG
+        double precision :: Bscalar! add TwoPart
+        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY,cmGtemp
+integer :: counter, counter2 ! add for current-level interaction
             upper=.false.
         bh=uu
     
@@ -422,14 +428,23 @@
         b_vec(1:nb1) = bh(1:nb1)
         b_vecT(1:nb1,1) = bh(1:nb1)
           
-          matv = 0.d0
+            matv = 0.d0
             mu1_res = 0.d0
     
             if(nmesy(indg).gt.0) then
             !if(nb1.eq.1)mu1_res(1:nmesy(indg)) = XbetaY_res(1,indg) +Zet(1:nmesy(indg),1:netadc)*b_vec
             mu1_res(1:nmesy(indg)) = XbetaY_res(1,it_res:(it_res+nmesy(indg)-1)) &
-                    +MATMUL(Zet(it_res:(it_res+nmesy(indg)-1),1:nb1),b_vec)
+                    +MATMUL(Zet(it_res:(it_res+nmesy(indg)-1),1:nby),b_vec(1:nby))
             end if
+    
+        ! add TwoPart
+        if(TwoPart.eq.1) then
+            if(nmesB(indg).gt.0) then
+            !if(nb1.eq.1)mu1_res(1:nmesy(indg)) = XbetaY_res(1,indg) +Zet(1:nmesy(indg),1:netadc)*b_vec
+  !          mu1_resB(1:nmesB(indg)) = XbetaB_res(1,it_resB:(it_resB+nmesB(indg)-1)) &
+  !                  +MATMUL(ZetB(it_resB:(it_resB+nmesB(indg)-1),nby:nb1),b_vec(nby+1:nb1)
+            end if
+        end if
     
             !********* Left-censoring ***********
             yscalar = 0.d0
@@ -444,12 +459,23 @@
                     end do
             else
                     do k=0,nmesy(indg)-1
+                        if(GLMloglink0.eq.0) then
                             yscalar = yscalar + (yy(k+it_res)-mu1_res(k+1))**2.d0
+                        else if(GLMloglink0.eq.1) then
+                            yscalar = yscalar + (dlog(yy(k+it_res))-mu1_res(k+1)+sigmae/2.d0)**2.d0
+                            yscalarlog=yscalarlog-dlog(yy(k+it_res))
+                        end if
                     end do
             end if
     
             yscalar = dsqrt(yscalar)
     
+    Bscalar=0.d0
+    if(TwoPart.eq.1) then ! binary part contribution
+        do k=0,nmesB(indg)-1
+            Bscalar = Bscalar + (bb(k+it_resB)*mu1_resB(k+1)+dlog(1.d0-(dexp(mu1_resB(k+1))/(1+dexp(mu1_resB(k+1))))))
+        end do
+    end if
     
             mat_B = matmul(ut,utt)
             det = finddet(matmul(ut,utt),nb1)
@@ -483,26 +509,141 @@
             end if
     
             if(link.eq.2) then
-    
+        counter=0
+        counter2=1
             call integrationdc(survdcCM,t0dc(indg),t1dc(indg),resultdc,abserr,resabs,resasc,indg,b1,npp,b_vec)
     
-            X2cur = 0.d0
+x2cur=0.d0
+    if((nva3-1).gt.0) then ! set the value of covariates at time to event! (interaction must be computed accordingly)
+        x2cur(1,1) = 1.d0
+        do k=2,nva3
+            x2cur(1,k) = dble(vey(it_res+1,k))
+        end do
+        
+if(numInter.ge.1)then
+
+            do counter = 1,numInter !in case of multiple interactions
+            if(positionVarT(counter2+3).eq.0) then ! linear
+                x2cur(1,positionVarT(counter2+1)) =t1dc(indg)
+                if(positionVarT(counter2+2).ne.0) then
+                    if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                    x2cur(1,positionVarT(counter2+2)) =t1dc(indg)*dble(vey(it_res+1,positionVarT(counter2)))
+                    else if(positionVarT(counter2).gt.100) then
+                    x2cur(1,positionVarT(counter2+2)) =t1dc(indg)*dble(vedc(indg,positionVarT(counter2)-100))
+                    end if
+                end if
+            end if
+                counter2=counter2+4
+            end do
+        end if
+    end if
+
     
-                    X2cur(1,1) = 1.d0
-            X2cur(1,2) =t1dc(indg)
-            if((nva3-2).gt.0) then
-                do k=3,nva3
-                        X2cur(1,k) = dble(vey(it_res,k))
-                    end do
+    
+    if(TwoPart.eq.1) then
+    X2BcurG=0.d0
+    if((nvaB-1).gt.0) then
+    X2BcurG(1,1) = 1.d0
+    do k=2,nvaB
+    X2BcurG(1,k) = dble(veB(it_resB+1,k))
+    end do
+    if(numInterB.ge.1) then
+    do counter = 1,numInterB ! compute time and interactions at t1dc(indg)
+        if(positionVarT(counter2+3).eq.0) then !linear
+            X2BcurG(1,positionVarT(counter2+1)) =t1dc(indg) ! time effect
+            if(positionVarT(counter2+2).ne.0) then
+                if(positionVarT(counter2).le.100) then ! if interaction terms not included 
+                X2BcurG(1,positionVarT(counter2+2)) =t1dc(indg)*dble(veB(it_resB+1,positionVarT(counter2)))! interaction
+                else if(positionVarT(counter2).gt.100) then
+                X2BcurG(1,positionVarT(counter2+2)) =t1dc(indg)*dble(vedc(indg,positionVarT(counter2)-100))
+                end if
+            end if
+        end if
+        counter2=counter2+4  
+    end do
+    end if
+end if
+end if    
+
+
+             ! no ping here             
+             
+            z1YcurG(1,1) = 1.d0
+            if(nb1.eq.2) then
+                z1YcurG(1,2) = t1dc(indg)
+            end if  
+            
+
+    if(nb1.eq.1) then
+        current_mean =dot_product(x2cur(1,1:nva3),b1((npp-nva3+1):npp))+z1YcurG(1,1)*b_vec
+    else if(nb1.gt.1) then
+    
+    if(TwoPart.eq.1) then
+if(nb1.eq.2) then
+    z1YcurG(1,1) = 1.d0 ! random intercept only for now
+    z1YcurG(1,2) = 0.d0!z1Ycur(1,2) = t1dc(indg)
+    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1BcurG(1,2) = 1.d0
+else if(nb1.eq.3) then
+    z1YcurG(1,1) = 1.d0 !
+    z1YcurG(1,2) = t1dc(indg)
+    z1YcurG(1,3) = 0.d0
+    z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+    z1BcurG(1,2) = 0.d0
+    z1BcurG(1,3) = 1.d0
+else if(nb1.eq.4) then
+    if(nbY.eq.2) then ! random intercept and slope in each model
+        z1YcurG(1,1) = 1.d0 !
+        z1YcurG(1,2) = t1dc(indg)
+        z1YcurG(1,3) = 0.d0
+        z1YcurG(1,4) = 0.d0
+        z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
+        z1BcurG(1,2) = 0.d0
+        z1BcurG(1,3) = 1.d0
+        z1BcurG(1,4) = t1dc(indg)
+    end if
+end if
+
+
+    Bcurrentvalue=0.d0
+    Bcv=0.d0
+
+    Bcv=MATMUL(X2BcurG,b1((npp-nvaB+1):npp))+Matmul(z1BcurG,b_vec)
+    Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
+                    
+
+        cmY = (MATMUL(x2cur,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1YcurG,b_vec))
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!       write(2,*)'boxcoxlambda',boxcoxlambda
+!     close(2)
+     
+    if(GLMloglink0.eq.0) then
+            current_mean = cmY*Bcurrentvalue
+    else if(GLMloglink0.eq.1) then
+        if(MTP0.eq.0) then
+            current_mean = dexp(cmY)*Bcurrentvalue
+        else if(MTP0.eq.1) then
+            current_mean = dexp(cmY)    
+        end if
+    end if
+ else if(TwoPart.eq.0) then
+ 
+ if(nb1.eq.2) then
+    z1YcurG(1,1) = 1.d0 ! random intercept only for now
+    z1YcurG(1,2) = t1dc(indg)!z1Ycur(1,2) = t1dc(indg)
+end if
+ 
+ 
+ if(GLMloglink0.eq.0) then
+current_mean = MATMUL(x2cur,b1((npp-nva3+1):npp))+Matmul(z1YcurG,b_vec)
+else if(GLMloglink0.eq.1) then
+cmY = MATMUL(x2cur,b1((npp-nva3+1):npp))+Matmul(z1YcurG,b_vec)
+current_mean = dexp(cmY)
+end if
+                    end if    
             end if
     
-            Z1cur(1,1) = 1.d0
-                    if(nb1.eq.2)  Z1cur(1,2) = t1dc(indg)
-            current_mean = 0.d0
-    
-            current_mean(1) =dot_product(X2cur(1,1:nva3),b1((npp-nva3+1):npp))&
-                                    +dot_product(Z1cur(1,1:nb1),b_vec(1:nb1))
-            end if
+        end if
     
             uii = matmul(b_vec,mat_b)
             uiiui=matmul(uii,b_vecT)
@@ -511,14 +652,16 @@
     
             res = 0.d0
             if(link.eq.1) then
-                res = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+&
+                res = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog+&
+                Bscalar+&
                 Ndc(indg)*dot_product(etaydc,b_vec) - &
                 Rdc(indg)*dexp(dot_product(etaydc,b_vec))-uiiui(1)/2.d0
           
             else
-                res = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                                    +Ndc(indg)*(etaydc(1)*current_mean(1))  &
-                                    -uiiui(1)/2.d0 - resultdc!      -       Rdc(indg)*dexp(etaydc1*current_mean(1))
+                res = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog+&
+                Bscalar&
+                +Ndc(indg)*(etaydc(1)*current_mean(1))  &
+                -uiiui(1)/2.d0 - resultdc!      -       Rdc(indg)*dexp(etaydc1*current_mean(1))
             
             end if
     

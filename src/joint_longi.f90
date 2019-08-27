@@ -4307,7 +4307,7 @@ if(TwoPart.eq.1) then
         if(MTP0.eq.0) then
             current_meanG = dexp(cmY)*Bcurrentvalue
         else if(MTP0.eq.1) then
-            current_meanG = dexp(cmY)    
+            current_meanG = dexp(cmY)
         end if
     end if
 
@@ -4445,11 +4445,13 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
  cmGtemp=0.d0
  det=0.d0
 
+ 
 resultf1=0.d0
 resultf2=0.d0
 !open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
 !       write(2,*)'ping'
 !    close(2)
+!    stop
     if(nb1.eq.1) then
             if(methodGH.eq.1) then
             Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
@@ -4836,7 +4838,7 @@ end if
         if(MTP0.eq.0) then
             current_meanG = dexp(cmY)*Bcurrentvalue
         else if(MTP0.eq.1) then
-            current_meanG = dexp(cmY)    
+            current_meanG = dexp(cmY) 
         end if
     end if
  else if(TwoPart.eq.0) then
@@ -4886,17 +4888,15 @@ end if
                         yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                     else if(GLMloglink0.eq.1) then
                         if(TwoPart.eq.0) then
-                            yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)+(sigmae/2)))**2
+                            yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                             yscalarlog = yscalarlog - dlog(ycurrent(k))
                         else if(TwoPart.eq.1) then
                             if(ycurrent(k).ne.0) then
                                 if(MTP0.eq.0) then
-                                    yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)+(sigmae/2)))**2
+                                    yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                                     yscalarlog = yscalarlog - dlog(ycurrent(k))
                                 else if (MTP0.eq.1) then
-                   yscal2= (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
-                                yscalar = yscalar + yscal2
-                                yscalarlog = yscalarlog - dlog(ycurrent(k))
+
                                 end if
                             end if
                         end if
@@ -4909,17 +4909,16 @@ end if
                         yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                 else if(GLMloglink0.eq.1) then ! lognormal density
                     if(TwoPart.eq.0) then
-                        yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)+(sigmae/2)))**2
-                        yscalarlog = yscalarlog - dlog(ycurrent(k))
+                        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)-(sigmae/2))**2
+                        yscalarlog = yscalarlog - dlog(ycurrent(k)) 
                     else if(TwoPart.eq.1) then ! two-part model for the longitudinal outcome
                         if(ycurrent(k).ne.0) then
                             if(MTP0.eq.0) then
-                                yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)+(sigmae/2)))**2
+                                yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)-(sigmae/2))**2
                                 yscalarlog = yscalarlog - dlog(ycurrent(k))
                             else if (MTP0.eq.1) then ! marginal two-part model
-                   yscal2= (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
-                                yscalar = yscalar + yscal2
-                            yscalarlog = yscalarlog - dlog(ycurrent(k))
+yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae/2))**2
+    yscalarlog = yscalarlog - dlog(ycurrent(k))
                             end if
                         end if
                     end if
@@ -4930,15 +4929,20 @@ end if
         yscalar = dsqrt(yscalar)    
         if(prod_cag.lt.0.1d-321)prod_cag= 0.1d-321
 
-        
-           Bscalar=0.d0
+
+    Bscalar=0.d0
     if(TwoPart.eq.1) then ! binary part contribution
         do k=1,nmescurB
-            Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
+            if(MTP0.eq.0) then
+                Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
+            else if(MTP0.eq.1) then
+        Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
+        !         Bscalar = Bscalar + dlog(1.d0-Bcurrentvalue(1))
+            end if
         end do
     end if
      
-!     open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
 !         write(2,*)' positionVarT', positionVarT
 !         write(2,*)' numInter', numInter
 !          write(2,*)'x2curG',x2curG
@@ -4950,6 +4954,14 @@ end if
 !   write(2,*)'Bcurrent',Bcurrent
 ! write(2,*)'cmY',cmY
 ! write(2,*)'Bcurrentvalue',Bcurrentvalue
+! write(2,*)'sigmae',sigmae
+! write(2,*)'GLMloglink0',GLMloglink0
+! write(2,*)'MTP0',MTP0
+! write(2,*)'yscalarlog',yscalarlog
+! write(2,*)'yscalar',yscalar
+! write(2,*)'prod_cag',prod_cag
+! write(2,*)'Bscalar',Bscalar
+! write(2,*)'TwoPart',TwoPart
 !             close(2)
 !stop
 

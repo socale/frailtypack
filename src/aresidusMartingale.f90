@@ -684,7 +684,7 @@ indiv = indiv + fsize(indg)
     use optimres
     !use comon,only:ut,utt,netadc
     use comon,only:ng,nsujety,etaydc,yy,nmesy,nb1,vey,varcov_marg,&
-    nva3,sum_mat,link,t1dc,vey,npp,res_ind
+    nva3,sum_mat,link,t1dc,vey,npp,res_ind,TwoPart,nmesB
     use donnees_indiv,only:X2cur,Z1cur
     use optim
     
@@ -720,6 +720,7 @@ indiv = indiv + fsize(indg)
     Pred_yy= 0.d0
     Residusdc=0.d0
     it_res = 1
+    it_resB = 1
     
     do indg=1,ng
     cares=0.d0
@@ -736,7 +737,7 @@ indiv = indiv + fsize(indg)
                     Residusdc(indg)=Ndc(indg)-exp(dot_product(etaydc,vuu))*Rdc(indg)
                      
                 else
-                    X2cur(1,1) = 1.d0
+        X2cur(1,1) = 1.d0
         X2cur(1,2) =t1dc(indg)
         if((nva3-2).gt.0) then
             do k=3,nva3
@@ -811,9 +812,9 @@ indiv = indiv + fsize(indg)
             end do
                 end do
     
-                        V_rim =Varcov_marg(it_res:it_res+nmesy(indg)-1,1:nmesy(indg))&
-                                                - MATMUL(Matmul(vey(it_res:it_res+nmesy(indg)-1,1:nva3),sum_mat_inv),&
-                                                        Transpose(vey(it_res:it_res+nmesy(indg)-1,1:nva3))) !varcov_marg
+    V_rim =Varcov_marg(it_res:it_res+nmesy(indg)-1,1:nmesy(indg))&
+    - MATMUL(Matmul(vey(it_res:it_res+nmesy(indg)-1,1:nva3),sum_mat_inv),&
+     Transpose(vey(it_res:it_res+nmesy(indg)-1,1:nva3))) !varcov_marg
     
                                 matv2 = 0.d0
                         do j=1,nmesy(indg)
@@ -849,8 +850,8 @@ indiv = indiv + fsize(indg)
         zet_vec(1:nb1) = Zet(j,1:nb1)
         ResLongi_marg(j) = yy(j) - XbetaY_res(1,j)
            
-           ResLongi_cond(j) = yy(j) - XbetaY_res(1,j) -dot_product(zet_vec(1:nb1),b_pred(1:nb1))
-            Pred_yy(j,1) = XbetaY_res(1,j) +dot_product(zet_vec(1:nb1),b_pred(1:nb1))
+   ResLongi_cond(j) = yy(j) - XbetaY_res(1,j) -dot_product(zet_vec(1:nb1),b_pred(1:nb1))
+    Pred_yy(j,1) = XbetaY_res(1,j) +dot_product(zet_vec(1:nb1),b_pred(1:nb1))
        
                         
         Pred_yy(j,2) =  XbetaY_res(1,j)
@@ -910,7 +911,7 @@ indiv = indiv + fsize(indg)
     
         endif
     it_res = it_res + nmesy(indg)
-    
+    it_resB = it_resB + nmesB(indg)
     
     end do
     
