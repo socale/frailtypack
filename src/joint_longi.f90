@@ -4909,15 +4909,15 @@ end if
                         yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                 else if(GLMloglink0.eq.1) then ! lognormal density
                     if(TwoPart.eq.0) then
-                        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)-(sigmae/2))**2
+                        yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                         yscalarlog = yscalarlog - dlog(ycurrent(k)) 
                     else if(TwoPart.eq.1) then ! two-part model for the longitudinal outcome
                         if(ycurrent(k).ne.0) then
                             if(MTP0.eq.0) then
-                                yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)-(sigmae/2))**2
+                                yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
                                 yscalarlog = yscalarlog - dlog(ycurrent(k))
                             else if (MTP0.eq.1) then ! marginal two-part model
-yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae/2))**2
+yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae/2)))**2
     yscalarlog = yscalarlog - dlog(ycurrent(k))
                             end if
                         end if
