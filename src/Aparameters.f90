@@ -142,7 +142,7 @@
         integer,save :: nb_re,netar,netadc
         integer,save :: linkidyr,linkidyd,link
         double precision,dimension(:,:),allocatable,save::Ut,Utt,varcov_marg,sum_mat
-         !****** censure à gauche
+         !****** censure ? gauche
         double precision,save :: s_cag, box_cox_par
         integer,save :: s_cag_id, box_cox1
 !*****dace3
@@ -227,6 +227,7 @@
         double precision,dimension(:),allocatable,save::v_jf,varv_jf
         integer :: methodGH,nodes_number,initGH
         integer :: res_ind,it,n_wezly
+        integer :: nb_gh
     end module comon
 !=====================================================================================
 

@@ -9,7 +9,7 @@
     use comon,only:nbintervR,nbintervDC,ttt,tttdc,betacoef, &
     t0,t1,t1dc,c,cdc,nsujet,nva,nva1,nva2, &
     effet,stra,ve,vedc,ng,g,nig,indic_ALPHA,ALPHA,sig2, &
-    auxig,aux1,aux2,res1,res3,kkapa,nstRec
+    auxig,aux1,aux2,res1,res3,kkapa,nstRec,nb_gh
     use residusM
     !use comongroup,only:the1,the2
     use comongroup,only:vet,vet2
@@ -217,7 +217,7 @@
     do ig=1,ng
         auxig = ig
         choix = 3
-        call gauherJ(int,choix)
+        call gauherJ(int,choix,nb_gh)
         integrale3(ig) = int
     end do
 !************* FIN INTEGRALES **************************

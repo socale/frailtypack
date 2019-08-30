@@ -16,7 +16,7 @@
     ,linearpred,linearpreddc,ziOut,time,timedc & !kendall &
 !    ,initialisation,nn,Bshared ! enleve pour le moment
     ,linearpredG,typeJoint0,intcens0,indices0,ttU0, ordretmp, initialize &
-    ,logNormal0,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc, EPS)
+    ,logNormal0,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc, EPS, nbgh)
     
 !AD: add for new marq
     use parameters
@@ -126,7 +126,7 @@
 !    double precision,dimension(nn)::Bshared
 
     integer::ngtemp
-    integer,intent(in)::logNormal0
+    integer,intent(in)::logNormal0, nbgh
 
     integer,dimension(3),intent(in)::paratps
     integer,dimension(nva10+nva20),intent(in)::filtretps0
@@ -162,7 +162,8 @@
     !Myriam
     !vaxdc = 0.d0
     !vax = 0.d0
-
+    
+    nb_gh = nbgh
     timedep = paratps(1)
     nbinnerknots = paratps(2)
     qorder = paratps(3)
@@ -3228,38 +3229,54 @@ end if
 ! gauss hermite
 ! func est l integrant, ss le resultat de l integrale sur -infty , +infty
 
-    SUBROUTINE gauherJ(ss,choix)
+    SUBROUTINE gauherJ(ss,choix,nnodes)
 
     use tailles
-    use donnees,only:x2,w2,x3,w3
+    use donnees
     use comon,only:typeof!,auxig
 
     Implicit none
 
     double precision,intent(out)::ss
-    integer,intent(in)::choix
+    integer,intent(in)::choix,nnodes
 
     double precision::auxfunca,func6J
     external::func6J
     integer::j
 
+    double precision,dimension(nnodes):: xx,ww
+    
+    if(nnodes.eq.5) then
+      xx(1:nnodes) = x5(1:nnodes)
+      ww(1:nnodes) = w5(1:nnodes)
+    else if (nnodes.eq.7) then
+      xx(1:nnodes) = x7(1:nnodes)
+      ww(1:nnodes) = w7(1:nnodes)
+    else if (nnodes.eq.9) then
+      xx(1:nnodes) = x9(1:nnodes)
+      ww(1:nnodes) = w9(1:nnodes)
+    else if (nnodes.eq.12) then
+      xx(1:nnodes) = x12(1:nnodes)
+      ww(1:nnodes) = w12(1:nnodes)
+    else if (nnodes.eq.15) then
+      xx(1:nnodes) = x15(1:nnodes)
+      ww(1:nnodes) = w15(1:nnodes)
+    else if (nnodes.eq.20) then
+      xx(1:nnodes) = x2(1:nnodes)
+      ww(1:nnodes) = w2(1:nnodes)
+    else if (nnodes.eq.32) then
+      xx(1:nnodes) = x3(1:nnodes)
+      ww(1:nnodes) = w3(1:nnodes)
+    end if
+    
     ss=0.d0
-    if (typeof.eq.0) then
-        do j=1,20
-            if (choix.eq.3) then
-                auxfunca=func6J(x2(j))
-                ss = ss+w2(j)*(auxfunca)
-            endif
-        end do
-    else
-        do j=1,32
-            if (choix.eq.3) then
-                auxfunca=func6J(x3(j))
-                ss = ss+w3(j)*(auxfunca)
-            endif
-        end do
-    endif
-
+    do j=1,nnodes
+      if (choix.eq.3) then
+        auxfunca=func6J(xx(j))
+        ss=ss+ww(j)*auxfunca
+      endif
+    enddo
+    
     return
 
     END SUBROUTINE gauherJ

@@ -7,7 +7,7 @@
     use comon,only:t0,t1,c,nsujet,nva, &
     nst,stra,ve,effet,ng,g,nig,AG,kkapa,sig2, &
     indictronq,auxig,res3,res5,res1, &
-    etaT,betaT
+    etaT,betaT,nb_gh
     use residusM
 
     implicit none
@@ -167,16 +167,16 @@
         do ig=1,ng
             auxig = ig
             choix = 1
-            call gauherS(int,choix)
+            call gauherS(int,choix,nb_gh)
             integrale1(ig) = int
             if (AG.eq.1) then
                 choix = 3
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale3(ig) = int
             endif
             if (indictronq.eq.1) then
                 choix = 2
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale2(ig) = int
             endif
         end do

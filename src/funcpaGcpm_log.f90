@@ -9,7 +9,7 @@
     use comon,only:nbintervR,nbintervDC,ttt,tttdc,betacoef, &
     t0,t1,t1dc,c,cdc,nsujet,nva,nva1,nva2, &
     effet,stra,ve,vedc,ng,g,nig,AG,indic_ALPHA,ALPHA,sig2, &
-    auxig,aux1,aux2,res1,res3,res5,kkapa,indictronq
+    auxig,aux1,aux2,res1,res3,res5,kkapa,indictronq,nb_gh
     use residusM
     use comongroup
 
@@ -203,7 +203,7 @@
         do ig=1,ng
             auxig = ig
             choix = 1
-            call gauherS(int,choix)
+            call gauherS(int,choix,nb_gh)
             integrale1(ig) = int
             ! res5 peut etre grand donc exp(-exp(frail)*res5)=0
             if (integrale1(ig).eq.0) then
@@ -211,12 +211,12 @@
             endif
             if (AG.eq.1) then
                 choix = 3
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale3(ig) = int
             endif
             if (indictronq.eq.1) then
                 choix = 2
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale2(ig) = int
             endif
         end do
@@ -376,7 +376,7 @@
         do ig=1,ng
             auxig = ig
             choix = 3
-            call gauherJ(int,choix)
+            call gauherJ(int,choix,nb_gh)
             integrale3(ig) = int
             if (integrale3(ig).eq.0.d0) then
                 integrale3(ig) = 1d-300

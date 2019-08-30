@@ -7,7 +7,7 @@
     use comon,only:t0,t1,c,nsujet,nva, &
     nst,stra,ve,effet,ng,g,nig,AG,nbintervR, &
     ttt,betacoef,kkapa,sig2, &
-    indictronq,auxig,res3,res5
+    indictronq,auxig,res3,res5,nb_gh
     use residusM
 
     implicit none
@@ -217,7 +217,7 @@
         do ig=1,ng
             auxig = ig
             choix = 1
-            call gauherS(int,choix)
+            call gauherS(int,choix,nb_gh)
             integrale1(ig) = int
             ! res5 peut etre grand donc exp(-exp(frail)*res5)=0
             if (integrale1(ig).eq.0) then
@@ -225,12 +225,12 @@
             endif
             if (AG.eq.1) then
                 choix = 3
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale3(ig) = int
             endif
             if (indictronq.eq.1) then
                 choix = 2
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale2(ig) = int
             endif
         end do

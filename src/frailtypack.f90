@@ -5,7 +5,7 @@
     xTOut,lamTOut,xSuT,suTOut,typeof0,equidistant,nbintervR0,mt, &
     ni,cpt,ier,k0,ddl,istop,shapeweib,scaleweib,mt1,ziOut,Resmartingale,martingaleCox,&
     frailtypred,frailtyvar,frailtysd,linearpred,time,intcensAux,ttUAux,logNormal0, &
-    timedep0,nbinnerknots0,qorder0,filtretps0,BetaTpsMat,EPS) ! rajout
+    timedep0,nbinnerknots0,qorder0,filtretps0,BetaTpsMat,EPS,nbgh) ! rajout
 
 
 !
@@ -76,7 +76,7 @@
     double precision,dimension(1,nsujetAux)::XBeta
     double precision,dimension(nbintervR0+1)::time
     integer,dimension(2)::istopp
-    integer,intent(in)::logNormal0
+    integer,intent(in)::logNormal0,nbgh
     integer,intent(in)::timedep0,nbinnerknots0,qorder0
     integer,dimension(nvaAux),intent(in)::filtretps0
     double precision,dimension(0:100,0:4*sum(filtretps0))::BetaTpsMat ! matrice des effets depedants du temps (4 colonnes par effet dep du tps)
@@ -104,6 +104,7 @@
     epsd=EPS(3) !1.d-4
 !AD:end
 
+    nb_gh = nbgh
     timedep = timedep0
     npbetatps = (nbinnerknots0+qorder0-1)*sum(filtretps0)
     nbinnerknots = nbinnerknots0
@@ -2610,58 +2611,63 @@
 ! gauss hermite
 ! func est l integrant, ss le resultat de l integrale sur -infty , +infty
 
-    SUBROUTINE gauherS(ss,choix)
+    SUBROUTINE gauherS(ss,choix,nnodes)
 
     use tailles
-    use donnees,only:x2,w2,x3,w3
+    use donnees
     !use comon,only:auxig
     use comon,only:typeof
 
     Implicit none
 
     double precision,intent(out)::ss
-    integer,intent(in)::choix
-
+    integer,intent(in)::choix,nnodes
     double precision::auxfunca,func1S,func2S,func3S
     external::func1S,func2S,func3S
     integer::j
-
+    
+    double precision,dimension(nnodes):: xx,ww
+    
+    if(nnodes.eq.5) then
+      xx(1:nnodes) = x5(1:nnodes)
+      ww(1:nnodes) = w5(1:nnodes)
+    else if (nnodes.eq.7) then
+      xx(1:nnodes) = x7(1:nnodes)
+      ww(1:nnodes) = w7(1:nnodes)
+    else if (nnodes.eq.9) then
+      xx(1:nnodes) = x9(1:nnodes)
+      ww(1:nnodes) = w9(1:nnodes)
+    else if (nnodes.eq.12) then
+      xx(1:nnodes) = x12(1:nnodes)
+      ww(1:nnodes) = w12(1:nnodes)
+    else if (nnodes.eq.15) then
+      xx(1:nnodes) = x15(1:nnodes)
+      ww(1:nnodes) = w15(1:nnodes)
+    else if (nnodes.eq.20) then
+      xx(1:nnodes) = x2(1:nnodes)
+      ww(1:nnodes) = w2(1:nnodes)
+    else if (nnodes.eq.32) then
+      xx(1:nnodes) = x3(1:nnodes)
+      ww(1:nnodes) = w3(1:nnodes)
+    end if
+            
     ss=0.d0
-    if (typeof.eq.0) then
-        do j=1,20
-            if (choix.eq.1) then
-                auxfunca=func1S(x2(j))
-                ss = ss+w2(j)*(auxfunca)
-            else                   !choix=2, troncature
-                if (choix.eq.2) then
-                    auxfunca=func2S(x2(j))
-                    ss = ss+w2(j)*(auxfunca)
-                else
-                    if (choix.eq.3) then
-                        auxfunca=func3S(x2(j))
-                        ss = ss+w2(j)*(auxfunca)
-                    endif
-                endif
-            endif
-        end do
-    else
-        do j=1,32
-            if (choix.eq.1) then
-                auxfunca=func1S(x3(j))
-                ss = ss+w3(j)*(auxfunca)
-            else                   !choix=2, troncature
-                if (choix.eq.2) then
-                    auxfunca=func2S(x3(j))
-                    ss = ss+w3(j)*(auxfunca)
-                else
-                    if (choix.eq.3) then
-                        auxfunca=func3S(x3(j))
-                        ss = ss+w3(j)*(auxfunca)
-                    endif
-                endif
-            endif
-        end do
-    endif
+    do j = 1,nnodes
+      if (choix.eq.1) then
+        auxfunca=func1S(xx(j))
+        ss = ss+ww(j)*(auxfunca)
+      else
+        if (choix.eq.2) then
+          auxfunca=func2S(xx(j))
+          ss = ss+ww(j)*(auxfunca)
+        else
+          if (choix.eq.3) then
+            auxfunca=func3S(xx(j))
+            ss = ss+ww(j)*(auxfunca)
+          endif
+        endif
+      endif
+    end do
 
     return
 

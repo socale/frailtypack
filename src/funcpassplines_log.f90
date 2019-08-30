@@ -7,7 +7,7 @@
     use comon,only:m3m3,m2m2,m1m1,mmm,m3m2,m3m1,m3m,m2m1,m2m,m1m, &
     mm3,mm2,mm1,mm,im3,im2,im1,im,date,zi,c,nt0,nt1,nsujet,nva, &
     ndate,kkapa,nst,stra,ve,pe,effet,ng,g,nig,AG,resnonpen,sig2, &
-    indictronq,auxig,res3,res5,res1,k0T!,nz1,nz2
+    indictronq,auxig,res3,res5,res1,k0T,nb_gh!,nz1,nz2
     use residusM
 
 
@@ -15,7 +15,7 @@
 
 ! *** NOUVELLLE DECLARATION F90 :
 
-    integer::nb,n,np,id,jd,i,j,k,vj,cptg,ig,choix,jj
+    integer::nb,n,np,id,jd,i,j,k,vj,cptg,ig,choix,jj 
     integer,dimension(ngmax)::cpt
     double precision::thi,thj,dnb,res,vet,h1,int
     double precision,dimension(nst)::peT,somT
@@ -211,16 +211,16 @@
         do ig=1,ng
             auxig = ig
             choix = 1
-            call gauherS(int,choix)
+            call gauherS(int,choix,nb_gh)
             integrale1(ig) = int
             if (AG.eq.1) then
                 choix = 3
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale3(ig) = int
             endif
             if (indictronq.eq.1) then
                 choix = 2
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale2(ig) = int
             endif
         end do

@@ -10,7 +10,7 @@
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst, &
     effet,stra,ve,vedc,g,indic_ALPHA,ALPHA,sig2, & !pe,ng,nig
-    auxig,aux1,aux2,res1,res3,kkapa,resnonpen,nstRec, wtsvec !k0T
+    auxig,aux1,aux2,res1,res3,kkapa,resnonpen,nstRec,wtsvec,nb_gh !k0T
     use residusM
     !use comongroup,only:the1
     use comongroup,only:vet,vet2,the2
@@ -273,7 +273,7 @@
 !**************INTEGRALES ****************************
         auxig = index
         choix = 3
-        call gauherJ(int,choix)
+        call gauherJ(int,choix,nb_gh)
         integrale3 = int
 !************* FIN INTEGRALES **************************
 

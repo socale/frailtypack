@@ -10,7 +10,7 @@
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt0dc,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst, &
     effet,stra,ve,vedc,pe,ng,g,nig,AG,indic_ALPHA,ALPHA,sig2, &
-    auxig,aux1,aux2,res1,res3,res5,resnonpen,indictronq
+    auxig,aux1,aux2,res1,res3,res5,resnonpen,indictronq,nb_gh
     use residusM
     use comongroup
 
@@ -226,16 +226,16 @@
         do ig=1,ng
             auxig = ig
             choix = 1
-            call gauherS(int,choix)
+            call gauherS(int,choix,nb_gh)
             integrale1(ig) = int
             if (AG.eq.1) then
                 choix = 3
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale3(ig) = int
             endif
             if (indictronq.eq.1) then
                 choix = 2
-                call gauherS(int,choix)
+                call gauherS(int,choix,nb_gh)
                 integrale2(ig) = int
             endif
         end do
@@ -346,7 +346,7 @@
         do ig=1,ng
             auxig = ig
             choix = 3
-            call gauherJ(int,choix)
+            call gauherJ(int,choix,nb_gh)
             integrale3(ig) = int
         end do
 !************* FIN INTEGRALES **************************
