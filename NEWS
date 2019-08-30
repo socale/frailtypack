@@ -1,6 +1,8 @@
-Changes in Version 3.0.3.3 june 2019
+Changes in Version 3.0.3.3 august 2019
 o Add of the shiny application for frailtypack : the runShiny() function will run the application in a local mode.
+o Add of parameter 'nb.gh' in frailtyPenal, in order to chose the number of nodes for the Gaussian-Hermite quadrature
 o Correction of a small error in trivPenalNL documentation
+o Correction of several warnings appearing during check
 
 Changes in Version 3.0.3.2 may 2019
 o Correction of warnings during installation of package
