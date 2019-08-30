@@ -29,7 +29,7 @@
     !AD:
         implicit none
     
-        integer::maxit0,npinit,nvatmp,initialGH
+        integer::maxit0,initialGH
         integer,intent(in)::nsujety0,ng0,nva30,nva40,nb0,nnodes_all0,which_random0
         integer::np
         integer,dimension(nsujety0),intent(in) :: groupey0
@@ -44,8 +44,8 @@
         double precision,dimension(nsujety0,2) :: matzy0
         double precision,dimension(nsujety0) :: yy0
         double precision,dimension(np,np)::H_hessOut,HIHOut
-        double precision::resOut,epsj
-        integer::ss,sss,itj,ig,jj
+        double precision::resOut
+        integer::ss,sss
         double precision,dimension(np):: b
         double precision,dimension(2),intent(out)::LCV
        
@@ -54,11 +54,11 @@
         integer::cpt,cpt_dc,ni
         integer,dimension(2),intent(out)::ier_istop
         integer,dimension(3),intent(out)::counts
-        integer::groupey,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2   &
-        ,i,cptni,cptni1,cptni2,nb_echec,nb_echecor,id,cptbiais &
-        ,cptauxdc,p,ier,istop
-        double precision::h,hdc,res,min,mindc,max,pord, &
-        moy_peh0,moy_peh1,lrs,BIAIS_moy,rl_temp !! rajout
+        integer::groupey,j,ii,iii,   &
+        i, &
+        ier,istop
+        double precision::res,max, &
+        rl_temp !! rajout
     !AD: add for new marq
         double precision::ca,cb,dd
         double precision,external::funcpalongi_uni
@@ -74,9 +74,9 @@
          double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : on recupere les valeurs obtenues lors de l'algorithme a la fin
        
             double precision,dimension(ng0,nb0+1+nb0 + (nb0*(nb0-1))/2):: paGH
-                 double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
-            double precision,dimension(:),allocatable :: matv
-            double precision,dimension(nva30,nva30) :: element
+                 !double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
+            !double precision,dimension(:),allocatable :: matv
+            !double precision,dimension(nva30,nva30) :: element
         
  
 
@@ -504,8 +504,8 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
             nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
             box_cox1,box_cox_par
         use donnees_indiv
@@ -514,9 +514,9 @@
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -622,19 +622,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -745,19 +745,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -869,19 +869,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -991,19 +991,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1113,19 +1113,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1235,19 +1235,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1358,19 +1358,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1481,19 +1481,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1605,19 +1605,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1728,19 +1728,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1850,19 +1850,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -1973,19 +1973,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -2096,19 +2096,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea
@@ -2219,19 +2219,19 @@
     
         use tailles
         use donnees
-        use comon,only:sigmae,nmesy,npp,nva3,nea,nb1,&
-            vey, s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
-            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet,&
-            box_cox_par,box_cox1
+        use comon,only:sigmae,nb1,& !nmesy,npp,nva3,nea
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,ut,utt
+            nodes,weights,yy,it,ziy,mat,det, K_G0, K_D0, lambda, ziy,y0,invBi_cholDet, &
+            box_cox1,box_cox_par
         use donnees_indiv
          Implicit none
     
         double precision,intent(out)::ss
     
        
-        double precision::frail,frail2,frail3
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n
+        !double precision::frail,frail2,frail3
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n
     !    double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
         double precision,dimension(nb1):: uii, Xea22,Xea

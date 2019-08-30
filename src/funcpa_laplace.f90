@@ -89,15 +89,15 @@ module func_laplace
         !individu_essai: individu courant dans l'essai
         !vsi,vti,ui : effets aleatoires au niveau essai
         !wij_chap : contient des w_ij_chapeau
-        use var_surrogate, only:theta2,const_res5,const_res4,vs_i,vt_i,u_i,nsujeti,wij_chap,&
-            deltastar,delta,pi,alpha_ui,control_wij_chap,res2s_sujet,res2_dcs_sujet,Test!,individu_j
+        use var_surrogate, only:theta2,const_res5,const_res4,vs_i,vt_i,u_i,wij_chap,& !nsujeti
+            deltastar,delta,pi,alpha_ui,Test!,individu_j !res2s_sujet,res2_dcs_sujet,control_wij_chap
         use comon, only: eta,ve,model
         use optim_scl, only:marq98j_scl  ! pour faire appel a marquard 
         
         implicit none
          
         integer,intent(in)::position_i,individu_essai
-        integer::i,model_save,individu
+        integer::model_save,individu !i
 
         double precision,intent(in)::vsi,vti,ui
         double precision::res
@@ -257,7 +257,7 @@ module func_laplace
     double precision function funcpaXi_chapeau(b,np,id,thi,jd,thj,k0)
         !wij_chap: contient les valeur estimees de w_ij_chapeau
         use var_surrogate, only:pi,essai_courant,position_i,nsujeti,&
-            determinant,gamma_ui,varcov,rho,wij_chap,Test
+            gamma_ui,varcov,rho,Test !determinant,wij_chap
         !use comon, only: ve
         !use optim_scl, only:marq98j_scl  ! pour faire appel a marquard 
         !use fonction_A_integrer, only:Int_Laplace_ind
@@ -270,7 +270,7 @@ module func_laplace
         double precision,dimension(np),intent(in)::b
         double precision,dimension(2),intent(in)::k0
         double precision,intent(in)::thi,thj
-        double precision::res,vs_i,vt_i,u_i,h,h1,h2,B_Lap,control
+        double precision::res,vs_i,vt_i,u_i,h,h2,B_Lap,control !h1
         double precision,dimension(np)::bh
 
         

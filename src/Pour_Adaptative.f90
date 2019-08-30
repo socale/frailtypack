@@ -23,9 +23,9 @@ module mod_Adaptative
     double precision,dimension(2),intent(in)::k0
     double precision,intent(in)::thi,thj
     
-    integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial,dimint
+    integer::n,i,j,k,vj,ig,choix,l,nsujet_trial,dimint !vcdiag
     integer,dimension(ngmax)::cpt
-    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc,varS1,varT1,covST1
+    double precision::inv,som1,som2,res,vet,vet2,h1,varS1,varT1,covST1 !pe1,pe2,som,inc
     double precision,dimension(3):: resultatInt
     
     double precision,dimension(-2:npmax):: the1,the2
@@ -38,8 +38,8 @@ module mod_Adaptative
 !AD:end
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
-    double precision,dimension(:),allocatable::frail
-    double precision::int,logGammaJ,c3,c4,pourgam
+    !double precision,dimension(:),allocatable::frail
+    !double precision::int,logGammaJ,c3,c4,pourgam
     double precision,dimension(ntrials)::integrale3
     double precision,dimension(2,2):: mat_A
 

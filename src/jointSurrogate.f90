@@ -7,7 +7,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           vrai_val_init,param_init,revision_echelle,random_generator0,sujet_equi,prop_trait,paramSimul,&
                           autreParamSim,fichier_kendall,fichier_R2, param_estimes, sizeVect, b, H_hessOut,HIHOut,resOut,&
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
-						  dataHessian,dataHessianIH,datab)
+                          dataHessian,dataHessianIH,datab)
                           
     ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
@@ -56,8 +56,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(sizeVect(3)), intent(out)::x2Out
     double precision,dimension(sizeVect(1),sizeVect(1)), intent(out)::H_hessOut,HIHOut ! H_hessOut = matrice hesienne (des variance-covariance), HIHOut= matrice hessienne corrigee
     double precision,dimension(sizeVect(1)*n_sim1,sizeVect(1)), intent(out)::dataHessian, dataHessianIH ! sauvegarde des matrices hessiennes des differentes simulations 
-	double precision,dimension(n_sim1,sizeVect(1)), intent(out)::datab ! sauvegarde des vecteurs de parametres de toutes les simulations 
-	double precision,dimension(sizeVect(2),3), intent(out)::lamOut
+    double precision,dimension(n_sim1,sizeVect(1)), intent(out)::datab ! sauvegarde des vecteurs de parametres de toutes les simulations 
+    double precision,dimension(sizeVect(2),3), intent(out)::lamOut
     double precision,dimension(sizeVect(3),3), intent(out)::lam2Out
     double precision,dimension(sizeVect(4),3), intent(out)::suOut
     double precision,dimension(sizeVect(5),3), intent(out)::su2Out
@@ -71,8 +71,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     !character(len=30)::donnees
     character(len=10), dimension(nbrevar(3))::nomvarl
     character(len=30)::dateamj,zone,heure1,heure2,param_estime, param_empirique,param_empirique_NC,tableau_rejet
-    integer::i,j,effet,ver,nva1,nva2,nva,ag,nz, cpt,cpt_dc,noVar1,noVar2,ii,jj,k,ncur,typeJoint,np
-    double precision::ax1,ax2,tp1,tp2,tempon
+    integer::i,j,effet,ver,nva1,nva2,nva,ag,nz, cpt,cpt_dc,noVar1,noVar2,k,typeJoint,np !ii,jj,ncur
+    double precision::ax1,ax2,tp1,tp2 !tempon
     integer, dimension(:),allocatable::vdeces,vsurrogate !contient les dates devenement: deces et progression
     character(len=20),dimension(:),allocatable::nomvart,nomvar2t,nomvar,nomvar2
     double precision,dimension(:),allocatable::tt0dc,tt1dc
@@ -85,17 +85,17 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(3)::EPS
     integer,dimension(8)::values
     integer, dimension(0:1)::randomisation,deces,surrogate
-    double precision::bi,bs,wald,wres
-    character(len=30)::aaa,kapa ! les fichiers de sortie
+    double precision::bi,bs,wres !wald
+    character(len=30)::kapa !aaa !les fichiers de sortie
     integer,dimension(:),allocatable::filtre,filtre2
 !cpm
     integer::mt11,mt12,mt1,mt2,n_sim,ntrials,nsujet
     double precision,dimension(2)::shape_weib,scale_weib
-    integer::typeof,nbrecu,nbdeces,nbintervR,nbintervDC,equidistant
-    double precision::Xgamma
+    integer::typeof,nbintervR,nbintervDC,equidistant !nbrecu,nbdeces
+    !double precision::Xgamma
 !predictor
     double precision,dimension(:,:),allocatable::MartinGales,v_chap_kendall,v_chap_R2,theta_chap_kendall,theta_chap_R2
-    double precision,dimension(:),allocatable::linearpred,vect_kendall_tau,t_chap_kendall,t_chap_R2,vect_kendall_tau_temp,vect_R2
+    double precision,dimension(:),allocatable::linearpred,vect_kendall_tau,t_chap_kendall,t_chap_R2,vect_R2 !vect_kendall_tau_temp
     double precision,dimension(:),allocatable::linearpreddc
     double precision,dimension(:),allocatable::time
     double precision,dimension(:),allocatable::timedc
@@ -134,7 +134,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         moy_sigmast_est_0,moy_se_sigmast_0,taux_couverture_sigmast_0,moy_eta_0,moy_se_eta_0,&
                         taux_couverture_eta_0,moy_betaS_0,moy_betaS_se_0,taux_couvertureS_0,moy_betaT_0,&
                         moy_betaT_se_0,taux_couvertureT_0,se_theta_sim,se_sigmas_sim,se_sigmat_sim,se_rho_sim,&
-                        se_gamma_sim,se_theta_sim_0,se_sigmas_sim_0,se_sigmat_sim_0,se_rho_sim_0,se_gamma_sim_0,&
+                        se_gamma_sim,& !se_theta_sim_0,se_sigmas_sim_0,se_sigmat_sim_0,se_rho_sim_0,se_gamma_sim_0
                         n_sim_exact_0,moy_theta_est_0,moy_pros_0,moy_dec_0,theta2_t,rsqrt_theta,gamma_uit,rsqrt_gamma_ui,&
                         thetat_init,thetast_init,gammat_init,gammast_init,theta_simt,rho_sim_wij,gamma_simt,rho_sim_ui,&
                         moy_thetat,moy_rho_wij,moy_gammat,moy_rho_ui,thetast_vrai,gammast_vrai,moy_thetat_est,moy_se_thetat,&
@@ -153,7 +153,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         taux_couverture_R2_trial,moy_se_R2_trial,moy_bi_R2_trial,moy_bs_R2_trial,moy_kendal_11,tau_kendal_11,&
                         moy_kendal_10,tau_kendal_10,moy_kendal_01,tau_kendal_01,moy_kendal_00,tau_kendal_00,se_kendal_11,&
                         se_kendal_01,se_kendal_00,moy_tau_boots,IC_Inf,IC_sup,zeta_init,moy_R2_boots,IC_Inf_R2,IC_sup_R2,&
-                        CP_R2_boot,CP_ktau_boot,moy_R2_boots_test,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,&
+                        CP_R2_boot,CP_ktau_boot,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,& !moy_R2_boots_test
                         bi_R2_trial,bs_R2_trial
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS,don_simulS1,parametre_empirique,&
@@ -166,14 +166,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer, dimension(:),allocatable::tab_rejet ! pour les rangs des jeux de donnees rejetees
     double precision, dimension(:,:),allocatable::kappa,d_S,d_T !jeu de donnees reelle pour le test
     integer,dimension(:),allocatable::tableEssai,tableNsim ! tableNsim: indique le nombre de simulation a effectuer par chaque processus
-    double precision,dimension(:,:),allocatable::donnee_essai,sigma_st_2,theta_st_2,gamma_st_2,sigma_st0_2,theta_st0_2,gamma_st0_2
+    double precision,dimension(:,:),allocatable::donnee_essai,theta_st_2,gamma_st_2,theta_st0_2,gamma_st0_2 !sigma_st_2,sigma_st0_2
     double precision,dimension(2,2)::chol,sigma_st,theta_st,gamma_st,sigma_st0,theta_st0,gamma_st0,Chol_R2,mat_A
     integer, dimension(4)::indice_esti
-    integer::nb_processus,rang,code,n_sim_total,suplement,erreur,comm,init_i,max_i,debut_exe,indice_sim_proc,sofeu, &
-            rang_proc,init_i_proc,max_i_proc, code_print ! je redefini ces indices car les precedentes sont utilisees autrement: cas OpenMP
-    double precision,dimension(10)::t
-	double precision,dimension(3,3):: sigmac ! pour la mtrice de variance covariance de Sigma par la delta-metode 
-	double precision,dimension(3,3):: hb 
+    integer::nb_processus,rang,n_sim_total,suplement,init_i,max_i,debut_exe,indice_sim_proc, & !code,sofeu,erreur,comm
+            rang_proc, code_print !init_i_proc,max_i_proc je redefini ces indices car les precedentes sont utilisees autrement: cas OpenMP
+    !double precision,dimension(10)::t
+    double precision,dimension(3,3):: sigmac ! pour la mtrice de variance covariance de Sigma par la delta-metode 
+    double precision,dimension(3,3):: hb 
     
     !=====================================================================================
     !*********fin declaration des variables et debut du programme principale**************
@@ -555,9 +555,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! read(2,*)nboot_kendal ! nombre d'echantillon bootstrap pour le calcul de l'IC du taux de ke,ndall
     ! read(2,*)fichier_kendall ! fichier dans lequel saugarder les taux de kendall avec les IC par boostrap
     
-	nparam_kendall=4 ! on a 4 parametres qui rentrent dans le calcul du tau de kendall: theta, alpha, gamma, zeta
+    nparam_kendall=4 ! on a 4 parametres qui rentrent dans le calcul du tau de kendall: theta, alpha, gamma, zeta
 	
-	if(method_int_kendal==4) then
+    if(method_int_kendal==4) then
         if(indice_alpha==0) nparam_kendall=nparam_kendall-1
         if(indice_eta==0) nparam_kendall=nparam_kendall-1        
     endif
@@ -2155,31 +2155,31 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 				! =========Delta methode pour varcov des elements de sigme_v===============
 				! recherche de la matrice de variance-covariance de (sigma_S,sigma_ST,sigmaT) par la delta methode:
 				! à partir de la hessienne. voir le raisonnement dans le cahier à la date du 04/01/2019
-				hb(1,:) = (/ 2.d0*Chol(1,1), 0.d0, 0.d0 /)
-				hb(2,:) = (/ 0.d0, 2.d0*Chol(2,2), 2.d0*Chol(2,1) /)
-				hb(3,:) = (/ Chol(2,1), 0.d0, Chol(1,1) /)
-				sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigt), &
-				                H_hessOut(rangparam_sigs,rangparam_sigst)/)
-				sigmac(2,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigt), &
-				                H_hessOut(rangparam_sigt,rangparam_sigst)/)
-				sigmac(3,:) = (/H_hessOut(rangparam_sigst,rangparam_sigs), H_hessOut(rangparam_sigst,rangparam_sigt), &
-				                H_hessOut(rangparam_sigst,rangparam_sigst)/)
+                hb(1,:) = (/ 2.d0*Chol(1,1), 0.d0, 0.d0 /)
+                hb(2,:) = (/ 0.d0, 2.d0*Chol(2,2), 2.d0*Chol(2,1) /)
+                hb(3,:) = (/ Chol(2,1), 0.d0, Chol(1,1) /)
+                sigmac(1,:) = (/H_hessOut(rangparam_sigs,rangparam_sigs), H_hessOut(rangparam_sigs,rangparam_sigt), &
+                            H_hessOut(rangparam_sigs,rangparam_sigst)/)
+                sigmac(2,:) = (/H_hessOut(rangparam_sigt,rangparam_sigs), H_hessOut(rangparam_sigt,rangparam_sigt), &
+				                    H_hessOut(rangparam_sigt,rangparam_sigst)/)
+                sigmac(3,:) = (/H_hessOut(rangparam_sigst,rangparam_sigs), H_hessOut(rangparam_sigst,rangparam_sigt), &
+				                    H_hessOut(rangparam_sigst,rangparam_sigst)/)
 				
-				hb = TRANSPOSE(hb)
-				varcov = MATMUL(TRANSPOSE(hb), sigmac)
-				varcov = MATMUL(varcov, hb)
+                hb = TRANSPOSE(hb)
+                varcov = MATMUL(TRANSPOSE(hb), sigmac)
+                varcov = MATMUL(varcov, hb)
 				
 				
 				! ========== Fin delta methode ==================
 				
 				! ====sauvegarde de la hessienne et du vecteur b des parametres====
 				
-				do i=1,np
-					dataHessian(np*(s_i-nbre_rejet-1) + i,:) = H_hessOut(i,:)
-					dataHessianIH(np*(s_i-nbre_rejet-1) + i,:) = HIHOut(i,:)
-				enddo
+                do i=1,np
+                  dataHessian(np*(s_i-nbre_rejet-1) + i,:) = H_hessOut(i,:)
+                  dataHessianIH(np*(s_i-nbre_rejet-1) + i,:) = HIHOut(i,:)
+                enddo
 				
-				datab(s_i-nbre_rejet,:) = b
+                datab(s_i-nbre_rejet,:) = b
 				
 				! Write(aaa,'(i3)') s_i ! instruction pour convertir un entier en chaine de caractere (3 caracteres)
 				! aaa="H_hessOut"//aaa ! instruction pour concatener deux chaines de caracteres
@@ -2232,7 +2232,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             ! bs_sigmat = varT_es + 1.96d0*2.d0*dsqrt(covST1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst)+&
                         ! 2.d0*varT1*covST1*H_hessOut(rangparam_sigst,rangparam_sigt)+&
                         ! varT1**2.d0*H_hessOut(rangparam_sigt,rangparam_sigt))
-		    moy_se_sigmat=moy_se_sigmat+dsqrt(varcov(2,2))
+            moy_se_sigmat=moy_se_sigmat+dsqrt(varcov(2,2))
             bi_sigmat = varT_es - 1.96d0*dsqrt(varcov(2,2))
             bs_sigmat = varT_es + 1.96d0*dsqrt(varcov(2,2))
             !taux de couverture
@@ -2252,7 +2252,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             ! bs_sigmast = covST_es + 1.96d0*dsqrt(covST1**2.d0*H_hessOut(rangparam_sigs,rangparam_sigs)+&
                         ! 2.d0*varS1*covST1*H_hessOut(rangparam_sigs,rangparam_sigst)+&
                         ! varS1**2.d0*H_hessOut(rangparam_sigst,rangparam_sigst))
-			moy_se_sigmast=moy_se_sigmast+dsqrt(varcov(3,3))
+            moy_se_sigmast=moy_se_sigmast+dsqrt(varcov(3,3))
             bi_sigmast = covST_es - 1.96d0*dsqrt(varcov(3,3))
             bs_sigmast = covST_es + 1.96d0*dsqrt(varcov(3,3))
             !taux de couverture

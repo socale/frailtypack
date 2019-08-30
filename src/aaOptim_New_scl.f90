@@ -184,7 +184,7 @@
 
     Main:Do
 
-        call derivaJ_scl(b,m,v,rl,k0,fctnames,individu)	
+    call derivaJ_scl(b,m,v,rl,k0,fctnames,individu)	
 		
     rl1=rl
     if(rl.eq.-1.D9) then
@@ -485,7 +485,7 @@
     end if
        
  110   continue
-		deallocate(delta,b1,bh) ! scl_22-09-2017
+    deallocate(delta,b1,bh) ! scl_22-09-2017
 		!call dblepr("b(1) sortie Marquard 510", -1, b(1), 1)
        return    
        end subroutine marq98j_scl
@@ -509,8 +509,8 @@
     double precision::fctnames,thn,th,z,vl,th2,vaux
     external::fctnames
     !call intpr("derivaJ_scl 532", -1, m, 1)
-	allocate(fcith(m)) ! scl_22-09-2017
-	fcith = 0.d0
+    allocate(fcith(m)) ! scl_22-09-2017
+    fcith = 0.d0
     !!print*,"suis dans derivaJ_scl, model=",model
     !stop
     select case(model)
@@ -569,7 +569,7 @@
                 end if    
         vl=(fcith(i)-vaux)/(2.d0*th)
 		
-		tail= size(v)
+        tail= size(v)
 		! call intpr(" ll pseudo-adpdative 1136", -1, ll, 1)
 		! call dblepr(" v pseudo-adpdative 1136", -1, vl, 1)
 		! call intpr(" tail pseudo-adpdative 1136", -1, tail, 1)
@@ -582,7 +582,7 @@
     end do
 
 123   continue    
-	deallocate(fcith) ! scl_22-09-2017
+    deallocate(fcith) ! scl_22-09-2017
     return
     
     end subroutine derivaJ_scl

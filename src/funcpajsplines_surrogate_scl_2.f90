@@ -31,9 +31,9 @@
     double precision,dimension(2),intent(in)::k0
     double precision,intent(in)::thi,thj
     
-    integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial,dimint,dimint_Ind,erreur,code,compteur,init_i,max_i
+    integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial,dimint,dimint_Ind,init_i,max_i !erreur,code,compteur
     integer,dimension(ngmax)::cpt
-    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc,varS1,varT1,covST1,som_cont_0
+    double precision::pe1,pe2,inv,som1,som2,res,vet,vet2,h1,varS1,varT1,covST1,som_cont_0 !inc,som
     double precision,dimension(3):: resultatInt
     
     double precision,dimension(-2:npmax):: the1,the2
@@ -46,16 +46,16 @@
 !AD:end
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
-    double precision,dimension(:),allocatable::frail
-    double precision::int,logGammaJ,c3,c4,pourgam
+    !double precision,dimension(:),allocatable::frail
+    !double precision::int,logGammaJ,c3,c4,pourgam
     double precision,dimension(ntrials)::integrale3
     double precision,dimension(:,:),allocatable:: mat_A
     !double precision,dimension(ng,1)::wij_chap1
     
     ! var utilisees en vue de l'estimation des fragilites a posteriorie
-    integer::ier,istop,ss,sss,ni,model_save,nparamfrail_save,maxiter_save,nmax_2,nb_pro2,comm,rang2,&
-             np_2,indice_B_essai,indice_ind_util_essai,non_conv,control_est,rang,n_par_pro
-    integer::frail_essai_deja_est,lm ! variable qui dit si pour un essai donne l'on a deja estimes les vsi et vti (1) ou non (0)
+    integer::ier,istop,ss,sss,ni,model_save,nparamfrail_save,maxiter_save,nmax_2,& !nb_pro2,comm,rang2,
+             np_2,indice_B_essai,non_conv,rang,n_par_pro !indice_ind_util_essai,control_est
+    integer::lm !frail_essai_deja_est !variable qui dit si pour un essai donne l'on a deja estimes les vsi et vti (1) ou non (0)
     integer,parameter::effet2=0,np_1=1
     double precision::ca,cb,dd,som_cont,usim,x22,SX
     !double precision::res

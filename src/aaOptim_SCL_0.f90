@@ -111,15 +111,15 @@
 !  1: critere d'arret satisfait (prm=ca, vraisblce=cb, derivee=dd)
 !  2: nb max d'iterations atteints
 !  4: Erreur
-    use residusM,only:indg
+    !use residusM,only:indg
     use parameters
-    use comon,only:t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc, &
-    nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,model, &
-    PEN_deri,I_hess,H_hess,Hspl_hess,hess,indic_ALPHA,typeof,indic_eta,vvv
+    use comon,only:nva, & !t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc
+    model, & !nt1dc,nsujet,nva1,nva2,ndate,ndatedc,nst
+    I_hess,H_hess,hess,indic_ALPHA,typeof,vvv !PEN_deri,Hspl_hess,indic_eta
     !use mpi ! module pour l'environnement MPI
 
 !add additive
-    use additiv,only:correl
+    !use additiv,only:correl
     use var_surrogate, only:nparamfrail,nbre_itter_PGH,control_adaptative, affiche_itteration
 
     IMPLICIT NONE
@@ -133,7 +133,7 @@
     double precision,dimension(2)::k0
         double precision,dimension(2)::zero
 !   variables locales
-    integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k,rang,comm
+    integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k,rang !comm
     double precision,dimension(m*(m+3)/2)::fu,v1,vnonpen
     double precision,dimension(m)::delta,b1,bh
     double precision::da,dm,ga,tr

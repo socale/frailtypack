@@ -23,7 +23,7 @@
     
     integer::n,i,j,k,vj,ig,choix,l,vcdiag,nsujet_trial
     integer,dimension(ngmax)::cpt
-    double precision::pe1,pe2,som,inv,som1,som2,res,vet,vet2,h1,inc
+    double precision::pe1,pe2,inv,som1,som2,res,vet,vet2,h1 !som,inc
     double precision,dimension(3):: resultatInt
     
     double precision,dimension(-2:npmax):: the1,the2
@@ -36,8 +36,8 @@
 !AD:end
     double precision,dimension(0:ndatemax)::ut1
     double precision,dimension(0:ndatemaxdc)::ut2
-    double precision,dimension(:),allocatable::frail
-    double precision::int,logGammaJ,c3,c4,pourgam
+    !double precision,dimension(:),allocatable::frail
+    double precision::logGammaJ,pourgam !c3,c4,int
     double precision,dimension(ntrials)::integrale3
 
 !    !print*,'debut funcpa'

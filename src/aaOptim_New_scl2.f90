@@ -123,14 +123,14 @@
 !  1: critere d'arret satisfait (prm=ca, vraisblce=cb, derivee=dd)
 !  2: nb max d'iterations atteints
 !  4: Erreur
-    use residusM,only:indg
+    !use residusM,only:indg
     use parameters
-    use comon,only:t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc, &
-    nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,model, &
-    PEN_deri,Hspl_hess,indic_ALPHA,typeof,indic_eta
+    use comon,only: nva, & !t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc
+    model, & !nt1dc,nsujet,nva1,nva2,ndate,ndatedc,nst
+    indic_ALPHA,typeof !PEN_deri,Hspl_hess,indic_eta
 
 !add additive
-    use additiv,only:correl
+    !use additiv,only:correl
     use var_surrogate, only:nparamfrail
 
     IMPLICIT NONE
