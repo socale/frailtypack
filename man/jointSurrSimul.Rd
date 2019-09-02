@@ -11,7 +11,7 @@ jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
   nu.T = 0.0025, ver = 1, typeOf = 1, equi.subj.trial = 1,
   equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
   full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
-  seed = 0, nb.reject.data = 0, pfs = 1)
+  seed = 0, nb.reject.data = 0, pfs = 0)
 }
 \arguments{
 \item{n.obs}{Number of considered  subjects. The default is \code{600}.}
@@ -94,7 +94,7 @@ all ganerated data are the same. By varying this parameter, different datasets a
 in case of one dataset.}
 
 \item{pfs}{Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
-The default is 1. In this case, death is included in the surrogate endpoint as in the definition of PFS or DFS.}
+The default is 0. In case with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS.}
 }
 \value{
 This function return if the parameter \code{full.data} is set to 0, a \code{\link{data.frame}} with columns :

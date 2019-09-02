@@ -59,7 +59,7 @@
 #' all ganerated data are the same. By varying this parameter, different datasets are obtained during data genarations. The default value is 0, 
 #' in case of one dataset.
 #' @param pfs Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
-#' The default is 1. In this case, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
+#' The default is 0. In case with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
 # @param param.weibull A binary for the Weibull parametrization used. The default is \code{0}, as in 
 # the frailtypack package. If \code{1} the function 
 # \eqn{f(x)=\nu^\lambda . \lambda . x^{\lambda-1} . \exp(-(\nu x)^\lambda)} is used.
@@ -110,7 +110,7 @@ jointSurrSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549.24, alpha =
                            lambda.S = 1.8, nu.S = 0.0045,lambda.T = 3, nu.T = 0.0025, ver = 1, typeOf = 1,
                            equi.subj.trial = 1 ,equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
                            full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0, seed = 0, 
-                           nb.reject.data = 0, pfs = 1){
+                           nb.reject.data = 0, pfs = 0){
   
   param.weibull <- 0
   n.col <- 13 #Number of columns of the simulated dataset. The required number is 13.

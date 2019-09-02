@@ -1,5 +1,5 @@
 Changes in Version 3.0.4 march 2019
-o By default, in the data generation, the progression times are no longer consored by the death time. This update allow us to consider as surrogate endpoint the progression free survival (PFS) or Desease free survivall (DFS), or time-to- progression (TTP). This update is motivated by the surrogacy framework. 
+o By default, in the data generation, the progression times are consored by the death time. This update allow to consider as surrogate endpoint the progression free survival (PFS) or Desease free survivall (DFS), or time-to- progression (TTP). This update is motivated by the surrogacy framework. 
 
 o Update of the threshold for the classification of R2_trial. the previous classification was for the coefficient of correlation (R)
 

@@ -157,9 +157,9 @@
     rownames(validation2) <- rownames(validation)
     validation2[,1] <- c("Individual", "Trial", "Trial")
     validation2[,2:5] <- validation
-    validation2[2,6] <- ifelse(validation2[2,4] <= 0.7,"Low",ifelse(validation2[2,4]<0.85,
+    validation2[2,6] <- ifelse(validation2[2,4] <= 0.49,"Low",ifelse(validation2[2,4]<0.72,
                                "Medium","High"))
-    validation2[3,6] <- ifelse(validation2[3,4] <= 0.7,"Low",ifelse(validation2[2,4]<0.85,
+    validation2[3,6] <- ifelse(validation2[3,4] <= 0.49,"Low",ifelse(validation2[2,4]<0.72,
                                 "Medium","High"))
     validation2[1,6] <- " "
       

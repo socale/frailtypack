@@ -24,7 +24,7 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
    mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
    thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), 
-   nb.decimal = 4, pfs = 1, print.times = TRUE, print.iter=FALSE)
+   nb.decimal = 4, pfs = 0, print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
@@ -261,7 +261,7 @@ should have the same size}
 \item{nb.decimal}{Number of decimal required for results presentation.}
 
 \item{pfs}{Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
-The default is 1. In this case, death is included in the surrogate endpoint as in the definition of PFS or DFS.}
+The default is 0. In case with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS.}
 
 \item{print.times}{a logical parameter to print estimation time. Default
 is TRUE.}
