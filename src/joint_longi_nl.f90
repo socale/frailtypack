@@ -1933,7 +1933,7 @@
             uiiui=matmul(uii,Xea2)
 
 
-                mu1(1:nmescur,1)  =((dexp(y0+Xea22(1)+dexp(K_G0++mu(1:nmescur,1))*ziy((it+1):(it+nmescur),1)+&
+                mu1(1:nmescur,1)  =((dexp(y0+Xea22(1)+dexp(K_G0+mu(1:nmescur,1))*ziy((it+1):(it+nmescur),1)+&
             ziy((it+1):(it+nmescur),2)*dexp(K_D0-lambda+mu(1:nmescur,2))*&!-Xea22(3)+Xea22(2)
         (dexp(-dexp(lambda)*ziy((it+1):(it+nmescur),1))-1)))**box_cox_par-box_cox1)/box_cox_par
         
