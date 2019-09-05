@@ -9,7 +9,7 @@
 \usage{
 frailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,
 cross.validation = FALSE, jointGeneral,n.knots, kappa, maxit = 300, hazard =
-"Splines", nb.int, RandDist = "Gamma", nb.gh, betaknots = 1, betaorder = 3,
+"Splines", nb.int, RandDist = "Gamma", nb.gh, nb.gl, betaknots = 1, betaorder = 3,
 initialize = TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi,
 init.Eta, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, print.times =
 TRUE)
@@ -92,7 +92,10 @@ nested frailty model is fitted, the log-normal distribution cannot be
 chosen.}
 
 \item{nb.gh}{Number of nodes for the Gaussian-Hermite quadrature. 
-It can be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 32.}
+It can be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 20 if hazard = "Splines", 32 otherwise.}
+
+\item{nb.gl}{Number of nodes for the Gaussian-Laguerre quadrature. 
+It can be chosen between 20 and 32. The default is 20 if hazard = "Splines", 32 otherwise.}
 
 \item{betaknots}{Number of inner knots used for the estimation of B-splines.
 Default is 1. See 'timedep' function for more details. Not implemented for

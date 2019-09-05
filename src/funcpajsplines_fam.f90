@@ -11,7 +11,7 @@
     c,cdc,nt0,nt1,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,& 
     effet,stra,ve,vedc,pe,ng,g,nig,indic_ALPHA,ALPHA,theta,nstRec,k0T, & 
     fam,nfam,fsize,indic_xi, xi, eta, & !for family 
-    aux1,aux2,res1,res3,kkapa,resnonpen 
+    aux1,aux2,res1,res3,kkapa,resnonpen,nb_gl 
     use residusM
     use comongroup,only:vet,vet2,the2!,the1
 
@@ -303,7 +303,7 @@
 !**************INTEGRALES ****************************
 
         choix = 3
-        call gaulagJf(int)
+        call gaulagJf(int,nb_gl)
         res=int
  !       write(*,*) 'funcpajslines: sum(loglik_family)', res
 

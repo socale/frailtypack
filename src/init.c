@@ -17,7 +17,7 @@ static const R_FortranMethodDef FortEntries[] = {
 	{"jointlonginl",          (DL_FUNC) &F77_SUB(jointlonginl),	       62},
     {"joint_multiv",         (DL_FUNC) &F77_SUB(joint_multiv),         63},
 	{"longiuninl",         (DL_FUNC) &F77_SUB(longiuninl),             31},
-    {"nested",               (DL_FUNC) &F77_SUB(nested),               57},
+    {"nested",               (DL_FUNC) &F77_SUB(nested),               58},
     {"predict",              (DL_FUNC) &F77_SUB(predict),              44},
     {"predict_biv",          (DL_FUNC) &F77_SUB(predict_biv),          32},
 	{"predictfam",          (DL_FUNC) &F77_SUB(predictfam),            31},

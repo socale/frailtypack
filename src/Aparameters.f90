@@ -227,7 +227,7 @@
         double precision,dimension(:),allocatable,save::v_jf,varv_jf
         integer :: methodGH,nodes_number,initGH
         integer :: res_ind,it,n_wezly
-        integer :: nb_gh
+        integer :: nb_gh,nb_gl
     end module comon
 !=====================================================================================
 

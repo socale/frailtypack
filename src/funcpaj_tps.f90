@@ -7,7 +7,7 @@
     use comon,only:m3m3,m2m2,m1m1,mmm,m3m2,m3m1,m3m,m2m1,m2m,m1m,nva, &
     t0,t1,t0dc,t1dc,c,cdc,nsujet, &
     nst,effet,ng,g,nig,kkapa,indic_alpha,alpha,theta, &
-    auxig,aux1,aux2,res1,res3,typeof,pe,resnonpen!,stra,AG
+    auxig,aux1,aux2,res1,res3,typeof,pe,resnonpen,nb_gl
     use residusM
     use betatttps
 
@@ -147,7 +147,7 @@
     do ig=1,ng
         auxig = ig
         choix = 3
-        call gaulagj(int,choix)
+        call gaulagj(int,choix,nb_gl)
         integrale3(ig) = int !moins bon
         if ((integrale3(ig).eq.0.d0).and.(typeof.ne.2)) then
             integrale3(ig) = 1.d-300

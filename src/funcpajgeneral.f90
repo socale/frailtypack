@@ -5,7 +5,7 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
     mm3,mm2,mm1,mm,im3,im2,im1,im,date,zi,t0,t1,c,nt0,nsujet,nva,ndate, &
     nst,ve,pe,effet,nz1,nz2,ng,g,nig,resnonpen,theta,eta, &
     nva1,nva2,t0dc,t1dc,cdc,res1,res3,res4,res5,&
-    vedc,aux1,aux2, auxig, indic_eta
+    vedc,aux1,aux2, auxig, indic_eta,nb_gl
 
     use tailles
     use comongroup
@@ -248,15 +248,15 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
           do ig=1,ng
                  auxig=ig
                  choix = 3
-                 call gaulagJ(int,choix)
+                 call gaulagJ(int,choix,nb_gl)
                  integrale3(ig) = int !moins bon
 
                  choix = 4
-                 call gaulagJ(int4,choix)
+                 call gaulagJ(int4,choix,nb_gl)
                  integrale4(ig) = int4
 
                  choix = 5
-                 call gaulagJ(int3gap,choix)
+                 call gaulagJ(int3gap,choix,nb_gl)
                  integrale3gap(ig) = int3gap
            end do
 ! ************ FIN INTEGRALES **************************

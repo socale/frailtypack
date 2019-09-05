@@ -8,7 +8,7 @@
     use comon,only:etaR,etaD,betaR,betaD, &
     t0,t1,tU,t0dc,t1dc,c,cdc,nsujet,nva,nva1,nva2,nst,&
     stra,ve,vedc,effet,ng,g,nig,AG,indic_ALPHA,theta,alpha,&
-    auxig,aux1,aux2,res1,res3,indictronq,resL,resU,kkapa
+    auxig,aux1,aux2,res1,res3,indictronq,resL,resU,kkapa,nb_gl
     use tailles
     use comongroup
     use residusM
@@ -273,14 +273,14 @@
         do ig=1,ng
             auxig = ig
             choix = 1
-            call gaulagJ_intcens(int,choix)
+            call gaulagJ_intcens(int,choix,nb_gl)
             integrale1(ig) = int
             if (integrale1(ig).eq.0.d0) then
                 integrale1(ig) = 1.d-300
             endif
             if (indictronq.eq.1) then
                 choix = 2
-                call gaulagJ_intcens(int,choix)
+                call gaulagJ_intcens(int,choix,nb_gl)
                 integrale2(ig) = int
             endif
         end do

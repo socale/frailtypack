@@ -187,7 +187,11 @@
 		cat("   n censored events=" ,x$n.censored)
 		cat("\n")
 		cat("   number of iterations: ", x$n.iter,"\n")
-    
+		if (x$logNormal == 0) {
+		  cat("   Number of nodes for the Gauss-Laguerre quadrature: ", x$nb.gl,"\n")
+		}
+    else {cat("   Number of nodes for the Gauss-Hermite quadrature: ", x$nb.gh,"\n")}
+		
 		if (x$typeof == 0){ # splines
 			cat("\n")
 			cat("   Exact number of knots used: ", x$n.knots, "\n")
@@ -229,6 +233,10 @@
 			cat("   n censored events=" ,x$n.censored)
 			cat("\n")
 			cat("   number of iterations: ", x$n.iter,"\n")
+			if (x$logNormal == 0) {
+			  cat("   Number of nodes for the Gauss-Laguerre quadrature: ", x$nb.gl,"\n")
+			}
+			else {cat("   Number of nodes for the Gauss-Hermite quadrature: ", x$nb.gh,"\n")}
 		}
 	}
 	invisible()

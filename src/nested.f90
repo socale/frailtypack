@@ -14,7 +14,7 @@
     ssgroupe0,nva0,str0,vax0,AG0,noVar,maxiter0,irep1,np,maxngg,b,H_hessOut,HIHOut,resOut, &
     LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,typeof0,equidistant,nbintervR0,mt,ni, &
     cpt,ier,k0,ddl,istop,shapeweib,scaleweib,mt1,ziOut,time, &
-    Resmartingale,frailtypred,frailtypredg,frailtyvar,frailtyvarg,frailtysd,frailtysdg,linearpred,EPS)
+    Resmartingale,frailtypred,frailtypredg,frailtyvar,frailtyvarg,frailtysd,frailtysdg,linearpred,EPS,nbgl)
 
     use tailles
     use parameters
@@ -23,7 +23,7 @@
     use comon,only:date,zi,t0,t1,c,nt0,nt1,ve,stra,effet,nz1,nz2,I_hess,H_hess,&
     Hspl_hess,g,nig,indictronq,ag,mm3,mm2,mm1,mm,im3,im2,im1,im,m3m3,m2m2,m1m1,mmm,m3m2, &
     m3m1,m3m,m2m1,m2m,m1m,resnonpen,nsujet,nva,ndate,nst,model,hess,typeof, &
-    ttt,betacoef,typeof2,t2,vvv,nbintervR,cens,nbrecu,etaR,etaD,betaR,betaD
+    ttt,betacoef,typeof2,t2,vvv,nbintervR,cens,nbrecu,etaR,etaD,betaR,betaD,nb_gl
     !alpha,auxig,pe,eta,kkapa
     use perso
     use residusM
@@ -67,6 +67,7 @@
     external::funcpansplines,funcpancpm,funcpanweib
 !Cpm
     integer::typeof0,nbintervR0,equidistant,ent,indd
+    integer,intent(in)::nbgl
     double precision::temp
     double precision,dimension(nbintervR0+1)::time
 !cpm
@@ -80,7 +81,6 @@
     integer,dimension(5)::istopp
     double precision,dimension(ng0,maxngg),intent(out)::frailtypredg,frailtysdg,frailtyvarg
     double precision,dimension(3),intent(inout)::EPS ! seuils de convergence
-
 
     istopp = 0
     indic_cumul=0
@@ -105,6 +105,8 @@
     epsb=EPS(2) !1.d-4
     epsd=EPS(3) !1.d-4
 
+    nb_gl = nbgl
+    
     ca=0.d0
     cb=0.d0
     dd=0.d0
@@ -2439,9 +2441,10 @@
 !================================================
 !==================================================================
 
-    SUBROUTINE gaulagN(ss,choix) 
+    SUBROUTINE gaulagN(ss,choix,nnodes) 
 
     use tailles
+    use donnees
     !use comon,only:auxig
     Implicit none
 
@@ -2450,41 +2453,37 @@
     external::func0N,func1N,func2N,func3N,func4N,func5N,func6N
 ! gauss laguerre
 ! func1 est l integrant, ss le resultat de l integrale sur 0 ,  +infty
-    integer::j,choix
-    double precision,dimension(20)::x,w!The abscissas-weights.
-    SAVE  w,x
-    DATA w/0.181080062419,0.422556767879,0.666909546702,0.91535237279,&
-    1.1695397071,1.43135498624,1.7029811359,1.98701589585,&
-    2.28663576323,2.60583465152,2.94978381794,3.32539569477,&
-    3.74225636246,4.21424053477,4.76252016007,5.42172779036,&
-    6.25401146407,7.38731523837,9.15132879607,12.8933886244/
+    integer::j,choix,nnodes
+    double precision,dimension(nnodes):: xx,ww
 
-    DATA x/0.070539889692,0.372126818002,0.916582102483,1.70730653103, &
-    2.74919925531,4.04892531384,5.61517497087,7.45901745389,&
-    9.59439286749,12.0388025566,14.8142934155,17.9488955686,&
-    21.4787881904,25.4517028094,29.9325546634,35.0134341868,&
-    40.8330570974,47.6199940299,55.8107957541,66.5244165252/
+    if(nnodes.eq.20) then
+      xx(1:nnodes) = x(1:nnodes)
+      ww(1:nnodes) = w(1:nnodes)
+    else if (nnodes.eq.32) then
+      xx(1:nnodes) = x1(1:nnodes)
+      ww(1:nnodes) = w1(1:nnodes)
+    end if
 
     ss=0.d0
 ! Will be twice the average value of the function,since the ten
 ! weights (five numbers above each used twice) sum to 2.
-    do j=1,20
+    do j=1,nnodes
         if (choix.eq.1) then 
-            auxfunca=func1N(x(j))
-            ss = ss+w(j)*(auxfunca)
+            auxfunca=func1N(xx(j))
+            ss = ss+ww(j)*(auxfunca)
         else                   !choix=2, troncature
             if (choix.eq.2) then 
-                auxfunca=func2N(x(j))
-                ss = ss+w(j)*(auxfunca)
+                auxfunca=func2N(xx(j))
+                ss = ss+ww(j)*(auxfunca)
             else                   !choix=3,essai, res = -1
                 if (choix.eq.3) then
-                    auxfunca=func3N(x(j)) !dexp(-x(j))
-                    ss = ss+w(j)*(auxfunca)
+                    auxfunca=func3N(xx(j)) !dexp(-x(j))
+                    ss = ss+ww(j)*(auxfunca)
                 endif
             endif
         endif
     end do
-
+    
     return
 
     END SUBROUTINE gaulagN

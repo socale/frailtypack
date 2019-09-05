@@ -9,7 +9,7 @@
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt0dc,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,&
     stra,ve,vedc,pe,effet,ng,g,nig,AG,indic_ALPHA,theta,alpha,&
-    auxig,aux1,aux2,res1,res3,resnonpen
+    auxig,aux1,aux2,res1,res3,resnonpen,nb_gl
     use tailles
     use comongroup
     use residusM
@@ -338,7 +338,7 @@
         do ig=1,ng
             auxig=ig
             choix = 3
-            call gaulagJ(int,choix)
+            call gaulagJ(int,choix,nb_gl)
             integrale3(ig) = int !moins bon 
 ! parfois quand bcp de deces par groupe integrale3=0
             if(integrale3(ig).lt.1.d-300)then

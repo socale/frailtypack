@@ -8,7 +8,7 @@
     use comon,only:etaD,betaD,etaT,betaT,nstRec, &
     t0,t1,t1dc,c,cdc,nsujet,nva,nva1,nva2, &
     effet,stra,ve,vedc,ng,g,nig,indic_ALPHA,ALPHA,theta, &
-    auxig,aux1,aux2,res1,res3,kkapa
+    auxig,aux1,aux2,res1,res3,kkapa,nb_gl
     use residusM
     use comongroup,only:vet,vet2
 
@@ -159,7 +159,7 @@
     do ig=1,ng
         auxig=ig
         choix = 3
-        call gaulagJ(int,choix)
+        call gaulagJ(int,choix,nb_gl)
         integrale3(ig) = int !moins bon
         !if(integrale3(ig).lt.1.d-300)then
         !    integrale3(ig) = 1.d-300
