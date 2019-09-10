@@ -47,7 +47,7 @@ F77_SUB(cvpl_long)(int *ng0, int *nsujet0, int *nsujety0, int *groupe0, int *gro
 void
 F77_SUB(cvplnl)(int *ng0, int *nsujet0, int *nsujety0, int *groupe0, int *groupey0,
 					int *c0, int *cdc0, double *Y0, int *nva10, int *nva20, int *nva30,
-					int *nva40, int *nb10, int *which_random0, double box_cox0,int *netar0,
+					int *nva40, int *nb10, int *which_random0, double *box_cox0, int *netar0,
 					int *netadc0, int *link0, double *ve0,
 					double *vedc0, double *velong0, double *matzy0, double *s_cag0,
 					int *s_cag_id0, int *typeof0, int *nz0, double *zi0, int *np0,
@@ -91,7 +91,7 @@ F77_SUB(joint)(int *nsujet0, int *ngrp, int *strAux, int *lignedc0, int *nz0,
 						double *time, double *timedc, double *linearpredG, int *typeJoint0, 
 						int *intcens0, int *indices0, double *ttU0, int *ordretmp, int *initialize,
 						int *logNormal0, int *paratps, int *filtretps0, double *BetaTpsMat, 
-						double *BetaTpsMatDc, double *EPS, int *nbgh, int *nbgauss);	
+						double *BetaTpsMatDc, double *EPS, int *nbgauss);	
 				
 void 
 F77_SUB(joint_longi)(int *nsujet0, int *nsujety0, int *ng0, int *nz0, double *k0, 
@@ -236,14 +236,14 @@ F77_SUB(predicttrinl)(int *np, double *b, int *nz, int *nva10, int *nva20, int *
 						int *s_cag_id0, double *s_cag0);
 						
 void 
-F77_SUB(risque2)(double *t, double *the_s, double *the1_s, int *nz, double *zi_s, 
+F77_SUB(risque2)(double *t, double *the0, int *nz, double *zi0, 
 						double *lam, int *nst);
 void 
 F77_SUB(survival_cpm)(double *t, double *b, int *nst, int *nbintervR, double *time,double *surv);
 
 void 
-F77_SUB(survival_cpm2)(double *t, double *b, int *nst, int *nbintervR, int *nbintervDC, 
-						double *time, double *timedc, double *surv);
+F77_SUB(survival_cpm2)(double *t, double *b, int *nst, int *nbintervR, 
+						double *time, double *surv);
 						
 void 
 F77_SUB(survival_frailty)(double *t, double *the_s, double *the1_s, int *nz, double *zi_s, 

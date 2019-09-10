@@ -130,7 +130,7 @@
     double precision,dimension(:),allocatable::filtretps0Mul
     double precision,dimension(0:100,1)::BetaTpsMatMul
     double precision,dimension(3)::EPS
-
+    
 
 !     do i=1,5
 !         write(*,*)groupe0(i),groupe0meta(i),groupe0dc(i)
@@ -251,7 +251,7 @@
         xTOuts,lamTOuts,xSuTs,suTOuts,typeof0,equidistant0,nbintervR0,mt1, &    
         ni,cpts,ier,k0s,ddls,istop,shapeweibs,scaleweibs,100,zis,Resmartingales,martingaleCoxs,&
         frailtypreds,frailtyvars,frailtysds,linearpreds,times,0,tt10,0, &
-        timedepMul,nbinnerknots0Mul,qorder0Mul,filtretps0Mul,BetaTpsMatMul,EPS)
+        timedepMul,nbinnerknots0Mul,qorder0Mul,filtretps0Mul,BetaTpsMatMul,EPS,20)
 
 
         deallocate(filtretps0Mul)
@@ -308,7 +308,7 @@
         xTOuts,lamTOuts,xSuTs,suTOuts,typeof0,equidistant0,nbintervM0,mt3, &    
         ni,cpts,ier,k0s,ddls,istop,shapeweibs,scaleweibs,100,zis,Resmartingales,martingaleCoxs,&
         frailtypreds,frailtyvars,frailtysds,linearpreds,times,0,tt10,0, &
-        timedepMul,nbinnerknots0Mul,qorder0Mul,filtretps0Mul,BetaTpsMatMul,EPS)
+        timedepMul,nbinnerknots0Mul,qorder0Mul,filtretps0Mul,BetaTpsMatMul,EPS,20)
 
         deallocate(filtretps0Mul)
         deallocate(H_hess0,HIH0,zis,str00)
@@ -363,7 +363,7 @@
         xTOuts,lamTOuts,xSuTs,suTOuts,typeof0,equidistant0,nbintervDC0,mt2, &    
         ni,cpts,ier,k0s,ddls,istop,shapeweibs,scaleweibs,mt12,zis,Resmartingales,martingaleCoxs,&
         frailtypreds,frailtyvars,frailtysds,linearpreds,times,0,tt10,0, &
-        timedepMul,nbinnerknots0Mul,qorder0Mul,filtretps0Mul,BetaTpsMatMul,EPS)
+        timedepMul,nbinnerknots0Mul,qorder0Mul,filtretps0Mul,BetaTpsMatMul,EPS,20)
 
         deallocate(filtretps0Mul)
         deallocate(H_hess0,HIH0,zis,str00)
