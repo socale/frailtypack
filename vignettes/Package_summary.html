@@ -69,9 +69,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -90,25 +88,98 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
 });
 </script>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -628,7 +699,15 @@ prediction(joint.fit,datapred,t=100,window=seq(50,1500,50),event=&quot;Recurrent
 <p>Table 1: Package characteristics. Blue cross is for option available for a given type of model in the package on CRAN, orange cross is for option included in the package but not on CRAN yet. Empty cells mean that an option is not available for a given type of model (either not coded yet or simply not applicable). RE = Recurrent Event; TE = Terminal Event; LO = Longitudinal Outcome; STE = Surrogate threshold effect; ODE = Ordinary Differential Equation.</p>
 <div id="reference" class="section level4">
 <h4>Reference</h4>
-<p>Agnieszka Król, Audrey Mauguen, Yassin Mazroui, Alexandre Laurent, Stefan Michiels, Virginie Rondeau (2017), <a href="https://www.jstatsoft.org/article/view/v081i03">Tutorial in Joint Modeling and Prediction: A Statistical Software for Correlated Longitudinal Outcomes, Recurrent Events and a Terminal Event.</a> <em>Journal of Statistical Software</em>, <strong>81</strong>.</p>
+<p>Agnieszka Krol, Audrey Mauguen, Yassin Mazroui, Alexandre Laurent, Stefan Michiels, Virginie Rondeau (2017), <a href="https://www.jstatsoft.org/article/view/v081i03">Tutorial in Joint Modeling and Prediction: A Statistical Software for Correlated Longitudinal Outcomes, Recurrent Events and a Terminal Event.</a> <em>Journal of Statistical Software</em>, <strong>81</strong>.</p>
+</div>
+<div id="shiny" class="section level4">
+<h4>Shiny</h4>
+<p>A shiny application of frailtypack is available, allowing modelisation and prediction of several models presents in frailtypack, at <a href="https://frailtypack.shinyapps.io/frailtypack" class="uri">https://frailtypack.shinyapps.io/frailtypack</a>. This application can be run in a local mode in R thanks to the function runShiny().</p>
+<div id="note" class="section level5">
+<h5>Note</h5>
+<p>If you want to take in charge frailtypack as a project, but work on a macOSX with a version of R &gt;= 3.6, a problem must happen between openmp and clang. clang does not seem to support option ‘-fopenmp’. To avoid this, you should edit your personal Makevars (~/.R/Makevars), admitting you use gfortran, by relocating CC=clang by CC=gfortran</p>
+</div>
 </div>
 
 
