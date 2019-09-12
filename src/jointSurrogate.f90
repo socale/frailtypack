@@ -100,8 +100,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(:),allocatable::time
     double precision,dimension(:),allocatable::timedc
     integer,dimension(4)::mtaille
+    integer,dimension(3)::paratps
     double precision,dimension(4)::paraweib
-    double precision,dimension(3)::paratps,descripSurr,descripDeces
+    double precision,dimension(3)::descripSurr,descripDeces
     double precision,dimension(:,:),allocatable:: paGH,matrice_generation ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,
 	    !     racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
     !parametres de simulation
