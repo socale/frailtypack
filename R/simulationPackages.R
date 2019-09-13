@@ -1,14 +1,14 @@
 
-# This function aims to perform simulation studies using small paquages and save interim results in the .RData files
-# All the ".RData" are save in ./paquageSimul"num.paquet", where "num.paquet" is a number give to the simulation design 
+# This function aims to perform simulation studies using small packages and save interim results in the .RData files
+# All the ".RData" are save in ./packageSimul"num.paquet", where "num.paquet" is a number give to the simulation design 
 
-simulationPaquages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.method = 0,
+simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.method = 0,
                                nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, adaptatif = 0,
                                nspline = 6, kappa.use = 4, type.joint.estim = 3, 
                                typecopula = 1, type.joint.simul = 3, theta.copula = 3, 
                                time.cens = 349, true.init.val = 1, R2 = 0.81, maxit = 40, 
                                nb.paquet = 10, num.paquet = 1, program.to.estimate = 1, 
-                               list.paquage = NULL
+                               list.package = NULL
 ){
   
   # =====description of the parameters=====
@@ -16,11 +16,11 @@ simulationPaquages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
    # nsubjet : number of subjects
    # ntrial : number of trials
    # nspline : number of knots for spline
-   # nb.paquet : number of paquages to considered
+   # nb.paquet : number of packages to considered
    # num.paquet : a number give to the simulation design
    # program.to.estimate : 1 by default, 2 = case with two covariates, 4 = case with init values for theta set to 1 and alpha set to 0.5
      # 5 = case with Variation of the number of subject per trial
-   # list.paquage: list of the paquages numbers to execute. If NULL, all nb.paquage are executed
+   # list.package: list of the packages numbers to execute. If NULL, all nb.package are executed
    # More details for all the arguments can be found by displaying the help on the "jointSurroPenalSimul" function
       # i.e. help("jointSurroPenalSimul")
   # =======end description============
@@ -30,26 +30,26 @@ simulationPaquages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
   ckappa2 <- 0
   pfs     <- 0
   
-  #Management of the list of paquages on which simulation studies should be performed
+  #Management of the list of packages on which simulation studies should be performed
   
-  if(is.null(list.paquage)){
-    list.paquages <- seq(1,nb.paquet)
+  if(is.null(list.package)){
+    list.packages <- seq(1,nb.paquet)
   }else{
-    list.paquages <- sort(list.paquage)
+    list.packages <- sort(list.package)
   }
   
   # creation of the work dicrectory for the results
   current <- getwd()
-  wd <- paste("./paquageSimul",num.paquet,sep="")
+  wd <- paste("./packageSimul",num.paquet,sep="")
   dir.create(wd)
   
   i <- 1
   nb.reject.data <- 0
   N.sim.data     <- 0
   
-  while(i <= length(list.paquages)){
-    if(i %in% list.paquages){
-      # initialization of require arguments: number of dataset to consider per paquage and number of dataset to reject before simulation
+  while(i <= length(list.packages)){
+    if(i %in% list.packages){
+      # initialization of require arguments: number of dataset to consider per package and number of dataset to reject before simulation
       q <- floor(nsim / nb.paquet)
       modulo <- nsim %% nb.paquet
       if(i == 0){
@@ -68,7 +68,7 @@ simulationPaquages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
           nb.reject.data <- k * q + modulo
         }
         
-        # number of dataset to consider per paquage
+        # number of dataset to consider per package
         if(modulo >= i){
           N.sim.data <- q + 1
         }else{
@@ -76,7 +76,7 @@ simulationPaquages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
         }
       }
       
-      # Simulation for the ongoing paquage
+      # Simulation for the ongoing package
       if(program.to.estimate == 1){ # The default
         joint.simul2 <- jointSurroPenalSimul(nb.dataset = N.sim.data, nbSubSimul = nsubjet, ntrialSimul = ntrial,
                                              int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, 
@@ -145,7 +145,7 @@ simulationPaquages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
     save.image(paste("wd/joint.simul2_",numsimul, ".RData", sep = ""))
   }
   
-  # Merge from all paquages
+  # Merge from all packages
   joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = nb.paquet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
                                                     wd = wd)
   setwd(current)
