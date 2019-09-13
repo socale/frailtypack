@@ -594,7 +594,7 @@
       tt1 <- Y[,2]
       cens <- Y[,3]
     }
-    cat("blablabla")
+    
     if (min(cens)==0) cens.data<-1
     if (min(cens)==1 && max(cens)==1) cens.data<-0
     
