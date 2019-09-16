@@ -127,7 +127,7 @@
     double precision,dimension(nobsEvent(3))::Resmartingales,frailtypreds,frailtysds,frailtyvars
     double precision,dimension(:),allocatable::linearpreds,martingaleCoxs,times
     integer::timedepMul,nbinnerknots0Mul,qorder0Mul
-    double precision,dimension(:),allocatable::filtretps0Mul
+    integer,dimension(:),allocatable::filtretps0Mul
     double precision,dimension(0:100,1)::BetaTpsMatMul
     double precision,dimension(3)::EPS
     

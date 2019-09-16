@@ -261,7 +261,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     nus = paramSimul(14)
     lambdat = paramSimul(15)
     nut = paramSimul(16)
-    mode_cens = paramSimul(17)
+    mode_cens = int(paramSimul(17))
     temps_cens = paramSimul(18)
     cens0 = paramSimul(19)
     rsqrt = paramSimul(20)
@@ -1098,9 +1098,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !read(10,*)
         tt0dc(i)=don_simul(i,initTime1)/revision_echelle ! temps initial
         tt1dc(i)=don_simul(i,timeT1)/revision_echelle! temps de deces
-        icdc(i)=don_simul(i,statusT1) ! delta_star
-        pourtrial(i)=don_simul(i,trialref1) !indice de l'essai
-        groupe(i)=don_simul(i,Patienref1) ! numero de l'individu
+        icdc(i)=int(don_simul(i,statusT1)) ! delta_star
+        pourtrial(i)=int(don_simul(i,trialref1)) !indice de l'essai
+        groupe(i)=int(don_simul(i,Patienref1)) ! numero de l'individu
         vaxdct(i,1)=don_simul(i,trt1) ! vecteur des variables explicatives
         tableEssai(pourtrial(i))=tableEssai(pourtrial(i))+1
         
@@ -1151,9 +1151,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !read(9,*)tt0(i),tt1(i),ic(i),pourtrial(i),groupe(i),(vaxt(i,j),j=1,ver)
         tt0(i)=don_simulS(i,initTime1)/revision_echelle ! temps initial
         tt1(i)=don_simulS(i,timeS1)/revision_echelle! temps de deces
-        ic(i)=don_simulS(i,statusS1) ! delta_star
-        pourtrial(i)=don_simulS(i,trialref1) !indice de l'essai
-        groupe(i)=don_simulS(i,Patienref1) ! numero de l'individu
+        ic(i)=int(don_simulS(i,statusS1)) ! delta_star
+        pourtrial(i)=int(don_simulS(i,trialref1)) !indice de l'essai
+        groupe(i)=int(don_simulS(i,Patienref1)) ! numero de l'individu
         vaxt(i,1)=don_simulS(i,trt1) ! vecteur des variables explicatives
         
         !ecriture des donnees dans le fichier (juste pour le premier jeux de donnee)
@@ -1200,11 +1200,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     j=1
     do i=1,nsujet
         if(ic(i).eq.1) then
-            vsurrogate(k)=tt1(i)
+            vsurrogate(k)=int(tt1(i))
             k=k+1
         end if
         if(icdc(i).eq.1) then
-            vdeces(j)=tt1dc(i)
+            vdeces(j)=int(tt1dc(i))
             j=j+1
         end if
     end do 
@@ -1581,10 +1581,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! call intpr("size(H_hessOut) avant appel joint:", -1, size(H_hessOut,2), 1)
     ! call dblepr("H_hessOut(17,17) avant appel joint:", -1, H_hessOut(17,17), 1)
     Call joint_surrogate(nsujet,ng,ntrials,0,nz,nst,k0,tt0,tt1,ic,groupe,trials,pourtrial,nig_Ts,cdc_Ts,0, &
-                        tt0dc,tt1dc,icdc,0,0,nva1,vax,nva2,vaxdc,0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
+                        tt0dc,tt1dc,icdc,0.d0,0,nva1,vax,nva2,vaxdc,0.d0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
                         HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,typeof,equidistant,&
                         nbintervR,nbintervDC,mtaille,ni,cpt,cpt_dc,ier,istop,paraweib,MartinGales,linearpred,&
-                        linearpreddc,ziOut,time,timedc,0 , 1 , 0 , ttU , logNormal , paratps , 0 , 0 , 0 , &
+                        linearpreddc,ziOut,time,timedc,0.d0 , 1 , 0 , ttU , logNormal , paratps , 0 , 0 , 0 , &
                         EPS,nsim_node,indice_esti,indice_covST,0,param_weibull)
     !call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
