@@ -114,7 +114,7 @@ ui <- dashboardPage(skin = "black",
                                 br()#,
                                 
                                 # Ici il y avait une image mais je l'ai virée
-                                ),
+                        ),
                         
                         tabItem(tabName = "cox_modelisation",
                                 fluidRow(
@@ -328,19 +328,19 @@ ui <- dashboardPage(skin = "black",
                                   ),
                                   conditionalPanel(condition = "input.goButton_predCox",
                                                    tabBox(id = "cox_predict",
-                                                   tabPanel(
-                                                     title = "Prediction",
-                                                     id = "cox_prediction",
-                                                     dataTableOutput("printCoxPred")
-                                                   ),
-                                                   tabPanel(
-                                                     title = "Plot",
-                                                     id = "tab_cox_prediction",
-                                                     
-                                                     plotOutput("plotCoxPred"),
-                                                     
-                                                     downloadButton("downloadplot_pred_cox", "Download the plot")
-                                                   )))
+                                                          tabPanel(
+                                                            title = "Prediction",
+                                                            id = "cox_prediction",
+                                                            dataTableOutput("printCoxPred")
+                                                          ),
+                                                          tabPanel(
+                                                            title = "Plot",
+                                                            id = "tab_cox_prediction",
+                                                            
+                                                            plotOutput("plotCoxPred"),
+                                                            
+                                                            downloadButton("downloadplot_pred_cox", "Download the plot")
+                                                          )))
                                 )                                                                                                                                                                            
                         ),
                         
@@ -383,7 +383,7 @@ ui <- dashboardPage(skin = "black",
                                 
                                 h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
                                 
-                                ),
+                        ),
                         
                         tabItem(tabName = "share_modelisation",
                                 fluidRow(
@@ -686,7 +686,7 @@ ui <- dashboardPage(skin = "black",
                                 
                                 h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
                                 
-                                ),
+                        ),
                         
                         tabItem(tabName = "add_modelisation",
                                 fluidRow(
@@ -892,7 +892,7 @@ ui <- dashboardPage(skin = "black",
                                 
                                 h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
                                 
-                                ),
+                        ),
                         
                         tabItem(tabName = "nest_modelisation",
                                 fluidRow(
@@ -1080,7 +1080,7 @@ ui <- dashboardPage(skin = "black",
                         ),
                         
                         
-                        tabItem(tabName = "nested_help",
+                        tabItem(tabName = "nest_help",
                                 h1("Nested Model"),
                                 
                                 br(),
@@ -1123,7 +1123,7 @@ ui <- dashboardPage(skin = "black",
                                 
                                 h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
                                 
-                                ),
+                        ),
                         
                         tabItem(tabName = "joint_modelisation",
                                 fluidRow(
@@ -1497,7 +1497,7 @@ ui <- dashboardPage(skin = "black",
                                 
                                 h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
                                 
-                                ),
+                        ),
                         
                         tabItem(tabName = "joint_longi_modelisation",
                                 fluidRow(
@@ -1646,7 +1646,7 @@ ui <- dashboardPage(skin = "black",
                                                                           conditionalPanel(condition = "input.left_cens== 'yes'",
                                                                                            numericInput("left_cens_val", h5("Threshold of censoring"), -3.33))
                                                                    )
-                                                                   )
+                                                                 )
                                                        ),
                                                        actionButton("goButton_joint_longi", "Go!"))
                                     )
@@ -1853,7 +1853,7 @@ ui <- dashboardPage(skin = "black",
                                 
                                 h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
                                 
-                                ),
+                        ),
                         
                         tabItem(tabName = "joint_triv_modelisation",
                                 fluidRow(
@@ -2030,7 +2030,7 @@ ui <- dashboardPage(skin = "black",
                                                                    column(3,
                                                                           conditionalPanel(condition = "input.left_cens_triv== 'yes'",
                                                                                            numericInput("left_cens_val_triv", h5("Threshold of censoring"), -3.33))
-                                                                          ))
+                                                                   ))
                                                        ),
                                                        actionButton("goButton_joint_triv", "Go!"))
                                     )
@@ -2237,7 +2237,7 @@ ui <- dashboardPage(skin = "black",
                                 
                                 h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
                                 
-                                ),
+                        ),
                         
                         tabItem(tabName = "joint_trivnl_modelisation",
                                 fluidRow(
@@ -2326,17 +2326,17 @@ ui <- dashboardPage(skin = "black",
                                                                       choices = NULL),
                                                        
                                                        selectizeInput("co_var_joint_trivnl_rec",
-                                                                      label = h5("Co-variables for the recurents events :"),
+                                                                      label = h5("Co-variables for the recurrent event :"),
                                                                       choices = NULL,
                                                                       multiple = TRUE),
                                                        
                                                        selectizeInput("co_var_joint_trivnl_ter",
-                                                                      label = h5("Co-variables for the terminals events :"),
+                                                                      label = h5("Co-variables for the terminal event :"),
                                                                       choices = NULL,
                                                                       multiple = TRUE),
                                                        
                                                        selectizeInput("terEvent_joint_trivnl",
-                                                                      label = h5("terminal event :"),
+                                                                      label = h5("Terminal event :"),
                                                                       choices = NULL),
                                                        
                                                        selectizeInput("biomarker_trivnl",
@@ -2416,7 +2416,7 @@ ui <- dashboardPage(skin = "black",
                                                                    column(3,
                                                                           conditionalPanel(condition = "input.left_cens_trivnl== 'yes'",
                                                                                            numericInput("left_cens_val_trivnl", h5("Threshold of censoring"), -3.33))
-                                                                          ))
+                                                                   ))
                                                        ),
                                                        actionButton("goButton_joint_trivnl", "Go!"))
                                     )
@@ -2577,6 +2577,58 @@ ui <- dashboardPage(skin = "black",
                                                             downloadButton("downloadplot_pred_joint_trivnl", "Download the plot")
                                                           )))
                                 )
+                        ),
+                        
+                        tabItem(tabName = "joint_trivnl_help",
+                                h1("Non Linear Trivariate Joint Model"),
+                                
+                                br(),
+                                
+                                h3("
+                                  Fit a non-linear trivariate joint model for a longitudinal biomarker, recurrent events and a terminal event
+                                  using  a  semiparametric  penalized  likelihood  estimation  or  a  parametric  estimation  on  the hazard functions.
+                                  We  consider  that  the  longitudinal  outcome  can  be  a  subject  to  a  quantification  limit,  i.e.   some
+                                  observations, below a level of detection
+                                  s
+                                  cannot be quantified (left-censoring)"),
+                                
+                                
+                                br(),
+                                
+                                h4(" The variables : ",strong("Time, Censoring indicator,Cluster,Co-variables for the recurrent event, Co-variables for the terminal event, Terminal event, Biomarker, Times of biomarker measurements,
+                                                              Co-variables for the biomarker growth, Co-variables for the biomarker drug-induced decline, Parameters with random effects included in the model, Variable representing the individuals, Drug concentration indicator ")," : set with name of the column corresponding."),
+                                
+                                
+                                br(),
+                                
+                                h3("The following parameters are set by default but you are free to modify them as you need :"),
+                                
+                                br(),
+                                
+                                h4(strong("Hazard function"),": type of hazard functions:  Splines for semiparametric hazard functions using equidistant intervals or Splines-per using percentile
+                                   with the penalized likelihood estimation,
+                                   Weibull for parametric Weibull functions.  Default is Splines."),
+                                
+                                h4(strong("Number of knots")," : integer giving the number of knots to use.(only for splines or splines-per hazard function)"),
+                                h4(strong("Positive smoothing parameter")," : positive smoothing parameter in the penalized likelihood estimation.(only for splines or splines-per hazard function)"),
+                                h4(strong("Method for the Gauss-Hermite quadrature ")," : 'Standard'
+                                   for the standard non-
+                                   adaptive Gaussian quadrature,
+                                   'Pseudo-adaptive'
+                                   for the pseudo-adaptive Gaus
+                                   sian quadrature and
+                                   'HRMSYM'
+                                   for the algorithm for the multivariate non-adaptive
+                                   Gaussian quadrature (see Details). The default is
+                                   'Standard'
+                                   .."),
+                                h4(strong("Init alpha")," : initial value for parameter alpha."),
+                                h4(strong("Number of nodes")," : Number of nodes for the Gauss-Hermite quadrature. Default is 9."),
+                                h4(strong("Biomarker left-censored below a treshold")," : No if there is no left-censoring, yes otherwise, with the corresponding treshold."),
+                                br(),
+                                
+                                h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
+                                
                         ),
                         
                         tabItem(tabName = "mul_modelisation",
@@ -2931,7 +2983,7 @@ ui <- dashboardPage(skin = "black",
                                                                              column(6,
                                                                                     h5("Beta.t initial value :"),
                                                                                     numericInput("betat.init_surr", label = NULL, value = 0.5)))
-                                                                             ),# fin wellPanel,
+                                                                 ),# fin wellPanel,
                                                                  
                                                                  actionButton("goButton_surr", "Go!")))
                                       
@@ -3041,10 +3093,54 @@ ui <- dashboardPage(skin = "black",
                                                      tableOutput("printSurrPred")
                                                    ))
                                 )
-                        )
+                        ),
+                        
+                        tabItem(tabName = "surr_help",
+                                h1("Joint Surrogate Model"),
+                                
+                                br(),
+                                
+                                h3("
+                                    Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint,  with different integration methods on the random effects, using a semiparametric penalized likelihood estimation. "
+                                   ),
+                                
+                                
+                                br(),
+                                
+                                h4(" The data must contain at least 7 variables entitled : ",strong("patienID, trialID, timeS, statusS, timeT, statusT, trt .")),
+        
+                                br(),
+                                
+                                h4(strong("patienID"), ": A numeric, that represents the patient’s identifier, must be unique"),
+                                h4(strong("trialID"), ": A numeric, that represents the trial in which each patient wasrandomized"),
+                                h4(strong("timeS"), ": The follow up time associated with the surrogate endpoint"),
+                                h4(strong("statusS"), ": The event indicator associated with the surrogate endpoint. Normally 0 = no event, 1 = event"),
+                                h4(strong("timeT"), ": The follow up time associated with the true endpoint"),
+                                h4(strong("statusT"), ": The event indicator associated with the true endpoint. Normally0 = no event, 1 = event"),
+                                h4(strong("trt"), ": The treatment indicator for each patient, with 1 = treated,  0 = un-treated"),
+                                
+                                h3("The following parameters are set by default but you are free to modify them as you need :"),
+                                
+                                br(),
+                                
+                                h4(strong("Number of knots")," : An integer giving the number of knots to use. (only for splines or splines-per hazard function)"),
+                                h4(strong("Kappa use")," : A numeric, that indicates how to manage the smoothing parameters in case of convergence issues. If set to 1, the given smoothing parameters or those obtained by cross-validation are used. If set to 3, the associated smoothing parameters are successively divided by 10, in case of convergence issues until 5 times. If set to 4, the management of the smoothing parameter is as in case 1, follows by the successive division as described in case 3 and preceded by the changing of the number of nodes for the Gauss-Hermite quadrature. "),
+                                h4(strong("Integration method")," : 0 for Monte carlo, 1 for Gaussian-Hermite quadrature, 2 for a combination of both Gaussian-Hermite quadrature to integrate over the individual-level random effects and Monte carlo to integrate over the trial-level random effects, 4 for a combination of both Monte carlo to integrate over the individual-level random effects and Gaussian-Hermite quadrature to integrate over the trial-level random effects."),
+                                h4(strong("Number of samples in the Monte-Carlo integration")," : A value between 100 and 300 most often gives good results. However, beyond 300, the program takes a lot of time to estimate the parameters. The default is 300."),
+                                h4(strong("Number of nodes for the Gauss-Hermite quadrature")," : Default is 32."),
+                                h4(strong("Number of nodes for the Gauss-Hermite quadrature in case of non-convergence")," : Default is 20."),
+                                h4(strong("Adaptatif"), " : A binary, indicates whether the pseudo adaptive Gaussian-Hermite quadrature (1) or the classical Gaussian-Hermite quadrature (0) is used. "),
+                                h4(strong("Frail base"), " : Considered the heterogeneity between trial on the baseline risk (1), using the shared cluster specific frailties (u_i), or not (0)."),
+                                h4(strong("Indicator alpha"), " : A binary, indicates whether the power's parameter ζ should be estimated (1) or not (0). If 0, ζ will be set to 1 during estimation. The default is 1. This parameter can be seted to 0 in case of convergence and identification issues."),
+                                h4(strong("Indicator zeta"), " : A binary, indicates whether the power's parameter α should be estimated (1) or not (0). If 0, α will be set to 1 during estimation."),
+                                br(),
+                                
+                                h3("If you want to change the datafile after having fit a model, you need to press the button 'Change data file' after select a new file.")
+                                
                                 )
-                                )
-                                )
+                      )
+                    )
+)
 
 
 
