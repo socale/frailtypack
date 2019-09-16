@@ -109,16 +109,16 @@
   if(is.null(main)){
     if(length(mainlabel) > 0){ # to avoid to display the main in cases where all trials have been used
       boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 
-              ylab = "Log Hazard ration of the true endpoint",
+              ylab = "Log Hazard ratio of the true endpoint",
               main = paste("Unused trials = ", mainlabel, sep = ""))
     }
     else{
       boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials",
-              ylab = "Log Hazard ration of the true endpoint")
+              ylab = "Log Hazard ratio of the true endpoint")
     }
   }else{
     boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 
-            ylab = "Log Hazard ration of the true endpoint",
+            ylab = "Log Hazard ratio of the true endpoint",
             main = main)
   }
   points(data.plot2$trialID[!(data.plot2$trialID %in% unusedtrial)],data.plot2$beta.T[!(data.plot2$trialID %in% unusedtrial)])
