@@ -55,7 +55,7 @@ Agnieszka Krol, Audrey Mauguen, Yassin Mazroui, Alexandre Laurent, Stefan Michie
 
 
 #### Shiny
-A shiny application of frailtypack is available, allowing modelisation and prediction of several models presents in frailtypack, at https://frailtypack.shinyapps.io/frailtypack.
+A shiny application of frailtypack is available, allowing modelisation and prediction of several models presents in frailtypack, at https://frailtypack-pkg.shinyapps.io/shiny_frailtypack.
 This application can be run in a local mode in R thanks to the function runShiny().
 
 ##### Note 

@@ -25,7 +25,7 @@ Description: The following several classes of frailty models using a penalized l
 License: GPL (>= 2.0)
 URL:
         https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
-        https://frailtypack.shinyapps.io/frailtypack
+        https://frailtypack-pkg.shinyapps.io/shiny_frailtypack
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 Repository: CRAN
