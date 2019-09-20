@@ -9,7 +9,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
                           dataHessian,dataHessianIH,datab)
                           
-    ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
+    ! programme principal permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
     use sortie
     use Autres_fonctions
@@ -18,7 +18,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     use Autres_fonctions, only:pos_proc_domaine
     !use mpi ! module pour l'environnement MPI
     !$ use OMP_LIB 
-
+						
     implicit none
 
     ! =======debut declaration des variables================
@@ -1584,8 +1584,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         tt0dc,tt1dc,icdc,0.d0,0,nva1,vax,nva2,vaxdc,0.d0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
                         HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,typeof,equidistant,&
                         nbintervR,nbintervDC,mtaille,ni,cpt,cpt_dc,ier,istop,paraweib,MartinGales,linearpred,&
-                        linearpreddc,ziOut,time,timedc,0.d0 , 1 , 0 , ttU , logNormal , paratps , 0 , 0 , 0 , &
-                        EPS,nsim_node,indice_esti,indice_covST,0,param_weibull)
+                        linearpreddc,ziOut,time,timedc,0.d0 , 1 , 0 , ttU , logNormal , paratps , 0 , 0.d0 , 0.d0 , &
+                        EPS,nsim_node,indice_esti,indice_covST,0.d0,param_weibull)
     !call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
         ! !print*,""
