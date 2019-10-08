@@ -60,6 +60,11 @@
   data.plot <- data.frame(matrix(NA, nrow = 3 * nrow(data.gumbel), ncol = 4))
   names(data.plot) <- c("trialID", "beta.T", "ordre", "beta")
   data.plot$ordre <- rep(c(0,1,2),nrow(data.gumbel))
+  
+  # remove from unusedtrial all trials allready in the vector object$notconvtrial  
+  unusedtrial <- unusedtrial[!c(unusedtrial %in% intersect(unusedtrial, object$notconvtrial))]
+  print(unusedtrial)
+  
   j <- 1
   for(i in 1:nrow(data.gumbel)){
     if(data.plot$trialID[i] %in% unusedtrial){
