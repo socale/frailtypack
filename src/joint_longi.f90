@@ -5535,61 +5535,51 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,0.d0,intpoints(ii,1))
                 ss1=ss1+auxfunca
-     !WORKS100%open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-     !write(2,*)'auxfunca', auxfunca
-     !write(2,*)'intpoints(:,1)',intpoints(:,1)
-    ! !write(2,*)'ss',ss
-      !write(2,*)'ss1',ss1
-    !write(2,*)'nsimu',nsimu
-    ! write(2,*)'dble(nsimu)',dble(nsimu)
-    ! write(2,*)'ndim',ndim
-    !     close(2)
-    !stop
             end do
-         !!$OMP END PARALLEL DO
+         !$OMP END PARALLEL DO
    case(2)
 
         ii=0
-         !!$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !!$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
             end do
-         !!$OMP END PARALLEL DO
+         !$OMP END PARALLEL DO
          
        case(3)
 
         ii=0
-         !!$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !!$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
             end do
-         !!$OMP END PARALLEL DO
+         !$OMP END PARALLEL DO
          
                case(4)
 
         ii=0
-         !!$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !!$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
             end do
-         !!$OMP END PARALLEL DO
+         !$OMP END PARALLEL DO
           
                  case(5)
 
         ii=0
-         !!$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-        ! !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(intpoints(ii,5),intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
             end do
-         !!$OMP END PARALLEL DO
+         !$OMP END PARALLEL DO
                   
     end select
     ! open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
