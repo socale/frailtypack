@@ -123,7 +123,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
       if(program.to.estimate == 5){ # Variation of the number of subject per trial
         data(dataOvarian, package = "frailtypack")
         # consider the proportion from the advanced avarian cancer dataset including 50 trials
-        prop = (tab1(dataOvarian$trialID,graph = F)$output.table[-51,2])/100
+        prop = table(dataOvarian$trialID)/nrow(dataOvarian)
         joint.simul2 <- jointSurroPenalSimul(nb.dataset = N.sim.data, nbSubSimul = nsubjet, ntrialSimul = ntrial, 
                                              int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, 
                                              adaptatif = adaptatif, n.knots = nspline, kappa.use = kappa.use, 
