@@ -1833,6 +1833,11 @@
                   ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
                   Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
                   
+            GLMlog0 = as.integer(c(0,0)), # glm with log link + marginal two-part
+			
+			positionVarTime = as.integer(c(404,0,0,0)),
+			numInterac = as.integer(c(1,0)),
+                  
                   linear.pred=as.double(rep(0,nsujet)),
                   lineardc.pred=as.double(rep(0,as.integer(ng))),
                   zi=as.double(rep(0,(n.knots+6))),

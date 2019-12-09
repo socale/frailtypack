@@ -1996,8 +1996,8 @@ if(i==1){
 }
 }else{
   numInteracB=0
-  numInterac=0
-  positionVarTime=404
+  numInterac=1
+  positionVarTime=c(404,0,0,0)
 }
 
 seed_MC=ifelse(seed_MC==F,0,seed_MC) # seed for Monte-carlo (0 if random / unspecified)

@@ -202,6 +202,12 @@
     end if
     numInter = numInterac(1)
     numInterB = numInterac(2)
+    
+    if(numInter.eq.1) then
+        if(PositionvarT(1).eq.404) then
+            numInter = 0
+        end if
+    end if
             
         allocate(vaxdc(nva20),vaxy(nva30))
         if(TwoPart.eq.1) allocate(vaxB(nvaB0)) ! add TwoPart
@@ -5515,7 +5521,8 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
     integer,intent(in):: ndim
     double precision,intent(out)::ss
     double precision,dimension(nodes_number,nb1),intent(in)::intpoints
-    double precision::auxfunca,ss1 !,mu1,vc1,ss2
+    double precision::auxfunca !,mu1,vc1,ss2
+    double precision,dimension(nodes_number)::ss1
     double precision::x2222,somp !eps !ymarg contient le resultat de l'integrale
     double precision::func2
         
@@ -5530,8 +5537,8 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
    select case(ndim)
      case(1)
         ii=0
-         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
+         !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,0.d0,intpoints(ii,1))
                 ss1=ss1+auxfunca
@@ -5540,8 +5547,8 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
    case(2)
 
         ii=0
-         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
+         !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
@@ -5551,8 +5558,8 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
        case(3)
 
         ii=0
-         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
+         !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
@@ -5562,8 +5569,8 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
                case(4)
 
         ii=0
-         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
+         !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
@@ -5573,8 +5580,8 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
                  case(5)
 
         ii=0
-         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
-         !$OMP    REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
+         !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(intpoints(ii,5),intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1=ss1+auxfunca
@@ -5592,7 +5599,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
     ! write(2,*)'ndim',ndim
     !     close(2)
     !stop
-    ss=dble(ss1)/dble(nsimu) 
+    ss=dble(SUM(ss1))/dble(nsimu) 
 
     return 
   end subroutine MC_JointModels
