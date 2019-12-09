@@ -5541,7 +5541,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
          !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,0.d0,intpoints(ii,1))
-                ss1=ss1+auxfunca
+                ss1(ii)=auxfunca
             end do
          !$OMP END PARALLEL DO
    case(2)
@@ -5551,7 +5551,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
          !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,intpoints(ii,2),intpoints(ii,1))
-                ss1=ss1+auxfunca
+                ss1(ii)=auxfunca
             end do
          !$OMP END PARALLEL DO
          
@@ -5562,7 +5562,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
          !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
-                ss1=ss1+auxfunca
+                ss1(ii)=auxfunca
             end do
          !$OMP END PARALLEL DO
          
@@ -5573,7 +5573,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
          !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
-                ss1=ss1+auxfunca
+                ss1(ii)=auxfunca
             end do
          !$OMP END PARALLEL DO
           
@@ -5584,7 +5584,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
          !$OMP SCHEDULE(Static,1)
             do ii=1,nsimu
                 auxfunca=func2(intpoints(ii,5),intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
-                ss1=ss1+auxfunca
+                ss1(ii)=auxfunca
             end do
          !$OMP END PARALLEL DO
                   
