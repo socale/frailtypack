@@ -4494,7 +4494,7 @@ end if
 
 resultf1=0.d0
 resultf2=0.d0
-
+the2=0.d0
         k=0
         j=0
         su=0.d0
@@ -4681,7 +4681,7 @@ if(TwoPart.eq.1) then
         end if
     end if
 
-        
+            
 else if(TwoPart.eq.0) then
     if(nb1.eq.2) then
         z1curG(1,1) = 1.d0 ! random intercept only for now
@@ -4697,7 +4697,7 @@ else if(TwoPart.eq.0) then
      if(GLMloglink0.eq.0) then
                 if(nea.gt.1) then
                     current_meanG =dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))&
-                                                +dot_product(z1curG(1,1:nb1),frail(1:nb1))
+ +dot_product(z1curG(1,1:nb1),frail(1:nb1))
                 else
                     current_meanG = dot_product(x2curG(1,1:nva3),bh((np-nva3+1):np))+z1curG(1,1:nb1)*frail(1:nb1)
                 end if
@@ -4726,7 +4726,7 @@ end if
     
             do k=1,n
                 if(typeJoint.eq.2)the2(k-3)=(bh(k))**2.d0
-                            if(typeJoint.eq.3)the2(k-3)=(bh(k+n))**2.d0
+                if(typeJoint.eq.3)the2(k-3)=(bh(k+n))**2.d0
             end do
     
             call susps(tps,the2,nzdc,su,bbb,zi)
@@ -4743,7 +4743,7 @@ end if
             bbb =     (betaD*dexp((betaD-1.d0)*dlog(tps))/(etaD**betaD)) !((tps/etaD)**betaD)!
     
         end select
-    
+
             if(res_ind.eq.1) bbb = Rdc_res(i)
     
                                                                                               
@@ -4753,7 +4753,7 @@ end if
 else if(link.eq.3) then
             survdcCM =bbb*vet2*dexp(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))!+cdc(i)*etaydc1*current_meanG(1) 
             end if
-               
+            
         return
     
         end function survdcCM
@@ -4806,8 +4806,8 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,external::survdcCM
         double precision :: resultdc,abserr,resabs,resasc,Xea,vet2
         double precision,parameter::pi=3.141592653589793d0
-        double precision :: Bscalar, resultf1, resultf2, f1, f2 ! add TwoPart
-        double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY,cmGtemp
+        double precision :: resultf1, resultf2, f1, f2 ! add TwoPart
+        double precision,dimension(1) :: Bscalar,Bscal,Bcv,Bcurrentvalue, cmY,cmGtemp
         integer :: counter, counter2 ! add for current-level interaction
         upper = .false.
         i = numpat
@@ -4817,7 +4817,15 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
  current_meanG = 0.d0
  cmGtemp=0.d0
  det=0.d0
-
+Xea=0.d0
+Xea2=0.d0
+Xea22=0.d0
+XeaG=0.d0
+uii=0.d0
+mu1G=0.d0
+mu1BG=0.d0
+auxG=0.d0
+resultdc=0.d0
 
 resultf1=0.d0
 resultf2=0.d0
@@ -4825,6 +4833,8 @@ resultf2=0.d0
 !       write(2,*)'ping'
 !    close(2)
 !    stop
+
+
     if(nb1.eq.1) then
             if(methodGH.eq.1) then
             Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
@@ -4944,7 +4954,9 @@ else if(nb1.eq.5) then
         Xea22(5) = frail5
             end if
             end if            
-            
+
+        mat=0.d0
+        matv=0.d0
         mat = matmul(ut,utt)
 
         jj=0
@@ -4953,7 +4965,6 @@ else if(nb1.eq.5) then
         do k=j,nb1
         jj=j+k*(k-1)/2
         matv(jj)=mat(j,k)
-    
         end do
         end do
         ier = 0
@@ -4961,8 +4972,7 @@ else if(nb1.eq.5) then
     
 
             call dsinvj(matv,nb1,eps,ier)
-    
-        mat=0.d0
+    mat=0.d0
         do j=1,nb1
                 do k=1,nb1
             if (k.ge.j) then
@@ -5127,6 +5137,8 @@ if(numInter.ge.1)then
 end if
 end if    
 
+z1YcurG=0.d0
+z1BcurG=0.d0
 
              ! no ping here             
              
@@ -5199,7 +5211,7 @@ end if
                         Bcv=MATMUL(X2BcurG,b1((npp-nvaB+1):npp))+Matmul(z1BcurG,Xea22)
                         Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
                     
-
+cmY=0.d0
         cmY = (MATMUL(x2curG,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1YcurG,Xea22))
 !open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
 !       write(2,*)'boxcoxlambda',boxcoxlambda
@@ -5302,42 +5314,36 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
         yscalar = dsqrt(yscalar)    
         if(prod_cag.lt.0.1d-321)prod_cag= 0.1d-321
 
-
-    Bscalar=0.d0
+Bscal(1)=0.d0
+    Bscalar(1)=0.d0
     if(TwoPart.eq.1) then ! binary part contribution
         do k=1,nmescurB
             if(MTP0.eq.0) then
-                Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
+            Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-dexp(anint(mu1BG(k,1)*1.d16)/1.d16)/(1+dexp(mu1BG(k,1))))
+            Bscalar(1) = Bscalar(1) + Bscal(1)
+                           
+           
+           !if(k.eq.11) then
+!if(frail.eq.(-0.54419276817713191/2.d0)) then
+!     open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!     write(2,*)'mu1BG(k,1)',mu1BG(k,1)
+
+! write(2,*)'Bscalar(1)',Bscalar(1)
+! write(2,*)'Bscal(1)',Bscal(1)
+! write(2,*)'Bcurrentvalue(1)',Bcurrentvalue
+!         close(2)
+!    stop
+!end if
+!end if          
             else if(MTP0.eq.1) then
-        Bscalar = Bscalar + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
+Bscalar(1) = Bscalar(1) + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
+
         !         Bscalar = Bscalar + dlog(1.d0-Bcurrentvalue(1))
             end if
         end do
     end if
      
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!         write(2,*)' positionVarT', positionVarT
-!         write(2,*)' numInter', numInter
-!          write(2,*)'x2curG',x2curG
-!         write(2,*)' numInterB', numInterB
-!         write(2,*)' X2BcurG', X2BcurG
-! write(2,*)'nmescur',nmescur
-!  write(2,*)'ycurrent',ycurrent
-!    write(2,*)'current_meanG',current_meanG
-!   write(2,*)'Bcurrent',Bcurrent
-! write(2,*)'cmY',cmY
-! write(2,*)'Bcurrentvalue',Bcurrentvalue
-! write(2,*)'sigmae',sigmae
-! write(2,*)'GLMloglink0',GLMloglink0
-! write(2,*)'MTP0',MTP0
-! write(2,*)'yscalarlog',yscalarlog
-! write(2,*)'yscalar',yscalar
-! write(2,*)'prod_cag',prod_cag
-! write(2,*)'Bscalar',Bscalar
-! write(2,*)'TwoPart',TwoPart
-!             close(2)
-!stop
-
+funcG=0.d0
        if (methodGH.ne.3) then ! loglikelihood
     if(nb1.eq.1) then
             if(link.eq.1) then
@@ -5359,7 +5365,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                     -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
                         + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
@@ -5367,14 +5373,14 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dlog(2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
@@ -5383,19 +5389,19 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                   -uiiui(1)/2.d0-0.5d0*dlog(det)&
                         -dble(nb1)/2.d0*dlog(2.d0*pi)&   !-(nb1/2.d0)*dlog(det*2.d0*pi)&
-                     +Bscalar& ! add TwoPart
+                     +Bscalar(1)& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
         else if(link.eq.2) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         -uiiui(1)/2.d0-(dble(nb1)/2.d0)*dlog(det*2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
@@ -5419,7 +5425,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                     !-uiiui(1)/2.d0-0.5d0*dlog(det)&
                     !    -dlog(2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)*dexp(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))&
                         + cdc(i)*(etaydc(1)*Xea22(1)+etaydc(2)*Xea22(2))
     
@@ -5427,31 +5433,31 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         !-uiiui(1)/2.d0-0.5d0*dlog(det)&
                         !-dlog(2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         !-uiiui(1)/2.d0-0.5d0*dlog(det)&
                         !-dlog(2.d0*pi)&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
         else if(nb1.gt.2) then
         if(link.eq.1) then
         funcG = dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
-                     +Bscalar& ! add TwoPart
+                     +Bscalar(1)& ! add TwoPart
                    -auxG(i)*dexp(dot_product(etaydc,Xea22(1:nb1)))&
                     + cdc(i)*dot_product(etaydc,Xea22(1:nb1))
         else if(link.eq.2) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
-                        +Bscalar& ! add TwoPart
+                        +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
         end if
@@ -5459,37 +5465,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
         end if
         
     funcG = dexp(funcG)
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
- !        write(2,*)'ping'
- !       write(2,*)'currentmeanG',current_meanG(1)
- !       write(2,*)'Xea22',Xea22
- ! write(2,*)'boxcoxlambda(1)',boxcoxlambda(1)
- !         close(2)
 
-!     open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'GLMloglink0',GLMloglink0
-!       write(2,*)'cmY',cmY
-!       write(2,*)'yscalarlog',yscalarlog
-!       write(2,*)'current_meanG',current_meanG
-!       write(2,*)'yscalar',yscalar
-!         write(2,*)' positionVarT', positionVarT
-!         write(2,*)' numInter', numInter
-!          write(2,*)'x2curG',x2curG
-!          write(2,*)'funcG',funcG
-!          write(2,*)'sigmae',sigmae
-!         write(2,*)' numInterB', numInterB
-!         write(2,*)' X2BcurG', X2BcurG
-! write(2,*)'nmescur',nmescur
-!  write(2,*)'ycurrent',ycurrent
-!   write(2,*)'Bcurrent',Bcurrent
-! write(2,*)'Bcurrentvalue',Bcurrentvalue
-!    close(2)
-!stop
-  !   open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-  !   write(2,*)'frail', frail
-   !   write(2,*)'dexp(funcG)', dexp(funcG)
-   !     close(2)
-   ! stop
         return
     
         end function funcG
@@ -5538,7 +5514,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
      case(1)
         ii=0
          !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
-         !$OMP SCHEDULE(Static,1)
+         !$OMP SCHEDULE(Static)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,0.d0,intpoints(ii,1))
                 ss1(ii)=auxfunca
@@ -5548,7 +5524,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
 
         ii=0
          !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
-         !$OMP SCHEDULE(Static,1)
+         !$OMP SCHEDULE(Static)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,0.d0,intpoints(ii,2),intpoints(ii,1))
                 ss1(ii)=auxfunca
@@ -5558,8 +5534,8 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
        case(3)
 
         ii=0
-         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
-         !$OMP SCHEDULE(Static,1)
+         !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints)&
+         !$OMP REDUCTION(+:ss1) SCHEDULE(Dynamic,1)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,0.d0,intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1(ii)=auxfunca
@@ -5570,7 +5546,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
 
         ii=0
          !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
-         !$OMP SCHEDULE(Static,1)
+         !$OMP SCHEDULE(Static)
             do ii=1,nsimu
                 auxfunca=func2(0.d0,intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1(ii)=auxfunca
@@ -5581,7 +5557,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
 
         ii=0
          !$OMP PARALLEL DO default(none) PRIVATE (ii,auxfunca) SHARED(nsimu,intpoints,ss1)&
-         !$OMP SCHEDULE(Static,1)
+         !$OMP SCHEDULE(Static)
             do ii=1,nsimu
                 auxfunca=func2(intpoints(ii,5),intpoints(ii,4),intpoints(ii,3),intpoints(ii,2),intpoints(ii,1))
                 ss1(ii)=auxfunca
@@ -5589,16 +5565,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae
          !$OMP END PARALLEL DO
                   
     end select
-    ! open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-    ! write(2,*)'auxfunca', auxfunca
-    ! write(2,*)'intpoints(:,1)',intpoints(:,1)
-    ! write(2,*)'ss',ss
-    ! write(2,*)'ss1',ss1
-    ! write(2,*)'nsimu',nsimu
-    !  write(2,*)'dble(nsimu)',dble(nsimu)
-    ! write(2,*)'ndim',ndim
-    !     close(2)
-    !stop
+
     ss=dble(SUM(ss1))/dble(nsimu) 
 
     return 
