@@ -160,7 +160,6 @@
    MTP0=0
    MTP0=GLMlog0(2)
    
-   
     nsujet0=VectNsujet(1)
     nsujety0=VectNsujet(2)
     nsujetB0=VectNsujet(3)
@@ -194,21 +193,17 @@
             
                 
     ! add for current-level interaction with time
-    if(link0(1).ge.2) then
-    if(positionVarTime(1).lt.400) then
-    allocate(positionVarT((numInterac(1)+numInterac(2))*4))
-    positionVarT = positionVarTime
-    end if
-    end if
     numInter = numInterac(1)
     numInterB = numInterac(2)
-    
-    if(numInter.eq.1) then
-        if(PositionvarT(1).eq.404) then
-            numInter = 0
-        end if
+    !if(link0(1).ge.2) then
+    if(positionVarTime(1).lt.400) then
+    allocate(positionVarT((numInterac(1)+numInterac(2))*4))
+     positionVarT = positionVarTime
+    else
+     numInter = 0
     end if
-            
+    !end if
+
         allocate(vaxdc(nva20),vaxy(nva30))
         if(TwoPart.eq.1) allocate(vaxB(nvaB0)) ! add TwoPart
         
@@ -275,7 +270,6 @@
     
             ngtemp=ng
 
-    
     
                     res_ind = 0
     
@@ -1247,7 +1241,6 @@
     if(TwoPart.eq.1) allocate(Z1B(maxmesB,nbB),ZetB(nsujetBmax,nbB))
     if(TwoPart.eq.1) allocate(muB(maxmesB,1),Bcurrent(maxmesB))
     if(TwoPart.eq.1) allocate(XB(maxmesB,nvaB)) 
-        
 
         allocate(chol(nb1,nb1)) ! Monte-carlo
 
@@ -4833,7 +4826,6 @@ resultf2=0.d0
 !       write(2,*)'ping'
 !    close(2)
 !    stop
-
 
     if(nb1.eq.1) then
             if(methodGH.eq.1) then

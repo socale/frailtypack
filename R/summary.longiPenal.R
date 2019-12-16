@@ -94,6 +94,7 @@
 
     al[which(al[,3]==formatC(0, d, len,format="f")),3]<-formatC("<1e-16", d, len,format="f")
 
+    if(x$TwoPart==0){
     cat("Longitudinal outcome:\n")
     cat("------------- \n")
     cat(paste(rep(" ",mxl),collapse=""),paste("  ",dimnames(rl)[[2]]),"\n")
@@ -125,7 +126,47 @@
       lab <- dimnames(n)[[1]]
 
     mx <- max(nchar(lab)) + 1
-
+    }
+    else{
+      cat("Binary outcome:\n")
+      cat("------------- \n")
+      cat(paste(rep(" ",mxl),collapse=""),paste("  ",dimnames(rl)[[2]]),"\n")
+      for(i in (x$nvar[1]+x$nvarY+1):(ddl[1]))
+      {
+        labl[i] <- paste(c(rep(" ", mxl - nchar(labl[i])), labl[i]),collapse = "")
+        cat(labl[i], al[i, 1:3]," \n")
+      }
+      cat("\n")
+      cat("Continuous outcome:\n")
+      cat("------------- \n")
+      cat(paste(rep(" ",mxl),collapse=""),paste("  ",dimnames(rl)[[2]]),"\n")
+      for(i in (x$nvar[1]+1):(ddl[1]-x$nvarB))
+      {
+        labl[i] <- paste(c(rep(" ", mxl - nchar(labl[i])), labl[i]),collapse = "")
+        cat(labl[i], al[i, 1:3]," \n")
+      }
+      r <- cbind(or, li, ls)
+      
+      dimnames(r) <- list(names(co), c(lab[2], paste(level*100,"%",sep=""), "C.I."))
+      
+      n<-r
+      
+      dd <- dim(n)
+      n[n > 999.99] <- Inf
+      a <- formatC(n, d, len,format="f")
+      
+      dim(a) <- dd
+      if(length(dd) == 1){
+        dd<-c(1,dd)
+        dim(a)<-dd
+        lab<-" "
+      }
+      else
+        lab <- dimnames(n)[[1]]
+      
+      mx <- max(nchar(lab)) + 1
+      
+    }
     cat("\n")
     cat("Terminal event:\n")
     cat("--------------- \n")
