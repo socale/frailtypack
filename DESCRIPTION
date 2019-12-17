@@ -17,7 +17,7 @@ Description: The following several classes of frailty models using a penalized l
 		5) Joint general frailty models in the context of the joint modelling for recurrent events with terminal event data with two independent frailty terms.
 		6) Joint Nested frailty models in the context of the joint modelling for recurrent events with terminal event, for hierarchically clustered data (with two levels of clustering) by including two iid gamma random effects.
 		7) Multivariate joint frailty models for two types of recurrent events and a terminal event.
-		8) Joint models for longitudinal data and a terminal event.
+		8) Joint models for longitudinal data and a terminal event. 
 		9) Trivariate joint models for longitudinal data, recurrent events and a terminal event. 
 		10) Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints 
 		Prediction values are available (for a terminal event or for a new recurrent event). Left-truncated (not for Joint model), right-censored data, interval-censored data (only for Cox proportional hazard and shared frailty model) and strata are allowed. In each model, the random effects have the gamma or normal distribution. Now, you can also consider time-varying covariates effects in Cox, shared and joint frailty models (1-5). The package includes concordance measures for Cox proportional hazards models and for shared frailty models.
