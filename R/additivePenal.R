@@ -883,7 +883,7 @@
     fit$contrasts <- contr.save
     
     class(fit) <- "additivePenal"
-    fit
+    fit 
   }
 
 
