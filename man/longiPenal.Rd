@@ -5,9 +5,10 @@
 \title{Fit a Joint Model for Longitudinal Data and a Terminal Event}
 \usage{
 longiPenal(formula, formula.LongitudinalData, data, data.Longi,
-  random, id, intercept = TRUE, link = "Random-effects", left.censoring =
+  formula.Binary=FALSE, random, random.Binary=FALSE, id, intercept = TRUE,
+  link = "Random-effects", timevar=FALSE, left.censoring =
   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
-  init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam = 1e-3,
+  init.Random, init.Eta, method.GH = "Standard", seed.MC=FALSE, n.nodes, LIMparam = 1e-3,
   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 }
 \arguments{
@@ -26,9 +27,19 @@ Interactions are possible using * or :.}
 \item{data.Longi}{a 'data.frame' with the variables used in
 \code{formula.LongitudinalData}.}
 
+\item{formula.Binary}{a formula object, only requires terms on the
+right to indicate which variables are modelling the binary part of the
+two-part model fitting the longitudinal semicontinuous outcome.
+It must follow the standard form used for linear mixed-effects models.
+Interactions are possible using * or :.}
+
 \item{random}{Names of variables for the random effects of the longitudinal
 outcome. Maximum 3 random effects are possible at the moment. The random
 intercept is chosen using \code{"1"}.}
+
+\item{random.Binary}{Names of variables for the random effects of the binary
+part of the two-part model fitting the longitudinal semicontinuous outcome.
+The random intercept is chosen using \code{"1"}.}
 
 \item{id}{Name of the variable representing the individuals.}
 
@@ -40,8 +51,15 @@ and death: \code{"Random-effects"} for the association directly via the
 random effects of the biomarker, \code{"Current-level"} for the association
 via the true current level of the biomarker.  The option
 \code{"Current-level"} can be chosen only if the biomarker random effects
-are associated with the intercept and time (following this order). The
-default is \code{"Random-effects"}.}
+are associated with the intercept and time (following this order).
+\code{"Two-part"}, this structure is only applicable with two-part models,
+the effect of the current probability of positive value and the effect of
+the expected value among positive values on the risk of event is evaluated
+separately. The default is \code{"Random-effects"}.}
+
+\item{timevar}{Indicates the time varying variables to take into account this
+evolution over time in the link with the survival model (useful with
+'Current-level' and 'Two-part' links)}
 
 \item{left.censoring}{Is the biomarker left-censored below a threshold
 \eqn{s}? The default is \code{FALSE}, ie. no left-censoring. In case of a
@@ -87,12 +105,16 @@ function. Default is 0.5 for each.}
 
 \item{method.GH}{Method for the Gauss-Hermite quadrature: \code{"Standard"}
 for the standard non-adaptive Gaussian quadrature, \code{"Pseudo-adaptive"}
-for the pseudo-adaptive Gaussian quadrature and \code{"HRMSYM"} for the
+for the pseudo-adaptive Gaussian quadrature, \code{"Monte-carlo"} for the
+Monte-carlo method and \code{"HRMSYM"} for the
 algorithm for the multivariate non-adaptive Gaussian quadrature (see
 Details). The default is \code{"Standard"}.}
 
-\item{n.nodes}{Number of nodes for the Gauss-Hermite quadrature. They can be
-chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 9.}
+\item{seed.MC}{Monte-carlo integration points selection (1=fixed, 0=random)}
+
+\item{n.nodes}{Number of nodes for the Gauss-Hermite quadrature or the
+Monte-carlo method. They can be chosen among 5, 7, 9, 12, 15, 20 and 32
+for the GH quadrature and any number for the Monte-carlo method. The default is 9.}
 
 \item{LIMparam}{Convergence threshold of the Marquardt algorithm for the
 parameters (see Details of \code{frailtyPenal} function), \eqn{10^{-3}} by
@@ -118,7 +140,9 @@ the hazard functions (parametric or semiparametric), the random effects
 variances and the regression coefficients.} \item{call}{The code used for the
 model.} \item{formula}{The formula part of the code used for the terminal
 event part of the model.} \item{formula.LongitudinalData}{The formula part of
-the code used for the longitudinal part of the model.} \item{coef}{The
+the code used for the longitudinal part of the model.} \item{formula.Binary}{The
+formula part of the code used for the binary part of the two-part model.}
+\item{coef}{The
 regression coefficients (first for the terminal event and then for the
 biomarker.} \item{groups}{The number of groups used in the fit.}
 \item{kappa}{The value of the smoothing parameter in the penalized likelihood
@@ -143,7 +167,7 @@ terminal event are estimated. By default seq(0,max(time),length=99), where
 time is the vector of survival times.} \item{lamD}{The array (dim=3) of
 baseline hazard estimates and confidence bands (terminal event).}
 \item{survD}{The array (dim=3) of baseline survival estimates and confidence
-bands (terminal event).} 
+bands (terminal event).}
 \item{median}{The value of the median survival and its confidence bands.}
 \item{typeof}{The type of the baseline hazard
 functions (0:"Splines", "2:Weibull").} \item{npar}{The number of parameters.}
@@ -214,12 +238,12 @@ biomarker, the value of the left-censoring threshold used for the fit.}
 \item{prop.censored}{The fraction of observations subjected to the
 left-censoring.}
 
-\item{methodGH}{The Guassian quadrature method used in the fit.}
-\item{n.nodes}{The number of nodes used for the Gaussian quadrature in the
-fit.}
+\item{methodGH}{The method used for approximations of the
+multidimensional integrals.}
+\item{n.nodes}{The number of integration points.}
 }
 \description{
-{ 
+{
 \if{html}{Fit a joint model for longitudinal data and a terminal event
 using a semiparametric penalized likelihood estimation or a parametric
 estimation on the hazard function.
@@ -256,6 +280,12 @@ b\out{<sub>i</sub>}(t)=\bold{\eqn{X}\out{<sub>Li</sub>}}(t\out{<sub>ik</sub>})\o
 We consider that the longitudinal outcome can be a subject to a
 quantification limit, i.e. some observations, below a level of detection
 s cannot be quantified (left-censoring).
+
+Alternatively, a two-part model is proposed to fit a semicontinuous biomarker.
+The two-part model decomposes the biomarker's distribution into a binary
+outcome (zero vs. positive values) and a continuous outcome (positive values).
+A logistic mixed effects model fits the binary outcome and a linear mixed effects
+model fits the continuous outcome.
 }
 \if{latex}{Fit a joint model for longitudinal data and a terminal event using a
 semiparametric penalized likelihood estimation or a parametric estimation on
@@ -313,7 +343,9 @@ moderately unstable.  The pseudo-adaptive quadrature uses transformed
 quadrature points to center and scale the integrand by utilizing estimates of
 the random effects from an appropriate linear mixed-effects model. This
 method enables using less quadrature points while preserving the estimation
-accuracy and thus lead to a better computational time.
+accuracy and thus lead to a better computational time.The Monte-Carlo method
+is also proposed for approximations of the multidimensional integrals.
+
 
 NOTE. Data frames \code{data} and \code{data.Longi} must be consistent. Names
 and types of corresponding covariates must be the same, as well as the number
@@ -337,7 +369,7 @@ colorectalSurv <- subset(colorectal, new.lesions == 0)
 
 model.spli.RE <- longiPenal(Surv(time1, state) ~ age + treatment + who.PS
 + prev.resection, tumor.size ~  year * treatment + age + who.PS ,
-colorectalSurv,	data.Longi = colorectalLongi, random = c("1", "year"),
+data=colorectalSurv,	data.Longi = colorectalLongi, random = c("1", "year"),
 id = "id", link = "Random-effects", left.censoring = -3.33,
 n.knots = 7, kappa = 2)
 
@@ -345,12 +377,43 @@ n.knots = 7, kappa = 2)
 # Current level of the biomarker as the link function
 
 model.weib.CL <- longiPenal(Surv(time1, state) ~ age + treatment + who.PS
-+ prev.resection, tumor.size ~  year * treatment + age + who.PS ,
-colorectalSurv, data.Longi = colorectalLongi, random = c("1", "year"),
++ prev.resection, tumor.size ~  year * treatment + age + who.PS , timevar="year",
+data=colorectalSurv, data.Longi = colorectalLongi, random = c("1", "year"),
 id = "id", link = "Current-level", left.censoring = -3.33, hazard = "Weibull")
+
+
+###--- Two-part Joint model for semicontinuous
+#      longitudinal data and a terminal event ---###
+
+data(colorectal)
+data(colorectalLongi)
+colorectalSurv <- subset(colorectal, new.lesions == 0)
+
+# Box-cox back transformation (lambda=0.3) and apply logarithm (with a 1 unit shift)
+colorectalLongi$Yo <- (colorectalLongi$tumor.size*0.3+1)^(1/0.3)
+colorectalLongi$Y <- log(colorectalLongi$Y+1) # log transformation with shift=1
+
+# Two-part joint model - random-effects association structure
+
+TwoPartJoint_re <-longiPenal(Surv(time1, state)~age + treatment +
+who.PS+ prev.resection, Y~year*treatment, formula.Binary=Y~year*treatment,
+data = colorectalSurv, data.Longi = colorectalLongi, random = c("1"),
+random.Binary=c("1"), id = "id", link ="Random-effects", left.censoring = F,
+n.knots = 7, kappa = 2, hazard="Splines-per", seed.MC=1)
+
+print(TwoPartJoint_re)
+
+
+# Two-part joint model - current-level association structure (~15min)
+
+TwoPartJoint_cl <- longiPenal(Surv(time1, state) ~ age + treatment +
+who.PS+ prev.resection, Y ~  year * treatment, data = colorectalSurv,
+data.Longi = colorectalLongi, formula.Binary=Y~year*treatment,
+random = c("1"), random.Binary=c("1"), id = "id", link = "Current-level",
+left.censoring = F, timevar="year", n.knots = 7, kappa = 2, seed.MC=1)
+
+print(TwoPartJoint_cl)
 }
-
-
 }
 \references{
 A. Krol, A. Mauguen, Y. Mazroui, A. Laurent, S. Michiels and V. Rondeau

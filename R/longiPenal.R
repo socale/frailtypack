@@ -111,7 +111,7 @@
 #'   formula.Binary=FALSE, random, random.Binary=FALSE, id, intercept = TRUE,
 #'   link = "Random-effects", timevar=FALSE, left.censoring =
 #'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
-#'   init.Random, init.Eta, method.GH = "Standard", n.nodes, LIMparam = 1e-3,
+#'   init.Random, init.Eta, method.GH = "Standard", seed.MC=FALSE, n.nodes, LIMparam = 1e-3,
 #'   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 #' @param formula a formula object, with the response on the left of a
 #'   \eqn{\sim} operator, and the terms on the right. The response must be a
@@ -194,7 +194,7 @@
 #' @param n.nodes Number of nodes for the Gauss-Hermite quadrature or the
 #' Monte-carlo method. They can be chosen among 5, 7, 9, 12, 15, 20 and 32
 #' for the GH quadrature and any number for the Monte-carlo method. The default is 9.
-#' @param seed_MC Monte-carlo integration points selection (1=fixed, 0=random)
+#' @param seed.MC Monte-carlo integration points selection (1=fixed, 0=random)
 #' @param LIMparam Convergence threshold of the Marquardt algorithm for the
 #'   parameters (see Details of \code{frailtyPenal} function), \eqn{10^{-3}} by
 #'   default.
@@ -392,7 +392,7 @@
 #' who.PS+ prev.resection, Y~year*treatment, formula.Binary=Y~year*treatment,
 #' data = colorectalSurv, data.Longi = colorectalLongi, random = c("1"),
 #' random.Binary=c("1"), id = "id", link ="Random-effects", left.censoring = F,
-#' n.knots = 7, kappa = 2, hazard="Splines-per")
+#' n.knots = 7, kappa = 2, hazard="Splines-per", seed.MC=1)
 #'
 #' print(TwoPartJoint_re)
 #'
@@ -403,14 +403,14 @@
 #' who.PS+ prev.resection, Y ~  year * treatment, data = colorectalSurv,
 #' data.Longi = colorectalLongi, formula.Binary=Y~year*treatment,
 #' random = c("1"), random.Binary=c("1"), id = "id", link = "Current-level",
-#' left.censoring = F, timevar="year", n.knots = 7, kappa = 2)
+#' left.censoring = F, timevar="year", n.knots = 7, kappa = 2, seed.MC=1)
 #'
 #' print(TwoPartJoint_cl)
 #' }
 "longiPenal" <-
-  function (formula, formula.LongitudinalData, data,  data.Longi, formula.Binary=FALSE, random, random.Binary=FALSE, id, intercept = TRUE, link="Random-effects",timevar=FALSE,left.censoring=FALSE,GLMlog=FALSE, MTP=FALSE, n.knots, kappa,
+  function (formula, formula.LongitudinalData, data,  data.Longi, formula.Binary=FALSE, random, random.Binary=FALSE, id, intercept = TRUE, link="Random-effects",timevar=FALSE,left.censoring=FALSE,n.knots, kappa,
             maxit=350, hazard="Splines",   init.B,
-            init.Random, init.Eta, method.GH = "Standard",seed_MC=F, n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
+            init.Random, init.Eta, method.GH = "Standard",seed.MC=FALSE, n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {
 
     # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
@@ -426,12 +426,13 @@
         else x[1]
       }
     }
-
+GLMlog=FALSE
+MTP=FALSE
     OrderLong <- data.Longi[,id]
     OrderDat <- data[,id]
 
     m2 <- match.call()
-    m2$formula <-  m2$data <- m2$random <- m2$random.Binary <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$GLMlog <- m2$MTP <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$seed_MC<- m2$intercept <- m2$n.nodes <- m2$... <- NULL
+    m2$formula <-  m2$data <- m2$random <- m2$random.Binary <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$GLMlog <- m2$MTP <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$seed.MC<- m2$intercept <- m2$n.nodes <- m2$... <- NULL
     Names.data.Longi <- m2$data.Longi
 
     # TWO-PART indicator
@@ -582,7 +583,7 @@
 
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur
 
-m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$GLMlog <- m$MTP <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$seed_MC <- m$intercept <- m$n.nodes <- NULL
+m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$GLMlog <- m$MTP <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$seed.MC <- m$intercept <- m$n.nodes <- NULL
 
 
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")
@@ -2059,7 +2060,7 @@ if(i==1){
   positionVarTime=c(404,0,0,0)
 }
 
-seed_MC=ifelse(seed_MC==F,0,seed_MC) # seed for Monte-carlo (0 if random / unspecified)
+seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspecified)
 
     if(GLMlog==F) GLMloglink=0 else GLMloglink=1
     if(MTP==F) Mtwopart=0 else Mtwopart=1
@@ -2086,7 +2087,7 @@ seed_MC=ifelse(seed_MC==F,0,seed_MC) # seed for Monte-carlo (0 if random / unspe
         ans <- .Fortran(C_joint_longi,
 			VectNsujet = as.integer(c(1,nsujety, nsujetB)),
 
-            ngnzag=as.integer(c(ng, n.knots, 1, seed_MC)),
+            ngnzag=as.integer(c(ng, n.knots, 1, seed.MC)),
 
 			k0 = as.double(c(0,kappa)), # joint avec generalisation de strate
 			tt00 = as.double(0),
