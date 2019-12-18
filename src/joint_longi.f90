@@ -265,8 +265,7 @@
     
         ngmax=ng0
         ng=ng0
-    
-    
+   
     
             ngtemp=ng
 
@@ -792,7 +791,6 @@
 
         deallocate(filtre,filtre2,filtre3)
 
-
         ! nsujet=i-1
     
         if (typeof == 0) then
@@ -852,9 +850,7 @@
             maxdc = maxtdc
     
         end do
-    
-    
-    
+            
         datedc(1) = aux(1)
         k = 1
         do i=2,2*ngtemp
@@ -904,7 +900,7 @@
                     endif
                 end do
             end if 
-    
+
             if(typeof == 0) then
                 if(typeJoint.eq.3) then
     ! Al:10/03/2014 emplacement des noeuds splines en percentile (sans censure par intervalle)
@@ -970,7 +966,7 @@
                         ziOut = zi
                     endif    
                 end if   
-    
+
     ! ajout : noeuds des deces
                 if(equidistant.eq.0) then ! percentile
                     i=0
@@ -985,7 +981,7 @@
         
         !----------> allocation des vecteur temps
                     allocate(t3(nbdeces))
-        
+
         !----------> remplissage du vecteur de temps
                     j=0
                     do i=1,ngtemp !nsujet
@@ -1013,7 +1009,7 @@
 
                     deallocate(t3)
                 else ! equidistant
-    
+
                     allocate(zidc(-2:(nzdc+3)))
         
                     zidc(-2) = datedc(1)
@@ -1201,8 +1197,7 @@
             
                 ! b((np-nva1+1):np)=b((nz+4):(nz+3+nva1))
         
-    
-            
+
     
     !=====initialisation des splines
     
@@ -1245,7 +1240,6 @@
         allocate(chol(nb1,nb1)) ! Monte-carlo
 
      !       a_deja_simul=0 ! add Monte-carlo
-              
 
         if(typeJoint.ge.2) then
             select case(typeof)
@@ -1312,14 +1306,6 @@ if(1.eq.0) then
         end if
 end if
 
-!        open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'after marq'
-!       write(2,*)'nea',nea
-!       write(2,*)'nb1',nb1
-      ! write(2,*)'nva3',nva3
-      ! write(2,*)'numInter',numInter
-
-!     close(2)
         resOut=res
     !Al:
         EPS(1) = ca
@@ -1508,7 +1494,7 @@ end if
                 end do
             end do
         end if
-    
+
         if (timedep.eq.0) then
     
                     if(typeJoint.eq.2) then
@@ -2341,7 +2327,7 @@ end if
         double precision::auxfunca
         integer::j
             double precision,dimension(nnodes):: xx1,ww1
-    
+
                             if(nnodes.eq.5) then
                     xx1(1:nnodes) = x5(1:nnodes)
                     ww1(1:nnodes) = w5(1:nnodes)
@@ -2364,7 +2350,6 @@ end if
                     xx1(1:nnodes) = x3(1:nnodes)
                     ww1(1:nnodes) = w3(1:nnodes)
             end if
-    
     
         ss=0.d0
             if(methodGH.eq.0) then
@@ -2497,11 +2482,11 @@ end if
             end if
     
     
-        if(nmesy(numpat).gt.0) then
-            allocate(mu1(nmesy(numpat),1))
-        else
-            allocate(mu1(1,1))
-        end if
+!        if(nmesy(numpat).gt.0) then
+!            allocate(mu1(nmesy(numpat),1))
+!        else
+!            allocate(mu1(1,1))
+!        end if
     
         if(nmescur.gt.0) then
             mu1(1:nmescur,1) = mu(1:nmescur,1) +Xea*Z1(1:nmescur,1)
@@ -2619,7 +2604,7 @@ end if
     func6JL = dexp(func6JL)
     
     
-        deallocate(mu1)
+!        deallocate(mu1)
         return
     
         end function func6JL
@@ -2654,11 +2639,11 @@ end if
         double precision,parameter::pi=3.141592653589793d0
     
         upper = .false.
-        if(nmesy(numpat).gt.0) then
-            allocate(mu1(nmesy(numpat),1))
-        else
-            allocate(mu1(1,1))
-        end if
+!        if(nmesy(numpat).gt.0) then
+!            allocate(mu1(nmesy(numpat),1))
+!        else
+!            allocate(mu1(1,1))
+!        end if
     
         i = numpat
         matb_chol = 0.d0
@@ -2819,7 +2804,7 @@ end if
         end if
         
         func7J = dexp(func7J)
-        deallocate(mu1)
+!        deallocate(mu1)
     
         return
     
@@ -2873,11 +2858,11 @@ end if
         end if
     end if
     
-        if(nmesy(numpat).gt.0) then
-            allocate(mu1(nmesy(numpat),1))
-        else
-            allocate(mu1(1,1))
-        end if
+!        if(nmesy(numpat).gt.0) then
+!            allocate(mu1(nmesy(numpat),1))
+!        else
+!            allocate(mu1(1,1))
+!        end if
     
         i = numpat
         matb_chol = 0.d0
@@ -3108,7 +3093,7 @@ end if
       
         func10J = dexp(func10J)
    
-        deallocate(mu1)
+!        deallocate(mu1)
  if(TwoPart.eq.1) deallocate(mu1B) ! add TwoPart
 
         return
@@ -3151,11 +3136,11 @@ end if
     ! for each node on quadrature, we compute the integrand (it is then multiplied by weight in gauher subroutine)
 
         upper = .false.
-        if(nmesy(numpat).gt.0) then
-            allocate(mu1(nmesy(numpat),1))
-        else
-            allocate(mu1(1,1))
-        end if
+ !       if(nmesy(numpat).gt.0) then
+ !           allocate(mu1(nmesy(numpat),1))
+ !       else
+ !           allocate(mu1(1,1))
+ !       end if
     
     !add TwoPart
     if(TwoPart.eq.1) then
@@ -3398,7 +3383,7 @@ end if
 
         funcTP4J = dexp(funcTP4J)
    
-        deallocate(mu1)
+!        deallocate(mu1)
         if(TwoPart.eq.1) deallocate(mu1B) ! add TwoPart
         return
     
@@ -3449,11 +3434,11 @@ end if
             Xea(2) = frail2
             end if
     
-            if(nmesy(numpat).gt.0) then
-                    allocate(mu1(nmesy(numpat),1))
-            else
-                    allocate(mu1(1,1))
-            end if
+!            if(nmesy(numpat).gt.0) then
+!                    allocate(mu1(nmesy(numpat),1))
+!            else
+!                    allocate(mu1(1,1))
+!            end if
     
     
     
@@ -3677,7 +3662,7 @@ end if
     
         func8J = dexp(func8J)
         
-    deallocate(mu1)
+!    deallocate(mu1)
     
         return
     
@@ -3718,12 +3703,13 @@ end if
             double precision,dimension(2,2)::matb_chol
     
             upper = .false.
-            if(nmesy(numpat).gt.0) then
-                    allocate(mu1(nmesy(numpat),1))
-            else
-                    allocate(mu1(1,1))
-            end if
-    
+ 
+!            if(nmesy(numpat).gt.0) then
+!                    allocate(mu1(nmesy(numpat),1))
+!            else
+!                    allocate(mu1(1,1))
+!            end if
+  
             i = numpat
             matb_chol = 0.d0
             matb_chol(1,1) = invBi_chol(i,1)
@@ -3957,7 +3943,7 @@ end if
     
                             func9J = dexp(func9J)
     
-            deallocate(mu1)
+!            deallocate(mu1)
     
         return
     
@@ -3997,11 +3983,11 @@ end if
             double precision,dimension(3,3)::matb_chol
     
             upper = .false.
-            if(nmesy(numpat).gt.0) then
-                    allocate(mu1(nmesy(numpat),1))
-            else
-                    allocate(mu1(1,1))
-            end if
+!            if(nmesy(numpat).gt.0) then
+!                    allocate(mu1(nmesy(numpat),1))
+!            else
+!                    allocate(mu1(1,1))
+!            end if
     
             i = numpat
             matb_chol = 0.d0
@@ -4242,7 +4228,7 @@ end if
  
                             func11J = dexp(func11J)
     
-            deallocate(mu1)
+!            deallocate(mu1)
     
         return
     

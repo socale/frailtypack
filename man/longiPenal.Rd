@@ -413,6 +413,21 @@ random = c("1"), random.Binary=c("1"), id = "id", link = "Current-level",
 left.censoring = F, timevar="year", n.knots = 7, kappa = 2, seed.MC=1)
 
 print(TwoPartJoint_cl)
+
+# Simulated dataset (gitHub link)
+data(longDat)
+data(survDat)
+tte <- frailtyPenal(Surv(deathTimes, d)~trt,n.knots=5,kappa=0, data=survDat,cross.validation = T)
+kap <- round(tte$kappa,2);kap # smoothing parameter
+  TPJM <- longiPenal(Surv(deathTimes, d)~trt, Y~timej*trtY,
+  data=survDat, data.Longi = longDat,
+  random = c("1","timej"), formula.Binary=Y~timej*trtY,
+  random.Binary=c("1"), timevar="timej", id = "id",
+  link = "Current-level", n.knots = 5, kappa = kap,
+  hazard="Splines-per", method.GH="Monte-carlo",
+  n.nodes=500, seed.MC=1)
+
+  print(TPJM)
 }
 }
 \references{
