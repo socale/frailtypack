@@ -546,7 +546,7 @@
     logical::endDeriva
 
     endDeriva=.false.
-    
+    fcith=0.d0
     select case(model)
     case(1,7)
         th=1.d-3 !joint

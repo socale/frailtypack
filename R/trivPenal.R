@@ -478,6 +478,7 @@
   m2$formula <- m2$formula.terminalEvent <- m2$formula.LongitudinalData <- m2$data.Longi <- m2$recurrentAG <- m2$random <- m2$id <- m2$link <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <-  m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$init.Random <- m2$init.Eta <- m2$init.Alpha <- m2$method.GH <- m2$intercept <- m2$n.nodes <- m2$... <- NULL
   Names.data.Terminal <- m2$data
   
+  TwoPart <- FALSE# two-part not programmed yet
   #### Frailty distribution specification ####
   if (!(all(random %in% c("1",names(data.Longi))))) { stop("Random effects can be only related to variables from the longitudinal data or the intercept (1)") }
   if (!(id %in% c(names(data.Longi))) || !(id %in% c(1,names(data)))) { stop("Identification for individuals can be only related to variables from both data set") }
@@ -1763,12 +1764,22 @@
     cat("Be patient. The program is computing ... \n")
   }
   
-  
+    if(!TwoPart){ # initialize TwoPart variables if not activated
+    Binary <- rep(0, length(nsujety))
+    nsujetB=0
+    clusterB <- 0
+    matzB <- matrix(as.double(0),nrow=1,ncol=1)
+    nvarB <- 0
+    varB <- matrix(as.double(0),nrow=1,ncol=1)
+    nREB <- 0
+    noVarB <- 1
+  }
+
   ans <- .Fortran(C_joint_longi,
-                  as.integer(nsujet),
-                  as.integer(nsujety),
-                  as.integer(ng),
-                  as.integer(n.knots),
+                  VectNsujet = as.integer(c(nsujet,nsujety, nsujetB)),
+                  ngnzag=as.integer(c(ng, n.knots, AG)),
+                                 
+                                      
                   k0=as.double(kappa), # joint avec generalisation de strate
                   as.double(tt0),
                   as.double(tt1),
@@ -1779,18 +1790,22 @@
                   as.integer(terminalEvent),
                   link0 = as.integer(c(link0,link0)),
                   yy0 = as.double(Y),
+                  bb0 = as.double(Binary),
                   groupey0 = as.integer(clusterY),
-                  nb0 = as.integer(nRE),
+                  groupeB0 = as.integer(clusterB),
+                  Vectnb0 = as.integer(c(nRE, nREB)),
                   matzy0 =as.double(matzy),
+                  matzB0 =as.double(matzB),
                   cag0 = as.double(cag),
-                  as.integer(nvarR),
+                  VectNvar=as.integer(c(nvarR, nvarT, nvarY, nvarB)),
                   as.double(var),
-                  as.integer(nvarT),
+                                    
                   as.double(varT),
-                  nva30 = as.integer(nvarY),
+                                            
                   vaxy0 = as.double(varY),
-                  noVar = as.integer(c(noVarR,noVarT,noVarY)),
-                  ag0 = as.integer(AG),
+                  vaxB0 = as.double(varB),
+                  noVar = as.integer(c(noVarR,noVarT,noVarY, noVarB)),
+                                       
                   as.integer(maxit),
                   np=as.integer(np),
                   neta0 = as.integer(c(netadc,netar)),
@@ -1817,6 +1832,11 @@
                   MartinGale=as.double(matrix(0,nrow=ng,ncol=3+nRE)),###
                   ResLongi = as.double(matrix(0,nrow=nsujety,ncol=4)),
                   Pred_y  = as.double(matrix(0,nrow=nsujety,ncol=2)),
+                  
+            GLMlog0 = as.integer(c(0,0)), # glm with log link + marginal two-part
+			
+			positionVarTime = as.integer(c(404,0,0,0)),
+			numInterac = as.integer(c(1,0)),
                   
                   linear.pred=as.double(rep(0,nsujet)),
                   lineardc.pred=as.double(rep(0,as.integer(ng))),

@@ -334,5 +334,36 @@ NULL
 ##' @keywords datasets
 NULL
 
+##' Longitudinal semicontinuous biomarker dataset (TPJM)
+##' 
+##' This is a simulated dataset used to illustrate the two-part 
+##' joint model included in the longiPenal function.
+##' 
+##' @name longDat
+##' @docType data
+##' @usage data(longDat)
+##' @format This data frame contains the following columns: 
+##' \describe{
+##' \item{id}{The identification number of a patient}
+##' \item{timej}{The measurement times of the biomarker}
+##' \item{trtY}{Treatment covariate}
+##' \item{Y}{Biomarker value}
+##' }
+NULL
 
-
+##' Survival dataset (TPJM)
+##' 
+##' This is a simulated dataset used to illustrate the two-part 
+##' joint model included in the longiPenal function.
+##' 
+##' @name survDat
+##' @docType data
+##' @usage data(survDat)
+##' @format This data frame contains the following columns: 
+##' \describe{
+##' \item{id}{The identification number of a patient}
+##' \item{deathTimes}{The event times (death or censoring)}
+##' \item{d}{Censoring indicator}
+##' \item{trt}{Treatment covariate}
+##' }
+NULL

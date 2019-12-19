@@ -1,3 +1,8 @@
+Changes in Version 3.1.0 december 2019
+o New model added:  two-part joint model (part of longiPenal function) for a longitudinal semicontinuous marker and a terminal event.
+o Add Monte-Carlo integration method for joint models longidutinal/terminal event (longiPenal function)
+
+
 Changes in Version 3.0.3.3 august 2019
 o Add of the shiny application for frailtypack : the runShiny() function will run the application in a local mode.
 o Add of parameter 'nb.gh' in frailtyPenal, in order to chose the number of nodes for the Gaussian-Hermite quadrature
