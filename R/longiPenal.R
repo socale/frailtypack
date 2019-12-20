@@ -396,18 +396,8 @@
 #'
 #' print(TwoPartJoint_re)
 #'
-#'
-#' # Two-part joint model - current-level association structure (~15min)
-#'
-#' TwoPartJoint_cl <- longiPenal(Surv(time1, state) ~ age + treatment +
-#' who.PS+ prev.resection, Y ~  year * treatment, data = colorectalSurv,
-#' data.Longi = colorectalLongi, formula.Binary=Y~year*treatment,
-#' random = c("1"), random.Binary=c("1"), id = "id", link = "Current-level",
-#' left.censoring = F, timevar="year", n.knots = 7, kappa = 2, seed.MC=1)
-#'
-#' print(TwoPartJoint_cl)
-#'
-#' # Simulated dataset (gitHub link)
+#' # Two-part joint model - current-level association structure 
+#' # Simulated dataset (github.com/DenisRustand/TPJM_sim)
 #' data(longDat)
 #' data(survDat)
 #' tte <- frailtyPenal(Surv(deathTimes, d)~trt,n.knots=5,kappa=0, data=survDat,cross.validation = T)
