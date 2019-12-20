@@ -3704,11 +3704,11 @@ end if
     
             upper = .false.
  
-            if(nmesy(numpat).gt.0) then
-                    allocate(mu1(nmesy(numpat),1))
-            else
-                    allocate(mu1(1,1))
-            end if
+!            if(nmesy(numpat).gt.0) then
+!                    allocate(mu1(nmesy(numpat),1))
+!            else
+!                    allocate(mu1(1,1))
+!            end if
   
             i = numpat
             matb_chol = 0.d0
@@ -3983,11 +3983,11 @@ end if
             double precision,dimension(3,3)::matb_chol
     
             upper = .false.
-            if(nmesy(numpat).gt.0) then
-                    allocate(mu1(nmesy(numpat),1))
-            else
-                    allocate(mu1(1,1))
-            end if
+!            if(nmesy(numpat).gt.0) then
+!                    allocate(mu1(nmesy(numpat),1))
+!            else
+!                    allocate(mu1(1,1))
+!            end if
     
             i = numpat
             matb_chol = 0.d0
