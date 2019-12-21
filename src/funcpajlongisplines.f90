@@ -620,7 +620,7 @@
                    
 
                     choix = 3
-            if(methodGH.le.1) then
+            if(method_GH.le.1) then
             
         if(nmesy(numpat).gt.0) then
             allocate(mu1(nmesy(numpat),1))
@@ -646,11 +646,11 @@
     deallocate(mu1) 
                 integrale4(ig) =int !result(1) !
         
-            else if(methodGH.eq.2)then
+            else if(method_GH.eq.2)then
                 call  hrmsym(nea, nf2,genz(1),genz(2),vraistot_splines, epsabs, &
                     epsrel, restar, result, abserr2, neval, ifail, work)
                 integrale4(ig) =result(1)
-    else if(methodGH.eq.3) then ! Monte-carlo   
+    else if(method_GH.eq.3) then ! Monte-carlo   
         mu_mc=0.d0
         vcjm=0.d0
         nbre_sim=nodes_number

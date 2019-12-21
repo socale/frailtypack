@@ -230,7 +230,8 @@
         double precision,dimension(:),allocatable,save::invBi_cholDet,vet22
         double precision,dimension(:,:),allocatable,save:: invBi_chol,b_lme,mat,matb_chol
         double precision,dimension(:),allocatable,save::v_jf,varv_jf
-        integer,save :: methodGH,nodes_number,initGH
+        integer::methodGH
+        integer,save :: method_GH,nodes_number,initGH
         integer :: res_ind,it,n_wezly
         integer :: nb_gh,nb_gl
         !add current-level association - interaction with time

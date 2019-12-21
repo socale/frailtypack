@@ -342,6 +342,11 @@
 #' A. Genz and B. Keister (1996). Fully symmetric interpolatory rules for
 #' multiple integrals over infinite regions with Gaussian weight. \emph{Journal
 #' of Computational and Applied Mathematics} \bold{71}, 299-309.
+#'
+#' D. Rustand, L. Briollais and V. Rondeau. Two-part joint model for a 
+#' longitudinal semicontinuous marker and a terminal event with application 
+#' to metastatic colorectal cancer data. \emph{Under
+#' revision}.
 #' @keywords models
 #' @export
 #' @examples
@@ -386,18 +391,18 @@
 #' colorectalLongi$Yo <- (colorectalLongi$tumor.size*0.3+1)^(1/0.3)
 #' colorectalLongi$Y <- log(colorectalLongi$Y+1) # log transformation with shift=1
 #'
-#' # Two-part joint model - random-effects association structure
+#' # Two-part joint model - random-effects association structure (~15min)
 #'
 #' TwoPartJoint_re <-longiPenal(Surv(time1, state)~age + treatment +
 #' who.PS+ prev.resection, Y~year*treatment, formula.Binary=Y~year*treatment,
 #' data = colorectalSurv, data.Longi = colorectalLongi, random = c("1"),
 #' random.Binary=c("1"), id = "id", link ="Random-effects", left.censoring = F,
-#' n.knots = 7, kappa = 2, hazard="Splines-per", seed.MC=1)
+#' n.knots = 7, kappa = 2, hazard="Splines-per")
 #'
 #' print(TwoPartJoint_re)
 #'
-#' # Two-part joint model - current-level association structure 
-#' # Simulated dataset (github.com/DenisRustand/TPJM_sim)
+#' # Two-part joint model - current-level association structure (~15min)
+#' # Simulated dataset (github.com/DenisRustand/TPJM_sim) 
 #' data(longDat)
 #' data(survDat)
 #' tte <- frailtyPenal(Surv(deathTimes, d)~trt,n.knots=5,kappa=0, data=survDat,cross.validation = T)

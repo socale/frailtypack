@@ -341,7 +341,7 @@
                             invBi_chol(i,1:nb_re) = paGH(1,(nb1+2):(nb1+1+nb_re))
                     end do
     
-            methodGH = GH(1)
+            method_GH = GH(1)
             nodes_number = GH(2)
     
         if(typeJoint.eq.3) then
@@ -1693,7 +1693,7 @@ end if
         if(TwoPart.eq.1) deallocate(sum_matB, varcov_margB)
         if(TwoPart.eq.0) deallocate(filtreB)
         
-        if(methodGH.eq.3) deallocate(Vect_sim_MC)
+        if(method_GH.eq.3) deallocate(Vect_sim_MC)
 
             deallocate(ve)
         deallocate(hess,v,I1_hess,H1_hess,I2_hess,H2_hess,HI2,HIH,IH,HI,BIAIS,date,datedc)
@@ -1918,7 +1918,7 @@ end if
     
         use tailles
         use donnees
-        use comon,only:nb1,typeJoint,nea,methodGH,invBi_cholDet!auxig,typeof
+        use comon,only:nb1,typeJoint,nea,method_GH,invBi_cholDet!auxig,typeof
         use donnees_indiv,only : frailpol,frailpol2,frailpol3,numpat
         Implicit none
     
@@ -1954,7 +1954,7 @@ end if
 
         ss=0.d0
             auxfunca = 0.d0
-            if(methodGH.eq.0) then
+            if(method_GH.eq.0) then
 
             do j=1,nnodes
                 if (choix.eq.3) then
@@ -2023,7 +2023,7 @@ end if
     
         use tailles
         use donnees
-        use comon,only:methodGH,invBi_cholDet,nea,typeJoint!auxig,typeof,nb1,nea
+        use comon,only:method_GH,invBi_cholDet,nea,typeJoint!auxig,typeof,nb1,nea
         use donnees_indiv,only : frailpol,numpat
    !      !$ use OMP_LIB
    Implicit none
@@ -2059,7 +2059,7 @@ end if
             end if
     
         ss=0.d0
-            if(methodGH.eq.0) then
+            if(method_GH.eq.0) then
 !  !$OMP PARALLEL DO default(none) PRIVATE (j,auxfunca,frailpol)& 
 !  !$OMP  shared(nnodes,xx1,ww1,choix,typeJoint)&
 !   !$OMP  REDUCTION(+:ss)  SCHEDULE(Dynamic,1)
@@ -2103,7 +2103,7 @@ end if
     
         use tailles
         use donnees
-        use comon,only:methodGH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
+        use comon,only:method_GH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
         use donnees_indiv,only : frailpol2,numpat
         Implicit none
     
@@ -2138,7 +2138,7 @@ end if
             end if
     
         ss=0.d0
-            if(methodGH.eq.0) then
+            if(method_GH.eq.0) then
     
             do j=1,nnodes
             !  if (choix.eq.3) then
@@ -2175,7 +2175,7 @@ end if
     
         use tailles
         use donnees
-        use comon,only:methodGH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
+        use comon,only:method_GH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
         use donnees_indiv,only : frailpol3,numpat
         Implicit none
     
@@ -2210,7 +2210,7 @@ end if
             end if
     
         ss=0.d0
-            if(methodGH.eq.0) then
+            if(method_GH.eq.0) then
     
             do j=1,nnodes
             !  if (choix.eq.3) then
@@ -2246,7 +2246,7 @@ end if
     
         use tailles
         use donnees
-        use comon,only:methodGH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
+        use comon,only:method_GH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
         use donnees_indiv,only : frailpol,numpat
         Implicit none
     
@@ -2282,7 +2282,7 @@ end if
     
     
         ss=0.d0
-            if(methodGH.eq.0) then
+            if(method_GH.eq.0) then
     
             do j=1,nnodes
                 if (choix.eq.3) then
@@ -2317,7 +2317,7 @@ end if
     
         use tailles
         use donnees
-        use comon,only:methodGH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
+        use comon,only:method_GH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
         use donnees_indiv,only : frailpol2,numpat
         Implicit none
     
@@ -2352,7 +2352,7 @@ end if
             end if
     
         ss=0.d0
-            if(methodGH.eq.0) then
+            if(method_GH.eq.0) then
     
             do j=1,nnodes
                 if (choix.eq.3) then
@@ -2386,7 +2386,7 @@ end if
     
         use tailles
         use donnees
-        use comon,only:methodGH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
+        use comon,only:method_GH,invBi_cholDet,nea!auxig,typeof,nb1,typeJoint,nea
         use donnees_indiv,only : frailpol3,numpat
         Implicit none
     
@@ -2422,7 +2422,7 @@ end if
     
     
         ss=0.d0
-            if(methodGH.eq.0) then
+            if(method_GH.eq.0) then
     
             do j=1,nnodes
                 if (choix.eq.3) then
@@ -2458,7 +2458,7 @@ end if
         use optim
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,betaD,etaD,t1dc,etaydc,link,t0dc,&
-            vey,typeof,s_cag_id,s_cag,ut,methodGH,b_lme,invBi_chol
+            vey,typeof,s_cag_id,s_cag,ut,method_GH,b_lme,invBi_chol
             !auxig,alpha,sig2,res1,res3,nb1,nea,nig,utt,
         use donnees_indiv
         IMPLICIT NONE
@@ -2474,7 +2474,7 @@ end if
         upper = .false.
         i = numpat
     
-            if(methodGH.eq.1) then
+            if(method_GH.eq.1) then
             Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
             else
             Xea = frail!*sqrt(2.d0)*ut(1,1)
@@ -2620,7 +2620,7 @@ end if
         use comongroup,only:vet2!vet
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol
+            vey, typeof,s_cag_id,s_cag,ut,utt,method_GH,b_lme,invBi_chol
             !auxig,alpha,sig2,res1,res3,nig,nea
         use donnees_indiv
         IMPLICIT NONE
@@ -2650,7 +2650,7 @@ end if
             matb_chol(1,1) = invBi_chol(i,1)
             matb_chol(2,1) =  invBi_chol(i,2)
             matb_chol(2,2) =  invBi_chol(i,3)
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             Xea(1) = frail
             Xea(2) = frail2
             Xea22(1:nb1) = b_lme(i,1:nb1) +  Matmul(matb_chol,Xea)*sqrt(2.d0)
@@ -2821,7 +2821,7 @@ end if
         use comongroup,only:vet2!vet
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
+            vey, typeof,s_cag_id,s_cag,ut,utt,method_GH,b_lme,invBi_chol,&
             numInter,numInterB,positionVarT,&
             nbB, nby, nvaB, nmesB,TwoPart,veB! add TwoPart
         use donnees_indiv
@@ -2872,7 +2872,7 @@ end if
             matb_chol(3,1) =  invBi_chol(i,4)
             matb_chol(3,2) =  invBi_chol(i,5)
             matb_chol(3,3) =  invBi_chol(i,6)
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             Xea(1) = frail
             Xea(2) = frail2
             Xea(3) = frail3
@@ -3110,7 +3110,7 @@ end if
         use comongroup,only:vet2!vet
         use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
+            vey, typeof,s_cag_id,s_cag,ut,utt,method_GH,b_lme,invBi_chol,&
             nbB, nby, nvaB, nmesB,TwoPart,veB! add TwoPart
         use donnees_indiv
         IMPLICIT NONE
@@ -3169,7 +3169,7 @@ end if
 
 
            
-        if(methodGH.eq.1) then ! if Pseudo-adaptive
+        if(method_GH.eq.1) then ! if Pseudo-adaptive
             Xea(1) = frail
             Xea(2) = frail2
             Xea(3) = frail3
@@ -3403,7 +3403,7 @@ end if
         use comon,only:alpha,res1,res3,aux1,nig,cdc,sigmae,nmesy,&
             nva2,nva1,npp,nva3,vedc,ve,nb1,nea,betaD,etaD,t1dc,etaydc,etayr,&
             t0,t1,betaR,etaR,typeof,vey,c,link,s_cag_id,s_cag,ut,utt,&
-            t0dc,methodGH,b_lme,invBi_chol!effet,nb_re,nva
+            t0dc,method_GH,b_lme,invBi_chol!effet,nb_re,nva
         use donnees_indiv
     
         IMPLICIT NONE
@@ -3426,7 +3426,7 @@ end if
     
             upper = .false.
                     i = numpat
-                    if(methodGH.eq.1) then
+                    if(method_GH.eq.1) then
             Xea(1) = b_lme(i,1) +invBi_chol(i,1)*frail2*sqrt(2.d0)
             Xea(2) = frail
             else
@@ -3680,7 +3680,7 @@ end if
         use comon,only:alpha,res1,res3,aux1,nig,cdc,sigmae,nmesy,&
             nva2,nva1,npp,nva3,vedc,ve,nea,nb1,betaD,etaD,t1dc,etaydc,etayr,&
             t0,t1,betaR,etaR,typeof,link,vey,c,s_cag_id,s_cag,&
-            ut,utt,t0dc,t1dc,methodGH,b_lme,invBi_chol!effet,nva
+            ut,utt,t0dc,t1dc,method_GH,b_lme,invBi_chol!effet,nva
         use donnees_indiv
             IMPLICIT NONE
     
@@ -3716,7 +3716,7 @@ end if
             matb_chol(2,1) = invBi_chol(i,2)
             matb_chol(2,2) =  invBi_chol(i,3)
     
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             Xea(1) = frail2
             Xea(2) = frail3
             Xea22(1:nb1) = b_lme(i,1:nb1) +  Matmul(matb_chol,Xea(1:2))*sqrt(2.d0)
@@ -3960,7 +3960,7 @@ end if
         use comon,only:alpha,res1,res3,aux1,nig,cdc,sigmae,nmesy,&
             nva2,nva1,npp,nva3,vedc,ve,nea,nb1,betaD,etaD,t1dc,etaydc,etayr,&
             t0,t1,betaR,etaR,typeof,link,vey,c,s_cag_id,s_cag,&
-            ut,utt,t0dc,t1dc,methodGH,b_lme,invBi_chol!effet,nva
+            ut,utt,t0dc,t1dc,method_GH,b_lme,invBi_chol!effet,nva
         use donnees_indiv
             IMPLICIT NONE
     
@@ -3998,7 +3998,7 @@ end if
             matb_chol(3,2) =  invBi_chol(i,5)
             matb_chol(3,3) =  invBi_chol(i,6)
     
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             Xea(1) = frail2
             Xea(2) = frail3
             Xea(3) = frail4
@@ -4758,7 +4758,7 @@ else if(link.eq.3) then
         use optim
         use comon,only:cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,nb1,betaD,etaD,t0dc,t1dc,etaydc,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,&
+            vey, typeof,s_cag_id,s_cag,ut,utt,method_GH,b_lme,invBi_chol,&
             nbB, nby, nvaB, nmesB,TwoPart,veB,numInter,numInterB,positionVarT
             !auxig,alpha,sig2,res1,res3,nb1,nea,nig,utt,
         use donnees_indiv
@@ -4814,7 +4814,7 @@ resultf2=0.d0
 !    stop
 
     if(nb1.eq.1) then
-            if(methodGH.eq.1) then
+            if(method_GH.eq.1) then
             Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
             else
             Xea = frail!*sqrt(2.d0)*ut(1,1)
@@ -4825,7 +4825,7 @@ if(nb1.eq.2) then
             matb_chol(1,1) = invBi_chol(i,1)
             matb_chol(2,1) =  invBi_chol(i,2)
             matb_chol(2,2) =  invBi_chol(i,3)
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             XeaG(1) = frail
             XeaG(2) = frail2
             Xea22(1:nb1) = b_lme(i,1:nb1) +  Matmul(matb_chol,XeaG)*sqrt(2.d0)
@@ -4845,7 +4845,7 @@ else if(nb1.eq.3) then
             matb_chol(3,1) =  invBi_chol(i,4)
             matb_chol(3,2) =  invBi_chol(i,5)
             matb_chol(3,3) =  invBi_chol(i,6)
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             XeaG(1) = frail
             XeaG(2) = frail2
             XeaG(3) = frail3
@@ -4873,7 +4873,7 @@ else if(nb1.eq.4) then
             matb_chol(4,2) =  invBi_chol(i,8)
             matb_chol(4,3) =  invBi_chol(i,9)
             matb_chol(4,4) =  invBi_chol(i,10)
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             XeaG(1) = frail
             XeaG(2) = frail2
             XeaG(3) = frail3
@@ -4910,7 +4910,7 @@ else if(nb1.eq.5) then
             matb_chol(5,4) =  invBi_chol(i,14)
             matb_chol(5,5) =  invBi_chol(i,15)
 
-        if(methodGH.eq.1) then
+        if(method_GH.eq.1) then
             XeaG(1) = frail
             XeaG(2) = frail2
             XeaG(3) = frail3
@@ -5322,7 +5322,7 @@ Bscalar(1) = Bscalar(1) + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1
     end if
      
 funcG=0.d0
-       if (methodGH.ne.3) then ! loglikelihood
+       if (method_GH.ne.3) then ! loglikelihood
     if(nb1.eq.1) then
             if(link.eq.1) then
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog& !longi part
