@@ -404,7 +404,7 @@ n.knots = 7, kappa = 2, hazard="Splines-per")
 print(TwoPartJoint_re)
 
 # Two-part joint model - current-level association structure (~15min)
-# Simulated dataset (github.com/DenisRustand/TPJM_sim) 
+# Simulated dataset (github.com/DenisRustand/TPJM_sim)
 data(longDat)
 data(survDat)
 tte <- frailtyPenal(Surv(deathTimes, d)~trt,n.knots=5,kappa=0, data=survDat,cross.validation = T)
@@ -443,8 +443,8 @@ A. Genz and B. Keister (1996). Fully symmetric interpolatory rules for
 multiple integrals over infinite regions with Gaussian weight. \emph{Journal
 of Computational and Applied Mathematics} \bold{71}, 299-309.
 
-D. Rustand, L. Briollais and V. Rondeau. Two-part joint model for a 
-longitudinal semicontinuous marker and a terminal event with application 
+D. Rustand, L. Briollais, C. Tournigand and V. Rondeau. Two-part joint model for a
+longitudinal semicontinuous marker and a terminal event with application
 to metastatic colorectal cancer data. \emph{Under
 revision}.
 }
