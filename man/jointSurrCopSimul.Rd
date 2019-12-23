@@ -109,7 +109,7 @@ association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula}
 }
 \value{
 This function return if the parameter \code{full.data} is set to 0, a \code{\link{data.frame}} with columns :
-   \item{patienID}{A numeric, that represents the patient's identifier, must be unique;}
+   \item{patientID}{A numeric, that represents the patient's identifier, must be unique;}
    \item{trialID}{A numeric, that represents the trial in which each patient was randomized;}
    \item{trt}{The treatment indicator for each patient, with 1 = treated, 0 = untreated;}
    \item{timeS}{The follow up time associated with the surrogate endpoint;}

@@ -20,7 +20,7 @@ jointSurroPenal(data, maxit=40, indicator.zeta = 1,
 \arguments{
 \item{data}{A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
 \itemize{
-\item{\code{patienID:} A numeric, that represents the patient's identifier, must be unique;}
+\item{\code{patientID:} A numeric, that represents the patient's identifier, must be unique;}
 \item{\code{trialID:} A numeric, that represents the trial in which each patient was randomized;}
 \item{\code{timeS:} The follow up time associated with the surrogate endpoint;}
 \item{\code{statusS:} The event indicator associated with the surrogate endpoint. Normally 

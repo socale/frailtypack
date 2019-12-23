@@ -584,8 +584,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       # print(table(data.sim$statusS, data.sim$trialID))
       # 
       data.sim$initTime <- 0
-      donnees <- data.sim[,c("trialID","patienID","trt","initTime","timeS","statusS")]
-      death   <- data.sim[,c("trialID","patienID","trt","initTime","timeT","statusT")]
+      donnees <- data.sim[,c("trialID","patientID","trt","initTime","timeS","statusS")]
+      death   <- data.sim[,c("trialID","patientID","trt","initTime","timeT","statusT")]
       # conversion en double des jeux de donneees. je le fais separemment pour distinguer 
       # les cas ou j'aurai plus de variables explicatives pour un des jeux de donnees que pour l'autre
       for(i in 1:ncol(donnees)){

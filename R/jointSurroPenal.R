@@ -229,7 +229,7 @@
 #'
 #' @param data A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
 #'    \itemize{
-#'    \item{\code{patienID:} A numeric, that represents the patient's identifier, must be unique;}
+#'    \item{\code{patientID:} A numeric, that represents the patient's identifier, must be unique;}
 #'    \item{\code{trialID:} A numeric, that represents the trial in which each patient was randomized;}
 #'    \item{\code{timeS:} The follow up time associated with the surrogate endpoint;}
 #'    \item{\code{statusS:} The event indicator associated with the surrogate endpoint. Normally 
@@ -573,14 +573,14 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   if(!is.null(data)){
     dataUse <- data
     # dataset's names control
-    varStatus=(c("initTime","timeS","statusS","timeT","statusT","trialID","patienID","trt") %in% names(data))
+    varStatus=(c("initTime","timeS","statusS","timeT","statusT","trialID","patientID","trt") %in% names(data))
     if(F %in% varStatus){
-      stop("Control the names of your variables. They must contain at leat 7 variables named: timeS, statusS, timeT, statusT, trialID, patienID and trt. see the help on this function")
+      stop("Control the names of your variables. They must contain at leat 7 variables named: timeS, statusS, timeT, statusT, trialID, patientID and trt. see the help on this function")
     }
     
     # traitement des donnees
-    if(max(table(data$patienID)) > 1){
-      stop("Control your dataset. You probably have a duplicate on individual (patienID variable)")
+    if(max(table(data$patientID)) > 1){
+      stop("Control your dataset. You probably have a duplicate on individual (patientID variable)")
     }
     
     if(!is.numeric(data$timeS)|!is.numeric(data$timeT)|!is.numeric(data$trialID)){
@@ -622,7 +622,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       trial <- c(trial, rep(i, a[i]))
     }
     dataUse$trialID <- trial
-    dataUse$patienID <- 1:(nrow(dataUse))
+    dataUse$patientID <- 1:(nrow(dataUse))
     
     nsujet1 <- nrow(dataUse)
     ng <- nrow(dataUse)
@@ -694,8 +694,8 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   kappa0 <- init.kappa
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
-    donnees <- dataUse[,c("trialID","patienID","trt","initTime","timeS","statusS")]
-    death   <- dataUse[,c("trialID","patienID","trt","initTime","timeT","statusT")]
+    donnees <- dataUse[,c("trialID","patientID","trt","initTime","timeS","statusS")]
+    death   <- dataUse[,c("trialID","patientID","trt","initTime","timeT","statusT")]
     # conversion en double des jeux de donneees. je le fais separemment pour distinguer 
     # les cas ou j'aurai plus de variables explicatives pour un des jeux de donnees que pour l'autre
     for(i in 1:ncol(donnees)){
@@ -801,9 +801,9 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       cox_true_sigmaT=try(frailtyPenal(Surv(timeT, statusT) ~ cluster(trialID) + trt
                                         , data = death, n.knots = nz, kappa=kappa0[2], print.times = F))
       
-      donnees_death <- merge(donnees,death[,c("patienID","timeT","statusT")])
+      donnees_death <- merge(donnees,death[,c("patientID","timeT","statusT")])
       # estimation of eta, theta, beta_S and beta_T using a joint frailty model (Rondeau et al. 2007)
-      joint_w=try(frailtyPenal(Surv(timeS,statusS) ~ cluster(patienID) + trt + terminal(statusT),
+      joint_w=try(frailtyPenal(Surv(timeS,statusS) ~ cluster(patientID) + trt + terminal(statusT),
                                   formula.terminalEvent = ~ trt, RandDist = "LogN", 
                                   data = dataUse, n.knots = nz, kappa = kappa0, print.times = F), silent = TRUE)
       

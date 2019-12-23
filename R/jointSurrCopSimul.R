@@ -75,7 +75,7 @@
 
 #' @return
 #' This function return if the parameter \code{full.data} is set to 0, a \code{\link{data.frame}} with columns :
-#'    \item{patienID}{A numeric, that represents the patient's identifier, must be unique;}
+#'    \item{patientID}{A numeric, that represents the patient's identifier, must be unique;}
 #'    \item{trialID}{A numeric, that represents the trial in which each patient was randomized;}
 #'    \item{trt}{The treatment indicator for each patient, with 1 = treated, 0 = untreated;}
 #'    \item{timeS}{The follow up time associated with the surrogate endpoint;}
@@ -253,14 +253,14 @@ jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, cens.adm = 549, alpha =
     if(length(covar.names)>1)
       data.sim <- merge(data.sim,ans$don_simul[,c(11,12-1+seq(1,length(covar.names))[-1])], by="Patienref1") # on ajoute les donnees sur le True
     
-    names(data.sim) <- c("patienID", "trialID", "trt", "timeS", "statusS", "timeT", "statusT", covar.names[-1])
+    names(data.sim) <- c("patientID", "trialID", "trt", "timeS", "statusS", "timeT", "statusT", covar.names[-1])
     
     if(full.data == 1){
       data.comp <- merge(ans$don_simulS1[,c(11, 4, 1, 12, 2, 3, 5, 8)],
                          ans$don_simul[,c(11, 6, 9,12-1+seq(1,length(covar.names))[-1])],
                          by="Patienref1")
       
-      names(data.comp) <- c("patienID", "trialID", "trt","u_i","v_Si","v_Ti", "timeS", "statusS", "timeT", "statusT", covar.names[-1])
+      names(data.comp) <- c("patientID", "trialID", "trt","u_i","v_Si","v_Ti", "timeS", "statusS", "timeT", "statusT", covar.names[-1])
       
       if(typeOf == 1) {
         if(length(covar.names) == 1) 
