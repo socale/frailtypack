@@ -58,9 +58,9 @@
 #' @param nb.reject.data Number of generation to reject before the considered dataset. this parameter is required
 #' when data generation is for simulation. With a fixed parameter and \code{random.generator} set to 1,
 #' all ganerated data are the same. By varying this parameter, different datasets are obtained during data genarations. The default value is 0, 
-#' in case of one dataset.
+#' in the event of one dataset.
 #' @param theta.copule The copula parameter. The default is \code{6}, for an individual-level
-#' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
+#' association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula
 #' @param filter.surr Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
 #' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.
 #' @param filter.true Vector defines as \code{filter.surr}, for the true endpoint. \code{filter.true} and \code{filter.surr}
@@ -68,7 +68,7 @@
 #' @param covar.names Vector of the names of covariables. By default it contains "trt" for the 
 #' tratment arm. Should contains the names of all covarites wished in the generated dataset.
 #' @param pfs Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
-#' The default is 0. In case with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
+#' The default is 0. In the event with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
 # @param param.weibull A binary for the Weibull parametrization used. The default is \code{0}, as in 
 # the frailtypack package. If \code{1} the function 
 # \eqn{f(x)=\nu^\lambda . \lambda . x^{\lambda-1} . \exp(-(\nu x)^\lambda)} is used.

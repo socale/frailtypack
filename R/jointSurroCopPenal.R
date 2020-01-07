@@ -203,7 +203,7 @@
 #' by the option \code{true.init.val}. When numerical or convergence problems are encountered, 
 #' with \code{kappa.use} set to \code{4}, the model is fitted again using a combination of the following strategies: 
 #' vary the number of quadrature point (\code{nb.gh} to \code{nb.gh2} or \code{nb.gh2} to \code{nb.gh})
-#' in case of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
+#' in the event of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
 #' divided or multiplied the smoothing parameters (\code{k_1}, \code{k_2}) by 10 or 100 according to 
 #' their preceding values, or used parameter vectors obtained during the last iteration (with a 
 #' modification of the number of quadrature points and smoothing parameters). Using this strategy, 
@@ -226,20 +226,20 @@
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0),
 #'    typecopula = 1, nb.decimal = 4, print.times = TRUE, print.iter = FALSE)
 #'
-#' @param data A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
+#' @param data A \code{\link{data.frame}} containing at least seven variables intitled: 
 #'    \itemize{
-#'    \item{\code{patientID:} A numeric, that represents the patient's identifier, must be unique;}
+#'    \item{\code{patientID:} A numeric, that represents the patient's identifier and must be unique;}
 #'    \item{\code{trialID:} A numeric, that represents the trial in which each patient was randomized;}
-#'    \item{\code{timeS:} The follow up time associated with the surrogate endpoint;}
+#'    \item{\code{timeS:} The follow-up time associated with the surrogate endpoint;}
 #'    \item{\code{statusS:} The event indicator associated with the surrogate endpoint. Normally 
 #'    0 = no event, 1 = event;}
-#'    \item{\code{timeT:} The follow up time associated with the true endpoint;}
+#'    \item{\code{timeT:} The follow-up time associated with the true endpoint;}
 #'    \item{\code{statusT:} The event indicator associated with the true endpoint. Normally 
 #'    0 = no event, 1 = event;}
 #'    \item{\code{trt:} The treatment indicator for each patient, with 1 = treated, 0 = untreated.}
 #'    }
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
-#' Default is \code{40}. 
+#' The default being \code{40}. 
 #' @param indicator.alpha A binary, indicates whether the power's parameter \eqn{\alpha} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
@@ -258,19 +258,19 @@
 #' log-likelihood, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
 #' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, \eqn{10^{-3}} by default 
 #' (See \code{\link{frailtyPenal}} for more details).
-#' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in case 
+#' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in the event 
 #' \code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 500 and 1000 most often gives 
 #' good results. The default is \code{1000}.
 #' @param nb.gh Number of nodes for the Gaussian-Hermite quadrature. It can
 #' be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 32.
 #' @param nb.gh2 Number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, 
-#' in case of non-convergence, defined as previously. The default is \code{20}.
+#' in the event of non-convergence, defined as previously. The default is \code{20}.
 #' @param adaptatif A binary, indicates whether the pseudo adaptive Gaussian-Hermite quadrature \code{(1)} or the classical
 #' Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.
 #' @param int.method A numeric, indicates the integration method: \code{0} for Monte carlo, 
 #' \code{1} for Gaussian-Hermite quadrature, \code{3} for Laplace approximation. The default is \code{0}.
 #' @param nb.iterPGH Number of iterations before the re-estimation of the posterior random effects,
-#' in case of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
+#' in the event of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
 #' re-estimation". The default is \code{5}.
 #' @param nboot.kendall Number of samples considered in the parametric bootstrap to estimate the confidence
 #' interval of the Kendall's \eqn{\tau}. The default is \code{1000}. 
@@ -303,20 +303,20 @@
 #' @param betat.init Initial values for \eqn{\beta_T}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param scale A numeric that allows to rescale the survival times, to avoid numerical 
-#' problems in case of some convergence issues. If no change is need the argument is set to 1, the default value. 
+#' problems in the event of some convergence issues. If no change is need the argument is set to 1, the default value. 
 #' eg: 365 aims to convert days to years ".
 #' @param random.generator Random number generator to use by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
-#' subroutine \code{uniran()}. The default is \code{1}. In case of convergence problem 
+#' subroutine \code{uniran()}. The default is \code{1}. In the event of convergence problem 
 #' with \code{int.method} set to \code{0}, \code{2} or \code{4}, that requires  
 #' integration by Monte-Carlo, user could change the random numbers generator.
 #' @param kappa.use A numeric, that indicates how to manage the smoothing parameters \code{k_1} 
-#' and \code{k_2} in case of convergence issues. If it is set to \code{1}, 
+#' and \code{k_2} in the event of convergence issues. If it is set to \code{1}, 
 #' the given smoothing parameters or those obtained by cross-validation are used. 
 #' If it is set to \code{3}, the associated smoothing parameters are successively divided by 10, 
-#' in case of convergence issues until 5 times. If it is set to \code{4}, the management of the
-#' smoothing parameter is as in case \code{1}, follows by the successive division as described 
-#' in case \code{3} and preceded by the changing of the number of nodes for the Gauss-Hermite quadrature. 
+#' in the event of convergence issues until 5 times. If it is set to \code{4}, the management of the
+#' smoothing parameter is as in the event \code{1}, follows by the successive division as described 
+#' in the event \code{3} and preceded by the changing of the number of nodes for the Gauss-Hermite quadrature. 
 #' The default is \code{4}.
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
@@ -329,7 +329,7 @@
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
 #' @param ckappa Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
-#' to well manage the smoothing parameters in case of convergence issues.
+#' to well manage the smoothing parameters in the event of convergence issues.
 #' @param typecopula The copula function used, can be 1 for clayton or 2 for Gumbel-Hougaard. The default is \code{1}
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default

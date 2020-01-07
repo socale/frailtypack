@@ -36,7 +36,7 @@
 #' by the option \code{true.init.val}. When numerical or convergence problems are encountered, 
 #' with \code{kappa.use} set to \code{4}, the model is fitted again using a combination of the following strategies: 
 #' vary the number of quadrature point (\code{nb.gh} to \code{nb.gh2} or \code{nb.gh2} to \code{nb.gh})
-#' in case of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
+#' in the event of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
 #' divided or multiplied the smoothing parameters (\code{k_1}, \code{k_2}) by 10 or 100 according to 
 #' their preceding values, or used parameter vectors obtained during the last iteration (with a 
 #' modification of the number of quadrature points and smoothing parameters). Using this strategy, 
@@ -72,7 +72,7 @@
 #' Default is \code{40}. 
 #' @param indicator.zeta A binary, indicates whether the power's parameter \eqn{\zeta} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
-#' The default is \code{1}. This parameter can be seted to \code{0} in case of identification issues. 
+#' The default is \code{1}. This parameter can be seted to \code{0} in the event of identification issues. 
 #' @param indicator.alpha A binary, indicates whether the power's parameter \eqn{\alpha} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
@@ -94,14 +94,14 @@
 #' log-likelihood, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
 #' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, \eqn{10^{-3}} by default 
 #' (See \code{\link{frailtyPenal}} for more details).
-#' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in case 
+#' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in the event 
 #' \code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 100 and 300 most often gives 
 #' good results. However, beyond 300, the program takes a lot of time to estimate the parameters.
 #' The default is \code{300}.
 #' @param nb.gh Number of nodes for the Gaussian-Hermite quadrature. It can
 #' be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 32.
 #' @param nb.gh2 Number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, 
-#' in case of non-convergence, defined as previously. The default is \code{20}.
+#' in the event of non-convergence, defined as previously. The default is \code{20}.
 #' @param adaptatif A binary, indicates whether the pseudo adaptive Gaussian-Hermite quadrature 
 #' \code{(1)} or the classical Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.
 #' @param int.method A numeric, indicates the integration method: \code{0} for Monte carlo, 
@@ -111,7 +111,7 @@
 #' the individual-level random effects and Gaussian-Hermite quadrature to integrate over the trial-level
 #' random effects. The default is \code{2}.
 #' @param nb.iterPGH Number of iterations before the re-estimation of the posterior random effects,
-#' in case of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
+#' in the event of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
 #' re-estimation". The default is \code{5}.
 #' @param nb.MC.kendall Number of generated points used with the Monte-Carlo to estimate
 #' integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
@@ -151,7 +151,7 @@
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 #' subroutine \code{uniran()}. The default is \code{1}. 
 #' @param equi.subj.trial A binary, that indicates if the same proportion of subjects per trial
-#' should be considered in the procces of data generation (1) or not (0). In case of 
+#' should be considered in the procces of data generation (1) or not (0). In the event of 
 #' different trial sizes, fill in \code{prop.subj.trial} the proportions
 #' of subjects to be considered per trial. The default is \code{1}.
 #' @param prop.subj.trial Vector of the proportions of subjects to consider per trial. 
@@ -164,11 +164,11 @@
 #' Requires if the argument \code{equi.subj.trt} is different to \code{0.5}. The size of this vector is equal to the 
 #' number of trials.
 #' @param theta2 True value for \eqn{\theta}. The default is \code{3.5}.
-#' @param zeta True value for \eqn{\zeta} in case of simulation. The default is \code{1}.
-#' @param gamma.ui True value for \eqn{\gamma} in case of simulation. The default is \code{2.5}.
-#' @param alpha.ui True value for \eqn{\alpha} in case of simulation. The default is \code{1}.
-#' @param betas True value for \eqn{\beta_S} in case of simulation. The default is \code{-1.25}.
-#' @param betat True value for \eqn{\beta_T} in case of simulation. The default is \code{-1.25}.
+#' @param zeta True value for \eqn{\zeta} in the event of simulation. The default is \code{1}.
+#' @param gamma.ui True value for \eqn{\gamma} in the event of simulation. The default is \code{2.5}.
+#' @param alpha.ui True value for \eqn{\alpha} in the event of simulation. The default is \code{1}.
+#' @param betas True value for \eqn{\beta_S} in the event of simulation. The default is \code{-1.25}.
+#' @param betat True value for \eqn{\beta_T} in the event of simulation. The default is \code{-1.25}.
 #' @param lambdas Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
 #' endpoint. The default is \code{1.8}.
 #' @param nus Desired shape parameter for the \code{Weibull} distribution associated with the Surrogate
@@ -186,15 +186,15 @@
 # the frailtypack package. If \code{1} the function 
 # \eqn{f(x)=\nu^\lambda . \lambda . x^{\lambda-1} . \exp(-(\nu x)^\lambda)} is used.
 #' @param kappa.use A numeric, that indicates how to manage the smoothing parameters \code{k_1} 
-#' and \code{k_2} in case of convergence issues. If it is set 
+#' and \code{k_2} in the event of convergence issues. If it is set 
 #' to \code{0}, the first smoothing parameters that allowed convergence on the first dataset is used 
 #' for all simulations. if it is set to \code{1}, a smoothing parameter is estimated by cross-validation 
-#' for each dataset generated. If it is set to \code{2}, the same process for chosing kappas as in case 
-#' \code{1} is used, but in case of convergence issue, the first smoothing parameters that allowed 
+#' for each dataset generated. If it is set to \code{2}, the same process for chosing kappas as in the event 
+#' \code{1} is used, but in the event of convergence issue, the first smoothing parameters that allowed 
 #' convergence among the three previous that have worked is used. If it is set to \code{3}, the associated 
-#' smoothing parameters are successively divided by 10, in case of convergence issues until 5 times. 
+#' smoothing parameters are successively divided by 10, in the event of convergence issues until 5 times. 
 #' If it is set to \code{4}, the management of the smoothing 
-#' parameters is as in case \code{2}, preceded by the successive division described in case \code{3} and 
+#' parameters is as in the event \code{2}, preceded by the successive division described in the event \code{3} and 
 #' by the changing of the number of nodes for the Gauss-Hermite quadrature. The default is \code{4}.
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
@@ -215,7 +215,7 @@
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
 #' @param ckappa Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
-#' to well manage the smoothing parameters in case of convergence issues.
+#' to well manage the smoothing parameters in the event of convergence issues.
 #' @param type.joint.estim  Model to considered for the estimation. If this argument is set to \code{1}, the joint surrogate model
 #' is used, the default (see \link{joinSurroPenal}). If set to \code{3}, parameters are estimated under the joint frailty-copula model
 #' for surrogacy.
@@ -233,7 +233,7 @@
 
 #' @param typecopula # The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1
 #' @param theta.copula The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
-#' association (kendall's \eqn{\tau}) of 0.75 in case of Clayton copula
+#' association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula
 #' @param filter.surr Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
 #' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.
 #' @param filter.true Vector defines as \code{filter.surr}, for the true endpoint. \code{filter.true} and \code{filter.surr}
@@ -241,7 +241,7 @@
 #' @param thetacopula.init Initial value for the copula parameter. The default is 3 
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param pfs Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
-#' The default is 0. In case with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
+#' The default is 0. In the event with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
 #' @param print.times a logical parameter to print estimation time. Default
 #' is TRUE.
 #' @param print.iter a logical parameter to print iteration process. Default
@@ -265,9 +265,9 @@
 #'    \item{nb.trials}{total number of trials used;}
 #'    \item{nb.simul}{number of simulated datasets;}
 #'    \item{nb.gh}{number of nodes for the Gaussian-Hermite quadrature;} 
-#'    \item{nb.gh2}{number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, in case of non-convergence;}
+#'    \item{nb.gh2}{number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, in the event of non-convergence;}
 #'    \item{nb.mc}{number of samples considered in the Monte-Carlo integration;}
-#'    \item{kappa.use}{a numeric, that indicates how to manage the smoothing parameters k_1 and k_2 in case of convergence issues;}
+#'    \item{kappa.use}{a numeric, that indicates how to manage the smoothing parameters k_1 and k_2 in the event of convergence issues;}
 #'    \item{n.knots}{number of knots used for splines;}
 #'    \item{int.method}{integration method used;}
 #'    \item{n.iter}{mean number of iterations needed to converge;}

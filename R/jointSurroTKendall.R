@@ -4,7 +4,7 @@
 #' This function estimate the Kendall's \eqn{\tau} based on the joint surrogate model 
 #' described in \link{jointSurroPenal} (Sofeu \emph{et al.}, 2018), for the evaluation of 
 #' a candidate surrogate endpoints, at the individual-level . We used the Monte-carlo and the gaussian Hermite 
-#' quadrature methods for numerical integration. In case of Gaussian Hermite quadrature, 
+#' quadrature methods for numerical integration. in the event of Gaussian Hermite quadrature, 
 #' it is better to choose at least \code{20} quadature nodes for better results. 
 #' The actual value of nodes used is the maximum between \code{20} and \code{nb.gh}
 #'
@@ -31,7 +31,7 @@
 #' @param nb.MC.kendall Number of generated points used with the Monte-Carlo to estimate
 #' integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
 #' stable results. The default is \code{10000}.
-# @param method.int.kendall A numeric, indicates in case of the Monte-carlo integration, if only one 
+# @param method.int.kendall A numeric, indicates in the event of the Monte-carlo integration, if only one 
 # kendall's \eqn{\tau} should be considered (\code{1}), or four kendall's \eqn{\tau}, according to the 
 # randomization group of considered two patiens used for kendall's \eqn{\tau} estimation (\code{0}).
 # The default is \code{1}

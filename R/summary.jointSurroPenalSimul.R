@@ -15,11 +15,11 @@
 ##' The default is \code{0}
 ##' @param displayMSE A binary that indicates if the results include bias and mean square errors (MSE), 
 ##' case 1, or the standard errors with the coverage percentage, case 0. By default this argument 
-##' is set to 0. In case of 1 the results just include the individual level and the trial level 
+##' is set to 0. In the event of 1 the results just include the individual level and the trial level 
 ##' association measurements. 
 ##' @param printResult A binary that indicates if the summary of the results should be displayed \code{(1)}
 ##' or not \code{(0)}. If this argument is set to 0, resuls are just returned to the user
-##' @param CP A binary that indicate in case of \code{displayMSE = 1} if the percentage of coverage should be
+##' @param CP A binary that indicate in the event of \code{displayMSE = 1} if the percentage of coverage should be
 ##' display (1) or not (0). The default is 0
 ##' @param \dots other unused arguments.
 ##'  
