@@ -61,7 +61,7 @@ This function return the estimated Kendall's \eqn{\tau}
 This function estimate the Kendall's \eqn{\tau} based on the joint surrogate model 
 described in \link{jointSurroPenal} (Sofeu \emph{et al.}, 2018), for the evaluation of 
 a candidate surrogate endpoints, at the individual-level . We used the Monte-carlo and the gaussian Hermite 
-quadrature methods for numerical integration. In case of Gaussian Hermite quadrature, 
+quadrature methods for numerical integration. in the event of Gaussian Hermite quadrature, 
 it is better to choose at least \code{20} quadature nodes for better results. 
 The actual value of nodes used is the maximum between \code{20} and \code{nb.gh}
 }

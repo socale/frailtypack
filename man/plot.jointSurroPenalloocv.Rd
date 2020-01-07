@@ -32,7 +32,7 @@ is set to \code{NULL}. The function retruns the list of unused trials.
 }
 \description{
 {
-Plot of the leave-one-out crossvalidation for the evaluation of the joint surrogate model 
+Plot the leave-one-out crossvalidation for the evaluation of the joint surrogate model 
 }
 }
 \examples{
