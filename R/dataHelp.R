@@ -367,18 +367,3 @@ NULL
 ##' \item{trt}{Treatment covariate}
 ##' }
 NULL
-
-##' Monte-Carlo pre-generated random integration points
-##' 
-##' This is a set of 50000 pre-generated random Gaussian numbers
-##' used to be able to reproduce results across different supports
-##' (Fortran RNGs gives different results between GNU V.4 and V.8) 
-##' 
-##' @name datMC
-##' @docType data
-##' @usage data(datMC)
-##' @format This data frame contains the following columns: 
-##' \describe{
-##' \item{RandomIntPoints}{50000 pre-generated random gaussian points}
-##' }
-NULL
