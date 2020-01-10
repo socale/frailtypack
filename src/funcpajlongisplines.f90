@@ -4,7 +4,6 @@
     !========================          FUNCPAJ_SPLINES         ====================
         double precision function funcpajlongisplines(b,np,id,thi,jd,thj,k0)
     
-        use donnees, only:MC
         use donnees_indiv
         use lois_normales
         use tailles
@@ -63,6 +62,7 @@
     double precision,dimension(nb1,nb1)::vcjm
     double precision,dimension(nodes_number,nb1)::fraili
     double precision::SX,xMC ! for random generation
+    double precision,dimension(50000)::MC ! for pregenerated monte-carlo points
     integer::m     
             npp = np
         eps_s = 1.d-7
@@ -666,6 +666,12 @@
           l=1
         allocate(Vect_sim_MC(nodes_number,nb1))
             if(aleatoire.eq.0) then
+            MC(:)=0.d0
+         open(2, file="./data/datMC.txt", status='old')
+         do i=1,(nbre_sim*nb1) ! maximum 50000 points
+         read(2, *) MC(i)
+end do
+         close(2)
                 do while(l.le.nbre_sim)
                     SX=1.d0
                     xMC=0.d0
@@ -679,7 +685,6 @@
                     l=l+1
                 end do
             a_deja_simul=1 ! pour dire qu'on ne simule plus
-                
             else
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation pour le seed
                 do while(l.le.nbre_sim)
