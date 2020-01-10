@@ -4,7 +4,8 @@
     !========================          FUNCPAJ_SPLINES         ====================
         double precision function funcpajlongisplines(b,np,id,thi,jd,thj,k0)
     
-        use donnees, only:MC
+        use donnees, only:MC1,MC2,MC3,MC4,MC5,MC6,MC7,MC8,MC9,MC10,MC11,MC12,MC13,&
+MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
         use donnees_indiv
         use lois_normales
         use tailles
@@ -63,6 +64,7 @@
     double precision,dimension(nb1,nb1)::vcjm
     double precision,dimension(nodes_number,nb1)::fraili
     double precision::SX,xMC ! for random generation
+    double precision,dimension(25000)::MC ! for Monte-carlo pre-generated points
     integer::m     
             npp = np
         eps_s = 1.d-7
@@ -666,6 +668,31 @@
           l=1
         allocate(Vect_sim_MC(nodes_number,nb1))
             if(aleatoire.eq.0) then
+            MC(1:1000)=MC1
+            MC(1001:2000)=MC2
+            MC(2001:3000)=MC3
+            MC(3001:4000)=MC4
+            MC(4001:5000)=MC5
+            MC(5001:6000)=MC6
+            MC(6001:7000)=MC7
+            MC(7001:8000)=MC8
+            MC(8001:9000)=MC9
+            MC(9001:10000)=MC10
+            MC(10001:11000)=MC11
+            MC(11001:12000)=MC12
+            MC(12001:13000)=MC13
+            MC(13001:14000)=MC14
+            MC(14001:15000)=MC15
+            MC(15001:16000)=MC16
+            MC(16001:17000)=MC17
+            MC(17001:18000)=MC18
+            MC(18001:19000)=MC19
+            MC(19001:20000)=MC20
+            MC(20001:21000)=MC21
+            MC(21001:22000)=MC22
+            MC(22001:23000)=MC23
+            MC(23001:24000)=MC24
+            MC(24001:25000)=MC25            
                 do while(l.le.nbre_sim)
                     SX=1.d0
                     xMC=0.d0
