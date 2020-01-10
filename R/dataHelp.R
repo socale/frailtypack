@@ -379,6 +379,6 @@ NULL
 ##' @usage data(datMC)
 ##' @format This data frame contains the following columns: 
 ##' \describe{
-##' \item{RandomIntPoints}{50000 pre-generated random gaussian points}
+##' \item{X.0.61304335481364680}{50000 pre-generated random gaussian points}
 ##' }
 NULL
