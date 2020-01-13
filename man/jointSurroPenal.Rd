@@ -408,8 +408,11 @@ The estimated parameter are obtained using the robust Marquardt algorithm
 (Marquardt, 1963) which is a combination between a Newton-Raphson algorithm
 and a steepest descent algorithm. The iterations are stopped when the
 difference between two consecutive log-likelihoods was small
-\eqn{(<10^{-3})}, the estimated coefficients were stable (consecutive
-values \eqn{(<10^{-3})}, and the gradient small enough \eqn{(<10^{-3})}, by default.
+(<
+\if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}), the estimated 
+coefficients were stable (consecutive
+values (< \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}})), and the gradient 
+small enough (< \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}), by default.
 Cubic M-splines of order 4 are used for the hazard function, and I-splines (integrated M-splines) are
 used for the cumulative hazard function.
 
