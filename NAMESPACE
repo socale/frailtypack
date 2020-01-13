@@ -2,6 +2,7 @@
 
 S3method(lines,frailtyPenal)
 S3method(plot,Diffepoce)
+S3method(plot,additivePenal)
 S3method(plot,epoce)
 S3method(plot,frailtyPenal)
 S3method(plot,jointNestedPenal)
