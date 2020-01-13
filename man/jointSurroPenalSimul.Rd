@@ -373,9 +373,9 @@ summary(joint.simul, d = 3, R2boot = 0) # Delta-method
 
 }
 \references{
-Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
-endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-\code{Under review}
+Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
+endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
+Statistics in Medicine 38, 2928-2942.
 }
 \seealso{
 \code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.jointSurroPenalloocv.R
 \name{plot.jointSurroPenalloocv}
 \alias{plot.jointSurroPenalloocv}
-\title{Plot of the results from the leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
+\title{Outputs plot of the leave-one-out crossvalidation from the one-step Joint surrogate model for evaluating a 
 canditate surrogate endpoint.}
 \usage{
 \method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
@@ -32,7 +32,7 @@ is set to \code{NULL}. The function retruns the list of unused trials.
 }
 \description{
 {
-Plot the leave-one-out crossvalidation for the evaluation of the joint surrogate model 
+Outputs plot of the leave-one-out crossvalidation for evaluating the joint surrogate model 
 }
 }
 \examples{

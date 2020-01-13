@@ -1,8 +1,8 @@
-##' Plot of the results from the leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
+##' Outputs plot of the leave-one-out crossvalidation from the one-step Joint surrogate model for evaluating a 
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' Plot the leave-one-out crossvalidation for the evaluation of the joint surrogate model 
+##' Outputs plot of the leave-one-out crossvalidation for evaluating the joint surrogate model 
 ##' }
 ##' 
 ##' @aliases plot.jointSurroPenalloocv

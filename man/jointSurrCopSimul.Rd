@@ -148,9 +148,12 @@ Rondeau V., Mathoulin-Pelissier S., Jacqmin-Gadda H., Brouste V. and Soubeyran P
 Joint frailty models for recurring events and death using maximum penalized likelihood 
 estimation: application on cancer events. Biostatistics 8(4), 708-721.
 
-Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
-endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-\code{Submitted}
+Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
+endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
+Statistics in Medicine 38, 2928-2942.
+
+Sofeu, C. L., Emura, T., and Rondeau, V. (2020). A joint frailty-copula model for meta-analytic 
+validation of failure time surrogate endpoints in clinical trials. \code{Under review}
 }
 \seealso{
 \code{\link{jointSurrSimul}}

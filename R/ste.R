@@ -63,8 +63,9 @@
 ##' measure for meta-analytic surrogate endpoint validation." Pharmaceutical 
 ##' Statistics, 5(3), 173-186.ISSN 1539-1612.
 ##' 
-##' Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
-##' endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
+##' Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
+##' endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
+##' Statistics in Medicine 38, 2928-2942. 
 ##' 
 ##' @keywords surrogate prediction ste Surrogate threshold effect
 ##' @export

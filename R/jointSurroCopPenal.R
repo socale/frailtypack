@@ -1,5 +1,5 @@
 
-#' Fit the one-step Joint frailty-copula model for the evaluation of a canditate surrogate endpoint
+#' Fit the one-step Joint frailty-copula model for evaluating a canditate surrogate endpoint
 #'
 #'@description{
 #' \if{html}{\bold{Joint Frailty-Copula model for Surrogacy definition} 
@@ -7,58 +7,83 @@
 #' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint, 
 #' with different integration methods on the random effects, using a semiparametric penalized 
 #' likelihood estimation. This approach extends that of Burzykowski \code{et al.} (2001) by 
-#' including in the same joint frailty model the individual-level and the trial-level random effects.
-#'  
-#' For the j\out{<sup>th</sup>} subject (j=1,...,n\out{<sub>i</sub>}) of the i\out{<sup>th</sup>} 
-#' trial i (i=1,...,G), the joint surrogate model is defined as follows:
+#' including in the bivariate copula model the random effects treatment-by-trial interaction. 
 #' 
-#' {\figure{surromodel1.png}{options: width="100\%"}}
+#' Assume S\out{<sub>ij</sub>} and \out{T<sub>ij</sub>} the failure times associated respectively 
+#' with the surrogate and the true endpoints, for subject \code{j(j = 1,..., n\out{<sub>i</sub>})} belonging to 
+#' the trial \code{i (i = 1,..., G)}.
 #' 
-#' where,
-#' \eqn{\omega}\out{<sub>ij</sub>} \out{&#126;} \eqn{N}(0,\eqn{\theta}), u\out{<sub>i</sub>} \out{&#126;} \eqn{N}(0,\eqn{\gamma}), \eqn{\omega}\out{<sub>i</sub>} \out{&#8869;} u\out{<sub>i</sub>},
-#' u\out{<sub>i</sub>} \out{&#8869;} v\out{<sub>S<sub>i</sub></sub>}, u\out{<sub>i</sub>} \out{&#8869;} v\out{<sub>T<sub>i</sub></sub>}
+#' Let \out{<strong>v</strong>}\out{<sub>i</sub>} = (u\out{<sub>i</sub>}, 
+#' v\out{<sub>S<sub>i</sub></sub>}, v\out{<sub>T<sub>i</sub></sub>}) be the vector of trial 
+#' level random effects; \out{<b>Z</b><sub>S,ij</sub> = (Z<sub>Sij1</sub>, ..., Z<sub>Sijp</sub>)<sup>'</sup>} 
+#' and \out{<b>Z</b><sub>T,ij</sub> = (Z<sub>Tij1</sub>, ..., Z<sub>Tijp</sub>)<sup>'</sup>} 
+#' be covariates associated with \out{S<sub>ij</sub>} and \out{T<sub>ij</sub>}.  
+#' The joint frailty-copula model is defined as follows:
 #' 
-#' and 
-#' (v\out{<sub>S<sub>i</sub></sub>},v\out{<sub>T<sub>i</sub></sub>})\out{<sup>T</sup>} \out{&#126;} \eqn{N}(0,\eqn{\Sigma}\out{<sub>v</sub>})
+#' {\figure{jointSurvCop1.png}{options: width="100\%"}}
+#' 
+#' where
+#' 
+#' {\figure{jointSurvCop3.png}{options: width="100\%"}}
+#' 
+#' and the conditional survival functions are given by
+#' 
+#' {\figure{jointSurvCop2.png}{options: width="100\%"}}
+#' 
+#' in which
+#' 
+#' u\out{<sub>i</sub>} \out{&#126;} \eqn{N}(0,\eqn{\gamma}),
+#' u\out{<sub>i</sub>} \out{&#8869;} v\out{<sub>S<sub>i</sub></sub>}, u\out{<sub>i</sub>} \out{&#8869;} v\out{<sub>T<sub>i</sub></sub>};
+#' (v\out{<sub>S<sub>i</sub></sub>}, v\out{<sub>T<sub>i</sub></sub>})\out{<sup>T</sup>} \out{&#126;} \eqn{N}(0,\eqn{\Sigma}\out{<sub>v</sub>})
 #' 
 #' with
 #' 
 #' {\figure{surromodel2.png}{options: width="100\%"}}
 #' 
-#' In this model, \eqn{\lambda}\out{<sub>0s</sub>}(t) is the baseline hazard function associated with the 
-#' surrogate endpoint and \eqn{\beta}\out{<sub>S</sub>} the fixed treatment effect (or log-hazard ratio); 
-#' \eqn{\lambda}\out{<sub>0T</sub>}(t) is the baseline hazard function associated with the true endpoint 
-#' and \eqn{\beta}\out{<sub>T</sub>} the fixed treatment effect. \eqn{\omega}\out{<sub>ij</sub>} is a shared individual-level frailty that serve to take into account the 
-#' heterogeneity in the data at the individual level; u\out{<sub>i</sub>} is a shared frailty effect associated 
+#' 
+#' In this model, \eqn{\lambda}\out{<sub>0s</sub>}(x) is the baseline hazard function associated with the 
+#' surrogate endpoint and \eqn{\beta}\out{<sub>S</sub>} the fixed effects (or log-hazard ratio) corresponding 
+#' to the covariates \out{<b>Z</b><sub>S,ij</sub>}; 
+#' \eqn{\lambda}\out{<sub>0T</sub>}(x) is the baseline hazard function associated with the true endpoint 
+#' and \eqn{\beta}\out{<sub>T</sub>} the fixed treatment effects corresponding 
+#' to the covariates \out{<b>Z</b><sub>T,ij</sub>}. The copula model serves to consider dependence between 
+#' the surrogate and true endpoints at the individual level. In the copula model, \eqn{\theta} is the copula 
+#' parameter used to quantify the strength of association. u\out{<sub>i</sub>} is a shared frailty effect associated 
 #' with the baseline hazard function that serve to take into account the heterogeneity between trials 
 #' of the baseline hazard function, associated with the fact that we have several trials in this 
-#' meta-analytical design. The power parameters \eqn{\zeta} and \eqn{\alpha} distinguish 
-#' both individual and trial-level heterogeneities between the surrogate and the true endpoint. 
+#' meta-analytical design. The power parameter \eqn{\alpha} distinguishes 
+#' trial-level heterogeneity between the surrogate and the true endpoint. 
 #' v\out{<sub>S<sub>i</sub></sub>} and v\out{<sub>T<sub>i</sub></sub>} are two correlated random effects treatment-by-trial interactions. 
-#' \eqn{Z}\out{<sub>ij1</sub>} represents the treatment arm to which the patient has been randomized.
+#' \eqn{Z}\out{<sub>Sij1</sub>} or \eqn{Z}\out{<sub>Tij1</sub>} represents the treatment arm to which the patient has been randomized.
+#' 
+#' For simplicity, we focus on the Clayton and Gumbel-Hougaard copula functions. In Clayton's 
+#' model, the copula function has the form
+#' 
+#' {\figure{jointSurvCop5.png}{options: width="100\%"}}
+#' 
+#' and in Gumbel's model, the copula function has the form
+#' 
+#' {\figure{jointSurvCop6.png}{options: width="100\%"}}
+#' 
 #' 
 #' \bold{Surrogacy evaluation}
 #'
-#' We proposed new definitions of Kendall's \eqn{\tau} and coefficient of determination as 
-#' individual-level and trial-level association measurements, to evaluate a candidate 
-#' surrogate endpoint (Sofeu \emph{et al.}, 2018). The formulations are given below.
+#' We proposed to base validation of a candidate surrogate endpoint on Kendall's \eqn{\tau} at the individual level and 
+#' coefficient of determination at the trial level, as in the classical approach (Burzykowski \code{et al.}, 2001). 
+#' The formulations are given below.
 #' 
 #' \bold{Individual-level surrogacy}
 #' 
-#' To measure the strength of association between \eqn{S}\out{<sub>ij</sub>} and \eqn{T}\out{<sub>ij</sub>} after 
-#' adjusting the marginal distributions for the trial and the treatment effects, as show in 
-#' Sofeu \emph{et al.}(2018), we use the Kendall's \eqn{\tau} define by :
+#' From the proposed model, according to the copula function, it can be shown that Kendall's \eqn{\tau}
+#' is defined as :
 #' 
-#' {\figure{surromodel3.png}{options: width="100\%"}}
+#' {\figure{jointSurvCop4.png}{options: width="100\%"}}
 #'        
 #'  
-#'  where \eqn{\theta}, \eqn{\zeta}, \eqn{\alpha} and \eqn{\gamma} are estimated using the joint surrogate model
-#'  defined previously. Kendall's \eqn{\tau} is the difference between the probability of 
+#'  where \eqn{\theta} is the copula parameter. Kendall's \eqn{\tau} is the difference between the probability of 
 #'  concordance and the probability of discordance of two realizations of \eqn{S}\out{<sub>ij</sub>} and \eqn{T}\out{<sub>ij</sub>}. 
 #'  It belongs to the interval [-1,1] and assumes a zero value when \eqn{S}\out{<sub>ij</sub>} and \eqn{T}\out{<sub>ij</sub>} are 
-#'  independent. We estimate Kendall's \eqn{\tau} using Monte-Carlo or Gaussian Hermite
-#'  quadrature integration methods. Its confidence interval is estimated using parametric 
-#'  bootstrap
+#'  independent.
 #'  
 #'  \bold{Trial-level surrogacy}
 #'  
@@ -71,34 +96,57 @@
 #'  
 #'  {\figure{surromodel4.png}{options: width="100\%"}}
 #'  
-#'  The SEs of \eqn{R}\out{<sub>trial</sub>}\out{<sup>2</sup>} is calculated using the Delta-method. We also propose 
+#'  The SEs of \eqn{R}\out{<sub>trial</sub>}\out{<sup>2</sup>} and \eqn{\tau} are calculated using the Delta-method. We also propose 
 #'  \eqn{R}\out{<sub>trial</sub>}\out{<sup>2</sup>} and 95\% CI computed using the parametric bootstrap. The use of delta-method 
 #'  can lead to confidence limits violating the [0,1], as noted by 
 #'  (Burzykowski \emph{et al.}, 2001). However, using other methods would not significantly alter
 #'  the findings of the surrogacy assessment 
 #'  }
-#'  \if{latex}{\bold{Joint Frailty Surrogate model definition} 
+#'  \if{latex}{\bold{Joint Frailty-Copula model for Surrogacy definition} 
 #'
 #' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint, 
 #' with different integration methods on the random effects, using a semiparametric penalized 
 #' likelihood estimation. This approach extends that of Burzykowski \code{et al.} (2001) by 
-#' including in the same joint frailty model the individual-level and the trial-level random effects.
-#'  
-#' For the \eqn{j^{th}} subject (\code{j=1,\ldots,}\eqn{n_i}) of the \eqn{i^{th}} 
-#' trial \code{i} (\code{i=1,\ldots,}\eqn{G}), the joint surrogate model is defined as follows:
+#' including in the bivariate copula model the random effects treatment-by-trial interaction.
+#'
+#' Assume \eqn{S_{ij}} and \eqn{T_{ij}} the failure times associated respectively 
+#' with the surrogate and the true endpoints, for subject \code{j} (\eqn{j=1,\ldots, n_i}) 
+#' belonging to the trial \eqn{i (i=1, \ldots, G)}.
 #' 
-#' \deqn{\left\{ \begin{array}{ll} \lambda_{S,ij}(t|\omega_{ij},u_i,v_{S_i},{Z_{ij1}}) &= \lambda_{0S}(t) \exp(\omega_{ij}+u_i+
-#' v_{S_i} Z_{ij1} +  \beta_SZ_{ij1}) \\
-#' \lambda_{T,ij}(t|\omega_{ij},u_i,v_{T_i},{Z_{ij1}}) & = \lambda_{0T}(t) \exp({\zeta}\omega_{ij}+
-#' \alpha u_i+v_{T_i} Z_{ij1} + \beta_TZ_{ij1}) \\ \end{array} \right. }
+#' Let \eqn{\mathbf{v}_i = (u_i,v_{Si},v_{Ti})} be the vector of trial 
+#' level random effects; \eqn{\mathbf{Z}_{S,ij} = (Z_{Sij1}, \cdots, Z_{Sijp})^{'}} and 
+#' \eqn{\mathbf{Z}_{T,ij} = (Z_{Tij1}, \cdots, Z_{Tijp})^{'}} 
+#' be covariates associated with \eqn{S_{ij}} and \eqn{T_{ij}} 
+#' The joint frailty-copula model is defined as follows:
+#'  
+#' 
+#'\deqn{\begin{array}{ll}
+#'   \bar{F}(s_{ij},t_{ij}|\mathbf{Z}_{S,ij},\mathbf{Z}_{T,ij},\mathbf{v}_i) & 
+#'   = P(S_{ij} > s_{ij}, T_{ij} > t_{ij}|\mathbf{Z}_{S,ij}, \mathbf{Z}_{T,ij},\mathbf{v}_i) \\
+#'   & = \varphi_\theta [\varphi^{-1}_\theta(\bar{F}(s_{ij}|\mathbf{Z}_{S,ij},u_i, v_{Si})) 
+#'   +  \varphi^{-1}_\theta(\bar{F}(t_{ij}|\mathbf{Z}_{T,ij},u_i, v_{Ti}))]\\
+#'\end{array} }
 #' 
 #' where,
 #' 
-#' \deqn{ \omega_{ij} \sim N (0,\theta), u_i \sim N (0,\gamma), \omega_{ij} \perp u_i, u_i \perp v_{S_i},
-#'  u_i \perp v_{T_i} }
+#' \eqn{\varphi_\theta} : \eqn{[0,\infty) \rightarrow [0, 1]} the generator of a parametric 
+#' Archimedean copula family
 #' 
-#' and 
-#' \eqn{(v_{S_i},v_{T_i})^{T}\sim\mathcal{N}\left({{0}},\Sigma_{v}\right)}, with
+#' and the conditional survival functions are given by
+#' 
+#' \deqn{\bar{F}_{S,ij}(s_{ij}|\mathbf{Z}_{S,ij},u_i, v_{Si})= \exp \bigg\{ - \int_0^{s_{ij}} \lambda _{0S}(x) 
+#' \exp\bigg(u_i + v_{Si} Z_{ij1}+ \boldsymbol \beta_S \mathbf{Z}_{S,ij}\bigg) dx  \bigg\}}
+#' 
+#' \deqn{\bar{F}_{T,ij}(t_{ij}|\mathbf{Z}_{T,ij},u_i, v_{Ti})= \exp \bigg\{ - \int_0^{t_{ij}} \lambda _{0T}(x) 
+#' \exp\bigg(\alpha u_i + v_{Ti} Z_{ij1}+ \boldsymbol \beta_T \mathbf{Z}_{T,ij}\bigg) dx  \bigg\}}
+#' 
+#' in which 
+#' 
+#' \deqn{u_i \sim N (0,\gamma), u_i \perp v_{S_i}, u_i \perp v_{T_i}; (v_{S_i},v_{T_i})^{T}\sim\mathcal{N}\left({{0}},
+#' \Sigma_{v}\right)}
+#'  
+#' with
+#' 
 #' \deqn{\Sigma_{v}=\left(
 #'                       \begin{array}{cc} 
 #'                          \sigma^2_{v_S}  &  \sigma_{v_{ST}} \\ 
@@ -107,51 +155,48 @@
 #'                  \right)}
 #' 
 #' In this model, \eqn{\lambda_{0S}(t)} is the baseline hazard function associated with the 
-#' surrogate endpoint and \eqn{\beta_S} the fixed treatment effect (or log-hazard ratio); 
+#' surrogate endpoint and \eqn{\beta_S} the fixed effects (or log-hazard ratio) corresponding
+#' to the covariates \eqn{\mathbf{Z}_{S,ij}}; 
 #' \eqn{\lambda_{0T}(t)} is the baseline hazard function associated with the true endpoint 
-#' and \eqn{\beta_T} the fixed treatment effect. \eqn{\omega_{ij}} is a shared individual-level frailty that serve to take into account the 
-#' heterogeneity in the data at the individual level; \eqn{u_i} is a shared frailty effect associated 
+#' and \eqn{\beta_T} the fixed effects corresponding to the covariates \eqn{\mathbf{Z}_{T,ij}}.
+#' The copula model serves to consider dependence between 
+#' the surrogate and true endpoints at the individual level. In the copula model, \eqn{\theta} is the copula 
+#' parameter used to quantify the strength of association. \eqn{u_i} is a shared frailty effect associated 
 #' with the baseline hazard function that serve to take into account the heterogeneity between trials 
 #' of the baseline hazard function, associated with the fact that we have several trials in this 
-#' meta-analytical design. The power parameters \eqn{\zeta} and \eqn{\alpha} distinguish 
-#' both individual and trial-level heterogeneities between the surrogate and the true endpoint. 
+#' meta-analytical design. The power parameter \eqn{\alpha} distinguishes 
+#' trial-level heterogeneity between the surrogate and the true endpoint. 
 #' \eqn{v_{S_i}} and \eqn{v_{T_i}} are two correlated random effects treatment-by-trial interactions. 
-#' \eqn{Z_{ij1}} represents the treatment arm to which the patient has been randomized.
+#' \eqn{Z_{Sij1}} or \eqn{Z_{Tij1}} represents the treatment arm to which the patient has been randomized.
+#' 
+#' For simplicity, we focus on the Clayton and Gumbel-Hougaard copula functions. In Clayton's 
+#' model, the copula function has the form
+#' 
+#' \deqn{\varphi_\theta(s) = (1 + \theta s)^{-1/\theta}, \hspace{0.25cm} \theta > 0}
+#' 
+#' and in Gumbel's model, the copula function has the form
+#' 
+#' \deqn{\varphi_\theta(s) = \exp{[-s^{1/(1+\theta)}]}, \hspace{0.25cm} \theta \geq 0}
 #' 
 #' \bold{Surrogacy evaluation}
 #'
-#' We proposed new definitions of Kendall's \eqn{\tau} and coefficient of determination as 
-#' individual-level and trial-level association measurements, to evaluate a candidate 
-#' surrogate endpoint (Sofeu \emph{et al.}, 2018). The formulations are given below.
+#' We proposed to base validation of a candidate surrogate endpoint on Kendall's \eqn{\tau} at the individual level and 
+#' coefficient of determination at the trial level, as in the classical approach (Burzykowski \code{et al.}, 2001). 
+#' The formulations are given below.
 #' 
 #' \bold{Individual-level surrogacy}
 #' 
-#' To measure the strength of association between \eqn{S_{ij}} and \eqn{T_{ij}} after 
-#' adjusting the marginal distributions for the trial and the treatment effects, as show in 
-#' Sofeu \emph{et al.}(2018), we use the Kendall's \eqn{\tau} define by :
+#' From the proposed model, according to the copula function, it can be shown that Kendall's \eqn{\tau}
+#' is defined as:
 #' 
-#' \deqn{  \begin{array}{ll}
-#'   \tau & = 2\int_{u_{i}}\int_{\omega_{ij}}
-#'     \int_{u_{i'}}\int_{\omega_{i'j'}}\{ \\
-#'     & \frac{\exp(\omega_{ij}+u_{i}+\zeta \omega_{ij}+\alpha u_{i})+\exp(\omega_{i'j'}+u_{i'} + 
-#'     \zeta \omega_{i'j'}+\alpha u_{i'})}{( \exp(\omega_{i'j'}+u_{i'})+ \exp(\omega_{ij}+u_{i})) 
-#'     (\exp(\zeta \omega_{i'j'}+\alpha u_{i'}) + \exp(\zeta \omega_{ij}+\alpha u_{i}))} \\
-#'    & \frac{1}{\sqrt{2\pi \theta}}\exp\left[-\frac{1}{2}\frac{\omega^2_{i'j'}}{\theta}\right]
-#'      \frac{1}{\sqrt{2\pi\gamma}}\exp\left[-\frac{1}{2}\frac{u^2_{i'}}{\gamma}\right]
-#'      d\omega_{i'j'}du_{i'} \\
-#'    & \frac{1}{\sqrt{2\pi\theta}}\exp\left[-\frac{1}{2}\frac{\omega^2_{ij}}{\theta}\right] \frac{1}{\sqrt{2\pi\gamma}}\exp\left[-\frac{1}{2}\frac{u^2_{i}}{\gamma}\right]
-#'      d\omega_{ij}du_{i}\} 
-#'      -1
-#' \\ \end{array} }
+#' \eqn{\tau = \frac{\theta}{\theta + 2}} for Clayton copula and \eqn{\tau = \frac{\theta}{\theta + 1}}
+#' for Gumbel copula.
 #'        
 #'  
-#'  where \eqn{\theta, \zeta, \alpha} and \eqn{\gamma} are estimated using the joint surrogate model
-#'  defined previously. Kendall's \eqn{\tau} is the difference between the probability of 
+#'  where \eqn{\theta} is the copula parameter. Kendall's \eqn{\tau} is the difference between the probability of 
 #'  concordance and the probability of discordance of two realizations of \eqn{S_{ij}} and \eqn{T_{ij}}. 
 #'  It belongs to the interval [-1,1] and assumes a zero value when \eqn{S_{ij}} and \eqn{T_{ij}} are 
-#'  independent. We estimate Kendall's \eqn{\tau} using Monte-Carlo or Gaussian Hermite
-#'  quadrature integration methods. Its confidence interval is estimated using parametric 
-#'  bootstrap
+#'  independent.
 #'  
 #'  \bold{Trial-level surrogacy}
 #'  
@@ -165,7 +210,7 @@
 #'  \deqn{ R^2_{trial}=\frac{\sigma^2_{v_{ST}}}{\sigma^2_{v_S}\sigma^2_{v_T}}
 #'  }
 #'  
-#'  The SEs of \eqn{R^2_{trial}} is calculated using the Delta-method. We also propose 
+#'  The SEs of \eqn{R^2_{trial}} and \eqn{\tau} are calculated using the Delta-method. We also propose 
 #'  \eqn{R^2_{trial}} and 95\% CI computed using the parametric bootstrap. The use of delta-method 
 #'  can lead to confidence limits violating the [0,1], as noted by 
 #'  (Burzykowski \emph{et al.}, 2001). However, using other methods would not significantly alter
@@ -214,16 +259,15 @@
 #' 
 #' @aliases jointSurroCopPenal
 #' @usage 
-#' jointSurroCopPenal(data, maxit=40, indicator.alpha = 1, 
+#' jointSurroCopPenal(data, maxit = 40, indicator.alpha = 1, 
 #'    frail.base = 1, n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, 
 #'    LIMderiv = 0.001, nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, 
-#'    adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
-#'    nboot.kendall = 1000, true.init.val = 0, 
+#'    adaptatif = 0, int.method = 0, nb.iterPGH = 5, true.init.val = 0, 
 #'    thetacopula.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
 #'    betas.init = 0.5, betat.init = 0.5, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
-#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0),
+#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa = c(0,0),
 #'    typecopula = 1, nb.decimal = 4, print.times = TRUE, print.iter = FALSE)
 #'
 #' @param data A \code{\link{data.frame}} containing at least seven variables intitled: 
@@ -244,7 +288,7 @@
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
 #' @param frail.base Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
-#' the shared cluster specific frailties (\eqn{u_i}), or not (\code{0}). The default is \code{1}.
+#' the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}, or not (\code{0}). The default is \code{1}.
 #' @param n.knots integer giving the number of knots to use. Value required in
 #' the penalized likelihood estimation.  It corresponds to the (n.knots+2)
 #' splines functions for the approximation of the hazard or the survival
@@ -253,18 +297,20 @@
 #' is (k-2) and the number of splines is (k-2)+order.  Number of knots must be
 #' between 4 and 20. (See \code{\link{frailtyPenal}} for more details).
 #' @param LIMparam Convergence threshold of the Marquardt algorithm for the
-#' parameters, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
+#' parameters, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default (See \code{\link{frailtyPenal}} for more details).
 #' @param LIMlogl Convergence threshold of the Marquardt algorithm for the
-#' log-likelihood, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
-#' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, \eqn{10^{-3}} by default 
+#' log-likelihood, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default (See \code{\link{frailtyPenal}} for more details).
+#' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, 
+#' \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default 
 #' (See \code{\link{frailtyPenal}} for more details).
 #' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in the event 
 #' \code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 500 and 1000 most often gives 
 #' good results. The default is \code{1000}.
 #' @param nb.gh Number of nodes for the Gaussian-Hermite quadrature. It can
-#' be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 32.
+#' be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is \code{20}. A value greater than or equals to \code{15}
+#' allowed good results in simulation studies 
 #' @param nb.gh2 Number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, 
-#' in the event of non-convergence, defined as previously. The default is \code{20}.
+#' in the event of non-convergence, defined as previously. The default is \code{32}.
 #' @param adaptatif A binary, indicates whether the pseudo adaptive Gaussian-Hermite quadrature \code{(1)} or the classical
 #' Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.
 #' @param int.method A numeric, indicates the integration method: \code{0} for Monte carlo, 
@@ -272,35 +318,41 @@
 #' @param nb.iterPGH Number of iterations before the re-estimation of the posterior random effects,
 #' in the event of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
 #' re-estimation". The default is \code{5}.
-#' @param nboot.kendall Number of samples considered in the parametric bootstrap to estimate the confidence
-#' interval of the Kendall's \eqn{\tau}. The default is \code{1000}. 
 #' @param true.init.val Numerical value. Indicates if the given initial values to parameters \code{(0)} should be considered. 
 #' If set to \code{2}, \eqn{\alpha} and \eqn{\gamma} are initialised using two separed shared frailty model 
-#' (see \code{\link{frailtyPenal}} for more details); \eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
-#' \eqn{\sigma_{v_{ST}}} are fixed by the user or the default values; \eqn{\zeta}, 
-#' \eqn{\theta}, \eqn{\beta_S} and \eqn{\beta_T} are initialized using a classical joint 
-#' frailty model, considering individual level random effects. If the joint frailty model is 
-#' faced to convergence issues, \eqn{\beta_S} and \eqn{\beta_T} are initialized using 
+#' (see \code{\link{frailtyPenal}} for more details); 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}, \eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>} and
+#' \eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}} 
+#' \if{latex}{\eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
+#' \eqn{\sigma_{v_{ST}}}}
+#'  are fixed by the user or the default values; 
+#' \eqn{\theta}, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+#' \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using a classical joint 
+#' frailty model, considering individual level random effects, with \eqn{\theta} the variance of individual level random effects. 
+#' If the joint frailty model is 
+#' faced to convergence issues, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+#' \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using 
 #' two shared frailty models.  In all others scenarios, if the simplified model does not converge,
 #' default given parameters values are used. Initial values for spline's associated parameters 
 #' are fixed to \code{0.5}. The default for this argument is \code{0}.
 #' @param thetacopula.init Initial values for the copula parameter (\eqn{\theta}), required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{1}.
-#' @param sigma.ss.init Initial values for \eqn{\sigma^2_{v_S}}, required if \code{true.init.val} 
+#' @param sigma.ss.init Initial values for \if{latex}{\eqn{\sigma^2_{v_S}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param sigma.tt.init Initial values for \eqn{\sigma^2_{v_T}}, required if \code{true.init.val} 
+#' @param sigma.tt.init Initial values for \if{latex}{\eqn{\sigma^2_{v_T}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param sigma.st.init Initial values for \eqn{\sigma_{v_{ST}}}, required if \code{true.init.val} 
+#' @param sigma.st.init Initial values for \if{latex}{\eqn{\sigma_{v_{ST}}}} 
+#' \if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.48}.
 #' @param gamma.init Initial values for \eqn{\gamma}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param alpha.init Initial values for \eqn{\alpha}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{1}.
-#' @param zeta.init Initial values for \eqn{\zeta}, required if \code{true.init.val} 
-#' is set to \code{0} or \code{2}. The default is \code{1}.
-#' @param betas.init Initial values for \eqn{\beta_S}, required if \code{true.init.val} 
+#' @param betas.init Initial values for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param betat.init Initial values for \eqn{\beta_T}, required if \code{true.init.val} 
+#' @param betat.init Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param scale A numeric that allows to rescale the survival times, to avoid numerical 
 #' problems in the event of some convergence issues. If no change is need the argument is set to 1, the default value. 
@@ -342,13 +394,13 @@
 #' 
 #'    \item{EPS}{A vector containing the obtained convergence thresholds with the Marquardt algorithm,  
 #'     for the parameters, the log-likelihood and for the gradient;}
-#'    \item{b}{A vector containing estimates for the splines parameter's, 
-#'    the power's parameter \eqn{\zeta} (if \code{indicator.zeta} is set to \code{1}),
-#'     the standard error of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}), elements of the
+#'    \item{b}{A vector containing estimates for the splines parameter's; elements of the
 #'     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma = LL^T}, with \eqn{\Sigma} 
-#'     the covariances of the random effects \eqn{(v_{S_i},v_{T_i})}, the coefficient \eqn{\alpha} 
-#'     (if \code{indicator.alpha} is set to \code{1}), the satandard error of the random effect \eqn{u_i} and the 
-#'     regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
+#'     the covariance of the random effects \eqn{(v_{S_i},v_{T_i})}; the coefficient \eqn{\alpha} 
+#'     (if \code{indicator.alpha} is set to \code{1}); the satandard error of the random effect \eqn{u_i}; the logarithm
+#'     of the copula parameter (\eqn{\theta}) if the Clayton copula function is considered, or 
+#'     the squared root of \eqn{\theta} if the Gumbel copula is considered. The last two parameters represent 
+#'     the regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
 #'     \item{varH}{The variance matrix of all parameters in \code{b} (before positivity constraint transformation 
 #'    for the variance of the measurement error, for which the delta method is used);}
 #'    \item{varHIH}{The robust estimation of the variance matrix of all parameters in \code{b};}
@@ -368,7 +420,7 @@
 #'    \item{theta}{Estimate for \eqn{\theta};}
 #'    \item{gamma}{Estimate for \eqn{\gamma};}
 #'    \item{alpha}{Estimate for \eqn{\alpha};}
-#'    \item{zeta}{Estimate for \eqn{\zeta};}
+#'    \item{zeta}{A value equals to \code{1}, no really use in this function;}
 #'    \item{sigma.s}{Estimate for \eqn{\sigma_S};}
 #'    \item{sigma.t}{Estimate for \eqn{\sigma_T};}
 #'    \item{sigma.st}{Estimate for \eqn{\sigma_{ST}};}
@@ -377,8 +429,8 @@
 #'    \item{ui}{A binary, that indicates if the heterogeneity between trial on the baseline risk 
 #'    has been Considered (\code{1}), using the shared cluster specific frailties (\eqn{u_i}), 
 #'    or not (\code{0});}
-#'    \item{ktau}{The Kendall's \eqn{\tau} with the correspondant 95  \eqn{\%} CI computed using the parametric bootstrap;}
-#'    \item{R2.boot}{The \eqn{R^2_{trial}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
+#'    \item{ktau}{The Kendall's \eqn{\tau} with the correspondant 95  \eqn{\%} CI obtained from the delta-method;}
+#'    \item{R2.boot}{The \eqn{R^2_{trial}} with the correspondant 95 \eqn{\%} CI obtained from the parametric bootstrap;}
 #'    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
 #'    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
 #'    values if \code{kappa.use} is set to \code{3} or \code{4};}
@@ -387,9 +439,10 @@
 #'    \item{varcov.Sigma}{covariance matrix of (\eqn{\hat{\sigma_S}},\eqn{\hat{\sigma_{T}}}, \eqn{\hat{\sigma_{ST}}})
 #'    obtained from the delta-method}
 #'    \item{parameter}{list of all arguments used in the model}
+#'    \item{type.joint}{A code \code{3} that represents the joint frailty-copula model. This output is used in other functions}
 #'
 #' 
-#' @seealso \code{\link{jointSurrSimul}}, \code{\link{summary.jointSurroPenal}}, \code{\link{jointSurroPenalSimul}}
+#' @seealso \code{\link{jointSurrCopSimul}}, \code{\link{summary.jointSurroPenal}}, \code{\link{jointSurroPenal}}, \code{\link{jointSurroPenalSimul}}
 #' 
 #' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 #' Virginie Rondeau \email{virginie.rondeau@inserm.fr}
@@ -403,9 +456,18 @@
 #' Buyse, M., Molenberghs, G., Burzykowski, T., Renard, D., and Geys, H. (2000). The validation
 #' of surrogate endpoints in meta-analyses of randomized experiments. Biostatistics 1, 49-67
 #'
-#' Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
-#' endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-#' \code{Under review}
+#' Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
+#' endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
+#' Statistics in Medicine 38, 2928-2942. 
+#' 
+#' R. B. Nelsen. An introduction to Copulas. Springer, 2006
+#' 
+#' Prenen, L., Braekers, R., and Duchateau, L. (2017). Extending the archimedean copula methodology 
+#' to model multivariate survival data grouped in clusters of variable size. Journal of the Royal 
+#' Statistical Society: Series B (Statistical Methodology) 79, 483-505.
+#' 
+#' Sofeu, C. L., Emura, T., and Rondeau, V. (2020). A joint frailty-copula model for meta-analytic 
+#' validation of failure time surrogate endpoints in clinical trials. \code{Under review}
 #' @export
 #' @importFrom doBy orderBy
 #'
@@ -427,7 +489,7 @@
 jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base = 1, 
                       n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 1000, 
                       nb.gh = 20, nb.gh2 = 32, adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
-                      nboot.kendall = 1000, true.init.val = 0, thetacopula.init = 1, 
+                      true.init.val = 0, thetacopula.init = 1, 
                       sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, gamma.init = 0.5, 
                       alpha.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
                       random.generator = 1, kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, 
@@ -442,6 +504,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nb.MC.kendall <- 10000
   zeta.init <- 1
   theta.init <- thetacopula.init
+  nboot.kendall <- 1000 # really, I don't need it here
   pfs <- 1 # pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 1. In this case, death is included in the surrogate endpoint. 
   
  # list of models parameters:
@@ -487,6 +550,9 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   # ==============parameters checking======================
   if(!(indicator.zeta %in% c(0,1)) | !(indicator.alpha %in% c(0,1)) | !(frail.base %in% c(0,1))){
     stop("model options indicator.zeta, indicator.alpha and frail.base must be set to 0 or 1")
+  }
+  if(!(int.method %in% c(0, 1, 3))){
+    stop("The integration method should be specifized by the code: 0, 1 or 3")
   }
   
   if(is.null(data) & nb.dataset == 1){

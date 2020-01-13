@@ -1,5 +1,5 @@
 
-#' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint
+#' Fit the one-step Joint surrogate model for evaluating a canditate surrogate endpoint
 #'
 #'@description{
 #' \if{html}{\bold{Joint Frailty Surrogate model definition} 
@@ -10,7 +10,7 @@
 #' including in the same joint frailty model the individual-level and the trial-level random effects.
 #'  
 #' For the j\out{<sup>th</sup>} subject (j=1,...,n\out{<sub>i</sub>}) of the i\out{<sup>th</sup>} 
-#' trial i (i=1,...,G), the joint surrogate model is defined as follows:
+#' trial (i=1,...,G), the joint surrogate model is defined as follows:
 #' 
 #' {\figure{surromodel1.png}{options: width="100\%"}}
 #' 
@@ -224,7 +224,7 @@
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
 #'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
-#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa(0,0), 
+#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa = c(0,0), 
 #'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param data A \code{\link{data.frame}} containing at least seven variables intitled: 
@@ -415,9 +415,9 @@
 #' Buyse, M., Molenberghs, G., Burzykowski, T., Renard, D., and Geys, H. (2000). The validation
 #' of surrogate endpoints in meta-analyses of randomized experiments. Biostatistics 1, 49-67
 #'
-#' Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
-#' endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-#' \code{Under review}
+#' Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
+#' endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
+#' Statistics in Medicine 38, 2928-2942.
 #' @export
 #' @importFrom doBy orderBy
 #'
@@ -535,6 +535,10 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   # ==============parameters checking======================
   if(!(indicator.zeta %in% c(0,1)) | !(indicator.alpha %in% c(0,1)) | !(frail.base %in% c(0,1))){
     stop("model options indicator.zeta, indicator.alpha and frail.base must be set to 0 or 1")
+  }
+  
+  if(!(int.method %in% c(0, 1, 2, 4))){
+    stop("The integration method should be specifized by the code: 0, 1, 2 or 4")
   }
   
   if(is.null(data) & nb.dataset == 1){
