@@ -431,21 +431,16 @@
     if(TwoPart.eq.1)then
         nmesB = 0
         i = 1
-        do j=2,nsujetB
-        if(groupeeB(j-1).eq.i) then
-            if(nmesB(i).eq.0) then
-                nmesB(i)=1
+        do j=1,nsujetB
+        if(groupeeB(j).eq.i) then
+			nmesB(i)=nmesB(i)+1
+		else
+		i=i+1
+            if(groupeeB(j).eq.i) then
+			nmesB(i)=nmesB(i)+1
             end if
         end if
-        
-            if(groupeeB(j).eq.groupeeB(j-1))then
-                nmesB(i)=nmesB(i)+1
-            else
-                i = i+1
-            end if
         end do
-
-        
 
         
         
@@ -456,14 +451,6 @@
             end if
         end do
     end if
-    
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!         write(2,*)' nmesB', nmesB
-!         write(2,*)' nmesy', nmesy
-!         write(2,*)' groupeeB', groupeeB
-!         write(2,*)' groupeey', groupeey
-!             close(2)
-!stop
     
         if(TwoPart.eq.1) allocate(mu1_resB(maxmesB), varcov_margB(nsujetB,maxmesB))
 
@@ -5297,26 +5284,10 @@ Bscal(1)=0.d0
     if(TwoPart.eq.1) then ! binary part contribution
         do k=1,nmescurB
             if(MTP0.eq.0) then
-            Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-dexp(anint(mu1BG(k,1)*1.d16)/1.d16)/(1+dexp(mu1BG(k,1))))
-            Bscalar(1) = Bscalar(1) + Bscal(1)
-                           
-           
-           !if(k.eq.11) then
-!if(frail.eq.(-0.54419276817713191/2.d0)) then
-!     open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!     write(2,*)'mu1BG(k,1)',mu1BG(k,1)
-
-! write(2,*)'Bscalar(1)',Bscalar(1)
-! write(2,*)'Bscal(1)',Bscal(1)
-! write(2,*)'Bcurrentvalue(1)',Bcurrentvalue
-!         close(2)
-!    stop
-!end if
-!end if          
-            else if(MTP0.eq.1) then
-Bscalar(1) = Bscalar(1) + (Bcurrent(k)*mu1BG(k,1)+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1))))))
-
-        !         Bscalar = Bscalar + dlog(1.d0-Bcurrentvalue(1))
+            Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1)))))
+            Bscalar(1) = Bscalar(1) + Bscal(1)       
+			else if(MTP0.eq.1) then
+Bscalar(1) = Bscalar(1) - dlog(1.d0+dexp(mu1BG(k,1)))
             end if
         end do
     end if
