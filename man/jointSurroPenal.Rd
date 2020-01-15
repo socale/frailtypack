@@ -44,7 +44,7 @@ be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} d
 The default is 1.}
 
 \item{frail.base}{Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
-the shared cluster specific frailties (\eqn{u_i}), or not (\code{0}). The default is \code{1}.}
+the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}, or not (\code{0}). The default is \code{1}.}
 
 \item{n.knots}{integer giving the number of knots to use. Value required in
 the penalized likelihood estimation.  It corresponds to the (n.knots+2)
@@ -55,12 +55,12 @@ is (k-2) and the number of splines is (k-2)+order.  Number of knots must be
 between 4 and 20. (See \code{\link{frailtyPenal}} for more details).}
 
 \item{LIMparam}{Convergence threshold of the Marquardt algorithm for the
-parameters, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).}
+parameters, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default (See \code{\link{frailtyPenal}} for more details).}
 
 \item{LIMlogl}{Convergence threshold of the Marquardt algorithm for the
-log-likelihood, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).}
+log-likelihood, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default (See \code{\link{frailtyPenal}} for more details).}
 
-\item{LIMderiv}{Convergence threshold of the Marquardt algorithm for the gradient, \eqn{10^{-3}} by default 
+\item{LIMderiv}{Convergence threshold of the Marquardt algorithm for the gradient, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default 
 (See \code{\link{frailtyPenal}} for more details).}
 
 \item{nb.mc}{Number of samples considered in the Monte-Carlo integration. Required in the event 
@@ -97,11 +97,16 @@ interval of the Kendall's \eqn{\tau}. The default is \code{1000}.}
 
 \item{true.init.val}{Numerical value. Indicates if the given initial values to parameters \code{(0)} should be considered. 
 If set to \code{2}, \eqn{\alpha} and \eqn{\gamma} are initialised using two separed shared frailty model 
-(see \code{\link{frailtyPenal}} for more details); \eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
-\eqn{\sigma_{v_{ST}}} are fixed by the user or the default values; \eqn{\zeta}, 
-\eqn{\theta}, \eqn{\beta_S} and \eqn{\beta_T} are initialized using a classical joint 
+(see \code{\link{frailtyPenal}} for more details); \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}, 
+\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>} and
+\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}} 
+\if{latex}{\eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
+\eqn{\sigma_{v_{ST}}}} are fixed by the user or the default values; \eqn{\zeta}, 
+\eqn{\theta}, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+\if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using a classical joint 
 frailty model, considering individual level random effects. If the joint frailty model is 
-faced to convergence issues, \eqn{\beta_S} and \eqn{\beta_T} are initialized using 
+faced to convergence issues, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+\if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using 
 two shared frailty models.  In all others scenarios, if the simplified model does not converge,
 default given parameters values are used. Initial values for spline's associated parameters 
 are fixed to \code{0.5}. The default for this argument is \code{0}.}
@@ -109,13 +114,16 @@ are fixed to \code{0.5}. The default for this argument is \code{0}.}
 \item{theta.init}{Initial values for \eqn{\theta}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{1}.}
 
-\item{sigma.ss.init}{Initial values for \eqn{\sigma^2_{v_S}}, required if \code{true.init.val} 
+\item{sigma.ss.init}{Initial values for \if{latex}{\eqn{\sigma^2_{v_S}}} 
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
-\item{sigma.tt.init}{Initial values for \eqn{\sigma^2_{v_T}}, required if \code{true.init.val} 
+\item{sigma.tt.init}{Initial values for \if{latex}{\eqn{\sigma^2_{v_T}}} 
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
-\item{sigma.st.init}{Initial values for \eqn{\sigma_{v_{ST}}}, required if \code{true.init.val} 
+\item{sigma.st.init}{Initial values for\if{latex}{\eqn{\sigma_{v_{ST}}}} 
+\if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.48}.}
 
 \item{gamma.init}{Initial values for \eqn{\gamma}, required if \code{true.init.val} 
@@ -127,10 +135,10 @@ is set to \code{0} or \code{2}. The default is \code{1}.}
 \item{zeta.init}{Initial values for \eqn{\zeta}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{1}.}
 
-\item{betas.init}{Initial values for \eqn{\beta_S}, required if \code{true.init.val} 
+\item{betas.init}{Initial values for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
-\item{betat.init}{Initial values for \eqn{\beta_T}, required if \code{true.init.val} 
+\item{betat.init}{Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
 \item{scale}{A numeric that allows to rescale the survival times, to avoid numerical 
@@ -143,8 +151,8 @@ subroutine \code{uniran()}. The default is \code{1}. in the event of convergence
 with \code{int.method} set to \code{0}, \code{2} or \code{4}, that requires  
 integration by Monte-Carlo, user could change the random numbers generator.}
 
-\item{kappa.use}{A numeric, that indicates how to manage the smoothing parameters \code{k_1} 
-and \code{k_2} in the event of convergence issues. If it is set to \code{1}, 
+\item{kappa.use}{A numeric, that indicates how to manage the smoothing parameters \if{latex}{\code{k_1}} \if{html}{k\out{<sub>1</sub>}}
+and \if{latex}{\code{k_2}} \if{html}{k\out{<sub>2</sub>}}  in the event of convergence issues. If it is set to \code{1}, 
 the given smoothing parameters or those obtained by cross-validation are used. 
 If it is set to \code{3}, the associated smoothing parameters are successively divided by 10, 
 in the event of convergence issues until 5 times. If it is set to \code{4}, the management of the
@@ -182,20 +190,31 @@ This function return an object of class jointSurroPenal with elements :
 
    \item{EPS}{A vector containing the obtained convergence thresholds with the Marquardt algorithm,  
     for the parameters, the log-likelihood and for the gradient;}
-   \item{b}{A vector containing estimates for the splines parameter's, 
+   \item{b}{\if{latex}{A vector containing estimates for the splines parameter's; 
    the power's parameter \eqn{\zeta} (if \code{indicator.zeta} is set to \code{1}),
-    the standard error of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}), elements of the
+    the standard error of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}),elements of the
     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma = LL^T}, with \eqn{\Sigma} 
-    the covariances of the random effects \eqn{(v_{S_i},v_{T_i})}, the coefficient \eqn{\alpha} 
-    (if \code{indicator.alpha} is set to \code{1}), the satandard error of the random effect \eqn{u_i} and the 
-    regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
+    the covariance of the random effects \eqn{(v_{S_i},v_{T_i})}; the coefficient \eqn{\alpha} 
+    (if \code{indicator.alpha} is set to \code{1}); the satandard error of the random effect \eqn{u_i}; and 
+    the regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
+    \if{html}{A vector containing estimates for the splines parameter's; 
+    the power's parameter \eqn{\zeta} (if \code{indicator.zeta} is set to \code{1}),
+    the standard error of the shared individual-level frailty \eqn{\omega}\out{<sub>ij</sub>} (\eqn{\theta}),elements of the
+    lower triangular matrix (L) from the Cholesky decomposition such that \code{\eqn{\Sigma} = LL\out{<sup>T</sup>}}, with \eqn{\Sigma} 
+    the covariance of the random effects \code{(\out{v<sub>S<sub>i</sub></sub>},\out{v<sub>T<sub>i</sub></sub>})}; 
+    the coefficient \eqn{\alpha} (if \code{indicator.alpha} is set to \code{1}); the satandard error 
+    of the random effect \code{u\out{<sub>i</sub>}}and the regression coefficients \eqn{\beta}\out{<sub>S</sub>} 
+    and \eqn{\beta}\out{<sub>T</sub>};}
+    }
     \item{varH}{The variance matrix of all parameters in \code{b} (before positivity constraint transformation 
    for the variance of the measurement error, for which the delta method is used);}
    \item{varHIH}{The robust estimation of the variance matrix of all parameters in \code{b};}
    \item{loglikPenal}{The complete marginal penalized log-likelihood;}
    \item{LCV}{the approximated likelihood cross-validation criterion in the semiparametric case (with \code{H}
     minus the converged Hessian matrix, and \code{l(.)} the full log-likelihood).
-   \deqn{LCV = \frac{1}{n}(trace(H^{-1}_{pl}H) - l(.));}}
+   \if{html}{
+    {\figure{lcv.png}{options: width="50\%"}}}
+    \if{latex}{\deqn{LCV = \frac{1}{n}(trace(H^{-1}_{pl}H) - l(.))};}}
    \item{xS}{vector of times for surrogate endpoint where both survival and hazard function are estimated. 
    By default seq(0,max(time),length=99), where time is the vector of survival times;}
    \item{lamS}{array (dim = 3) of hazard estimates and confidence bands, for surrogate endpoint;}
@@ -209,22 +228,26 @@ This function return an object of class jointSurroPenal with elements :
    \item{gamma}{Estimate for \eqn{\gamma};}
    \item{alpha}{Estimate for \eqn{\alpha};}
    \item{zeta}{Estimate for \eqn{\zeta};}
-   \item{sigma.s}{Estimate for \eqn{\sigma_S};}
-   \item{sigma.t}{Estimate for \eqn{\sigma_T};}
-   \item{sigma.st}{Estimate for \eqn{\sigma_{ST}};}
-   \item{beta.s}{Estimate for \eqn{\beta_S};}
-   \item{beta.t}{Estimate for \eqn{\beta_T};}
+   \item{sigma.s}{Estimate for \if{latex}{\eqn{\sigma^2_{v_S}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}};}
+   \item{sigma.t}{Estimate for \if{latex}{\eqn{\sigma^2_{v_T}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}};}
+   \item{sigma.st}{Estimate for \if{latex}{\eqn{\sigma_{v_{ST}}}} \if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}};}
+   \item{beta.s}{Estimate for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}};}
+   \item{beta.t}{Estimate for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}};}
    \item{ui}{A binary, that indicates if the heterogeneity between trial on the baseline risk 
-   has been Considered (\code{1}), using the shared cluster specific frailties (\eqn{u_i}), 
+   has been Considered (\code{1}), using the shared cluster specific frailties \if{latex}{(\eqn{u_i})}
+   \if{html}{\code{(u\out{<sub>i</sub>})}}, 
    or not (\code{0});}
    \item{ktau}{The Kendall's \eqn{\tau} with the correspondant 95  \eqn{\%} CI computed using the parametric bootstrap;}
-   \item{R2.boot}{The \eqn{R^2_{trial}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
+   \item{R2.boot}{The \if{latex}{\eqn{R^2_{trial}}}
+   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
    values if \code{kappa.use} is set to \code{3} or \code{4};}
    \item{scale}{The value used to rescale the survival times}
    \item{data}{The dataset used in the model}
-   \item{varcov.Sigma}{covariance matrix of (\eqn{\hat{\sigma_S}},\eqn{\hat{\sigma_{T}}}, \eqn{\hat{\sigma_{ST}}})
+   \item{varcov.Sigma}{covariance matrix of \if{latex}{(\eqn{\sigma^2_{v_S}},\eqn{\sigma^2_{v_T}},\eqn{\sigma_{v_{ST}}})}
+   \if{html}{the estimates of (\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>},\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}, 
+   \eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>})}
    obtained from the delta-method}
    \item{parameter}{list of all arguments used in the model}
 }
@@ -436,7 +459,8 @@ by the option \code{true.init.val}. When numerical or convergence problems are e
 with \code{kappa.use} set to \code{4}, the model is fitted again using a combination of the following strategies: 
 vary the number of quadrature point (\code{nb.gh} to \code{nb.gh2} or \code{nb.gh2} to \code{nb.gh})
 in the event of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
-divided or multiplied the smoothing parameters (\code{k_1}, \code{k_2}) by 10 or 100 according to 
+divided or multiplied the smoothing parameters (\if{latex}{\code{k_1}} \if{html}{k\out{<sub>1</sub>}}, 
+\if{latex}{\code{k_2}} \if{html}{k\out{<sub>2</sub>}}) by 10 or 100 according to 
 their preceding values, or used parameter vectors obtained during the last iteration (with a 
 modification of the number of quadrature points and smoothing parameters). Using this strategy, 
 we usually obtained during simulation the rejection rate less than 3\%. A sensitivity analysis 

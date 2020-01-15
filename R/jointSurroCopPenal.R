@@ -420,8 +420,8 @@
 #'    \item{LCV}{the approximated likelihood cross-validation criterion in the semiparametric case (with \code{H}
 #'     minus the converged Hessian matrix, and \code{l(.)} the full log-likelihood).
 #'     \if{html}{
-#'     {\figure{lcv.png}{options: width="100\%"}}}
-#'     \if{latex}{\deqn{LCV = \frac{1}{n}(trace(H^{-1}_{pl}H) - l(.))}};}
+#'     {\figure{lcv.png}{options: width="50\%"}}}
+#'     \if{latex}{\deqn{LCV = \frac{1}{n}(trace(H^{-1}_{pl}H) - l(.))};}}
 #'    \item{xS}{vector of times for surrogate endpoint where both survival and hazard function are estimated. 
 #'    By default seq(0,max(time),length=99), where time is the vector of survival times;}
 #'    \item{lamS}{array (dim = 3) of hazard estimates and confidence bands, for surrogate endpoint;}
@@ -435,9 +435,9 @@
 #'    \item{gamma}{Estimate for \eqn{\gamma};}
 #'    \item{alpha}{Estimate for \eqn{\alpha};}
 #'    \item{zeta}{A value equals to \code{1}, no really use in this function;}
-#'    \item{sigma.s}{Estimate for \if{latex}{\eqn{\sigma_S}}\if{html}{\eqn{\sigma}\out{<sub>S</sub>}};}
-#'    \item{sigma.t}{Estimate for \if{latex}{\eqn{\sigma_T}}\if{html}{\eqn{\sigma}\out{<sub>T</sub>}};}
-#'    \item{sigma.st}{Estimate for \if{latex}{\eqn{\sigma_{ST}}} \if{html}{\eqn{\sigma}\out{<sub>ST</sub>}};}
+#'    \item{sigma.s}{Estimate for \if{latex}{\eqn{\sigma^2_{v_S}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}};}
+#'    \item{sigma.t}{Estimate for \if{latex}{\eqn{\sigma^2_{v_T}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}};}
+#'    \item{sigma.st}{Estimate for \if{latex}{\eqn{\sigma_{v_{ST}}}} \if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}};}
 #'    \item{beta.s}{Estimate for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}};}
 #'    \item{beta.t}{Estimate for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}};}
 #'    \item{ui}{A binary, that indicates if the heterogeneity between trial on the baseline risk 
@@ -453,9 +453,9 @@
 #'    values if \code{kappa.use} is set to \code{3} or \code{4};}
 #'    \item{scale}{The value used to rescale the survival times}
 #'    \item{data}{The dataset used in the model}
-#'    \item{varcov.Sigma}{Covariance matrix of \if{latex}{(\eqn{\hat{\sigma_S}},\eqn{\hat{\sigma_{T}}}, \eqn{\hat{\sigma_{ST}}})}
-#'    \if{html}{the estimates of(\eqn{\sigma}\out{<sub>S</sub>},\eqn{\sigma}\out{<sub>T</sub>}, 
-#'    \eqn{\sigma}\out{<sub>ST</sub>})} obtained from the delta-method}
+#'    \item{varcov.Sigma}{Covariance matrix of the estimates of \if{latex}{(\eqn{\sigma^2_{v_S}},\eqn{\sigma^2_{v_T}},\eqn{\sigma_{v_{ST}}})}
+#'    \if{html}{the estimates of (\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>},\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}, 
+#'    \eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>})} obtained from the delta-method}
 #'    \item{parameter}{List of all arguments used in the model}
 #'    \item{type.joint}{A code \code{3} that represents the joint frailty-copula model. This output is used in other functions}
 #'
@@ -494,12 +494,12 @@
 #' \dontrun{
 #' # Data from the advanced ovarian cancer randomized clinical trials.
 #' data(dataOvarian)
-#' joint.surro.Gumbel <- jointSurroCopPenal(data = dataOvarian, int.method = 0, n.knots = 8, maxit=50,
+#' joint.surro.Gumbel <- jointSurroCopPenal(data = dataOvarian, int.method = 0, n.knots = 8, maxit = 50,
 #'       kappa.use = 4, nb.mc = 1000, typecopula = 2, print.iter = T, scale = 1/365)
 #'       
 #'       summary(joint.surro.Gumbel)
 #'
-#' joint.surro.Clayton <- jointSurroCopPenal(data = dataOvarian, int.method = 0, n.knots = 8, maxit=50,
+#' joint.surro.Clayton <- jointSurroCopPenal(data = dataOvarian, int.method = 0, n.knots = 8, maxit = 50,
 #'       kappa.use = 4, nb.mc = 1000, typecopula = 1, print.iter = T, scale = 1/365)   
 #'        summary(joint.surro.Clayton)
 #' }

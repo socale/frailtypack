@@ -12,8 +12,9 @@
 #' (Marquardt, 1963) which is a combination between a Newton-Raphson algorithm
 #' and a steepest descent algorithm. The iterations are stopped when the
 #' difference between two consecutive log-likelihoods was small
-#' \eqn{(<10^{-3})}, the estimated coefficients were stable (consecutive
-#' values \eqn{(<10^{-3})}, and the gradient small enough \eqn{(<10^{-3})}, by default.
+#' (<\if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}), the estimated coefficients were stable (consecutive
+#' values (<\if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}), 
+#' and the gradient small enough (<\if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}), by default.
 #' Cubic M-splines of order 4 are used for the hazard function, and I-splines (integrated M-splines) are
 #' used for the cumulative hazard function.
 #' 
@@ -37,7 +38,8 @@
 #' with \code{kappa.use} set to \code{4}, the model is fitted again using a combination of the following strategies: 
 #' vary the number of quadrature point (\code{nb.gh} to \code{nb.gh2} or \code{nb.gh2} to \code{nb.gh})
 #' in the event of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
-#' divided or multiplied the smoothing parameters (\code{k_1}, \code{k_2}) by 10 or 100 according to 
+#' divided or multiplied the smoothing parameters (\if{latex}{\code{k_1}} \if{html}{k\out{<sub>1</sub>}}, 
+#' \if{latex}{\code{k_2}} \if{html}{k\out{<sub>2</sub>}}) by 10 or 100 according to 
 #' their preceding values, or used parameter vectors obtained during the last iteration (with a 
 #' modification of the number of quadrature points and smoothing parameters). Using this strategy, 
 #' we usually obtained during simulation the rejection rate less than 3\%. A sensitivity analysis 
@@ -77,7 +79,8 @@
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
 #' @param frail.base Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
-#' the shared cluster specific frailties (\eqn{u_i}), or not (\code{0}). The default is \code{1}.
+#' the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}, or 
+#' not (\code{0}). The default is \code{1}.
 #' @param n.knots integer giving the number of knots to use. Value required in
 #' the penalized likelihood estimation.  It corresponds to the (n.knots+2)
 #' splines functions for the approximation of the hazard or the survival
@@ -89,10 +92,13 @@
 #' @param nbSubSimul Number of subjects.
 #' @param ntrialSimul Number of trials.
 #' @param LIMparam Convergence threshold of the Marquardt algorithm for the
-#' parameters, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
+#' parameters, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}
+#'  by default (See \code{\link{frailtyPenal}} for more details).
 #' @param LIMlogl Convergence threshold of the Marquardt algorithm for the
-#' log-likelihood, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
-#' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, \eqn{10^{-3}} by default 
+#' log-likelihood, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}
+#'  by default (See \code{\link{frailtyPenal}} for more details).
+#' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, 
+#' \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default 
 #' (See \code{\link{frailtyPenal}} for more details).
 #' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in the event 
 #' \code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 100 and 300 most often gives 
@@ -121,21 +127,28 @@
 #' @param true.init.val Numerical value. Indicates if the real parameter values 
 #' \code{(1)}, or the given initial values to parameters \code{(0)} should be considered. 
 #' If set to \code{2}, \eqn{\alpha} and \eqn{\gamma} are initialised using two separed shared frailty model 
-#' (see \code{\link{frailtyPenal}} for more details); \eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
-#' \eqn{\sigma_{v_{ST}}} are fixed using the default initial values given by the user; \eqn{\zeta}, 
-#' \eqn{\theta}, \eqn{\beta_S} and \eqn{\beta_T} are initialized using a classical joint 
+#' (see \code{\link{frailtyPenal}} for more details); \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}, \eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>} and
+#' \eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}} 
+#' \if{latex}{\eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
+#' \eqn{\sigma_{v_{ST}}}} are fixed using the default initial values given by the user; \eqn{\zeta}, 
+#' \eqn{\theta}, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+#' \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using a classical joint 
 #' frailty model, considering individual level random effects. If the joint frailty model is 
-#' faced to convergence issues, \eqn{\beta_S} and \eqn{\beta_T} are initialized using 
+#' faced to convergence issues, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+#' \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using 
 #' two shared frailty models.  In all others scenarios, if the simplified model does not converge,
 #' default given parameters values are used. Initial values for spline's associated parameters 
 #' are fixed to \code{0.5}. The default for this argument is \code{0}.
 #' @param theta.init Initial values for \eqn{\theta}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{1}.
-#' @param sigma.ss.init Initial values for \eqn{\sigma^2_{v_S}}, required if \code{true.init.val} 
+#' @param sigma.ss.init Initial values for \if{latex}{\eqn{\sigma^2_{v_S}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param sigma.tt.init Initial values for \eqn{\sigma^2_{v_T}}, required if \code{true.init.val} 
+#' @param sigma.tt.init Initial values for \if{latex}{\eqn{\sigma^2_{v_T}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param sigma.st.init Initial values for \eqn{\sigma_{v_{ST}}}, required if \code{true.init.val} 
+#' @param sigma.st.init Initial values for \if{latex}{\eqn{\sigma_{v_{ST}}}} 
+#' \if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.48}.
 #' @param gamma.init Initial values for \eqn{\gamma}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
@@ -143,9 +156,9 @@
 #' is set to \code{0} or \code{2}. The default is \code{1}.
 #' @param zeta.init Initial values for \eqn{\zeta}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{1}.
-#' @param betas.init Initial values for \eqn{\beta_S}, required if \code{true.init.val} 
+#' @param betas.init Initial values for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param betat.init Initial values for \eqn{\beta_T}, required if \code{true.init.val} 
+#' @param betat.init Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param random.generator Random number generator to use by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
@@ -167,8 +180,8 @@
 #' @param zeta True value for \eqn{\zeta} in the event of simulation. The default is \code{1}.
 #' @param gamma.ui True value for \eqn{\gamma} in the event of simulation. The default is \code{2.5}.
 #' @param alpha.ui True value for \eqn{\alpha} in the event of simulation. The default is \code{1}.
-#' @param betas True value for \eqn{\beta_S} in the event of simulation. The default is \code{-1.25}.
-#' @param betat True value for \eqn{\beta_T} in the event of simulation. The default is \code{-1.25}.
+#' @param betas True value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} in the event of simulation. The default is \code{-1.25}.
+#' @param betat True value for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}} in the event of simulation. The default is \code{-1.25}.
 #' @param lambdas Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
 #' endpoint. The default is \code{1.8}.
 #' @param nus Desired shape parameter for the \code{Weibull} distribution associated with the Surrogate
@@ -179,14 +192,16 @@
 #' The default is \code{0.0025}.
 #' @param time.cens Censorship time. The default is \code{549}, for about \code{40\%} of censored 
 #' subjects.
-#' @param R2 Desired \eqn{R^2_{trial}}. The default is \code{0.81}.
-#' @param sigma.s True value for \eqn{\sigma^2_S}. The default is \code{0.7}.
-#' @param sigma.t True value for \eqn{\sigma^2_T}. The default is \code{0.7}.
+#' @param R2 Desired \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}. The default is \code{0.81}.
+#' @param sigma.s True value for \if{latex}{\eqn{\sigma^2_{v_S}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}
+#' The default is \code{0.7}.
+#' @param sigma.t True value for \if{latex}{\eqn{\sigma^2_{v_T}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}. The default is \code{0.7}.
 # @param param.weibull A binary for the Weibull parametrization used. The default is \code{0}, as in 
 # the frailtypack package. If \code{1} the function 
 # \eqn{f(x)=\nu^\lambda . \lambda . x^{\lambda-1} . \exp(-(\nu x)^\lambda)} is used.
-#' @param kappa.use A numeric, that indicates how to manage the smoothing parameters \code{k_1} 
-#' and \code{k_2} in the event of convergence issues. If it is set 
+#' @param kappa.use A numeric, that indicates how to manage the smoothing parameters \if{latex}{\code{k_1}} \if{html}{k\out{<sub>1</sub>}} 
+#' and \if{latex}{\code{k_2}} \if{html}{k\out{<sub>2</sub>}} in the event of convergence issues. If it is set 
 #' to \code{0}, the first smoothing parameters that allowed convergence on the first dataset is used 
 #' for all simulations. if it is set to \code{1}, a smoothing parameter is estimated by cross-validation 
 #' for each dataset generated. If it is set to \code{2}, the same process for chosing kappas as in the event 
@@ -234,11 +249,11 @@
 #' @param typecopula # The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1
 #' @param theta.copula The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 #' association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula
+#' @param thetacopula.init Initial value for the copula parameter. The default is 3 
 #' @param filter.surr Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
 #' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.
 #' @param filter.true Vector defines as \code{filter.surr}, for the true endpoint. \code{filter.true} and \code{filter.surr}
 #' should have the same size
-#' @param thetacopula.init Initial value for the copula parameter. The default is 3 
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param pfs Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
 #' The default is 0. In the event with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
@@ -255,25 +270,32 @@
 #'    \item{zeta}{true value for \eqn{\zeta};}
 #'    \item{gamma.ui}{true value for \eqn{\gamma};}
 #'    \item{alpha.ui}{true value for \eqn{\alpha};}
-#'    \item{sigma.s}{true value for \eqn{\sigma_S};}
-#'    \item{sigma.t}{true value for \eqn{\sigma_T};}
-#'    \item{sigma.st}{true value for \eqn{\sigma_{ST}};}
-#'    \item{betas}{true value for \eqn{\beta_S};}
-#'    \item{betat}{true value for \eqn{\beta_T};}
-#'    \item{R2}{true value for \eqn{R^2_{trial}};}
+#'    \item{sigma.s}{true value for \if{latex}{\eqn{\sigma^2_{v_S}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}};}
+#'    \item{sigma.t}{true value for \if{latex}{\eqn{\sigma^2_{v_T}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}};}
+#'    \item{sigma.st}{true value for \if{latex}{\eqn{\sigma_{v_{ST}}}} 
+#' \if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}};}
+#'    \item{betas}{true value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}};}
+#'    \item{betat}{true value for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}};}
+#'    \item{R2}{true value for \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}};}
 #'    \item{nb.subject}{total number of subjects used;}
 #'    \item{nb.trials}{total number of trials used;}
 #'    \item{nb.simul}{number of simulated datasets;}
 #'    \item{nb.gh}{number of nodes for the Gaussian-Hermite quadrature;} 
 #'    \item{nb.gh2}{number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, in the event of non-convergence;}
 #'    \item{nb.mc}{number of samples considered in the Monte-Carlo integration;}
-#'    \item{kappa.use}{a numeric, that indicates how to manage the smoothing parameters k_1 and k_2 in the event of convergence issues;}
+#'    \item{kappa.use}{a numeric, that indicates how to manage the smoothing parameters 
+#'    \if{latex}{\code{k_1}} \if{html}{k\out{<sub>1</sub>}} and \if{latex}{\code{k_2}} \if{html}{k\out{<sub>2</sub>}} in the event of convergence issues;}
 #'    \item{n.knots}{number of knots used for splines;}
 #'    \item{int.method}{integration method used;}
 #'    \item{n.iter}{mean number of iterations needed to converge;}
 #'    \item{dataTkendall}{a matrix with \code{nb.dataset} line(s) and three columns, of the estimates of Kendall's \eqn{\tau} 
 #'    and theirs confidence intervals using the parametric bootstrap. All non-convergence cases  are represented by a line of 0;}
-#'    \item{dataR2boot}{a matrix with \code{nb.dataset} line(s) and three columns, of the estimates of \eqn{R^2_{trial}} 
+#'    \item{dataR2boot}{a matrix with \code{nb.dataset} line(s) and three columns, of the estimates of 
+#'    \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} 
 #'    and theirs confidence intervals using the parametric bootstrap. All non-convergence cases are represented by a line of 0.}
 #'    \item{dataParamEstim}{a dataframe including all estimates with the associated standard errors, for all simulation. 
 #'    All non-convergence cases  are represented by a line of 0;}
@@ -306,10 +328,10 @@
 #' # To realize a simulation study on 100 samples or more (as required), use 
 #' # nb.dataset = 100
 #' 
-#' joint.simul <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul=600, 
-#'                    ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001, 
+#' joint.simul <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul= 600, 
+#'                    ntrialSimul = 30, LIMparam = 0.001, LIMlogl = 0.001, 
 #'                    LIMderiv = 0.001, nb.mc = 200, nb.gh = 20, 
-#'                    nb.gh2 = 32, true.init.val = 1, print.iter=F)
+#'                    nb.gh2 = 32, true.init.val = 1, print.iter = F)
 #'
 #' # results
 #' summary(joint.simul, d = 3, R2boot = 1) # bootstrap
