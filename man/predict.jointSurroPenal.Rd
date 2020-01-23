@@ -10,11 +10,11 @@ alpha. = 0.05, dec = 3, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling the function \code{jointSurroPenal}).}
+(output from calling the function \code{jointSurroPenal} or \code{jointSurrocopPenal}).}
 
 \item{datapred}{Dataset to use for the prediction. If this argument is specified,
 the data structure must be the same as the parameter \code{data} in the 
-function \link{jointSurroPenal}. However, if observation on te true endpoint are
+function \link{jointSurroPenal} or \link{jointSurroCopPenal}. However, if observation on te true endpoint are
 not available, columns timeT and \code{statusT} can be absent.}
 
 \item{var.used}{This argument can take two values. The first one is \code{"error.estim"}
@@ -32,23 +32,23 @@ and confidence intervals. Default of 3 digits is used.}
 \item{...}{other unused arguments.}
 }
 \value{
-Return and display a dataframe including for each trial the number of included subjects, 
+Returns and display a dataframe including for each trial the number of included subjects, 
 the observed 
-treatment effect on the surrogate endpoint, the observed treatment effect on
-the true endpoint (if available) and the predicted treatment effect on the 
-true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
+treatment effect on surrogate endpoint, the observed treatment effect on
+true endpoint (if available) and the predicted treatment effect on 
+true enpoint with the associated prediction intervals. If the observed treatment effect on true 
 endpoint (if available) is included into the prediction interval, the last columns contains "*".
 }
 \description{
 {
-Predict the treatment effect on the true endpoint (\eqn{beta_T}), based on the 
-treatment effect observed on the surrogate endpoint (\eqn{beta_S}).
+Predict the treatment effect on the true endpoint (\if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}), based on the 
+treatment effect observed on the surrogate endpoint (\if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}).
 }
 }
 \details{
 {
 Prediction is based on the formulas described in (Burzikwosky \emph{et al.}, 2006).
-We do not consider the case of prediction which suppose estimation error on 
+We do not consider the case in which the prediction take into account estimation error on 
 the estimate of the treatment effect on the surrogate endpoint in the new trial.
 }
 }
@@ -80,7 +80,7 @@ measure for meta-analytic surrogate endpoint validation." Pharmaceutical
 Statistics, 5(3), 173-186.ISSN 1539-1612.
 }
 \seealso{
-\code{\link{jointSurroPenal}}
+\code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 }
 \author{
 Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

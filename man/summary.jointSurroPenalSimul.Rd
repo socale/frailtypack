@@ -12,7 +12,8 @@
 
 \item{d}{The desired number of digits after the decimal point f. Default of 3}
 
-\item{R2boot}{A binary that specifies whether the confidence interval of \eqn{R^2_{trial}} 
+\item{R2boot}{A binary that specifies whether the confidence interval of \if{latex}{\eqn{R^2_{trial}}}
+   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} 
 should be computed using parametric bootstrap (\code{1}) or Delta-method (\code{0}). 
 The default is \code{0}}
 
@@ -32,9 +33,11 @@ display (1) or not (0). The default is 0}
 \value{
 For each parameter of the joint surrogate model , we print the true simulation value,  
 the empirical standard error (empirical SE), the mean of the estimated standard errors 
-(Mean SE), and the coverate probability (CP) for each model parameters. 
-For the Kendall's \eqn{\tau}, the 95\% Confidence interval is obtained by the 
-parametric bootstrap. For \eqn{R^2_{trial}}(R2trial), the standard error is obtained
+(Mean SE), and the coverate probability (CP). 
+For Kendall's \eqn{\tau}, the 95\% Confidence interval is obtained by 
+parametric bootstrap (for joint frailty model) or Delta-method (for joint frailty-copula model). 
+For \if{latex}{\eqn{R^2_{trial}}}
+   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}(R2trial), the standard error is obtained
 by Delta-method and the 95\% Confidence interval could be obtained directly or by 
 parametric bootstrap. We also display the total number of non convergence case with 
 the associated percentage (R : n(\%)), the mean number of iterations to reach convergence,

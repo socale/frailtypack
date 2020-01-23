@@ -2,7 +2,7 @@
 % Please edit documentation in R/jointSurroPenalSimul.R
 \name{jointSurroPenalSimul}
 \alias{jointSurroPenalSimul}
-\title{Simulation studies based on the one-step Joint surrogate model for the evaluation of a canditate 
+\title{Simulation studies based on the one-step Joint surrogate models for the evaluation of a canditate 
 surrogate endpoint}
 \usage{
 jointSurroPenalSimul(maxit=40, indicator.zeta = 1, 
@@ -31,12 +31,13 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
 Default is \code{40}.}
 
 \item{indicator.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
-be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
+be estimated (1) or not (0). It is required if \code{type.joint.estim = 1}. 
+If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
 The default is \code{1}. This parameter can be seted to \code{0} in the event of identification issues.}
 
 \item{indicator.alpha}{A binary, indicates whether the power's parameter \eqn{\alpha} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
-The default is 1.}
+The default is 1. This parameter can be seted to \code{0} in the event of identification issues.}
 
 \item{frail.base}{Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
 the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}, or 
@@ -83,11 +84,13 @@ in the event of non-convergence, defined as previously. The default is \code{20}
 \code{(1)} or the classical Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.}
 
 \item{int.method}{A numeric, indicates the integration method: \code{0} for Monte carlo, 
-\code{1} for Gaussian-Hermite quadrature, \code{2} for a combination of both Gaussian-Hermite quadrature to 
+\code{1} for Gaussian-Hermite quadrature. If \code{type.joint.estim = 1} this parameter can be set to 
+\code{2} for a combination of both Gaussian-Hermite quadrature to 
 integrate over the individual-level random effects and Monte carlo to integrate over the trial-level
 random effects, \code{4} for a combination of both Monte carlo to integrate over 
 the individual-level random effects and Gaussian-Hermite quadrature to integrate over the trial-level
-random effects. The default is \code{2}.}
+random effects. If \code{type.joint.estim = 3}, value \code{3} indicates integration using Laplace 
+approximation . The default is \code{2}.}
 
 \item{nb.iterPGH}{Number of iterations before the re-estimation of the posterior random effects,
 in the event of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
@@ -95,10 +98,10 @@ re-estimation". The default is \code{5}.}
 
 \item{nb.MC.kendall}{Number of generated points used with the Monte-Carlo to estimate
 integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
-stable reseults. The default is \code{10000}.}
+stable results. Required if \code{type.joint.estim = 1}, the default is \code{10000}.}
 
 \item{nboot.kendall}{Number of samples considered in the parametric bootstrap to estimate the confidence
-interval of the Kendall's \eqn{\tau}. The default is \code{1000}.}
+interval of the Kendall's \eqn{\tau}, or \code{R}<sup>2</sup><sub>trial</sub>. The default is \code{1000}.}
 
 \item{true.init.val}{Numerical value. Indicates if the real parameter values 
 \code{(1)}, or the given initial values to parameters \code{(0)} should be considered. 
@@ -117,7 +120,7 @@ default given parameters values are used. Initial values for spline's associated
 are fixed to \code{0.5}. The default for this argument is \code{0}.}
 
 \item{theta.init}{Initial values for \eqn{\theta}, required if \code{true.init.val} 
-is set to \code{0} or \code{2}. The default is \code{1}.}
+is set to \code{0} or \code{2}, and \code{type.joint.estim = 1}. The default is \code{1}.}
 
 \item{sigma.ss.init}{Initial values for \if{latex}{\eqn{\sigma^2_{v_S}}} 
 \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}, required if \code{true.init.val} 
@@ -138,7 +141,7 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 is set to \code{0} or \code{2}. The default is \code{1}.}
 
 \item{zeta.init}{Initial values for \eqn{\zeta}, required if \code{true.init.val} 
-is set to \code{0} or \code{2}. The default is \code{1}.}
+is set to \code{0} or \code{2} and \code{type.joint.estim = 1}. The default is \code{1}.}
 
 \item{betas.init}{Initial values for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
@@ -167,7 +170,7 @@ the proportions of treated subjects to be considered per trial. The default is \
 Requires if the argument \code{equi.subj.trt} is different to \code{0.5}. The size of this vector is equal to the 
 number of trials.}
 
-\item{theta2}{True value for \eqn{\theta}. The default is \code{3.5}.}
+\item{theta2}{True value for \eqn{\theta}. Require if \code{type.joint.simul = 1}, the default is \code{3.5}.}
 
 \item{zeta}{True value for \eqn{\zeta} in the event of simulation. The default is \code{1}.}
 
@@ -242,33 +245,33 @@ to well manage the smoothing parameters in the event of convergence issues.}
 
 \item{type.joint.estim}{Model to considered for the estimation. If this argument is set to \code{1}, the joint surrogate model
 is used, the default (see \link{joinSurroPenal}). If set to \code{3}, parameters are estimated under the joint frailty-copula model
-for surrogacy.}
+for surrogacy (see \link{joinSurroCopPenal}).}
 
 \item{type.joint.simul}{Model to considered for data generation. If this argument is set to \code{1}, the joint surrogate model
 is used, the default (see \link{joinSurroPenal}). If set to \code{3}, data are generated following the joint frailty-copula model
-for surrogacy.}
+for surrogacy (see \link{joinSurroCopPenal}).}
 
-\item{mbetast}{Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix include 
-two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
+\item{mbetast}{Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix includes 
+two columns (first one for surrogate endpoint and second one for true endpoint) and the number of row corresponding 
 to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 is NULL and assume only the treatment effect}
 
 \item{mbetast.init}{Matrix or dataframe containing the initial values for the fixed effects associated with the covariates. This matrix include 
-two columns (first one for surrogate endpoint and second one for true endpoint) and the number corresponding 
+two columns (first one for surrogate endpoint and second one for true endpoint) and the number of row corresponding 
 to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
 is NULL and assume only the treatment effect}
 
-\item{typecopula}{# The copula function used for estimation: 1 = clayton, 2 = Gumbel. The default is 1}
+\item{typecopula}{The copula function used for estimation: 1 = clayton, 2 = Gumbel. Require if \code{type.joint.simul = 3}, the default is 1}
 
 \item{theta.copula}{The copula parameter. Require if \code{type.joint.simul = 3}. The default is \code{6}, for an individual-level
 association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula}
 
-\item{thetacopula.init}{Initial value for the copula parameter. The default is 3}
+\item{thetacopula.init}{Initial value for the copula parameter. Require if \code{type.joint.estim = 3}, the default is 3}
 
 \item{filter.surr}{Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
 surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.}
 
-\item{filter.true}{Vector defines as \code{filter.surr}, for the true endpoint. \code{filter.true} and \code{filter.surr}
+\item{filter.true}{Vector defines as \code{filter.surr}, for true endpoint. \code{filter.true} and \code{filter.surr}
 should have the same size}
 
 \item{nb.decimal}{Number of decimal required for results presentation.}
@@ -283,11 +286,11 @@ is TRUE.}
 is FALSE.}
 }
 \value{
-This function return an object of class jointSurroPenalSimul with elements :
+This function returns an object of class jointSurroPenalSimul with elements :
 
-   \item{theta2}{True value for \eqn{\theta};}
-   \item{theta.copula}{Copula parameter}
-   \item{zeta}{true value for \eqn{\zeta};}
+   \item{theta2}{True value for \eqn{\theta}, if \code{type.joint.estim = 1};}
+   \item{theta.copula}{Copula parameter, if \code{type.joint.estim = 3};}
+   \item{zeta}{true value for \eqn{\zeta}, if \code{type.joint.estim = 1};}
    \item{gamma.ui}{true value for \eqn{\gamma};}
    \item{alpha.ui}{true value for \eqn{\alpha};}
    \item{sigma.s}{true value for \if{latex}{\eqn{\sigma^2_{v_S}}} 
@@ -312,7 +315,8 @@ This function return an object of class jointSurroPenalSimul with elements :
    \item{int.method}{integration method used;}
    \item{n.iter}{mean number of iterations needed to converge;}
    \item{dataTkendall}{a matrix with \code{nb.dataset} line(s) and three columns, of the estimates of Kendall's \eqn{\tau} 
-   and theirs confidence intervals using the parametric bootstrap. All non-convergence cases  are represented by a line of 0;}
+   and theirs confidence intervals (obtained using parametric bootstrap if \code{type.joint.estim = 1} or 
+   Delta method if \code{type.joint.estim = 3}). All non-convergence cases  are represented by a line of 0;}
    \item{dataR2boot}{a matrix with \code{nb.dataset} line(s) and three columns, of the estimates of 
    \if{latex}{\eqn{R^2_{trial}}}
    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} 
@@ -329,7 +333,8 @@ This function return an object of class jointSurroPenalSimul with elements :
 \description{
 {
 This function aims to allow simulation studies, based on the joint frailty surrogate model, 
-described in \link{jointSurroPenal}
+described in \link{jointSurroPenal}. Simulation can also be based on the joint frailty-copula
+ model described in \link{jointSurroCopPenal}
 }
 }
 \details{
@@ -352,7 +357,10 @@ parameter can be chosen by maximizing a likelihood cross validation
 criterion (Joly and other, 1998). 
 
 We proposed based on the joint surrogate model a new definition 
-of the Kendall's \eqn{\tau}. Moreover, distinct numerical integration methods are available to approximate the 
+of the Kendall's \eqn{\tau}. By cons, for the joint frailty-copula model, we 
+based the individual-level association on a definition of \eqn{\tau} clause to 
+that of the classical two-step approch (Burzykowski et al, 2001), but conditional
+on the random effects. Moreover, distinct numerical integration methods are available to approximate the 
 integrals in the marginal log-likelihood.
 
 \bold{Non-convergence case management procedure}
@@ -395,12 +403,17 @@ summary(joint.simul, d = 3, R2boot = 0) # Delta-method
 
 }
 \references{
+Burzykowski, T., Molenberghs, G., Buyse, M., Geys, H., and Renard, D. (2001). Validation
+of surrogate end points in multiple randomized clinical trials with failure time end points. 
+Journal of the Royal Statistical Society: Series C (Applied Statistics) 50, 405-422.
+
 Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
 endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
 Statistics in Medicine 38, 2928-2942.
 }
 \seealso{
-\code{\link{jointSurroPenal}}, \code{\link{summary.jointSurroPenalSimul}}, \code{\link{jointSurrSimul}}
+\code{\link{jointSurroPenal}}, \code{\link{jointSurroCopPenal}}, \code{\link{summary.jointSurroPenalSimul}}
+, \code{\link{jointSurrSimul}}, \code{\link{jointSurrCopSimul}}
 }
 \author{
 Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

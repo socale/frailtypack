@@ -1,8 +1,8 @@
-##' Leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
+##' Leave-one-out crossvalidation for the one-step Joint surrogate model for evaluating a 
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' Leave-one-out crossvalidation for the evaluation of the joint surrogate model 
+##' Leave-one-out crossvalidation for evaluating the joint surrogate model 
 ##' }
 ##' 
 ##' @aliases loocv 
@@ -12,7 +12,7 @@
 ##' dec = 3, print.times = TRUE)
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class
-##' (output from calling the function \code{jointSurroPenal}).
+##' (output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).
 ##' @param unusedtrial A list of trial not to be taken into account in the cross-validation.
 ##' This parameter is useful when after excluding some trials, the model is facing 
 ##' convergence problem.
@@ -36,7 +36,7 @@
 ##' endpoint is included into the prediction interval, the last columns contains "*".} 
 ##' \item{ntrial}{The number of trials in the meta-analysis}
 ##' \item{notconvtrial}{The vector of trials that have not converged}
-##' @seealso \code{\link{jointSurroPenal}}
+##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 ##' Virginie Rondeau \email{virginie.rondeau@inserm.fr}

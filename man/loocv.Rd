@@ -2,7 +2,7 @@
 % Please edit documentation in R/loocv.R
 \name{loocv}
 \alias{loocv}
-\title{Leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
+\title{Leave-one-out crossvalidation for the one-step Joint surrogate model for evaluating a 
 canditate surrogate endpoint.}
 \usage{
 loocv(object, unusedtrial, var.used = "error.estim", alpha. = 0.05, 
@@ -10,7 +10,7 @@ dec = 3, print.times = TRUE)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling the function \code{jointSurroPenal}).}
+(output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).}
 
 \item{unusedtrial}{A list of trial not to be taken into account in the cross-validation.
 This parameter is useful when after excluding some trials, the model is facing 
@@ -43,7 +43,7 @@ endpoint is included into the prediction interval, the last columns contains "*"
 }
 \description{
 {
-Leave-one-out crossvalidation for the evaluation of the joint surrogate model 
+Leave-one-out crossvalidation for evaluating the joint surrogate model 
 }
 }
 \examples{
@@ -75,7 +75,7 @@ measure for meta-analytic surrogate endpoint validation." Pharmaceutical
 Statistics, 5(3), 173-186.ISSN 1539-1612.
 }
 \seealso{
-\code{\link{jointSurroPenal}}
+\code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 }
 \author{
 Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

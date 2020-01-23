@@ -28,16 +28,25 @@ jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
 
 \item{zeta}{Fixed value for \eqn{\zeta}. The default is \code{1}.}
 
-\item{sigma.s}{Fixed value for \eqn{\sigma^2_S}. The default is \code{0.7}.}
+\item{sigma.s}{Fixed value for \if{latex}{\eqn{\sigma^2_{v_S}}}
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}. 
+The default is \code{0.7}.}
 
-\item{sigma.t}{Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.}
+\item{sigma.t}{Fixed value for \if{latex}{\eqn{\sigma^2_{v_T}}}
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}. 
+The default is \code{0.7}.}
 
-\item{cor}{Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=cor^2}. 
+\item{cor}{Desired level of correlation between \if{latex}{\eqn{v_{S_i}} and 
+\eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and v\out{<sub>T<sub>i</sub></sub>}}. 
+ \if{latex}{\eqn{R^2_{trial} = cor^2}}
+   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}} = cor \out{<sup>2</sup>}}. 
 The default is \code{0.8}.}
 
-\item{betas}{Fixed value for \eqn{\beta_S}. The default is \code{-1.25}.}
+\item{betas}{Fixed value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}.
+The default is \code{-1.25}.}
 
-\item{betat}{Fixed value for \eqn{\beta_T}. The default is \code{-1.25}.}
+\item{betat}{Fixed value for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. 
+The default is \code{-1.25}.}
 
 \item{frailt.base}{considered the heterogeneity on the baseline risk \code{(1)} or not \code{(0)}. 
 The default is \code{1}.}
@@ -58,8 +67,10 @@ The default is 0.0025.}
 
 \item{typeOf}{Type of joint model used for data generation: 0 = classical joint model 
 with a shared individual frailty effect (Rondeau, 2007), 1 = joint surrogate model with shared frailty 
-effects \eqn{u_i} and \eqn{\omega_{ij}}, and two correlated random effects treatment-by-trial interaction 
-\eqn{(v_{S_i},v_{T_i})} as described in Sofeu et al. (2018).}
+effects \if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}} and \if{latex}{\eqn{\omega_{ij}}} 
+\if{html}{\code{\eqn{\omega}\out{<sub>ij</sub>}}}, and two correlated random effects treatment-by-trial interaction 
+(\if{latex}{\eqn{v_{S_i}}, \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>}, v\out{<sub>T<sub>i</sub></sub>}}) 
+as described in Sofeu et al. (2018).}
 
 \item{equi.subj.trial}{A binary variable that indicates if the same proportion of subjects should be included per trial (1) 
 or not (0). If 0, the proportions of subject per trial are required in parameter \code{prop.subj.trial}.}
@@ -108,8 +119,11 @@ This function return if the parameter \code{full.data} is set to 0, a \code{\lin
    \item{statusT}{The event indicator associated with the true endpoint. Normally 
    0 = no event, 1 = event;}
 If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
-\eqn{\omega_{ij}}, \eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned. Note that
-\eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned if \code{typeOf} is set to \code{1}
+\if{latex}{\eqn{\omega_{ij}}} \if{html}{\code{\eqn{\omega}\out{<sub>ij</sub>}}}, 
+\if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}}, \if{latex}{\eqn{v_{S_i}} and \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and
+v\out{<sub>T<sub>i</sub></sub>}} are returned. Note that
+\if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}}, \if{latex}{\eqn{v_{S_i}} and \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and
+v\out{<sub>T<sub>i</sub></sub>}} are returned if \code{typeOf} is set to \code{1}
 }
 \description{
 Date are generated from the one-step joint surrogate model (see \code{\link{jointSurroPenal}} for more details)

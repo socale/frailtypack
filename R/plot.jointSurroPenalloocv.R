@@ -1,8 +1,8 @@
-##' Outputs plot of the leave-one-out crossvalidation from the one-step Joint surrogate model for evaluating a 
+##' Plot of leave-one-out crossvalidation Outputs from the one-step Joint surrogate model for evaluating a 
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' Outputs plot of the leave-one-out crossvalidation for evaluating the joint surrogate model 
+##' Plot of leave-one-out crossvalidation Outputs for evaluating the joint surrogate model 
 ##' }
 ##' 
 ##' @aliases plot.jointSurroPenalloocv
@@ -10,19 +10,19 @@
 ##' 
 ##' @param object Object inherent from the \code{jointSurroPenalloocv} Class
 ##' @param unusedtrial Vector of unconsidered trials, may be due to the fact that the 
-##' predicted treatment effects on the true endpoint have an outlier. In this case, 
+##' predicted treatment effects on true endpoint have an outlier. In this case, 
 ##' one can drop from the data the trials with very hight absolute predicted value 
-##' @param x Coordinate for the location of the legend
-##' @param y Coordinate for the location of the legend, the default is \code{NULL}
+##' @param x X-coordinate for the location of the legend
+##' @param y Y-coordinate for the location of the legend, the default is \code{NULL}
 ##' @param main The desired main
 ##' @param ... other unused arguments.
 ##' 
 ##' @return This function displays the boxplots corresponding to the number of trials in the 
-##' dataset. Each boxplot included 3 elements correnponding to the predicted treatment effect on the true endpoint
+##' dataset. Each boxplot included 3 elements correnponding to the predicted treatment effect on true endpoint
 ##' with the prediction interval. The circle inside or outside the boxplot represents the observed
-##' treatment effect on the true endpoint. For all unused trials due to convergence issues or outliers, the boxplot is just represents
-##' by a dash. In the last case, we display in the main of the figure a vector of unused trials, is the argumets \code{main} 
-##' is set to \code{NULL}. The function retruns the list of unused trials.
+##' treatment effect on true endpoint. For all unused trials due to convergence issues or outliers, the boxplot is just represents
+##' by a dash. In the last case, we display in the main of the figure a vector of unused trials, if argument \code{main} 
+##' is set to \code{NULL}. The function returns the list of unused trials.
 ##' @seealso \code{\link{loocv}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

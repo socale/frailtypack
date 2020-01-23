@@ -92,6 +92,6 @@ plot(joint.surro.ovar,endpoint = 2,type.plot = "Su", conf.bands = T)
 
 }
 \seealso{
-\code{\link{jointSurroPenal}}
+\code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 }
 \keyword{surrogate}

@@ -2,25 +2,35 @@
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' This function compute the surrogate threshold effect (STE) from the one-step joint 
-##' surrogate \code{\link[=jointSurroPenal]{model}}. The STE is defined as the minimum treament effect on the surrogate 
-##' necessary to predict a non-zero effect on the true endpoint (Burzykowski \emph{et al.}, 2006).
+##' This function compute the surrogate threshold effect (STE) from the one-step joint frailty 
+##' \code{\link[=jointSurroPenal]{model}} or joint frailty-copula 
+##' \code{\link[=jointSurroCopPenal]{model}}. The STE is defined as the minimum treament effect 
+##' on surrogate endpoint, necessary to predict a non-zero effect on 
+##' true endpoint (Burzykowski \emph{et al.}, 2006).
 ##' }
 ##' 
 ##' @details{  
-##' The STE is obtained by solving the equation \eqn{l(\alpha_0) = 0} (resp. \eqn{u(\alpha_0) = 0}), where \eqn{\alpha_0} represents
-##' the corresponding STE, and \eqn{l(\alpha_0)} (resp. \eqn{u(\alpha_0}) is the lower (resp. upper) bound of the prediction interval 
-##' of the treatment effect on the true endpoint (\eqn{\beta + b_0}). Thereby,
+##' The STE is obtained by solving the equation \if{latex}{\eqn{l(\alpha_0)}} 
+#' \if{html}{\code{l(\eqn{\alpha}\out{<sub>0</sub>})}} \code{= 0}
+#'   (resp. \if{latex}{\eqn{u(\alpha_0)}} 
+#' \if{html}{\code{u(\eqn{\alpha}\out{<sub>0</sub>})}} \code{= 0}), where 
+#' \if{latex}{\eqn{\alpha_0}} \if{html}{\code{\eqn{\alpha}\out{<sub>0</sub>}}} represents
+##' the corresponding STE, and \if{latex}{\eqn{l(\alpha_0)}} 
+#' \if{html}{\code{l(\eqn{\alpha}\out{<sub>0</sub>})}} (resp. \if{latex}{\eqn{u(\alpha_0)}} 
+#' \if{html}{\code{u(\eqn{\alpha}\out{<sub>0</sub>})}}) is the lower (resp. upper) bound of the prediction interval 
+##' of the treatment effect on the true endpoint \code{(\eqn{\beta} + b\out{<sub>0</sub>})}. Thereby,
 ##' 
-##' \eqn{l(\alpha_0) \equiv 
+##' \if{latex}{\eqn{l(\alpha_0) \equiv 
 ##' E(\beta + b_0|\alpha_0, \vartheta) - Z_{1-(\gamma/2)} \sqrt(Var(\beta + b_0|\alpha_0, \vartheta))}
 ##' 
 ##' and 
 ##' 
 ##' \eqn{u(\alpha_0) \equiv 
 ##' E(\beta + b_0|\alpha_0, \vartheta) + Z_{1-(\gamma/2)} \sqrt(Var(\beta + b_0|\alpha_0, \vartheta))}
+##' }
+##' \if{html}{\figure{ste.png}{options: width="60\%"}}
 ##' 
-##' where \eqn{\vartheta} represents the set of estimates for the fixed-effects and the 
+##' where \if{latex}{\eqn{\vartheta}}\if{html}{\figure{vartheta.png}{options: width="3\%"}}represents the set of estimates for the fixed-effects and the 
 ##' variance-covariance parameters of the random effects obtained from the joint surrogate 
 ##' \code{\link[=jointSurroPenal]{model}} 
 ##' (Sofeu \emph{et al.}, 2018). 
@@ -28,7 +38,8 @@
 ##' Given that negative values of treatment effect indicate a reduction of the risk 
 ##' of failure and are considered beneficial, STE is recommended to be computed from 
 ##' the upper prediction
-##' limit \eqn{u(\alpha_0)}.
+##' limit  \if{latex}{\eqn{u(\alpha_0)}} 
+#' \if{html}{\code{u(\eqn{\alpha}\out{<sub>0</sub>})}}.
 ##' 
 ##' The details on the computation of STE is describes in 
 ##' Burzykowski \emph{et al.} (2006).
@@ -40,7 +51,7 @@
 ##' ste(object, var.used = "error.estim", alpha. = 0.05, 
 ##'     pred.int.use = "up")
 ##' @param object An object inheriting from \code{jointSurroPenal} class
-##' (output from calling the function \code{jointSurroPenal}).
+##' (output from calling the \code{jointSurroPenal} or \code{jointSurroCopPenal} function ).
 ##' @param var.used This argument takes two values. The first one is \code{"error.estim"}
 ##' and indicates if the prediction error take into account
 ##' the estimation error of the estimates of the parameters. If the estimates 
@@ -53,7 +64,7 @@
 ##' or \code{lw} for the lower bound.
 ##' 
 ##' @return Returns and displays the STE.
-##' @seealso \code{\link{jointSurroPenal}} \code{\link[=predict.jointSurroPenal]{predict}}
+##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}, \code{\link[=predict.jointSurroPenal]{predict}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 ##' Virginie Rondeau \email{virginie.rondeau@inserm.fr}

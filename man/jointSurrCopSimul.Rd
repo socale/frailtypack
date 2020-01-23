@@ -25,20 +25,27 @@ jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549,
 
 \item{gamma}{Fixed value for \eqn{\gamma}. The default is \code{2.5}.}
 
-\item{sigma.s}{Fixed value for \eqn{\sigma^2_S}. The default is \code{0.7}.}
+\item{sigma.s}{Fixed value for  \if{latex}{\eqn{\sigma^2_{v_S}}}
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}. The default is \code{0.7}.}
 
-\item{sigma.t}{Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.}
+\item{sigma.t}{Fixed value for \if{latex}{\eqn{\sigma^2_{v_T}}}
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}. The default is \code{0.7}.}
 
-\item{cor}{Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=cor^2}. 
+\item{cor}{Desired level of correlation between \if{latex}{\eqn{v_{S_i}} and 
+\eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and v\out{<sub>T<sub>i</sub></sub>}}. 
+ \if{latex}{\eqn{R^2_{trial} = cor^2}}
+   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}} = cor \out{<sup>2</sup>}}. 
 The default is \code{0.8}.}
 
-\item{betas}{Vector of the fixed effects for \eqn{\beta_S}. The size must be equal to \code{ver} 
+\item{betas}{Vector of the fixed effects for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}.
+ The size must be equal to \code{ver} 
 The default is \code{c(-1.25,0.5)}.}
 
-\item{betat}{Vector of the fixed effects for for \eqn{\beta_T}. The size must be equal to \code{ver}
+\item{betat}{Vector of the fixed effects for  \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}.
+ The size must be equal to \code{ver}
 The default is \code{c(-1.25,0.5)}.}
 
-\item{frailt.base}{considered the heterogeneity on the baseline risk \code{(1)} or not \code{(0)}. 
+\item{frailt.base}{Considered heterogeneity on the baseline risk \code{(1)} or not \code{(0)}. 
 The default is \code{1}.}
 
 \item{lambda.S}{Desired scale parameter for the \code{Weibull} distribution associated with the Surrogate
@@ -53,27 +60,28 @@ The default is 3.}
 \item{nu.T}{Desired shape parameter for the \code{Weibull} distribution associated with the True endpoint.
 The default is 0.0025.}
 
-\item{ver}{Number of covariates. For surrogte evaluation, we just considered one covatiate, the treatment arm}
+\item{ver}{Number of covariates. The mandatory covariate is the treatment arm. The default is \code{2}.}
 
 \item{typeOf}{Type of joint model used for data generation: 0 = classical joint model 
-with a shared individual frailty effect (Rondeau, 2007), 1 = joint surrogate model with shared frailty 
-effects \eqn{u_i} and \eqn{\omega_{ij}}, and two correlated random effects treatment-by-trial interaction 
-\eqn{(v_{S_i},v_{T_i})} as described in Sofeu et al. (2018).}
+with a shared individual frailty effect (Rondeau, 2007), 1 = joint frailty-copula model with shared frailty 
+effects \if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}} and two correlated random effects treatment-by-trial interaction 
+(\if{latex}{\eqn{v_{S_i}}, \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>}, v\out{<sub>T<sub>i</sub></sub>}}),
+ see \code{\link{jointSurroCopPenal}}.}
 
 \item{equi.subj.trial}{A binary variable that indicates if the same proportion of subjects should be included per trial (1) 
-or not (0). If 0, the proportions of subject per trial are required in parameter \code{prop.subj.trial}.}
+or not (0). If 0, the proportions of subject per trial are required with parameter \code{prop.subj.trial}.}
 
 \item{equi.subj.trt}{A binary variable that indicates if the same proportion of subjects is randomized per trial (1) 
-or not (0). If 0, the proportions of subject per trial are required in parameter \code{prop.subj.trt}.}
+or not (0). If 0, the proportions of subject per trial are required with parameter \code{prop.subj.trt}.}
 
-\item{prop.subj.trial}{The proportions of subjects per trial. Requires if \code{equi.subj.trial=0}.}
+\item{prop.subj.trial}{The proportions of subjects per trial. Requires if \code{equi.subj.trial = 0}.}
 
-\item{prop.subj.trt}{The proportions of randomized subject per trial. Requires if \code{equi.subj.trt=0}.}
+\item{prop.subj.trt}{The proportions of randomized subject per trial. Requires if \code{equi.subj.trt = 0}.}
 
 \item{full.data}{Specified if you wan the function to return the full dataset (1), including the random effects, 
-or the restictive dataset (0) with \code{7} columns required for the function \code{\link{jointSurroPenal}}.}
+or the restictive dataset (0) with at least \code{7} columns as required for the function \code{\link{jointSurroCopPenal}}.}
 
-\item{random.generator}{Random number generator to use by the Fortran compiler, 
+\item{random.generator}{The random number generator to use by the Fortran compiler, 
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 subroutine \code{uniran()}. The default is \code{1}.}
 
@@ -108,7 +116,7 @@ The default is 0. In the event with pfs set to 1, death is included in the surro
 association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula}
 }
 \value{
-This function return if the parameter \code{full.data} is set to 0, a \code{\link{data.frame}} with columns :
+This function returns if the parameter \code{full.data} is set to 0, a \code{\link{data.frame}} with columns :
    \item{patientID}{A numeric, that represents the patient's identifier, must be unique;}
    \item{trialID}{A numeric, that represents the trial in which each patient was randomized;}
    \item{trt}{The treatment indicator for each patient, with 1 = treated, 0 = untreated;}
@@ -118,9 +126,11 @@ This function return if the parameter \code{full.data} is set to 0, a \code{\lin
    \item{timeT}{The follow up time associated with the true endpoint;}
    \item{statusT}{The event indicator associated with the true endpoint. Normally 
    0 = no event, 1 = event;}
+and other covariates named \code{Var2, var3, ..., var[ver-1]} if \code{ver > 1}.
 If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
-\eqn{\omega_{ij}}, \eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned. Note that
-\eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned if \code{typeOf} is set to \code{1}
+\if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}}, \if{latex}{\eqn{v_{S_i}} and 
+\eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and
+v\out{<sub>T<sub>i</sub></sub>}} are returned.
 }
 \description{
 Date are generated from the one-step joint frailty-copula model, under the Claton 
@@ -129,7 +139,7 @@ copula function (see \code{\link{jointSurroCopPenal}} for more details)
 \details{
 We just considered in this generation, the Gaussian random effects. If the parameter \code{full.data} is set to 1,
 this function  return a list containning severals parameters, including the generated random effects. 
-the desired individual level correlation (Kendall's \eqn{\tau}) depend on the values of parameter copula
+The desired individual level correlation (Kendall's \eqn{\tau}) depend on the values of the copula parameter 
 \eqn{\theta}, given that \eqn{\tau = \theta /(\theta + 2)} under the clayton copula model.
 }
 \examples{
@@ -148,15 +158,11 @@ Rondeau V., Mathoulin-Pelissier S., Jacqmin-Gadda H., Brouste V. and Soubeyran P
 Joint frailty models for recurring events and death using maximum penalized likelihood 
 estimation: application on cancer events. Biostatistics 8(4), 708-721.
 
-Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
-endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
-Statistics in Medicine 38, 2928-2942.
-
 Sofeu, C. L., Emura, T., and Rondeau, V. (2020). A joint frailty-copula model for meta-analytic 
 validation of failure time surrogate endpoints in clinical trials. \code{Under review}
 }
 \seealso{
-\code{\link{jointSurrSimul}}
+\code{\link{jointSurrSimul}, \link{jointSurroCopPenal}}
 }
 \author{
 Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

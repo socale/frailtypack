@@ -42,7 +42,7 @@
 ##' @return Print a plot of the baseline survival or hazard functions for each
 ##' type of event or both with the confidence bands or not (conf.bands
 ##' argument)
-##' @seealso \code{\link{jointSurroPenal}}
+##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' @keywords surrogate
 ##' @export
 ##' @examples

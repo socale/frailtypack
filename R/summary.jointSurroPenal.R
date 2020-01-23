@@ -4,14 +4,15 @@
 ##' This function returns the estimate of the coefficients and their standard error with p-values 
 ##' of the Wald test for the joint surrogate model, also hazard ratios (HR) and their 
 ##' confidence intervals for the fixed treatment effects, and finaly an estimate of the 
-##' surrogacy evaluation criterian (Kendall's \eqn{\tau} and \eqn{R^2_{trial}})
+##' surrogacy evaluation criterian (Kendall's \eqn{\tau} and \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}})
 ##' 
 ##' 
 ##' @aliases summary.jointSurroPenal print.summary.jointSurroPenal
 ##' @usage \method{summary}{jointSurroPenal}(object, d = 4, len = 3, int.method.kt = 0, 
 ##' nb.gh = 32, ...)
 ##' 
-##' @param object an object inheriting from \code{jointSurroPenal} class.
+##' @param object An object inheriting from \code{jointSurroPenal} class.
 ##' @param d The desired number of digits after the decimal point for parameters. 
 ##' The maximum of 4 digits is required for the estimates. Default of 3 digits is used.
 ##' @param len The desired number of digits after the decimal point for p-value and convergence 
@@ -27,18 +28,22 @@
 ##' the coefficients with their standard error, Z-statistics and p-values
 ##' of the Wald test. For the fixed treatment effects, it also prints HR and its confidence
 ##' intervals for each covariate. For the surrogacy evaluation criteria, its prints the estimated 
-##' Kendall's \eqn{\tau} with its 95\% Confidence interval obtained by the parametric bootstrap, 
-##' the estimated \eqn{R^2_{trial}}(R2trial) with standard error and the 95\% Confidence interval 
-##' obtained by Delta-method (Dowd \emph{et al.}, 2014), \eqn{R^2_{trial}}(R2.boot) and its 95\% 
+##' Kendall's \eqn{\tau} with its 95\% Confidence interval obtained by the parametric bootstrap
+##'  or Delta-method, 
+##' the estimated \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}(R2trial) with standard error and the 95\% Confidence interval 
+##' obtained by Delta-method (Dowd \emph{et al.}, 2014), \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}(R2.boot) and its 95\% 
 ##' Confidence interval obtained by the parametric bootstrap. 
-##' We notice that, using the bootstrap, 
-##' the standard error of the point estimate is not available. We propose a classification of \eqn{R^2_{trial}} according to a 
-##' modification to surrogate criteria proposed by the Institute of Quality and Efficiency in Health Care 
+##' We notice that, using bootstrap, 
+##' the standard error of the point estimate is not available. We propose a classification of \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} according to 
+##' the suggestion of the Institute of Quality and Efficiency in Health Care 
 ##' (Prasad \emph{et al.}, 2015). 
 ##' We also display the surrogate threshold effect (\code{\link[=ste]{STE}}) with the associated hazard risk.
 ##' The rest of parameters concerns the convergence characteristics and 
-##' included: the penalized marginal log-likelihood, number of iterations, the LCV and the Convergence criteria.
-##' @seealso \code{\link{jointSurroPenal} \link{jointSurroTKendall}}
+##' included: the penalized marginal log-likelihood, the number of iterations, the LCV and the Convergence criteria.
+##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}, \link{jointSurroTKendall}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 ##' Virginie Rondeau \email{virginie.rondeau@inserm.fr}
