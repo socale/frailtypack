@@ -5,8 +5,8 @@
 \title{Predict Method for the one-step Joint surrogate model for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-\method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.estim", 
-alpha. = 0.05, dec = 3, ...)
+\method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
+ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -16,6 +16,16 @@ alpha. = 0.05, dec = 3, ...)
 the data structure must be the same as the parameter \code{data} in the 
 function \link{jointSurroPenal} or \link{jointSurroCopPenal}. However, if observation on te true endpoint are
 not available, columns timeT and \code{statusT} can be absent.}
+
+\item{betaS.obs}{Observed treatment effect on the surrogate endpoint, to use for the prediction of
+the treatment effect on the true endpoint. If not null, this value is used for prediction insted of
+\code{datapred}. The default is \code{NULL}.}
+
+\item{betaT.obs}{Observec treatment effect on the true endpoint. Used to assess the prediction if not null.
+The defaut is \code{NULL}.}
+
+\item{ntrial0}{Number of subjects include in the new trial. Required if \code{betaS.obs} is not null.
+The default is \code{NULL}.}
 
 \item{var.used}{This argument can take two values. The first one is \code{"error.estim"}
 and indicates if the prediction error take into account
@@ -32,8 +42,8 @@ and confidence intervals. Default of 3 digits is used.}
 \item{...}{other unused arguments.}
 }
 \value{
-Returns and display a dataframe including for each trial the number of included subjects, 
-the observed 
+Returns and display a dataframe including for each trial the number of included subjects 
+(if available), the observed 
 treatment effect on surrogate endpoint, the observed treatment effect on
 true endpoint (if available) and the predicted treatment effect on 
 true enpoint with the associated prediction intervals. If the observed treatment effect on true 

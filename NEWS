@@ -1,5 +1,8 @@
 Changes in Version 3.0.4 march 2019
+o Update of the S3method predict.jointSurroPenal(). Allows the possibility of prediction based on the observed treatment effect on the surrogate endpoint. This means, no need for individual patient data in the new trial. In addition, bug fixed on the outputs of this function when the new dataset is provided.  
+
 o We rewrote the column name patienID in the argument data for jointSurroPenal() function as patientID
+
 o By default, in the data generation, the progression times are consored by the death time. This update allow to consider as surrogate endpoint the progression free survival (PFS) or Desease free survivall (DFS), or time-to- progression (TTP). This update is motivated by the surrogacy framework. 
 
 o Update of the threshold for the classification of R2_trial. the previous classification was for the coefficient of correlation (R)
