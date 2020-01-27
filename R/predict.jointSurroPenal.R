@@ -15,7 +15,7 @@
 ##' @usage
 ##' 
 ##' \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
-##' ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, ...)
+##' ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", ...)
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal} or \code{jointSurrocopPenal}).
 ##' @param datapred Dataset to use for the prediction. If this argument is specified,
@@ -38,6 +38,7 @@
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param dec The desired number of digits after the decimal point for parameters
 ##' and confidence intervals. Default of 3 digits is used.
+##' @param colCI The color used to display the confidence interval.
 ##' @param ... other unused arguments.
 ##' 
 ##' @return Returns and display a dataframe including for each trial the number of included subjects 
@@ -46,6 +47,8 @@
 ##' true endpoint (if available) and the predicted treatment effect on 
 ##' true enpoint with the associated prediction intervals. If the observed treatment effect on true 
 ##' endpoint (if available) is included into the prediction interval, the last columns contains "*".
+##' For the given treatment effects on the surrogate enpoint, plot the associated treatment effects 
+##' on the true endpoint predicted from the joint surrogate model with the prediction intervals.
 ##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -75,13 +78,17 @@
 ##' 
 ##' # prediction of the treatment effects on the true endpoint in each trial of 
 ##' the dataOvarian dataset
-##' # predict(joint.surro.ovar)
+##' predict(joint.surro.ovar)
 ##' 
+##' # prediction of the treatment effect on the true endpoint from an observed 
+##' # treatment effect on the surrogate endpoint in a given trial
+##' predict(joint.surro.jointSurro, betaS.obs = -0.797, betaT.obs = -1.018)
 ##' }
 ##' 
 ##' 
 "predict.jointSurroPenal" <- function (object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
-                                       ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, ...)
+                                       ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, 
+                                       dec = 3, colCI = "red", ...)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
@@ -256,7 +263,13 @@
 
   }
   matrixPred[,-c(1,2,8)] <- round(matrixPred[,-c(1,2,8)],dec)
-  
+  plot.predict.jointSurroPenal(object)
+  for(k in 1:nrow(matrixPred)){
+    points(matrixPred$beta.S[k],matrixPred$beta.T.i[k])
+    points(matrixPred$beta.S[k],matrixPred$Inf.95.CI[k], col = colCI)
+    points(matrixPred$beta.S[k],matrixPred$Sup.95.CI[k], col = colCI)
+    if(nrow(matrixPred)==1) abline(v = matrixPred$beta.S, col = "red", lty = 4)
+  }
   
  # print(matrixPred)
   return(matrixPred)

@@ -6,7 +6,7 @@
 canditate surrogate endpoint.}
 \usage{
 \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
-ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, ...)
+ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -39,6 +39,8 @@ The default is \code{error.estim}.}
 \item{dec}{The desired number of digits after the decimal point for parameters
 and confidence intervals. Default of 3 digits is used.}
 
+\item{colCI}{The color used to display the confidence interval.}
+
 \item{...}{other unused arguments.}
 }
 \value{
@@ -48,6 +50,8 @@ treatment effect on surrogate endpoint, the observed treatment effect on
 true endpoint (if available) and the predicted treatment effect on 
 true enpoint with the associated prediction intervals. If the observed treatment effect on true 
 endpoint (if available) is included into the prediction interval, the last columns contains "*".
+For the given treatment effects on the surrogate enpoint, plot the associated treatment effects 
+on the true endpoint predicted from the joint surrogate model with the prediction intervals.
 }
 \description{
 {
@@ -78,8 +82,11 @@ joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8,
 
 # prediction of the treatment effects on the true endpoint in each trial of 
 the dataOvarian dataset
-# predict(joint.surro.ovar)
+predict(joint.surro.ovar)
 
+# prediction of the treatment effect on the true endpoint from an observed 
+# treatment effect on the surrogate endpoint in a given trial
+predict(joint.surro.jointSurro, betaS.obs = -0.797, betaT.obs = -1.018)
 }
 
 
