@@ -1,4 +1,4 @@
-Changes in Version 3.0.4 march 2019
+Changes in Version 3.1.0 january 2020
 o Update of the function S3method predict.jointSurroPena(). We have include a plot of the predicted treatment effects on the true endpoint (with the prediction intervals) given the observed treatment effects on the surrogate endpoint and an object from the joint surrogate model. We include the function plot.predict.jointSurroPenal()
 
 o Update of the S3method predict.jointSurroPenal(). Allows the possibility of prediction based on the observed treatment effect on the surrogate endpoint. This means, no need for individual patient data in the new trial. In addition, bug fixed on the outputs of this function when the new dataset is provided.  
