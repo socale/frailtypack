@@ -7,6 +7,7 @@ $(SHLIB): $(OBJECTS)
 # pour Fortran 90/95: see Writing R Extensions (Version 3.5.0 Patched (2018-06-18)), page 24
 PKG_FFLAGS = $(SHLIB_OPENMP_FFLAGS)
 PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)
+#PKG_FCFLAGS = $(SHLIB_OPENMP_FCFLAGS) # openmp falg /windows
 
 # Setup dependencies for parallel make
 prediction.o: Aparameters.o
@@ -18,7 +19,7 @@ prediction_biv.o: aaOptim.o aaOptimres.o Aparameters.o
 prediction_tri.o: aaOptim.o aaOptimres.o Aparameters.o
 prediction_tri_nl.o: aaOptim.o aaOptimres.o Aparameters.o
 aamarq98o.o: aaOptim.o aaOptimres.o Aparameters.o
-aaOptim.o: Aparameters.o 
+aaOptim.o: Aparameters.o
 afuncpasres.o: aaOptim.o aaOptimres.o Aparameters.o
 aresidusMartingale.o: aaOptim.o aaOptimres.o Aparameters.o
 aaUseFunction.o: aaOptim.o aaOptimres.o Aparameters.o
@@ -32,9 +33,11 @@ funcpaacpm.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpaaweib.o: aaOptim.o aaOptimres.o Aparameters.o
 
 frailtypack.o: aaOptim.o aaOptimres.o Aparameters.o
+frailtypackgen.o: frailtypack.o
 funcpassplines.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpascpm.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpasweib.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasweibgen.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpassplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpascpm_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpasweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
