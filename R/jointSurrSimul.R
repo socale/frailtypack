@@ -53,23 +53,23 @@
 #' or not (0). If 0, the proportions of subject per trial are required in parameter \code{prop.subj.trt}.
 #' @param prop.subj.trial The proportions of subjects per trial. Requires if \code{equi.subj.trial=0}.
 #' @param prop.subj.trt The proportions of randomized subject per trial. Requires if \code{equi.subj.trt=0}.
-#' @param full.data Specified if you wan the function to return the full dataset (1), including the random effects, 
+#' @param full.data Specified if you want the function to return the full dataset (1), including the random effects, 
 #' or the restictive dataset (0) with \code{7} columns required for the function \code{\link{jointSurroPenal}}.
-#' @param random.generator Random number generator to use by the Fortran compiler, 
+#' @param random.generator Random number generator used by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 #' subroutine \code{uniran()}. The default is \code{1}. 
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-#' as seed. In the last case, it is not possible to reproduce the generated datasets". 
+#' as seed. In the last case, it is not possible to reproduce the generated datasets. 
 #' The default is \code{0}. Required if \code{random.generator} is set to 1.
 #' @param random.nb.sim required if \code{random.generator} is set to 1, and if \code{random} is set to 1.
 #' @param seed The seed to use for data (or samples) generation. Required if the argument \code{random.generator} is set to 1. 
 #' Must be a positive value. If negative, the program do not account for seed. The default is \code{0}.
-#' @param nb.reject.data Number of generation to reject before the considered dataset. this parameter is required
+#' @param nb.reject.data Number of generation to reject before the considered dataset. This parameter is required
 #' when data generation is for simulation. With a fixed parameter and \code{random.generator} set to 1,
 #' all ganerated data are the same. By varying this parameter, different datasets are obtained during data genarations. The default value is 0, 
 #' in the event of one dataset.
-#' @param pfs Is used to specified if the time to progression should be censored by the death time (0) or not (1). 
+#' @param pfs Is used to specify if the time to progression should be censored by the death time (0) or not (1). 
 #' The default is 0. In the event with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS. 
 # @param param.weibull A binary for the Weibull parametrization used. The default is \code{0}, as in 
 # the frailtypack package. If \code{1} the function 

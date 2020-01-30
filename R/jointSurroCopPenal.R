@@ -4,7 +4,7 @@
 #'@description{
 #' \if{html}{\bold{Joint Frailty-Copula model for Surrogacy definition} 
 #'
-#' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint, 
+#' Fit the one-step Joint frailty-copula surrogate model for the evaluation of a canditate surrogate endpoint, 
 #' with different integration methods on the random effects, using a semiparametric penalized 
 #' likelihood estimation. This approach extends that of Burzykowski \code{et al.} (2001) by 
 #' including in the bivariate copula model the random effects treatment-by-trial interaction. 
@@ -68,7 +68,7 @@
 #' 
 #' \bold{Surrogacy evaluation}
 #'
-#' We proposed to base validation of a candidate surrogate endpoint on Kendall's \eqn{\tau} at the individual level and 
+#' We propose to base validation of a candidate surrogate endpoint on Kendall's \eqn{\tau} at the individual level and 
 #' coefficient of determination at the trial level, as in the classical approach (Burzykowski \code{et al.}, 2001). 
 #' The formulations are given below.
 #' 
@@ -273,7 +273,7 @@
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa = c(0,0),
 #'    typecopula = 1, nb.decimal = 4, print.times = TRUE, print.iter = FALSE)
 #'
-#' @param data A \code{\link{data.frame}} containing at least seven variables intitled: 
+#' @param data A \code{\link{data.frame}} containing at least seven variables entitled: 
 #'    \itemize{
 #'    \item{\code{patientID:} A numeric, that represents the patient's identifier and must be unique;}
 #'    \item{\code{trialID:} A numeric, that represents the trial in which each patient was randomized;}
@@ -287,11 +287,12 @@
 #'    }
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' The default being \code{40}. 
-#' @param indicator.alpha A binary, indicates whether the power's parameter \eqn{\alpha} should 
+#' @param indicator.alpha A binary, indicating whether the power's parameter \eqn{\alpha} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
-#' @param frail.base Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
-#' the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}, or not (\code{0}). The default is \code{1}.
+#' @param frail.base A binary, indicating whether the heterogeneity between trial on the baseline 
+#' risk is considered (\code{1}) or not (\code{0}), using 
+#' the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}. The default is \code{1}.
 #' @param n.knots integer giving the number of knots to use. Value required in
 #' the penalized likelihood estimation.  It corresponds to the (n.knots+2)
 #' splines functions for the approximation of the hazard or the survival
@@ -335,7 +336,7 @@
 #' If the joint frailty model is 
 #' faced to convergence issues, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
 #' \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using 
-#' two shared frailty models.  In all others scenarios, if the simplified model does not converge,
+#' two shared frailty models.  In all other scenarios, if the simplified model does not converge,
 #' default given parameters values are used. Initial values for spline's associated parameters 
 #' are fixed to \code{0.5}. The default for this argument is \code{0}.
 #' @param thetacopula.init Initial values for the copula parameter (\eqn{\theta}), required if \code{true.init.val} 
@@ -357,10 +358,10 @@
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param betat.init Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param scale A numeric that allows to rescale the survival times, to avoid numerical 
-#' problems in the event of some convergence issues. If no change is need the argument is set to 1, the default value. 
-#' eg: 365 aims to convert days to years ".
-#' @param random.generator Random number generator to use by the Fortran compiler, 
+#' @param scale A numeric that allows to rescale (by multiplication) the survival times, to avoid numerical 
+#' problems in the event of some convergence issues. If no change is needed the argument is set to 1, the default value. 
+#' eg: \code{1/365} aims to convert days to years ".
+#' @param random.generator Random number generator used by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 #' subroutine \code{uniran()}. The default is \code{1}. In the event of convergence problem 
 #' with \code{int.method} set to \code{0}, \code{2} or \code{4}, that requires  
@@ -384,7 +385,7 @@
 #' The default is \code{0}.
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
-#' @param ckappa Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
+#' @param ckappa Vector of two fixed values to add to the smoothing parameters. By default it is set to (0,0). this argument allows
 #' to well manage the smoothing parameters in the event of convergence issues.
 #' @param typecopula The copula function used, can be 1 for clayton or 2 for Gumbel-Hougaard. The default is \code{1}
 #' @param nb.decimal Number of decimal required for results presentation.

@@ -18,10 +18,10 @@
 ##' @param ... other unused arguments.
 ##' 
 ##' @return This function displays the boxplots corresponding to the number of trials in the 
-##' dataset. Each boxplot included 3 elements correnponding to the predicted treatment effect on true endpoint
+##' dataset. Each boxplot includes 3 elements correnponding to the predicted treatment effect on true endpoint
 ##' with the prediction interval. The circle inside or outside the boxplot represents the observed
-##' treatment effect on true endpoint. For all unused trials due to convergence issues or outliers, the boxplot is just represents
-##' by a dash. In the last case, we display in the main of the figure a vector of unused trials, if argument \code{main} 
+##' treatment effect on true endpoint. For all trials with convergence issues or outliers, the boxplot is just represented
+##' by a dash. In the last case, we display in the main of the figure a vector of these trials, if argument \code{main} 
 ##' is set to \code{NULL}. The function returns the list of unused trials.
 ##' @seealso \code{\link{loocv}}
 ##' 

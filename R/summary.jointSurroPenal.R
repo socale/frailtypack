@@ -40,7 +40,7 @@
 #'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} according to 
 ##' the suggestion of the Institute of Quality and Efficiency in Health Care 
 ##' (Prasad \emph{et al.}, 2015). 
-##' We also display the surrogate threshold effect (\code{\link[=ste]{STE}}) with the associated hazard risk.
+##' We also display the surrogate threshold effect (\code{\link[=ste]{ste}}) with the associated hazard risk.
 ##' The rest of parameters concerns the convergence characteristics and 
 ##' included: the penalized marginal log-likelihood, the number of iterations, the LCV and the Convergence criteria.
 ##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}, \link{jointSurroTKendall}}

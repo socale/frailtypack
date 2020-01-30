@@ -6,7 +6,7 @@
 canditate surrogate endpoint.}
 \usage{
 \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
-ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", ...)
+ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", from = -2, to = 2, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -40,6 +40,10 @@ The default is \code{error.estim}.}
 and confidence intervals. Default of 3 digits is used.}
 
 \item{colCI}{The color used to display the confidence interval.}
+
+\item{from, }{The range over which the function will be plotted. The default is \code{from -2 to 2}}
+
+\item{to}{}
 
 \item{...}{other unused arguments.}
 }

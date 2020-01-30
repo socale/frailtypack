@@ -1,4 +1,4 @@
-##' Predict Method for the one-step Joint surrogate model for the evaluation of a 
+##' Predict Method for the one-step Joint surrogate models for the evaluation of a 
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
@@ -15,9 +15,9 @@
 ##' @usage
 ##' 
 ##' \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
-##' ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", ...)
+##' ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", from = -2, to = 2, ...)
 ##' @param object An object inheriting from \code{jointSurroPenal} class
-##' (output from calling the function \code{jointSurroPenal} or \code{jointSurrocopPenal}).
+##' (output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).
 ##' @param datapred Dataset to use for the prediction. If this argument is specified,
 ##' the data structure must be the same as the parameter \code{data} in the 
 ##' function \link{jointSurroPenal} or \link{jointSurroCopPenal}. However, if observation on te true endpoint are
@@ -25,7 +25,7 @@
 ##' @param betaS.obs Observed treatment effect on the surrogate endpoint, to use for the prediction of
 ##' the treatment effect on the true endpoint. If not null, this value is used for prediction insted of
 ##' \code{datapred}. The default is \code{NULL}.
-##' @param betaT.obs Observec treatment effect on the true endpoint. Used to assess the prediction if not null.
+##' @param betaT.obs Observed treatment effect on the true endpoint. Used to assess the prediction if not null.
 ##' The defaut is \code{NULL}.
 ##' @param var.used This argument can take two values. The first one is \code{"error.estim"}
 ##' and indicates if the prediction error take into account
@@ -39,16 +39,19 @@
 ##' @param dec The desired number of digits after the decimal point for parameters
 ##' and confidence intervals. Default of 3 digits is used.
 ##' @param colCI The color used to display the confidence interval.
+##' @param from, The range over which the function will be plotted. The default is \code{from -2 to 2}
+##' @param to 
 ##' @param ... other unused arguments.
 ##' 
 ##' @return Returns and display a dataframe including for each trial the number of included subjects 
 ##' (if available), the observed 
 ##' treatment effect on surrogate endpoint, the observed treatment effect on
 ##' true endpoint (if available) and the predicted treatment effect on 
-##' true enpoint with the associated prediction intervals. If the observed treatment effect on true 
+##' true enpoint with the associated prediction intervals. If the observe treatment effect on true 
 ##' endpoint (if available) is included into the prediction interval, the last columns contains "*".
-##' For the given treatment effects on the surrogate enpoint, plot the associated treatment effects 
-##' on the true endpoint predicted from the joint surrogate model with the prediction intervals.
+##' This function also produces a plot of predicted treatment effects on the true endpoint
+##' according to the given values of the treatment effects on the surrogate endpoint, with 
+##' the prediction intervals.
 ##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -88,7 +91,7 @@
 ##' 
 "predict.jointSurroPenal" <- function (object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
                                        ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, 
-                                       dec = 3, colCI = "red", ...)
+                                       dec = 3, colCI = "red", from = -2, to = 2, ...)
 {
   if (!inherits(object, "jointSurroPenal"))
     stop("object must be of class 'jointSurroPenal'")
@@ -263,7 +266,7 @@
 
   }
   matrixPred[,-c(1,2,8)] <- round(matrixPred[,-c(1,2,8)],dec)
-  plot.predict.jointSurroPenal(object)
+  plot.predict.jointSurroPenal(object, from = from, to = to)
   for(k in 1:nrow(matrixPred)){
     points(matrixPred$beta.S[k],matrixPred$beta.T.i[k])
     points(matrixPred$beta.S[k],matrixPred$Inf.95.CI[k], col = colCI)

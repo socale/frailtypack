@@ -99,7 +99,7 @@ plot.predict.jointSurroPenal= function(object, from = -2, to = 2, type = "Coef",
   if(var.used == "error.estim"){
     if(type == "Coef"){ # log HR
       curve (expr = beta + (dab/daa) * (x - alpha), from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(", round(exp(ste(object, var.used = var.used)), d), ")"))
+             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(HR = ", round(exp(ste(object, var.used = var.used)), d), ")"))
       #inf
       expressInf <- function(x){
         beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
@@ -121,7 +121,7 @@ plot.predict.jointSurroPenal= function(object, from = -2, to = 2, type = "Coef",
     }
     else{ # HR
       curve (expr = exp(beta + (dab/daa) * (x - alpha)), from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(", round(exp(ste(object, var.used = var.used)), d), ")"))
+             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(HR = ", round(exp(ste(object, var.used = var.used)), d), ")"))
       #inf
       expressInf <- function(x){
         exp(beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
@@ -145,7 +145,7 @@ plot.predict.jointSurroPenal= function(object, from = -2, to = 2, type = "Coef",
   else{
     if(type == "Coef"){ # log HR
       curve (expr = beta + (dab/daa) * (x - alpha), from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(", round(exp(ste(object, 
+             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(HR = ", round(exp(ste(object, 
                            var.used = var.used)), d), ")"))
       #inf
       curve (expr = beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * sqrt(
@@ -158,7 +158,7 @@ plot.predict.jointSurroPenal= function(object, from = -2, to = 2, type = "Coef",
     }
     else{ # HR
       curve (expr = exp(beta + (dab/daa) * (x - alpha)), from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(", round(exp(ste(object, var.used = var.used)), d), ")"))
+             main = paste("STE = ", round(ste(object, var.used = var.used), d), "(HR = ", round(exp(ste(object, var.used = var.used)), d), ")"))
       #inf
       curve (expr = exp(beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * sqrt(
         dbb * (1 - R2trial))),
