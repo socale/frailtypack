@@ -59,7 +59,7 @@
 !AD:add
     double precision,dimension(2),intent(out)::LCV
     double precision::ca,cb,dd
-    double precision,external::funcpassplines,funcpascpm,funcpasweib
+    double precision,external::funcpassplines,funcpascpm,funcpasweib, funcpasweibgen
     double precision,external::funcpascpm_intcens,funcpassplines_intcens,funcpasweib_intcens
     double precision,external::funcpassplines_log,funcpasweib_log,funcpascpm_log
     double precision,external::funcpas_tps
@@ -977,7 +977,8 @@ call dblepr("SUBROUTINE FRAILPENAL, NB : marq98j necessite vrais (dans funcpassp
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasweib_intcens)
                     else
                         call dblepr("subroutine FRAILPENALGEN --- appel marq98j (def dans aaOptim.f90)", -1, 0.d0, 1)
-                        call dblepr("subroutine FRAILPENALGEN --- NB : marq98j necessite vrais (dans funcpasweibgen.f90)", -1, 0.d0, 1)
+                        call dblepr("subroutine FRAILPENALGEN --- NB : marq98j necessite vrais (dans funcpasweibgen.f90)",&
+						-1, 0.d0, 1)
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasweibgen)
                     endif
                 else

@@ -473,7 +473,7 @@
 #' package authors).
 #' }
 #'
-#' @aliases GenfrailtyPenal waldtest factor.names timedep.names
+#' @aliases GenfrailtyPenal
 #' @usage
 #'
 #' GenfrailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,

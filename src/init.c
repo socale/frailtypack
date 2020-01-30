@@ -36,7 +36,7 @@ static const R_FortranMethodDef FortEntries[] = {
     {"test",                 (DL_FUNC) &F77_SUB(test),       3},
     {"surrosim",             (DL_FUNC) &F77_SUB(surrosim), 36},
     {"jointsurrokendall",    (DL_FUNC) &F77_SUB(jointsurrokendall), 24},
-    {"frailpenalgen",           (DL_FUNC) &F77_SUB(frailpenal),           59},
+    {"frailpenalgen",           (DL_FUNC) &F77_SUB(frailpenalgen),           59},
     {NULL, NULL, 0}
 };
 

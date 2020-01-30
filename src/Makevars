@@ -33,7 +33,7 @@ funcpaacpm.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpaaweib.o: aaOptim.o aaOptimres.o Aparameters.o
 
 frailtypack.o: aaOptim.o aaOptimres.o Aparameters.o
-frailtypackgen.o: frailtypack.o
+frailtypackgen.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpassplines.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpascpm.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpasweib.o: aaOptim.o aaOptimres.o Aparameters.o
