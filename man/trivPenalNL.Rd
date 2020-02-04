@@ -197,6 +197,8 @@ terminal event are estimated. By default seq(0,max(time),length=99), where
 time is the vector of survival times.} \item{lamD}{The array (dim=3) of
 baseline hazard estimates and confidence bands.} \item{survD}{The array
 (dim=3) of baseline survival estimates and confidence bands.}
+\item{medianR}{The value of the median survival and its confidence bands for the recurrent event.}
+\item{medianD}{The value of the median survival and its confidence bands for the terminal event.}
 \item{typeof}{The type of the baseline hazard function (0:"Splines",
 "2:Weibull").} \item{npar}{The number of parameters.} \item{nvar}{The vector
 of number of explanatory variables for the recurrent events, terminal event,
@@ -336,7 +338,7 @@ is available: the random effects \bold{b}\out{<sub>i</sub>}. The frailty term
 v\out{<sub>i</sub>} is gaussian with mean 0 and variance \eqn{\sigma}\out{<sub>v</sub>}. Together with
 \bold{b}\out{<sub>i</sub>} constitutes the random effects of the model: 
 
-{\figure{trivNLmodel2.png}{options: width="100\%"}}
+{\figure{trivNLmodel3.png}{options: width="100\%"}}
 
 Any combination of the random effects \bold{b}\out{<sub>i</sub>}, e.g.
 \bold{b}\out{<sub>i</sub>}=b\out{<sub>y0,i</sub>} or \bold{b}\out{<sub>i</sub>} =
@@ -358,7 +360,7 @@ includes the effect of the natural net growth and the treatment effect:
 
 \deqn{\left\{ \begin{array}{ll}
 \frac{dy_{i}(t)}{dt}&=\exp(K_{G,0}+b_{G,i}+\bold{X}_{G,i}(t)^\top\bold{\beta}_G)y_{i}(t)\\
-&-d_i\exp(K_{D,0}+b_{D,i}-t\times\exp(\lambda+b_{\lambda,i})+\bold{X}_{D,i}(t)^\top\bold{\beta}_D)\\
+&-d_i\exp(K_{D,0}+b_{D,i}-t\times\exp(\lambda+b_{\lambda,i})+\bold{X}_{D,i}(t)^\top\bold{\beta}_D)y_{i}(t)\\
 y_{i}(0)&=\exp(y_0+b_{y_0,i}) \\ \end{array}, \right. }
 
 The model includes the following parameters (using the interpretation of
@@ -387,7 +389,7 @@ mixed effects model for the longitudinal data:
 y(t_{ik})&=\exp[y_0+b_{y_0,i}+t_{ik}\times\exp(K_{G,0}+b_{G,i}+\bold{X}_{G,i}(t)^\top\bold\beta_{G})\\
 &+d_i\times
 \exp(K_{D,0}+b_{D,i}-\lambda-b_{\lambda,i}+\bold{X}_{D,i}(t)^\top\bold{\beta}_{D})\\
-&\times(\exp((\lambda+b_{\lambda,i})t_{ik})-1)]+\epsilon_{ik}\\
+&\times(\exp(-\exp(\lambda+b_{\lambda,i})t_{ik})-1)]+\epsilon_{ik}\\
 r_{ij}(t|\bold{b}_i)&=r_0(t)\exp(v_i+\bold{X}_{Rij}(t)^\top\bold{\beta}_R+g(y_i(t))^\top
 \bold{\eta}_R ) \\ \lambda_i(t|\bold{b}_i)&=\lambda_0(t)\exp(\alpha
 v_i+\bold{X}_{Ti}(t)^\top\bold{\beta}_T+h(y_i(t))^\top \bold{\eta}_T ) \\

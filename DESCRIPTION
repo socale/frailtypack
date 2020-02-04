@@ -1,35 +1,38 @@
 Package: frailtypack
 Version: 3.2.0
-Date: 2019-03-29
+Date: 2020-02-04
 Title: General Frailty Models: Shared, Joint and Nested Frailty Models
         with Prediction; Evaluation of Failure-Time Surrogate Endpoints
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
-        Agnieszka Krol and Casimir L. Sofeu
+        Agnieszka Krol, Casimir L. Sofeu, Julien Dumerc, Denis Rustand
 Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
 Depends: R (>= 2.10), survival, boot, MASS, survC1, doBy
-Imports: statmod, nlme
+Imports: statmod, nlme, shiny, shinyjs,shinyBS,shinydashboard,rhandsontable,shinythemes,jsonlite
 LazyLoad: no
 Description: The following several classes of frailty models using a penalized likelihood estimation on the hazard function but also a parametric estimation can be fit using this R package:
         1) A shared frailty model (with gamma or log-normal frailty distribution) and Cox proportional hazard model. Clustered and recurrent survival times can be studied.
         2) Additive frailty models for proportional hazard models with two correlated random effects (intercept random effect with random slope).
         3) Nested frailty models for hierarchically clustered data (with 2 levels of clustering) by including two iid gamma random effects.
         4) Joint frailty models in the context of the joint modelling for recurrent events with terminal event for clustered data or not. A joint frailty model for two semi-competing risks and clustered data is also proposed.
-		5) Joint general frailty models in the context of the joint modelling for recurrent events with terminal event data with two independent frailty terms.
-		6) Joint Nested frailty models in the context of the joint modelling for recurrent events with terminal event, for hierarchically clustered data (with two levels of clustering) by including two iid gamma random effects.
-		7) Multivariate joint frailty models for two types of recurrent events and a terminal event.
-		8) Joint models for longitudinal data and a terminal event.
-		9) Trivariate joint models for longitudinal data, recurrent events and a terminal event. 
-		10) Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints 
-		11) Joint frailty-copula models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints 
+	5) Joint general frailty models in the context of the joint modelling for recurrent events with terminal event data with two independent frailty terms.
+	6) Joint Nested frailty models in the context of the joint modelling for recurrent events with terminal event, for hierarchically clustered data (with two levels of clustering) by including two iid gamma random effects.
+	7) Multivariate joint frailty models for two types of recurrent events and a terminal event.
+	8) Joint models for longitudinal data and a terminal event. 
+	9) Trivariate joint models for longitudinal data, recurrent events and a terminal event. 
+	10) Joint frailty models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints 
+        11) Two-part joint model for longitudinal semicontinuous data and a terminal event.
+        12) Joint frailty-copula models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints.
 		Prediction values are available (for a terminal event or for a new recurrent event). Left-truncated (not for Joint model), right-censored data, interval-censored data (only for Cox proportional hazard and shared frailty model) and strata are allowed. In each model, the random effects have the gamma or normal distribution. Now, you can also consider time-varying covariates effects in Cox, shared and joint frailty models (1-5). The package includes concordance measures for Cox proportional hazards models and for shared frailty models.
+		Moreover, the package can be used with its shiny application, in a local mode or by following the link below.
 License: GPL (>= 2.0)
 URL:
         https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
+        https://frailtypack-pkg.shinyapps.io/shiny_frailtypack
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 Repository: CRAN
-Date/Publication: 2019-03-29 15:22:03 UTC
-Packaged: 2019-03-29 15:22:26 UTC; Casimir
+Date/Publication: 2020-02-04 15:22:03 UTC
+Packaged: 2020-02-04 15:22:26 UTC; Casimir
 NeedsCompilation: yes
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

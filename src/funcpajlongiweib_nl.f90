@@ -32,18 +32,18 @@
             ! for the numerical integral hrmsym
         integer :: restar,nf2
         double precision:: epsabs,epsrel
-        double precision,dimension(2):: result, abserr2
-        double precision,dimension(1000) :: work
+        !double precision,dimension(2):: result, abserr2
+        !double precision,dimension(1000) :: work
         external :: vraistot,vraistot_weib
         double precision,dimension(nea) :: xea
-        integer ::neval,ifail
+        !integer ::neval,ifail
     
-        integer::l
+        !integer::l
     double precision :: eps_w,finddet
         double precision,dimension(ngmax)::integrale4
         double precision,parameter::pi=3.141592653589793d0
-            double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
-                    double precision,dimension(nva3,nva3) :: element
+            !double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
+                    !double precision,dimension(nva3,nva3) :: element
              double precision,dimension(nea*(nea+1)/2)::matv
     
   
@@ -410,27 +410,27 @@
     
         integer::n,i,j,k,vj,ig,choix,ier,jj
         integer,dimension(ngmax)::cpt
-        double precision::sum,res,eps
+        double precision::res,eps
     
     double precision,dimension(np)::bh
         double precision,dimension(ngmax)::res2,res1dc,res2dc &
         ,res3dc,integrale1,integrale2,integrale3
-        double precision::int
+        !double precision::int
             ! for the numerical integral hrmsym
-        integer :: restar,nf2
-        double precision:: epsabs,epsrel
-        double precision,dimension(2):: result, abserr2
-        double precision,dimension(1000) :: work
+        !integer :: restar,nf2
+        !double precision:: epsabs,epsrel
+        !double precision,dimension(2):: result, abserr2
+        !double precision,dimension(1000) :: work
         external :: vraistot,vraistot_weib
-        double precision,dimension(nea) :: xea
-        integer ::neval,ifail
+        !double precision,dimension(nea) :: xea
+        !integer ::neval,ifail
     
-        integer::l
+        !integer::l
     double precision :: eps_w,finddet
-        double precision,dimension(ngmax)::integrale4
+        !double precision,dimension(ngmax)::integrale4
         double precision,parameter::pi=3.141592653589793d0
-            double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
-                    double precision,dimension(nva3,nva3) :: element
+            !double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
+                    !double precision,dimension(nva3,nva3) :: element
              double precision,dimension(nea*(nea+1)/2)::matv
     
   

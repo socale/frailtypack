@@ -5,8 +5,9 @@ $(SHLIB): $(OBJECTS)
 
 # nouvel ajout pour OpenMP: scl_20-06-2018
 # pour Fortran 90/95: see Writing R Extensions (Version 3.5.0 Patched (2018-06-18)), page 24
-PKG_FCFLAGS = $(SHLIB_OPENMP_FFLAGS)
+PKG_FFLAGS = $(SHLIB_OPENMP_FFLAGS)
 PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)
+#PKG_FCFLAGS = $(SHLIB_OPENMP_FCFLAGS) # openmp falg /windows
 
 # Setup dependencies for parallel make
 prediction.o: Aparameters.o

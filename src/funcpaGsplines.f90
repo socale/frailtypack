@@ -9,7 +9,7 @@
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt0dc,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,&
     stra,ve,vedc,pe,effet,ng,g,nig,AG,indic_ALPHA,theta,alpha,&
-    auxig,aux1,aux2,res1,res3,resnonpen
+    auxig,aux1,aux2,res1,res3,resnonpen,nb_gl
     use tailles
     use comongroup
     use residusM
@@ -18,7 +18,7 @@
 
     integer::nb,n,np,id,jd,i,j,k,vj,cptg,l,ig,choix
     integer,dimension(ngmax)::cpt
-    double precision::thi,thj,pe1,pe2,dnb,sum,inv,som1,som2,res,h1,int,gammaJ
+    double precision::thi,thj,pe1,pe2,dnb,sum,inv,som1,som2,res,h1,int,logGammaJ
     double precision,dimension(ngmax)::res2,res1dc,res2dc,res3dc
     double precision,dimension(np)::b,bh
     double precision,dimension(2)::k0
@@ -207,7 +207,7 @@
 
         res = 0.d0
         cptg = 0
-!     gam2 = gammaJ(inv)
+!     gam2 = logGammaJ(inv)
 ! k indice les groupes
 
         do k=1,ng
@@ -215,7 +215,7 @@
             if(cpt(k).gt.0)then
                 nb = nig(k)
                 dnb = dble(nig(k))
-!     gam1 = gammaJ(dnb + inv)
+!     gam1 = logGammaJ(dnb + inv)
                 if (dnb.gt.1.d0) then
                     do l=1,nb
                         sum=sum+dlog(1.d0+theta*dble(nb-l))
@@ -338,7 +338,7 @@
         do ig=1,ng
             auxig=ig
             choix = 3
-            call gaulagJ(int,choix)
+            call gaulagJ(int,choix,nb_gl)
             integrale3(ig) = int !moins bon 
 ! parfois quand bcp de deces par groupe integrale3=0
             if(integrale3(ig).lt.1.d-300)then
@@ -354,7 +354,7 @@
 ! ancienne vraisemblance : pour calendar sans vrai troncature cccccccc
                     res= res + res2(k) &
 !--      pour le deces:
-                    + res2dc(k)-gammaJ(1.d0/theta)-dlog(theta)/theta &
+                    + res2dc(k)-logGammaJ(1.d0/theta)-dlog(theta)/theta &
                     + dlog(integrale3(k))
                 else
 !*******************************************************
@@ -362,7 +362,7 @@
 !*******************************************************
 !        write(*,*)'******* TAYLOR *************'
                     res= res + res2(k)+ res2dc(k) &
-                    - gammaJ(1.d0/theta)-dlog(theta)/theta  &
+                    - logGammaJ(1.d0/theta)-dlog(theta)/theta  &
                     + dlog(integrale3(k)) 
                 endif
                 if ((res.ne.res).or.(abs(res).ge. 1.d30)) then

@@ -63,14 +63,14 @@
         double precision,dimension(nsujety0,2) :: matzy0
         double precision,dimension(nsujety0) :: yy0
         double precision,dimension(np,np)::H_hessOut,HIHOut
-        double precision::resOut,epsj
+        double precision::resOut
         double precision,dimension(mtaille(1))::x1Out
         double precision,dimension(mtaille(2))::x2Out
         double precision,dimension(mtaille(1),3)::lamOut
         double precision,dimension(mtaille(3),3)::suOut
         double precision,dimension(mtaille(2),3)::lam2Out
         double precision,dimension(mtaille(4),3)::su2Out
-        integer::ss,sss,itj,ig,jj
+        integer::ss,sss,itj
         double precision,dimension(np):: b
         double precision,dimension(2),intent(out)::LCV
         double precision,dimension(2)::shapeweib,scaleweib
@@ -83,7 +83,7 @@
         integer,dimension(3),intent(out)::counts
         integer::groupe,groupey,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2   &
         ,i,ic,icdc,cptni,cptni1,cptni2,nb_echec,nb_echecor,id,cptbiais &
-        ,cptauxdc,p,ier,istop
+        ,cptauxdc,ier,istop
         double precision::tt0,tt0dc,tt1,tt1dc,h,hdc,res,min,mindc,max,pord, &
         maxdc,maxt,maxtdc,moy_peh0,moy_peh1,lrs,BIAIS_moy,mintdc !! rajout
         double precision,dimension(2)::res01
@@ -95,9 +95,9 @@
     
         integer::typeof0
     !predictor
-        double precision,dimension(ng0)::Resmartingale,Resmartingaledc!,frailtypred!,frailtyvar
+        !double precision,dimension(ng0)::Resmartingale,Resmartingaledc!,frailtypred!,frailtyvar
     
-        double precision,dimension(ng0,nb0+effet0)::re_pred
+        !double precision,dimension(ng0,nb0+effet0)::re_pred
         !double precision,dimension(ng0,nb0+effet0+2),intent(out)::MartinGales
         !double precision,dimension(nsujety0,2):: Pred_y0
       !      double precision,dimension(nsujety0,4),intent(out):: ResLongi
@@ -106,14 +106,14 @@
     
         double precision,external::funcpajres,funcpajres_log,funcpajres_triNL
         double precision,external::funcsplines_nl,funcweib_nl
-        double precision,dimension(nsujet0)::linearpred
-        double precision,dimension(ng0)::linearpreddc
+        !double precision,dimension(nsujet0)::linearpred
+        !double precision,dimension(ng0)::linearpreddc
         double precision,dimension(1,nva10)::coefBeta
         double precision,dimension(1,nva20)::coefBetadc
         double precision,dimension(1,nva30)::coefBetaY
-        double precision::coefBeta2,rl_temp
+        !double precision::rl_temp
         double precision,dimension(1,nsujet0)::XBeta
-        double precision,dimension(1,nsujety0)::XBetaY
+        !double precision,dimension(1,nsujety0)::XBetaY
         double precision,dimension(1,ng0)::XBetadc
         integer,dimension(nb0)::RE_which0
     
@@ -124,9 +124,9 @@
        
            double precision,dimension(ng0,nb0+1+nb0+ (nb0*(nb0-1))/2),intent(in):: paGH0
                double precision,dimension(ng0,nb0+1+nb0 + (nb0*(nb0-1))/2)::paGH
-                 double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
-            double precision,dimension(:),allocatable :: matv
-            double precision,dimension(nva30,nva30) :: element
+                 !double precision,dimension(:,:),allocatable :: varcov_marg_inv
+            !double precision,dimension(:),allocatable :: matv
+            !double precision,dimension(nva30,nva30) :: element
         
         mt1=mtaille(1)
         mt2=mtaille(2)
@@ -1717,9 +1717,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,betaD,etaD,t0dc,t1dc,link
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt,
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox1,box_cox_par
         use donnees_indiv
@@ -1728,14 +1728,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -1860,9 +1860,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !nmesy,auxig
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,betaD,etaD,t0dc,t1dc,link
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey,typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -1871,14 +1871,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -1931,9 +1931,9 @@
         uii = matmul(Xea22,mat)
     
             uiiui=matmul(uii,Xea2)
-    
 
-                mu1(1:nmescur,1)  =((dexp(y0+dexp(K_G0+Xea22(1)+mu(1:nmescur,1))*ziy((it+1):(it+nmescur),1)+&
+
+                mu1(1:nmescur,1)  =((dexp(y0+Xea22(1)+dexp(K_G0+mu(1:nmescur,1))*ziy((it+1):(it+nmescur),1)+&
             ziy((it+1):(it+nmescur),2)*dexp(K_D0-lambda+mu(1:nmescur,2))*&!-Xea22(3)+Xea22(2)
         (dexp(-dexp(lambda)*ziy((it+1):(it+nmescur),1))-1)))**box_cox_par-box_cox1)/box_cox_par
         
@@ -2002,9 +2002,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,betaD,etaD,t0dc,t1dc,link
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -2013,14 +2013,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -2144,9 +2144,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,betaD,etaD,t0dc,t1dc,link
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -2155,14 +2155,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -2288,9 +2288,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy 
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,betaD,etaD,t0dc,t1dc,link
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -2299,14 +2299,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -2430,9 +2430,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -2441,14 +2441,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -2572,9 +2572,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -2583,14 +2583,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -2715,9 +2715,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -2726,14 +2726,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -2858,9 +2858,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -2869,14 +2869,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -3001,9 +3001,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -3012,14 +3012,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -3144,9 +3144,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -3155,14 +3155,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -3287,9 +3287,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -3298,14 +3298,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -3430,9 +3430,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -3441,14 +3441,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -3573,9 +3573,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -3584,14 +3584,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          
@@ -3716,9 +3716,9 @@
     use optim
         use tailles
         use donnees
-        use comon,only:auxig,alpha,nig,cdc,sigmae,nmesy,&
-            nva2,npp,nva3,vedc,nea,nb1,betaD,etaD,t0dc,t1dc,etaydc,etayr,link,&
-            vey, typeof,s_cag_id,s_cag,ut,utt,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,&
+        use comon,only:alpha,nig,cdc,sigmae,& !auxig,nmesy
+            nea,nb1,etaydc,etayr,& !nva2,npp,nva3,vedc,link,betaD,etaD,t0dc,t1dc
+            s_cag_id,s_cag,methodGH,b_lme,invBi_chol,matb_chol,nnodes_all,& !vey, typeof,ut,utt
             nodes,weights,yy,it,ziy,mat,det,invBi_cholDet,K_D0,K_G0,lambda,y0,&
             netar,netadc,RE_which,box_cox_par,box_cox1
         use donnees_indiv
@@ -3727,14 +3727,14 @@
         double precision,intent(out)::ss
         double precision::aux,res
        
-        double precision :: yscalar,eps,alnorm,prod_cag
-        integer :: j,i,jj,k,ier,n,licznik
+        double precision :: yscalar,alnorm,prod_cag
+        integer :: j,i,k,n,licznik
         double precision,dimension(nea,1)::  Xea2
         double precision,dimension(nea):: uii, Xea22,Xea
         double precision,dimension(1)::uiiui
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,func10J
+        double precision :: func10J
         double precision,parameter::pi=3.141592653589793d0
         double precision:: b_y0, b_K_G0,b_K_D0,b_lambda
          

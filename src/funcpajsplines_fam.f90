@@ -11,7 +11,7 @@
     c,cdc,nt0,nt1,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,& 
     effet,stra,ve,vedc,pe,ng,g,nig,indic_ALPHA,ALPHA,theta,nstRec,k0T, & 
     fam,nfam,fsize,indic_xi, xi, eta, & !for family 
-    aux1,aux2,res1,res3,kkapa,resnonpen 
+    aux1,aux2,res1,res3,kkapa,resnonpen,nb_gl 
     use residusM
     use comongroup,only:vet,vet2,the2!,the1
 
@@ -42,7 +42,7 @@
     double precision,dimension(0:ndatemax,nstRec)::ut1T
     double precision,dimension(0:ndatemaxdc)::ut2
     double precision::int
-    !deleted unused gammaJ argument %myriam
+    !deleted unused logGammaJ argument %myriam
         
     kkapa=k0
     choix=0
@@ -303,7 +303,7 @@
 !**************INTEGRALES ****************************
 
         choix = 3
-        call gaulagJf(int)
+        call gaulagJf(int,nb_gl)
         res=int
  !       write(*,*) 'funcpajslines: sum(loglik_family)', res
 
@@ -329,7 +329,7 @@
 
             endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-!                 print*,"here",k,res2(k),res2dc(k),gammaJ(1./theta),dlog(theta),dlog(integrale3(k))
+!                 print*,"here",k,res2(k),res2dc(k),logGammaJ(1./theta),dlog(theta),dlog(integrale3(k))
                 funcpajsplines_fam=-1.d9
                 goto 123
             end if
@@ -403,7 +403,7 @@
         goto 123
 
     else
-	     funcpajsplines_fam = res
+    funcpajsplines_fam = res
         do k=1,ng
 		
             Rrec(k)=res1(k)
@@ -413,13 +413,13 @@
         end do
         k=0
         do i= 1,nfam
-		     do j=1,fsize(i)
+        do j=1,fsize(i)
 		!	 if(i.eq.1) then 
 		!	 write(*,*)i,fam(i),fsize(i),fsize(1)+j,aux1(fsize(1)+j)
 		!	else  
 		!	write(*,*)i,fam(i),fsize(i),aux1(k+j)
 		!	end if
-			 cumulhaz1(i,j) = res1(k+j)
+        cumulhaz1(i,j) = res1(k+j)
                 cumulhaz0(i,j) = res3(k+j)
                 cumulhazdc(i,j) = aux1(k+j)
 				

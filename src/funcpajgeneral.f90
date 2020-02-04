@@ -5,14 +5,14 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
     mm3,mm2,mm1,mm,im3,im2,im1,im,date,zi,t0,t1,c,nt0,nsujet,nva,ndate, &
     nst,ve,pe,effet,nz1,nz2,ng,g,nig,resnonpen,theta,eta, &
     nva1,nva2,t0dc,t1dc,cdc,res1,res3,res4,res5,&
-    vedc,aux1,aux2, auxig, indic_eta
+    vedc,aux1,aux2, auxig, indic_eta,nb_gl
 
     use tailles
     use comongroup
 
     implicit none
       integer  n,np,id,jd,i,j,k,vj,ig,gap,choix,kk
-      double precision  thi,thj,pe1,pe2,sum,inv,som1,som2,gammaJ
+      double precision  thi,thj,pe1,pe2,sum,inv,som1,som2,logGammaJ
       double precision,dimension(2)::k0
       integer,dimension(ng)::cpt
       double precision,dimension(np)::b,bh
@@ -248,15 +248,15 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
           do ig=1,ng
                  auxig=ig
                  choix = 3
-                 call gaulagJ(int,choix)
+                 call gaulagJ(int,choix,nb_gl)
                  integrale3(ig) = int !moins bon
 
                  choix = 4
-                 call gaulagJ(int4,choix)
+                 call gaulagJ(int4,choix,nb_gl)
                  integrale4(ig) = int4
 
                  choix = 5
-                 call gaulagJ(int3gap,choix)
+                 call gaulagJ(int3gap,choix,nb_gl)
                  integrale3gap(ig) = int3gap
            end do
 ! ************ FIN INTEGRALES **************************
@@ -274,16 +274,16 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
 
                        if(t0dc(k).ne.0) then
                              res= res + res2(k) &
-                                + res2dc(k)+ gammaJ(1./theta+nig(k)+cdc(k)) &
-                                - gammaJ(1./theta) &
+                                + res2dc(k)+ logGammaJ(1./theta+nig(k)+cdc(k)) &
+                                - logGammaJ(1./theta) &
                                 + (nig(k)+cdc(k))*log(theta) &
                                 + log(integrale3(k)) &
                                 - log(integrale4(k))
                         else
                               res= res + res2(k)+ res2dc(k) &
-                                + gammaJ(1./theta+nig(k)+cdc(k)) &
+                                + logGammaJ(1./theta+nig(k)+cdc(k)) &
                                 - 1./eta*log(eta) &
-                                - gammaJ(1./eta)- gammaJ(1./theta) &
+                                - logGammaJ(1./eta)- logGammaJ(1./theta) &
                                 + (nig(k)+cdc(k))*log(theta) &
                                 + log(integrale3(k))
                         endif
@@ -291,9 +291,9 @@ double precision function funcpajgeneral(b,np,id,thi,jd,thj,k0)
                 else
                       res= res + res2(k) &
                         + res2dc(k) &
-                        - gammaJ(1./eta) &
-                        + gammaJ(1./theta+nig(k)+cdc(k)) &
-                        - gammaJ(1./theta)-log(eta)/eta &
+                        - logGammaJ(1./eta) &
+                        + logGammaJ(1./theta+nig(k)+cdc(k)) &
+                        - logGammaJ(1./theta)-log(eta)/eta &
                         + (nig(k)+cdc(k))*log(theta) &
                         + log(integrale3gap(k))
                 endif

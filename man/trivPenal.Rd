@@ -165,7 +165,9 @@ bands (recurrent events).}
 terminal event are estimated. By default seq(0,max(time),length=99), where
 time is the vector of survival times.} \item{lamD}{The array (dim=3) of
 baseline hazard estimates and confidence bands.} \item{survD}{The array
-(dim=3) of baseline survival estimates and confidence bands.}
+(dim=3) of baseline survival estimates and confidence bands.} 
+\item{medianR}{The value of the median survival and its confidence bands for the recurrent event.}
+\item{medianD}{The value of the median survival and its confidence bands for the terminal event.}
 \item{typeof}{The type of the baseline hazard function (0:"Splines",
 "2:Weibull").} \item{npar}{The number of parameters.} \item{nvar}{The vector
 of number of explanatory variables for the recurrent events, terminal event

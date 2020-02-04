@@ -33,7 +33,7 @@
     implicit none
     
     integer, dimension(4), intent(in)::indice_esti
-    integer::maxit0,nvatmp,mt1,mt2,mt11,mt12,nnodes,aaa,control !nn,npinit
+    integer::maxit0,mt1,mt2,mt11,mt12,nnodes,aaa,control !nn,npinit,nvatmp 
     integer,dimension(4),intent(in)::mtaille
     integer,intent(in)::nsujet0,ng0,nz0,nva10,nva20,lignedc0,ag0,ntrials0,nst0
     integer,intent(in),dimension(ntrials0)::trials
@@ -67,14 +67,14 @@
     integer,intent(in)::noVar1,noVar2,intcens0,param_weibull0 !param_weibull! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation 
     !                                                         a l'aide de la fonction de weibull donnee dans le cours de Pierre
     integer,intent(out)::cpt,cpt_dc,ier,ni
-    integer::groupe,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2,code   &
+    integer::groupe,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2   & !code
     ,i,ic,icdc,istop,cptni,cptni1,cptni2,nb_echec,nb_echecor,id,cptbiais &
-    ,cptauxdc,p,rang!,erreur
+    ,cptauxdc,p !rang,erreur
     double precision::tt0,tt0dc,tt1,tt1dc,h,hdc,res,min,mindc,max_, &
     maxdc,maxt,maxtdc,moy_peh0,moy_peh1,lrs,BIAIS_moy,ttU,mintdc !! rajout
     double precision,dimension(2)::res01
 !AD: add for new marq
-    double precision::ca,cb,dd,result_
+    double precision::ca,cb,dd !result_
     double precision,external::funcpajsplines_surrogate,funcpajsplines_surrogate_1,funcpajcpm,funcpajweib
     double precision,external::funcpajsplines_intcens,funcpajweib_intcens
     double precision,external::funcpajsplines_log,funcpajcpm_log,funcpajweib_log
@@ -2501,7 +2501,7 @@ deallocate(res2s_sujet,res2_dcs_sujet)
 ! !============================    GAMMA      ==============================
 
 ! !       function qui calcule le log de  Gamma
-    ! double precision function gammaJ(xx)
+    ! double precision function logGammaJ(xx)
     
     ! use donnees,only:cof,stp,half,one,fpf 
     
@@ -2521,11 +2521,11 @@ deallocate(res2s_sujet,res2_dcs_sujet)
         ! x = x + one
         ! ser = ser + cof(j)/x
     ! end do
-    ! gammaJ = tmp + dlog(stp*ser)
+    ! logGammaJ = tmp + dlog(stp*ser)
     
     ! return
     
-    ! end function gammaJ
+    ! end function logGammaJ
 
 
 ! !==================================================================
@@ -2558,10 +2558,10 @@ deallocate(res2s_sujet,res2_dcs_sujet)
     ! IMPLICIT NONE
 
     ! double precision,intent(in)::frail
-    ! double precision::gammaJ
+    ! double precision::logGammaJ
 
     ! func2J = dexp(-(frail**alpha)*aux2(auxig))*dexp(-frail/theta)*(frail) &
-    ! /(exp(gammaJ(1.d0/theta))*(theta**(1./theta)))
+    ! /(exp(logGammaJ(1.d0/theta))*(theta**(1./theta)))
 
     ! return
 

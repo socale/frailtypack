@@ -16,7 +16,7 @@
     ,linearpred,linearpreddc,ziOut,time,timedc & !kendall &
 !    ,initialisation,nn,Bshared ! enleve pour le moment
     ,linearpredG,typeJoint0,intcens0,indices0,ttU0, ordretmp, initialize &
-    ,logNormal0,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc, EPS)
+    ,logNormal0,paratps,filtretps0,BetaTpsMat,BetaTpsMatDc, EPS, nbgauss)
     
 !AD: add for new marq
     use parameters
@@ -127,6 +127,7 @@
 
     integer::ngtemp
     integer,intent(in)::logNormal0
+    integer,dimension(2),intent(in)::nbgauss
 
     integer,dimension(3),intent(in)::paratps
     integer,dimension(nva10+nva20),intent(in)::filtretps0
@@ -162,7 +163,9 @@
     !Myriam
     !vaxdc = 0.d0
     !vax = 0.d0
-
+    
+    nb_gh = nbgauss(1)
+    nb_gl = nbgauss(2)
     timedep = paratps(1)
     nbinnerknots = paratps(2)
     qorder = paratps(3)
@@ -1247,7 +1250,7 @@ end if
         do jj=1,nstRec+1
             k0T(jj)=xminT(jj)
         end do
-    
+
         !write(2,*) 'joint: typeof', typeof,'b',b,'np',np, 'effet',effet
         select case(typeof)
             case(0)
@@ -2730,7 +2733,7 @@ end if
 !============================    GAMMA      ==============================
 
 !       function qui calcule le log de  Gamma
-    double precision function gammaJ(xx)
+    double precision function logGammaJ(xx)
 
     use donnees,only:cof,stp,half,one,fpf
 
@@ -2750,11 +2753,11 @@ end if
         x = x + one
         ser = ser + cof(j)/x
     end do
-    gammaJ = tmp + dlog(stp*ser)
+    logGammaJ = tmp + dlog(stp*ser)
 
     return
 
-    end function gammaJ
+    end function logGammaJ
 
 
 !==================================================================
@@ -2787,10 +2790,10 @@ end if
     IMPLICIT NONE
 
     double precision,intent(in)::frail
-    double precision::gammaJ
+    double precision::logGammaJ
 
     func2J = dexp(-(frail**alpha)*aux2(auxig))*dexp(-frail/theta)*(frail) &
-    /(exp(gammaJ(1.d0/theta))*(theta**(1./theta)))
+    /(exp(logGammaJ(1.d0/theta))*(theta**(1./theta)))
 
     return
 
@@ -2831,19 +2834,19 @@ end if
     IMPLICIT NONE
 
     double precision,intent(in)::frail, frail2
-    double precision::gammaJ
+    double precision::logGammaJ
     !double precision:: xi
 
     if(indic_xi.eq.0) xi = 0.d0
 
-    func3Jf =  - gammaJ(1./theta)-dlog(theta)/theta &
+    func3Jf =  - logGammaJ(1./theta)-dlog(theta)/theta &
     + (xi*nig(auxig)+cdc(auxig))*dlog(frail2) &
     + (nig(auxig)+ alpha*cdc(auxig)+ 1./theta-1.)*dlog(frail) &
     - frail*(frail2**xi)*(res1(auxig)-res3(auxig)) & !res3=0 si AG=0
     - (frail**alpha)*frail2*aux1(auxig)-frail/theta
     
 !if(auxig.eq.140.and.frail2.eq.0.91658210754394531)then 
-!    write(*,*)- gammaJ(1./theta)-dlog(theta)/theta ,&
+!    write(*,*)- logGammaJ(1./theta)-dlog(theta)/theta ,&
 !     (xi*nig(auxig)+cdc(auxig))*dlog(frail2) ,&
 !    (nig(auxig)+ alpha*cdc(auxig)+ 1./theta-1.)*dlog(frail) ,&
 !    - frail,(frail2**xi),(res1(auxig)-res3(auxig)) ,& !res3=0 si AG=0
@@ -2872,10 +2875,10 @@ end if
         IMPLICIT NONE
 
         double precision,intent(in)::term, frail2
-        double precision::gammaJ
+        double precision::logGammaJ
 
         func3Jf2 = dlog(term)+(1./eta-1)*dlog(frail2)-frail2/eta &
-         - gammaJ(1./eta)-dlog(eta)/eta 
+         - logGammaJ(1./eta)-dlog(eta)/eta 
 
          func3Jf2 =exp(func3Jf2)
 !        write(*,*) 'func3Jf2: term', term, 'frail2', frail2, 'eta', eta
@@ -2956,7 +2959,7 @@ end if
 ! gauss laguerre
 ! func1 est l integrant, ss le resultat de l integrale sur 0 ,  +infty
 
-    subroutine gaulagJ(ss,choix)
+    subroutine gaulagJ(ss,choix,nnodes)
 
     use tailles
     use comon,only:typeof,typeJoint!auxig
@@ -2964,62 +2967,53 @@ end if
 
     implicit none
 
-    integer,intent(in)::choix
+    integer,intent(in)::choix,nnodes
     double precision,intent(out):: ss
     double precision :: auxfunca,func1J,func2J,func3J,func3bis
     double precision :: func3Jyass, func4Jyass, func3Jgap
     external :: func1J,func2J,func3J,func3bis
     integer :: j
+    
+    double precision,dimension(nnodes):: xx,ww
 
+    if(nnodes.eq.20) then
+      xx(1:nnodes) = x(1:nnodes)
+      ww(1:nnodes) = w(1:nnodes)
+    else if (nnodes.eq.32) then
+      xx(1:nnodes) = x1(1:nnodes)
+      ww(1:nnodes) = w1(1:nnodes)
+    end if
+    
     auxfunca = 0.d0
     ss=0.d0
 ! Will be twice the average value of the function,since the ten
 ! weights (five numbers above each used twice) sum to 2.
-    if ((typeof == 0).and.(.not.typejoint==2))then
-        do j=1,20
-          select case(choix)
-              case(1)             !integrale 1
-                  auxfunca=func1J(x(j))
-              case(2)             !choix=2, survie marginale, vraie troncature
-                  auxfunca=func2J(x(j))
-              case(3)             !choix=3, AG model
-                  if((typeJoint==1).or.(typeJoint==3))then
-                        auxfunca=func3J(x(j))
-                  else
-                       auxfunca=func3bis(x(j))
-                  endif
-          end select
 
-          ss = ss+w(j)*(auxfunca)
-        end do
-    else
-        do j=1,32
+        do j=1,nnodes
             select case(choix)
                 case(1)            !integrale 1
-                    auxfunca=func1j(x1(j))
+                    auxfunca=func1j(xx(j))
                 case(2)            !choix=2, survie marginale, vraie troncature
-                    auxfunca=func2j(x1(j))
+                    auxfunca=func2j(xx(j))
                 case(3)            !choix=3, AG model
                   if((typeJoint==1).or.(typeJoint==3))then
-                      auxfunca=func3J(x1(j))
+                      auxfunca=func3J(xx(j))
                   else if (typejoint==2) then
-                      auxfunca=func3Jyass(x1(j))
+                      auxfunca=func3Jyass(xx(j))
                   else
-                      auxfunca=func3bis(x1(j))
+                      auxfunca=func3bis(xx(j))
                   endif
                 case(4)
                   if (typejoint==2) then
-                      auxfunca=func4Jyass(x1(j))
+                      auxfunca=func4Jyass(xx(j))
                   endif
                 case(5)
                   if (typejoint==2) then
-                      auxfunca=func3Jgap(x1(j))
+                      auxfunca=func3Jgap(xx(j))
                   endif
             end select
-        ss = ss+w1(j)*(auxfunca)
-        !print *,"ss de ",j,"=", ss
-        end do
-    endif
+        ss = ss+ww(j)*(auxfunca)
+        end do 
 
     return
 
@@ -3027,7 +3021,7 @@ end if
 
 
 ! REVISED FOR family integral
-    subroutine gaulagJf(ss3)
+    subroutine gaulagJf(ss3,nnodes)
 
     use tailles
     use comon,only:auxig,typeof,fam,nfam,ng!,auxif,typeJoint
@@ -3035,7 +3029,7 @@ end if
 
     implicit none
 
-    !integer,intent(in)::choix
+    integer,intent(in)::nnodes
     double precision,intent(out):: ss3
     double precision :: ss, ss2, auxfunca,auxfuncb,func1J,func2J,func3Jf,func3Jf2,func3bis
     double precision :: integrale3fam
@@ -3045,64 +3039,45 @@ end if
     external :: func1J,func2J,func3Jf,func3Jf2, func3bis
     integer :: j,i,k,jj
 
-    ! Will be twice the average value of the function,since the ten
-    ! weights (five numbers above each used twice) sum to 2.
-    !do j=1,20
-    !x1(j)=1.d0
-    !w1(j)=5.d-2
-    !end do
-    !write(*,*) 'x1', x1
-    !write(*,*) 'w1', w1
+    double precision,dimension(nnodes):: xx,ww
+
+    if(nnodes.eq.20) then
+      xx(1:nnodes) = x(1:nnodes)
+      ww(1:nnodes) = w(1:nnodes)
+    else if (nnodes.eq.32) then
+      xx(1:nnodes) = x1(1:nnodes)
+      ww(1:nnodes) = w1(1:nnodes)
+    end if
      
     ss3=0.d0
     do k=1,nfam
         integrale3f(k)=1.d0
         auxfuncb = 0.d0
         ss2=0.d0
-        if (typeof == 0) then 
-            do jj=1,20
+            do jj=1,nnodes
                 integrale3fam=1.d0!0.d0
                 do i=1,ng
                     auxig=i
                     if (fam(i).eq.k) then    
                         auxfunca = 0.d0
                         ss=0.d0
-                        do j=1,20
-                            auxfunca=func3Jf(x(j), x(jj))                    
-                            ss = ss+w(j)*(auxfunca)
+                        do j=1,nnodes
+                            auxfunca=func3Jf(xx(j), xx(jj))                    
+                            ss = ss+ww(j)*(auxfunca)
                         end do                    
                         integrale3fam=integrale3fam+dlog(ss)
-            !        if(k.eq.18) write(*,*) 'fam=18: integrale3fam', k, i, integrale3fam, ss, x(jj)
                     end if
                 end do ! for i 
                 !write(*,*) 'integrale, prod_ind', k, dlog(integrale3fam)
                 integrale3fam = exp(integrale3fam)
-                auxfuncb=func3Jf2(integrale3fam, x(jj))
-                ss2=ss2+w(jj)*(auxfuncb)
+                auxfuncb=func3Jf2(integrale3fam, xx(jj))
+                ss2=ss2+ww(jj)*(auxfuncb)
             end do !for jj
-        else         
-            do jj=1,22
-                integrale3fam=1.d0!0.d0
-                do i=1,ng
-                    auxig=i
-                    if (fam(i).eq.k) then    
-                        auxfunca = 0.d0
-                        ss=0.d0
-                        do j=1,22
-                            auxfunca=func3Jf(x1(j), x1(jj))                    
-                            ss = ss+w1(j)*(auxfunca)
-                        end do
-                        integrale3fam=integrale3fam+dlog(ss)
-                    end if
-                end do ! for i 
-                integrale3fam = exp(integrale3fam)
-                auxfuncb=func3Jf2(integrale3fam, x1(jj))
-                ss2=ss2+w1(jj)*(auxfuncb)
-            end do !for jj
-        endif     
         integrale3f(k)=ss2
         ss3=ss3+dlog(integrale3f(k))
     end do !for k
+
+    
     return
 
     end subroutine gaulagJf
@@ -3110,7 +3085,7 @@ end if
 
 !==================================================================
 
-    subroutine gaulagJ_intcens(ss,choix)
+    subroutine gaulagJ_intcens(ss,choix,nnodes)
 
     use tailles
     use comon,only:typeof!,auxig
@@ -3118,39 +3093,35 @@ end if
 
     implicit none
 
-    integer,intent(in)::choix
+    integer,intent(in)::choix,nnodes
     double precision,intent(out)::ss
     double precision::auxfunca,func4J,func5J
     external::func4J,func5J
 
     integer::j
+    
+    double precision,dimension(nnodes):: xx,ww
 
+    if(nnodes.eq.20) then
+      xx(1:nnodes) = x(1:nnodes)
+      ww(1:nnodes) = w(1:nnodes)
+    else if (nnodes.eq.32) then
+      xx(1:nnodes) = x1(1:nnodes)
+      ww(1:nnodes) = w1(1:nnodes)
+    end if
+    
     ss = 0.d0
-    if (typeof.eq.0) then
-       do j=1,20
+       do j=1,nnodes
            if (choix.eq.1) then
-               auxfunca=func4J(x(j))
-               ss = ss+w(j)*(auxfunca)
+               auxfunca=func4J(xx(j))
+               ss = ss+ww(j)*(auxfunca)
            else
                if (choix.eq.2) then
-                   auxfunca=func5J(x(j))
-                   ss = ss+w(j)*(auxfunca)
+                   auxfunca=func5J(xx(j))
+                   ss = ss+ww(j)*(auxfunca)
                endif
            endif
        end do
-    else
-        do j=1,32
-            if (choix.eq.1) then
-                auxfunca=func4J(x1(j))
-                ss = ss+w1(j)*(auxfunca)
-            else
-                if (choix.eq.2) then
-                    auxfunca=func5J(x1(j))
-                    ss = ss+w1(j)*(auxfunca)
-                endif
-            endif
-        end do
-    endif
 
     return
 
@@ -3228,38 +3199,54 @@ end if
 ! gauss hermite
 ! func est l integrant, ss le resultat de l integrale sur -infty , +infty
 
-    SUBROUTINE gauherJ(ss,choix)
+    SUBROUTINE gauherJ(ss,choix,nnodes)
 
     use tailles
-    use donnees,only:x2,w2,x3,w3
+    use donnees
     use comon,only:typeof!,auxig
 
     Implicit none
 
     double precision,intent(out)::ss
-    integer,intent(in)::choix
+    integer,intent(in)::choix,nnodes
 
     double precision::auxfunca,func6J
     external::func6J
     integer::j
 
+    double precision,dimension(nnodes):: xx,ww
+    
+    if(nnodes.eq.5) then
+      xx(1:nnodes) = x5(1:nnodes)
+      ww(1:nnodes) = w5(1:nnodes)
+    else if (nnodes.eq.7) then
+      xx(1:nnodes) = x7(1:nnodes)
+      ww(1:nnodes) = w7(1:nnodes)
+    else if (nnodes.eq.9) then
+      xx(1:nnodes) = x9(1:nnodes)
+      ww(1:nnodes) = w9(1:nnodes)
+    else if (nnodes.eq.12) then
+      xx(1:nnodes) = x12(1:nnodes)
+      ww(1:nnodes) = w12(1:nnodes)
+    else if (nnodes.eq.15) then
+      xx(1:nnodes) = x15(1:nnodes)
+      ww(1:nnodes) = w15(1:nnodes)
+    else if (nnodes.eq.20) then
+      xx(1:nnodes) = x2(1:nnodes)
+      ww(1:nnodes) = w2(1:nnodes)
+    else if (nnodes.eq.32) then
+      xx(1:nnodes) = x3(1:nnodes)
+      ww(1:nnodes) = w3(1:nnodes)
+    end if
+    
     ss=0.d0
-    if (typeof.eq.0) then
-        do j=1,20
-            if (choix.eq.3) then
-                auxfunca=func6J(x2(j))
-                ss = ss+w2(j)*(auxfunca)
-            endif
-        end do
-    else
-        do j=1,32
-            if (choix.eq.3) then
-                auxfunca=func6J(x3(j))
-                ss = ss+w3(j)*(auxfunca)
-            endif
-        end do
-    endif
-
+    do j=1,nnodes
+      if (choix.eq.3) then
+        auxfunca=func6J(xx(j))
+        ss=ss+ww(j)*auxfunca
+      endif
+    enddo
+    
     return
 
     END SUBROUTINE gauherJ

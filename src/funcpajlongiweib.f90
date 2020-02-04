@@ -341,6 +341,11 @@
         choix = 3
     
             if(methodGH.le.1) then
+        if(nmesy(numpat).gt.0) then
+            allocate(mu1(nmesy(numpat),1))
+        else
+            allocate(mu1(1,1))
+        end if
                 if(typeJoint.eq.2.and.nb1.eq.1) then
                     call gauherJ21(int,choix,nodes_number)
                 else if(typeJoint.eq.2.and.nb1.eq.2) then
@@ -355,6 +360,7 @@
                 
                     call gauherJ33(int,choix,nodes_number)
                 end if
+        deallocate(mu1) 
                 integrale4(ig) =int 
             else
     

@@ -60,8 +60,8 @@ module InverseMatrix
         integer, intent(in)::z_11,z_21, method_int,N_MC,model_complet
         double precision,dimension(:),allocatable::mu,xx1,ww1
         double precision,dimension(:,:),allocatable::u,up,v,vp,w11,wp,sigma,x_
-        integer:: i,nnodes,j,k,l,m,n,o,p,q,r,s,t
-        double precision::integral,rho_wst,rho_ust,rho_vst,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,somm
+        integer:: i,nnodes
+        double precision::integral,rho_wst,rho_ust,rho_vst,somm
         double precision,parameter::pi=3.141592653589793d0
         
         ! generation des variables aleatoires suivant des multinormales
@@ -554,12 +554,12 @@ module InverseMatrix
   double precision, dimension(n_obs,n_col),intent(out)::donnee
   double precision, dimension(n_obs,n_col),intent(out)::donneeS ! pour les donnees completees surrogate
   integer,intent(out) ::ind_temp
-  integer ::k,i,l,n1,cpte
+  integer ::k,i,n1,cpte
   integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
                       timeC1=8,statusS1=9,statusT1=10,initTime1=11,Patienref1=12 ! definissent les indices du tableau de donnee
   double precision::n_rand,x22,quant_c,t25,t75,t50,cens
   double precision,dimension(n_essai)::n_i
-  double precision,dimension(n_obs)::trt,u
+  double precision,dimension(n_obs)::u
   integer,dimension(n_essai,2)::tab ! pour la table de contingence des essais
   
   !==============initialisation des parametres======================
@@ -825,7 +825,7 @@ end function variance
 function covariance(x,y)
     implicit none
     integer ::m
-    double precision::covariance,x_bar,xmn,ymn
+    double precision::covariance,xmn,ymn
     double precision,dimension(:),intent(in)::x,y
     double precision,dimension(size(x))::xdev,ydev
     
@@ -869,10 +869,10 @@ end function table
 function table_essai(tab)
     !n: les case avec 0 correspondent aux modalites sans effectif
     implicit none
-    integer::n
+    !integer::n
     integer,dimension(:),intent(in)::tab
     integer,dimension(size(tab))::t2,table_essai
-    integer::i,j,n_obs
+    integer::i
         
     t2=0
     do i=1,size(tab)
@@ -888,7 +888,7 @@ end function table_essai
         use var_surrogate, only: random_generator
         double precision :: a,b,c,u,v,w,x,y,z
         double precision ::uniran
-        real ::ran2
+        !real ::ran2
         integer ::accept
 
         accept = 0
@@ -927,7 +927,7 @@ end function table_essai
         use var_surrogate, only: random_generator
         double precision ::a,b,x,u,v,betau
         double precision ::uniran
-        real ::ran2
+        !real ::ran2
         if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
             u = uniran()!dble(rand())
         else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)    
@@ -997,92 +997,92 @@ end function table_essai
       integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000
       integer,parameter::nboumax=1000,NSIMAX=5000,ndatemax=30000
       
-      integer  groupe,ij,kk,j,k,nz,n,np,cpt,cpt_dc,ii,iii,iii2
-      integer  cptstr1,cptstr2,trace,trace1,trace2
-      integer  i,ic,ic2,ni,ier,istop,ef
+      integer  j,k,nz,cpt,cpt_dc,ii,iii,iii2
+      integer  cptstr1,cptstr2
+      !integer  i,ic,ic2,ni,ier,istop,ef
       integer  cptni,cptni1,cptni2,nb_echec,nb_echecor
-      integer  nbou2,id,cptbiais,l
-      integer  m,nbou,idum,icen
+      integer  nbou2,cptbiais
+      integer  nbou
       integer filtre(nvarmax), filtre2(nvarmax) 
-      integer cpt1(nboumax) 
-      integer cpt2(nboumax) 
-      integer cpt3(nboumax) 
+      !integer cpt1(nboumax) 
+      !integer cpt2(nboumax) 
+      !integer cpt3(nboumax) 
       integer ind(nboumax) , cptaux 
       
-      real vax(nvarmax)
-      double precision tt0
-      double precision tt1,tt2
+      !real vax(nvarmax)
+      !double precision tt0
+      !double precision tt1,tt2
       
-      double precision h
-      double precision ro,wres,csi,csi1
-      double precision ax1,ax2,res,min,max,maxtemps
-      double precision bi,bs,wald,str
-      double precision moyvar1,moyse1,moyse_cor1!theta
-      double precision moyvar2,moyse2,moyse_cor2!alpha
-      double precision moybeta1, moysebeta1,moysebeta_cor1
-      double precision moybeta2, moysebeta2,moysebeta_cor2
-      double precision moybeta3, moysebeta3,moysebeta_cor3
-      double precision moybweib1,moybweib2,moybweib3,moybweib4!weibull
-      double precision moysebweib1,moysebweib2,moysebweib3,moysebweib4
+      !double precision h
+      !double precision ro,wres,csi,csi1
+      double precision maxtemps
+      !double precision bi,bs,wald,str
+      !double precision moyvar1,moyse1,moyse_cor1!theta
+      !double precision moyvar2,moyse2,moyse_cor2!alpha
+      !double precision moybeta1, moysebeta1,moysebeta_cor1
+      !double precision moybeta2, moysebeta2,moysebeta_cor2
+      !double precision moybeta3, moysebeta3,moysebeta_cor3
+      !double precision moybweib1,moybweib2,moybweib3,moybweib4!weibull
+      !double precision moysebweib1,moysebweib2,moysebweib3,moysebweib4
 !c     double precision  tt0,tt1
 !c     double precision, pointer  tt0
 !c     double precision,pointer  tt1
-      double precision varxij,eca,varsmarg,smoy,smoyxij
-      double precision pe1,pe2,lrs
+      !double precision varxij,eca,varsmarg,smoy,smoyxij
+      double precision lrs
       double precision BIAIS_moy
       
-      double precision aux(2*NOBSMAX)
-      double precision v((npmax*(npmax+3)/2))
-      double precision k0(2)
-      double precision b(npmax)
-      double precision se1(nboumax),se_cor1(nboumax)!theta
-      double precision se2(nboumax),se_cor2(nboumax)!alpha
-      double precision tvars1(nboumax),tvars2(nboumax)
-      double precision beta1(nboumax),beta2(nboumax),beta3(nboumax)
-      double precision , dimension(nboumax):: sebeta1,sebeta_cor1
-      double precision , dimension(nboumax):: sebeta2,sebeta_cor2
-      double precision , dimension(nboumax):: sebeta3,sebeta_cor3
+      !double precision aux(2*NOBSMAX)
+      !double precision v((npmax*(npmax+3)/2))
+      !double precision k0(2)
+      !double precision b(npmax)
+      !double precision se1(nboumax),se_cor1(nboumax)!theta
+      !double precision se2(nboumax),se_cor2(nboumax)!alpha
+      !double precision tvars1(nboumax),tvars2(nboumax)
+      !double precision beta1(nboumax),beta2(nboumax),beta3(nboumax)
+      !double precision , dimension(nboumax):: sebeta1,sebeta_cor1
+      !double precision , dimension(nboumax):: sebeta2,sebeta_cor2
+      !double precision , dimension(nboumax):: sebeta3,sebeta_cor3
 
-      double precision bweib1(nboumax),bweib2(nboumax)!weibull
-      double precision bweib3(nboumax),bweib4(nboumax)
-      double precision , dimension(nboumax):: sebweib1,sebweib2
-      double precision , dimension(nboumax):: sebweib3,sebweib4
+      !double precision bweib1(nboumax),bweib2(nboumax)!weibull
+      !double precision bweib3(nboumax),bweib4(nboumax)
+      !double precision , dimension(nboumax):: sebweib1,sebweib2
+      !double precision , dimension(nboumax):: sebweib3,sebweib4
 
-      double precision biais_theta(nboumax)
-      double precision I1_hess(npmax,npmax),H1_hess(npmax,npmax)
-      double precision I2_hess(npmax,npmax),H2_hess(npmax,npmax)
-      double precision HI1,HI2(npmax,npmax)
-      double precision HIH(npmax,npmax),IH(npmax,npmax),HI(npmax,npmax)
-      double precision BIAIS(npmax,1)
+      !double precision biais_theta(nboumax)
+      !double precision I1_hess(npmax,npmax),H1_hess(npmax,npmax)
+      !double precision I2_hess(npmax,npmax),H2_hess(npmax,npmax)
+      !double precision HI1,HI2(npmax,npmax)
+      !double precision HIH(npmax,npmax),IH(npmax,npmax),HI(npmax,npmax)
+      !double precision BIAIS(npmax,1)
       
-      character*18 nomvarl
-      character*18 nomvar(nvarmax),nomvar2(nvarmax)
-      character*18 donnees
-      character*24 ficpar
-      character*14 fich1
-      character*14 fich2
-      character*14 fich3
-      character*14 fich4
-      character*14 fich1b
-      character*14 fich2b
-      character*14 fich3b
-      character*14 fich4b
-      character*20 dateamj
-      character*20 zone
-      character*20 heure1
-      character*20 heure2
+      character(18) :: nomvarl
+      character(18) :: nomvar(nvarmax),nomvar2(nvarmax)
+      !character(18) :: donnees
+      character(24) :: ficpar
+      !character(14) :: fich1
+      !character(14) :: fich2
+      !character(14) :: fich3
+      !character(14) :: fich4
+      !character(14) :: fich1b
+      !character(14) :: fich2b
+      !character(14) :: fich3b
+      !character(14) :: fich4b
+      character(20) :: dateamj
+      character(20) :: zone
+      character(20) :: heure1
+      !character(20) :: heure2
       integer values(8)
 
 !c************declarations pour donnees generees **********
-      integer :: no,nb_recur,nb_dc,nb_cens,delta,deltadc,jj
-      integer :: ig,sg,nrecurr,nobs,max_recu
+      integer :: nb_recur,nb_dc,nb_cens,delta,deltadc,jj
+      integer :: ig,nrecurr,nobs,max_recu
       real , dimension(2):: v1
       real :: piece,rien,demi
       double precision :: ui,temps1,temps1_S !random effect
-      double precision :: gapx,gapdc,gapcens,moy_idnum
-      double precision :: x,xdc,tronc,cens,cbeta1,cbeta2,cbeta3
+      double precision :: gapx,gapdc,moy_idnum
+      double precision :: x,xdc,cens,cbeta1,cbeta3
       double precision :: auxbeta1,auxbeta2 ! for recurr and death
-      double precision :: zbqlexp,uniran
+      double precision :: uniran
       double precision, dimension(2):: bg1,bw1,bw2
       integer, dimension(ngmax):: idnum
       double precision, dimension(ngmax):: vecui
@@ -1101,24 +1101,24 @@ end function table_essai
 !c*****dace2
       double precision t0(NOBSMAX),t1(NOBSMAX),t1_S(NOBSMAX)
       integer c(NOBSMAX), cdc(NOBSMAX)
-      integer nt0(NOBSMAX),nt1(NOBSMAX)
-      integer  nva,nva1,nva2,ndate,nst!,nobs
+      !integer nt0(NOBSMAX),nt1(NOBSMAX)
+      integer  nva1,nva2,nst!,nobs
       !common /dace2/t0,t1,c,cdc,nt0,nt1,nobs,nva,nva1,nva2,ndate,nst
 !c*****dace4
-      integer  stra(NOBSMAX)
+      !integer  stra(NOBSMAX)
       !common /dace4/stra
 !c*****ve1
       double precision ve(NOBSMAX,nvarmax),ve2(NOBSMAX,nvarmax)
       !common /ve1/ve,ve2
 !c*****dace3
-      double precision  pe
+      !double precision  pe
       integer  effet,nz1,nz2
       !common /dace3/pe,effet,nz1,nz2
 !c*****dace7
-      double precision I_hess(npmax,npmax),H_hess(npmax,npmax)
-      double precision Hspl_hess(npmax,npmax)
-      double precision PEN_deri(npmax,1)
-      double precision hess(npmax,npmax)
+      !double precision I_hess(npmax,npmax),H_hess(npmax,npmax)
+      !double precision Hspl_hess(npmax,npmax)
+      !double precision PEN_deri(npmax,1)
+      !double precision hess(npmax,npmax)
       !common /dace7/PEN_deri,I_hess,H_hess,Hspl_hess,hess
 !c*****contrib
       !common /contrib/ng       
@@ -1128,20 +1128,20 @@ end function table_essai
       !common /gpe/g,nig
       
 !c*****mem1
-      double precision mm3(ndatemax),mm2(ndatemax)
-      double precision mm1(ndatemax),mm(ndatemax)
+      !double precision mm3(ndatemax),mm2(ndatemax)
+      !double precision mm1(ndatemax),mm(ndatemax)
       !common /mem1/mm3,mm2,mm1,mm
 !c     %%%%%%%%%%%%% ANDERSEN-GILL %%%%%%%%%%%%%%%%%%%%%%%%% 
-      integer AG
+      !integer AG
       !common /andersengill/AG
 !c     %%%%%%%%%%%%% indic ALPHA %%%%%%%%%%%%%%%%%%%%%%%%% 
       integer indic_ALPHA
       !common /alpha/indic_ALPHA ! pour preciser un para en plus 
 !c**** theta/alpha
-      double precision  theta,alpha !en exposant pour la frailty deces 
+      !double precision  theta,alpha !en exposant pour la frailty deces 
       !common /thetaalpha/alpha,theta
 !c******indicateur de troncature
-      integer :: indictronq     ! =0 si donnees non tronquées reellement
+      !integer :: indictronq     ! =0 si donnees non tronquées reellement
       !common /troncature/indictronq
       
 !c******indicateur iteration
@@ -1156,7 +1156,7 @@ end function table_essai
 !c     I_hess : -hessienne non inversee sur vraisemblance non penalisee
 !c     H_hess : inverse de -hessienne  sur vraisemblance penalisee
       !Ajout SCL
-      double precision::cens_C,x22,tempon!,theta2
+      double precision::x22,tempon!,theta2
       double precision,dimension(:),allocatable::tempsD
       integer::Aretenir
       integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
@@ -1898,7 +1898,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
                piece=real(tempon)
                if (piece.le.demi) then
                   v1(j) = 0.
-               else
+                else
                   v1(j) = 1.
                endif
          111        continue           

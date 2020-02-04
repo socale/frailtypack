@@ -53,3 +53,13 @@ Table 1: Package characteristics. Blue cross is for option available for a given
 Agnieszka Krol, Audrey Mauguen, Yassin Mazroui, Alexandre Laurent, Stefan Michiels, Virginie Rondeau (2017), [Tutorial in Joint Modeling and Prediction: A Statistical Software for Correlated Longitudinal Outcomes, Recurrent Events and a Terminal Event.](https://www.jstatsoft.org/article/view/v081i03)
 *Journal of Statistical Software*, **81**.
 
+
+#### Shiny
+A shiny application of frailtypack is available, allowing modelisation and prediction of several models presents in frailtypack, at https://frailtypack-pkg.shinyapps.io/shiny_frailtypack.
+This application can be run in a local mode in R thanks to the function runShiny().
+
+##### Note 
+If you want to take in charge frailtypack as a project, but work on a macOSX with a version of R >= 3.6, a problem must happen between openmp and clang. clang does not seem to support option '-fopenmp'.
+To avoid this, you should edit your personal Makevars (~/.R/Makevars), admitting you use gfortran, by relocating 
+CC=clang by CC=gfortran
+

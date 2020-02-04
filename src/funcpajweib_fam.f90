@@ -10,7 +10,7 @@
     t0,t1,t1dc,c,cdc,nsujet,nva,nva1,nva2,& 
     effet,stra,ve,vedc,ng,g,nig,indic_ALPHA,ALPHA,theta,& 
     nfam,fam,fsize,indic_xi,xi,eta, & !for family 
-    aux1,aux2,res1,res3,kkapa
+    aux1,aux2,res1,res3,kkapa,nb_gl
     use residusM
     !use comongroup,only:the1,the2
     use comongroup,only:vet,vet2
@@ -32,7 +32,7 @@
     ,res3dc,integrale1,integrale2,integrale3
     double precision,dimension(nfam)::integrale3f
     double precision::int
-        
+
     kkapa=k0
     choix=0
     ig=0
@@ -169,7 +169,7 @@
     end do
 
     choix = 3
-    call gaulagJf(int)
+    call gaulagJf(int,nb_gl)
     res=int
     
 !************* FIN INTEGRALES **************************

@@ -6,11 +6,11 @@
 
     use tailles
     !use comon,only:AG,nt0dc,res4,t0,t0dc,t1,t1dc
-    use comon,only:m3m3,m2m2,m1m1,mmm,m3m2,m3m1,m3m,m2m1,m2m,m1m,mm3,mm2,mm1,mm,&
+    use comon,only:mm3,mm2,mm1,mm,& !m3m3,m2m2,m1m1,mmm,m3m2,m3m1,m3m,m2m1,m2m,m1m
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst, &
-    effet,stra,ve,vedc,pe,ng,g,nig,indic_ALPHA,ALPHA,sig2, &
-    auxig,aux1,aux2,res1,res3,kkapa,resnonpen,nstRec,k0T, wtsvec
+    effet,stra,ve,vedc,g,indic_ALPHA,ALPHA,sig2, & !pe,ng,nig
+    auxig,aux1,aux2,res1,res3,kkapa,resnonpen,nstRec,wtsvec,nb_gh !k0T
     use residusM
     !use comongroup,only:the1
     use comongroup,only:vet,vet2,the2
@@ -26,11 +26,11 @@
     double precision,dimension(-2:npmax,nstRec)::the1T
     integer::n,i,j,k,vj,ig,choix,jj
     integer,dimension(ngmax)::cpt
-    double precision::pe2,som2,res,h1
-    double precision,dimension(nstRec)::pe1T,som1T
+    double precision::som2,res,h1 !pe2
+    double precision,dimension(nstRec)::som1T !pe1T
     double precision,dimension(np)::bh
     double precision,dimension(ngmax)::res2,res1dc &
-    ,res3dc,integrale1,integrale2
+    ,res3dc !integrale1,integrale2
 !AD: for death,change dimension
     double precision,dimension(ndatemax,nstRec)::dut1T
     double precision,dimension(ndatemaxdc)::dut2
@@ -196,7 +196,7 @@
 !ccccccccccccccccccccccccccccccccccccccccc
 
     do i=1,nsujet
-	  if(g(i).eq.index)then
+    if(g(i).eq.index)then
         cpt(index)=cpt(index)+1
 
         if(nva1.gt.0)then
@@ -273,7 +273,7 @@
 !**************INTEGRALES ****************************
         auxig = index
         choix = 3
-        call gauherJ(int,choix)
+        call gauherJ(int,choix,nb_gh)
         integrale3 = int
 !************* FIN INTEGRALES **************************
 
@@ -294,10 +294,10 @@
 !                   write(*,*)'************** TAYLOR *************'
             !    res= res + res2(k) &
             !    + res2dc(k)  &
-            !    - gammaJ(1./theta)-dlog(theta)/theta  &
+            !    - logGammaJ(1./theta)-dlog(theta)/theta  &
             !    + dlog(integrale3(k))
             !endif
-    	if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+            if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
             funcpajsplines_logindiv=-1.d9
         goto 123
         end if

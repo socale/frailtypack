@@ -5,7 +5,7 @@
     !use comon,only:cens,nbintervR,nbintervDC,ttt,tttdc
     use comon,only:t0,t1,t0dc,t1dc,c,cdc,nsujet,nva,nva1,nva2,&
     nst,effet,stra,ve,vedc,ng,g,nig,AG,indic_ALPHA,alpha,theta,auxig,aux1,aux2,res1,res3&
-    ,kkapa,betaR,etaR,betaD,etaD
+    ,kkapa,betaR,etaR,betaD,etaD,nb_gl
     use tailles
     use comongroup
     use residusM
@@ -14,7 +14,7 @@
 
     integer::nb,np,id,jd,i,j,k,cptg,l,ig,choix
     integer,dimension(ngmax)::cpt
-    double precision::thi,thj,dnb,sum,inv,res,int,gammaJ
+    double precision::thi,thj,dnb,sum,inv,res,int,logGammaJ
     double precision,dimension(ngmax)::res2,res1dc,res2dc,res3dc
     double precision,dimension(np)::b,bh
     double precision,dimension(2)::k0
@@ -278,7 +278,7 @@
         do ig=1,ng
             auxig=ig
             choix = 3
-            call gaulagJ(int,choix)
+            call gaulagJ(int,choix,nb_gl)
             integrale3(ig) = int !moins bon
 ! parfois quand bcp de deces par groupe integrale3=0
 !            if(integrale3(ig).lt.1.d-300)then
@@ -293,7 +293,7 @@
             sum=0.d0
             if(cpt(k).gt.0)then
                 res= res + res2(k)+ res2dc(k) &
-                - gammaJ(1.d0/theta)-dlog(theta)/theta  &
+                - logGammaJ(1.d0/theta)-dlog(theta)/theta  &
                 + dlog(integrale3(k))
 
                 if ((res.ne.res).or.(abs(res).ge. 1.d30)) then

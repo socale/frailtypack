@@ -9,7 +9,7 @@
     
     implicit none
     
-    integer::i,ii,iii,j,jj,k,kk,typeof,nsample2
+    integer::i,ii,iii,j,jj,k,kk,typeof !nsample2
     integer,intent(in)::np,nz,nva1,nva2,nst,typeof0,&
     icproba,nsujet,nsample, npred0, nrec0,indID,ntimeAll  
     integer,dimension(2)::indic
@@ -294,10 +294,10 @@
                     SurvRalea,survDCalea,survDCialea, icdctime(1:npred0,iii), nrec0,nrecT(1:npred0,iii), npred0)
                     
                     predProbaalea(j) = ss1/ss2
-					if(predprobaalea(j).eq.predprobaalea(j)) then 
-					kk = kk + 1
-					predprobaalea2(kk) = predprobaalea(j)
-					end if
+                    if(predprobaalea(j).eq.predprobaalea(j)) then 
+                    kk = kk + 1
+                    predprobaalea2(kk) = predprobaalea(j)
+                    end if
      !   write(*,*) 'predprobaalea(j)', predProbaalea(j),j, kk, predprobaalea2(kk)
             end do
  !       write(*,*) 'predictfam: predprobaalea, nsample', predProbaalea, nsample
@@ -339,7 +339,7 @@
     !double precision,dimension(nrec0)::survRi
     double precision,dimension(npred0,nrec0)::survR
     double precision,dimension(npred0)::survDCfam, survRfam
-    double precision::ptheta,palpha,peta, pxi, gammaJ
+    double precision::ptheta,palpha,peta, pxi, logGammaJ
 
 ! npred0 = family size
 ! nreci = number of recurrents before time t
@@ -377,7 +377,7 @@
         do k=1,32
             frailx = x1(k)
             gu = (frailx**(1.d0/ptheta -1.d0) * exp(-frailx/ptheta)) / &
-                    (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta)))  
+                    (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta)))  
             do j=1, nrec0
                 survRfam(i)=survRfam(i)*survR(i,j)**(frailx*(frail2**pxi)*dexp(XbetapredR(i,j)))
             end do
@@ -396,8 +396,8 @@
          famHistALL = famHistALL*famHist(i)
     end do    
     
-    gui = (frail**(1.d0/ptheta -1.d0)*exp(-frail/ptheta))/(ptheta**(1.d0/ptheta)*dexp(gammaJ(1.d0/ptheta)) ) 
-    gw = (frail2**(1.d0/peta -1.d0)*exp(-frail2/peta))/(peta**(1.d0/peta)*dexp(gammaJ(1.d0/peta)))  
+    gui = (frail**(1.d0/ptheta -1.d0)*exp(-frail/ptheta))/(ptheta**(1.d0/ptheta)*dexp(logGammaJ(1.d0/ptheta)) ) 
+    gw = (frail2**(1.d0/peta -1.d0)*exp(-frail2/peta))/(peta**(1.d0/peta)*dexp(logGammaJ(1.d0/peta)))  
 
     func1predfam = term*famHistALL*gui*gw   
 !if(frail.eq.4.4489365071058273E-002.and.frail2.eq.0.23452611267566681) then
@@ -435,7 +435,7 @@
     !double precision,dimension(nrec0)::survRi
     double precision,dimension(npred0,nrec0)::survR
     double precision,dimension(npred0)::survDCfam, survRfam
-    double precision::ptheta,palpha,peta, pxi, gammaJ
+    double precision::ptheta,palpha,peta, pxi, logGammaJ
 
 ! npred0 = family size
 ! nreci = number of recurrents before time t
@@ -465,7 +465,7 @@
         do k=1,32
             frailx = x1(k)
             gu = (frailx**(1.d0/ptheta -1.d0) * exp(-frailx/ptheta)) / &
-                    (ptheta**(1.d0/ptheta) * dexp(gammaJ(1.d0/ptheta)))              
+                    (ptheta**(1.d0/ptheta) * dexp(logGammaJ(1.d0/ptheta)))              
             do j=1, nrec0
                 survRfam(i)=survRfam(i)*survR(i,j)**(frailx*(frail2**pxi)*dexp(XbetapredR(i,j)))
             end do
@@ -482,8 +482,8 @@
         famHistALL = famHistALL*famHist(i)
     end do
     
-    gui = (frail**(1.d0/ptheta -1.d0)*exp(-frail/ptheta))/(ptheta**(1.d0/ptheta)*dexp(gammaJ(1.d0/ptheta)))  
-    gw = (frail2**(1.d0/peta -1.d0)*exp(-frail2/peta))/(peta**(1.d0/peta)*dexp(gammaJ(1.d0/peta)) ) 
+    gui = (frail**(1.d0/ptheta -1.d0)*exp(-frail/ptheta))/(ptheta**(1.d0/ptheta)*dexp(logGammaJ(1.d0/ptheta)))  
+    gw = (frail2**(1.d0/peta -1.d0)*exp(-frail2/peta))/(peta**(1.d0/peta)*dexp(logGammaJ(1.d0/peta)) ) 
 
     func2predfam = term*famHistALL*gui*gw
     

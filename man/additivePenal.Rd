@@ -112,7 +112,9 @@ where both survival and hazard functions are estimated. By default
 seq(0,max(time),length=99), where time is the vector of survival times.}
 \item{lam}{array (dim=3) of hazard estimates and confidence bands.}
 \item{surv}{array (dim=3) of baseline survival estimates and confidence
-bands.} \item{type.of.hazard}{Type of hazard functions (0:"Splines",
+bands.} \item{median}{The value of the median survival and its confidence bands. If there are
+two stratas or more, the first value corresponds to the value for the 
+first strata, etc.} \item{type.of.hazard}{Type of hazard functions (0:"Splines",
 "1:Piecewise", "2:Weibull").} \item{type.of.Piecewise}{Type of Piecewise
 hazard functions (1:"percentile", 0:"equidistant").} \item{nbintervR}{Number
 of intervals (between 1 and 20) for the parametric hazard functions

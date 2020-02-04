@@ -9,7 +9,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                           LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,ni,ier,istop,ziOut, affiche_itter,Varcov,&
                           dataHessian,dataHessianIH,datab,vbetast,vbetastinit)
                           
-    ! programme principale permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
+    ! programme principal permettant le traitement des donnees et l'appel du joint_surogate pour l'estimation des parametres
     
     use sortie
     use Autres_fonctions
@@ -19,7 +19,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     use Autres_fonctions, only:pos_proc_domaine
     !use mpi ! module pour l'environnement MPI
     !$ use OMP_LIB 
-
+						
     implicit none
 
     ! =======debut declaration des variables================
@@ -76,8 +76,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     !character(len=30)::donnees
     character(len=10), dimension(nbrevar(3))::nomvarl
     character(len=30)::dateamj,zone,heure1,heure2,param_estime, param_empirique,param_empirique_NC,tableau_rejet
-    integer::i,j,effet,ver,nva1,nva2,nva,ag,nz, cpt,cpt_dc,noVar1,noVar2,ii,jj,k,ncur,typeJoint,np
-    double precision::ax1,ax2,tp1,tp2,tempon
+    integer::i,j,effet,ver,nva1,nva2,nva,ag,nz, cpt,cpt_dc,noVar1,noVar2,k,typeJoint,np !ii,jj,ncur
+    double precision::ax1,ax2,tp1,tp2 !tempon
     integer, dimension(:),allocatable::vdeces,vsurrogate !contient les dates devenement: deces et progression
     character(len=20),dimension(:),allocatable::nomvart,nomvar2t,nomvar,nomvar2
     double precision,dimension(:),allocatable::tt0dc,tt1dc
@@ -90,14 +90,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(3)::EPS
     integer,dimension(8)::values
     integer, dimension(0:1)::randomisation,deces,surrogate
-    double precision::bi,bs,wald,wres
-    character(len=30)::aaa,kapa ! les fichiers de sortie
+    double precision::bi,bs,wres !wald
+    character(len=30)::kapa !aaa !les fichiers de sortie
     integer,dimension(:),allocatable::filtre,filtre2
 !cpm
     integer::mt11,mt12,mt1,mt2,n_sim,ntrials,nsujet
     double precision,dimension(2)::shape_weib,scale_weib
-    integer::typeof,nbrecu,nbdeces,nbintervR,nbintervDC,equidistant
-    double precision::Xgamma
+    integer::typeof,nbintervR,nbintervDC,equidistant !nbrecu,nbdeces
+    !double precision::Xgamma
 !predictor
     double precision,dimension(:,:),allocatable::MartinGales,v_chap_kendall,v_chap_R2,theta_chap_kendall,theta_chap_R2, &
 												theta_chap_copula, v_chap_copula
@@ -106,8 +106,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(:),allocatable::time
     double precision,dimension(:),allocatable::timedc,vbetas,vbetat, vbetas_intit, vbetat_intit
     integer,dimension(4)::mtaille
+    integer,dimension(3)::paratps
     double precision,dimension(4)::paraweib
-    double precision,dimension(3)::paratps,descripSurr,descripDeces
+    double precision,dimension(3)::descripSurr,descripDeces
     double precision,dimension(:,:),allocatable:: paGH,matrice_generation ! parametre pour l'adaptative: en ligne les individus, en colone on a respectivement: les ui_cham,
         !     racine carree du determinant de l'inverse de la cholesky,variance des ui_chap,les covariances estimees des fragilites pour chaque individu, sachant que la matrice de variances covariance est bien la cholesky                                                        
     !parametres de simulation
@@ -141,7 +142,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         moy_sigmast_est_0,moy_se_sigmast_0,taux_couverture_sigmast_0,moy_eta_0,moy_se_eta_0,&
                         taux_couverture_eta_0,moy_betaS_0,moy_betaS_se_0,taux_couvertureS_0,moy_betaT_0,&
                         moy_betaT_se_0,taux_couvertureT_0,se_theta_sim,se_sigmas_sim,se_sigmat_sim,se_rho_sim,&
-                        se_gamma_sim,se_theta_sim_0,se_sigmas_sim_0,se_sigmat_sim_0,se_rho_sim_0,se_gamma_sim_0,&
+                        se_gamma_sim,& !se_theta_sim_0,se_sigmas_sim_0,se_sigmat_sim_0,se_rho_sim_0,se_gamma_sim_0
                         n_sim_exact_0,moy_theta_est_0,moy_pros_0,moy_dec_0,theta2_t,rsqrt_theta,gamma_uit,rsqrt_gamma_ui,&
                         thetat_init,thetast_init,gammat_init,gammast_init,theta_simt,rho_sim_wij,gamma_simt,rho_sim_ui,&
                         moy_thetat,moy_rho_wij,moy_gammat,moy_rho_ui,thetast_vrai,gammast_vrai,moy_thetat_est,moy_se_thetat,&
@@ -176,7 +177,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer, dimension(:),allocatable::tab_rejet ! pour les rangs des jeux de donnees rejetees
     double precision, dimension(:,:),allocatable::kappa,d_S,d_T !jeu de donnees reelle pour le test
     integer,dimension(:),allocatable::tableEssai,tableNsim ! tableNsim: indique le nombre de simulation a effectuer par chaque processus
-    double precision,dimension(:,:),allocatable::donnee_essai,sigma_st_2,theta_st_2,gamma_st_2,sigma_st0_2,theta_st0_2,gamma_st0_2
+    double precision,dimension(:,:),allocatable::donnee_essai,theta_st_2,gamma_st_2,theta_st0_2,gamma_st0_2 !sigma_st_2,sigma_st0_2
     double precision,dimension(2,2)::chol,sigma_st,theta_st,gamma_st,sigma_st0,theta_st0,gamma_st0,Chol_R2,mat_A
     integer, dimension(4)::indice_esti
     integer::nb_processus,rang,code,n_sim_total,suplement,erreur,comm,init_i,max_i,debut_exe,indice_sim_proc,sofeu, &
@@ -276,7 +277,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     nus = paramSimul(14)
     lambdat = paramSimul(15)
     nut = paramSimul(16)
-    mode_cens = paramSimul(17)
+    mode_cens = int(paramSimul(17))
     temps_cens = paramSimul(18)
     cens0 = paramSimul(19)
     rsqrt = paramSimul(20)
@@ -1197,11 +1198,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     j=1
     do i=1,nsujet
         if(ic(i).eq.1) then
-            vsurrogate(k)=tt1(i)
+            vsurrogate(k)=int(tt1(i))
             k=k+1
         end if
         if(icdc(i).eq.1) then
-            vdeces(j)=tt1dc(i)
+            vdeces(j)=int(tt1dc(i))
             j=j+1
         end if
     end do 
@@ -1659,11 +1660,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
 	endif
 						
 	Call joint_surrogate(nsujet,ng,ntrials,0,nz,nst,k0,tt0,tt1,ic,groupe,trials,pourtrial,nig_Ts,cdc_Ts,0, &
-                        tt0dc,tt1dc,icdc,0,0,nva1,vax,nva2,vaxdc,0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
+                        tt0dc,tt1dc,icdc,0.d0,0,nva1,vax,nva2,vaxdc,0.d0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
                         HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,typeof,equidistant,&
                         nbintervR,nbintervDC,mtaille,ni,cpt,cpt_dc,ier,istop,paraweib,MartinGales,linearpred,&
-                        linearpreddc,ziOut,time,timedc,0 , 1 , 0 , ttU , logNormal , paratps , 0 , 0 , 0 , &
-                        EPS,nsim_node,indice_esti,indice_covST,0,param_weibull)
+                        linearpreddc,ziOut,time,timedc,0.d0 , 1 , 0 , ttU , logNormal , paratps , 0 , 0.d0 , 0.d0 , &
+                        EPS,nsim_node,indice_esti,indice_covST,0.d0,param_weibull)
     ! call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
 		call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)

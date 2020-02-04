@@ -8,7 +8,7 @@
     use comon,only:etaD,betaD,etaT,betaT,nstRec, &
     t0,t1,t1dc,c,cdc,nsujet,nva,nva1,nva2, &
     effet,stra,ve,vedc,ng,g,nig,indic_ALPHA,ALPHA,theta, &
-    auxig,aux1,aux2,res1,res3,kkapa
+    auxig,aux1,aux2,res1,res3,kkapa,nb_gl
     use residusM
     use comongroup,only:vet,vet2
 
@@ -27,7 +27,7 @@
     double precision,dimension(np)::bh
     double precision,dimension(ngmax)::res2,res1dc,res2dc &
     ,res3dc,integrale1,integrale2,integrale3
-    double precision::int,gammaJ
+    double precision::int,logGammaJ
 
     kkapa=k0
     choix=0
@@ -159,7 +159,7 @@
     do ig=1,ng
         auxig=ig
         choix = 3
-        call gaulagJ(int,choix)
+        call gaulagJ(int,choix,nb_gl)
         integrale3(ig) = int !moins bon
         !if(integrale3(ig).lt.1.d-300)then
         !    integrale3(ig) = 1.d-300
@@ -177,23 +177,23 @@
                 if (integrale3(k).eq.0.d0) then
                     res= res + res2(k) &
 !--      pour le deces:
-                    + res2dc(k)- gammaJ(1./theta)-dlog(theta)/theta-112.d0
+                    + res2dc(k)- logGammaJ(1./theta)-dlog(theta)/theta-112.d0
                 else
                     res= res + res2(k) &
 !--      pour le deces:
-                    + res2dc(k)- gammaJ(1./theta)-dlog(theta)/theta+dlog(integrale3(k))
+                    + res2dc(k)- logGammaJ(1./theta)-dlog(theta)/theta+dlog(integrale3(k))
                 endif
             else
 !*************************************************************************
 !     developpement de taylor d ordre 3
 !*************************************************************************
 !                   write(*,*)'************** TAYLOR *************'
-                res= res + res2(k)+res2dc(k)-gammaJ(1./theta)-dlog(theta)/theta  &
+                res= res + res2(k)+res2dc(k)-logGammaJ(1./theta)-dlog(theta)/theta  &
                 + dlog(integrale3(k))
             endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajweib=-1.d9
-                !print*,k,'ok 6',gammaJ(1./theta),theta,integrale3(k),dlog(integrale3(k))
+                !print*,k,'ok 6',logGammaJ(1./theta),theta,integrale3(k),dlog(integrale3(k))
                 goto 123
             end if
         endif

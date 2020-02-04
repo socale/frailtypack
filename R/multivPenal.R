@@ -222,7 +222,10 @@
 #' type 2.} \item{xEnd}{vector of times for the terminal event (see x1 value).}
 #' \item{lamEnd}{the same value as lam1 for the terminal event.}
 #' \item{xSuEnd}{vector of times for the survival function of the terminal
-#' event} \item{survEnd}{the same value as surv1 for the terminal event.}
+#' event} \item{survEnd}{the same value as surv1 for the terminal event.} 
+#' \item{median1}{The value of the median survival and its confidence bands for the recurrent event of type 1.}
+#' \item{median2}{The value of the median survival and its confidence bands for the recurrent event of type 2.}  
+#' \item{medianEnd}{The value of the median survival and its confidence bands for the terminal event.}
 #' \item{type.of.Piecewise}{Type of Piecewise hazard functions (1:"percentile",
 #' 0:"equidistant").} \item{n.iter}{number of iterations needed to converge.}
 #' \item{type.of.hazard}{Type of hazard functions (0:"Splines", "1:Piecewise",
@@ -348,6 +351,20 @@
   {
     
     ## pour l'utilisateur theta1 est theta, et theta2 est eta (variances des frailties)
+    
+    # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
+    minmin <- function(y, x) {
+      tolerance <- .Machine$double.eps^.5   #same as used in all.equal()
+      keep <- (!is.na(y) & y <(.5 + tolerance))
+      if (!any(keep)) NA
+      else {
+        x <- x[keep]
+        y <- y[keep]
+        if (abs(y[1]-.5) <tolerance  && any(y< y[1])) 
+          (x[1] + x[min(which(y<y[1]))])/2
+        else x[1]
+      }
+    }
     
     NN <- colnames(get_all_vars(update(formula,"~1"),data))
     ## evt 1
@@ -529,7 +546,7 @@
     Y <- model.extract(m.formula, "response") 
     if (!inherits(Y, "Surv"))stop("Response must be a survival object") 	
     ll <- attr(Terms, "term.labels")	
-    X <- if (!is.empty.model(attr(m.formula,"terms")))model.matrix(attr(m.formula,"terms"),m.formula,contrasts) 
+    X <- if (!is.empty.model(attr(m.formula,"terms")))model.matrix(attr(m.formula,"terms"),m.formula) 
     
     ind.place <- attr(X,"assign")[duplicated(attr(X,"assign"))]
     
@@ -1650,6 +1667,20 @@
       fit$time2 <- ans$time2
     }
     
+    median1 <- ifelse(typeof==0, minmin(fit$surv1[,1],fit$x1), minmin(fit$surv1[,1],fit$xSu1))
+    lower1 <- ifelse(typeof==0, minmin(fit$surv1[,2],fit$x1), minmin(fit$surv1[,2],fit$xSu1))
+    upper1 <- ifelse(typeof==0, minmin(fit$surv1[,3],fit$x1), minmin(fit$surv1[,3],fit$xSu1))
+    fit$median1 <- cbind(lower1,median1,upper1)
+    
+    median2 <- ifelse(typeof==0, minmin(fit$surv2[,1],fit$x2), minmin(fit$surv2[,1],fit$xSu2))
+    lower2 <- ifelse(typeof==0, minmin(fit$surv2[,2],fit$x2), minmin(fit$surv2[,2],fit$xSu2))
+    upper2 <- ifelse(typeof==0, minmin(fit$surv2[,3],fit$x2), minmin(fit$surv2[,3],fit$xSu2))
+    fit$median2 <- cbind(lower2,median2,upper2)
+    
+    medianEnd <- ifelse(typeof==0, minmin(fit$survEnd[,1],fit$xEnd), minmin(fit$survEnd[,1],fit$xSuEnd))
+    lowerEnd <- ifelse(typeof==0, minmin(fit$survEnd[,2],fit$xEnd), minmin(fit$survEnd[,2],fit$xSuEnd))
+    upperEnd <- ifelse(typeof==0, minmin(fit$survEnd[,3],fit$xEnd), minmin(fit$survEnd[,3],fit$xSuEnd))
+    fit$medianEnd <- cbind(lowerEnd,medianEnd,upperEnd)
     
     fit$noVar <- noVar
     fit$nbintervR <- nbintervR

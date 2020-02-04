@@ -7,7 +7,7 @@
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst, &
     effet,stra,ve,vedc,pe,ng,g,nig,indic_ALPHA,ALPHA,theta,nstRec,k0T, &
-    auxig,aux1,aux2,res1,res3,kkapa,resnonpen,wtsvec
+    auxig,aux1,aux2,res1,res3,kkapa,resnonpen,wtsvec,nb_gl
     use residusM
     !use comongroup,only:the1
     use comongroup,only:vet,vet2,the2
@@ -34,7 +34,7 @@
 !AD:end
     double precision,dimension(0:ndatemax,nstRec)::ut1T
     double precision,dimension(0:ndatemaxdc)::ut2
-    double precision::int,gammaJ
+    double precision::int,logGammaJ
     
     kkapa=k0
     choix=0
@@ -269,7 +269,7 @@
     do ig=1,ng
         auxig=ig
         choix = 3
-        call gaulagJ(int,choix)
+        call gaulagJ(int,choix,nb_gl)
         integrale3(ig) = int !moins bon
     end do
 !************* FIN INTEGRALES **************************
@@ -284,7 +284,7 @@
                 res= res + res2(k) &
 !--      pour le deces:
                 + res2dc(k)  &
-                - gammaJ(1./theta)-dlog(theta)/theta  &
+                - logGammaJ(1./theta)-dlog(theta)/theta  &
                 + dlog(integrale3(k))
             else
 !*************************************************************************
@@ -293,11 +293,11 @@
 !                   write(*,*)'************** TAYLOR *************'                   
                 res= res + wtsvec(k)*(res2(k) &
                 + res2dc(k)  &
-                - gammaJ(1./theta)-dlog(theta)/theta  &
+                - logGammaJ(1./theta)-dlog(theta)/theta  &
                 + dlog(integrale3(k))) ! IJ: weighted each individual likelihood contribution
             endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
-!                 print*,"here",k,res2(k),res2dc(k),gammaJ(1./theta),dlog(theta),dlog(integrale3(k))
+!                 print*,"here",k,res2(k),res2dc(k),logGammaJ(1./theta),dlog(theta),dlog(integrale3(k))
                 funcpajsplines=-1.d9
                 goto 123
             end if

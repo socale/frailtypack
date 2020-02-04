@@ -7,22 +7,22 @@ module func_adaptative
     double precision function funcpafrailtyPred_ind(b,np,id,thi,jd,thj,k0,individu_j)
         
         use var_surrogate, only:vs_i,vt_i,u_i,theta2,const_res5,const_res4,&
-            deltastar,delta,pi,varcovinv,penalisation,essai_courant,cdcts,nigts,&
+            deltastar,delta,pi,& !varcovinv,penalisation,essai_courant,cdcts,nigts
             alpha_ui,frailt_base
-        use comon, only: eta,lognormal,ve,resnonpen
+        use comon, only: eta,ve !lognormal,resnonpen
         
         implicit none
          
         integer,intent(in)::id,jd,np,individu_j
-        integer::i
+        !integer::i
         double precision,dimension(np),intent(in)::b 
         double precision,dimension(2),intent(in)::k0
         double precision,intent(in)::thi,thj
-        double precision::vsi,vti,res,ui,test
+        double precision::vsi,vti,res,ui !test
         double precision,dimension(:),allocatable::bh
         double precision::wij
 		
-		allocate(bh(np))
+        allocate(bh(np))
         !call dblepr("b(1) funcpafrailtyPred_ind 41", -1, b(1), 1)             
         bh(1)=b(1)
         if (id.ne.0) bh(id)=bh(id)+thi
@@ -71,12 +71,12 @@ module func_adaptative
     ! fonction a maximiser pour l'estimation des effes aleatoires pour un essai
     double precision function funcpafrailtyPred_Essai(b,np,id,thi,jd,thj,k0)
         
-        use var_surrogate, only:vs_i,vt_i,u_i,theta2,const_res5,const_res4,&
-            deltastar,delta,pi,varcovinv,cdcts,nigts,essai_courant,ui_chap,&
-            posind_i,nsujeti,penalisation,npoint,estim_wij_chap,adaptative,&
+        use var_surrogate, only:vs_i,vt_i,u_i,theta2,& !const_res5,const_res4,
+            pi,varcovinv,cdcts,nigts,essai_courant,ui_chap,& !deltastar,delta
+            nsujeti,npoint,estim_wij_chap,& !adaptative,penalisation,posind_i
             indicej,invBi_chol_Individuel,individu_j,nparamfrail,&
             gamma_ui,frailt_base,methodInt,nsim
-        use comon, only: eta,lognormal,ve,resnonpen,invBi_cholDet
+        use comon, only: invBi_cholDet !eta,lognormal,ve,resnonpen
         use fonction_A_integrer,only:Integrale_Individuel,Integrale_Individuel_MC
         use optim_scl, only:marq98j_scl  ! pour faire appel a marquard 
         
@@ -89,7 +89,7 @@ module func_adaptative
         double precision,intent(in)::thi,thj
         double precision::vsi,vti,res,ui
         double precision,dimension(np)::bh
-        double precision::wij
+        !double precision::wij
         double precision ::I1,c1,c2,integral
         double precision, dimension(:,:),allocatable::m1,m3  
         double precision, dimension(:,:),allocatable::m

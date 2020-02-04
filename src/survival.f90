@@ -10,7 +10,7 @@
     implicit none
 
     double precision,intent(in)::t
-    integer,intent(in)::nst,nz
+    integer,intent(in)::nz,nst
     double precision,dimension(nz),intent(in)::the_s,the1_s
     double precision,dimension(nz+4),intent(in)::zi_s
 !AM:add lam

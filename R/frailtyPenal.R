@@ -478,7 +478,7 @@
 #' 
 #' frailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,
 #' cross.validation = FALSE, jointGeneral,n.knots, kappa, maxit = 300, hazard =
-#' "Splines", nb.int, RandDist = "Gamma", betaknots = 1, betaorder = 3,
+#' "Splines", nb.int, RandDist = "Gamma", nb.gh, nb.gl, betaknots = 1, betaorder = 3,
 #' initialize = TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi,
 #' init.Eta, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, print.times =
 #' TRUE)
@@ -546,6 +546,10 @@
 #' implemented for nested model. If \code{jointGeneral = TRUE} or if a joint
 #' nested frailty model is fitted, the log-normal distribution cannot be
 #' chosen.
+#' @param nb.gh Number of nodes for the Gaussian-Hermite quadrature. 
+#' It can be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 20 if hazard = "Splines", 32 otherwise.
+#' @param nb.gl Number of nodes for the Gaussian-Laguerre quadrature. 
+#' It can be chosen between 20 and 32. The default is 20 if hazard = "Splines", 32 otherwise.
 #' @param betaknots Number of inner knots used for the estimation of B-splines.
 #' Default is 1. See 'timedep' function for more details. Not implemented for
 #' nested and joint nested frailty models.
@@ -613,7 +617,9 @@
 #' seq(0,max(time),length=99), where time is the vector of survival times.}
 #' \item{lam}{array (dim=3) of hazard estimates and confidence bands.}
 #' \item{surv}{array (dim=3) of baseline survival estimates and confidence
-#' bands.} \item{nbintervR}{Number of intervals (between 1 and 20) for the
+#' bands.} \item{median}{The value of the median survival and its confidence bands. If there are
+#' two stratas or more, the first value corresponds to the value for the 
+#' first strata, etc.} \item{nbintervR}{Number of intervals (between 1 and 20) for the
 #' parametric hazard functions ("Piecewise-per", "Piecewise-equi").}
 #' \item{npar}{number of parameters.} \item{nvar}{number of explanatory
 #' variables.} \item{LCV}{the approximated likelihood cross-validation
@@ -951,8 +957,22 @@
 #' 
 "frailtyPenal" <-
   function (formula, formula.terminalEvent, data, recurrentAG=FALSE, cross.validation=FALSE, jointGeneral, n.knots, kappa,maxit=300, 
-            hazard="Splines", nb.int, RandDist="Gamma", betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
+            hazard="Splines", nb.int, RandDist="Gamma", nb.gh, nb.gl, betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
             LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
+
+    # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
+    minmin <- function(y, x) {
+      tolerance <- .Machine$double.eps^.5   #same as used in all.equal()
+      keep <- (!is.na(y) & y <(.5 + tolerance))
+      if (!any(keep)) NA
+      else {
+        x <- x[keep]
+        y <- y[keep]
+        if (abs(y[1]-.5) <tolerance  && any(y< y[1])) 
+          (x[1] + x[min(which(y<y[1]))])/2
+        else x[1]
+      }
+    }
     
     if (missing(jointGeneral)) jointGeneral<-FALSE
     if (!missing(init.Eta) & jointGeneral)  init.Alpha <- init.Eta
@@ -962,10 +982,9 @@
     else joint <- FALSE
     if ((!missing(Alpha) | !missing(init.Alpha)) & !joint) stop("init.Alpha and Alpha parameters belong to joint frailty model")
     
-    
     #ad 15/02/12 :add Audrey
     m2 <- match.call()
-    m2$formula <- m2$formula.terminalEvent <- m2$recurrentAG <- m2$cross.validation <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+    m2$formula <- m2$formula.terminalEvent <- m2$recurrentAG <- m2$cross.validation <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$... <- NULL
     Names.data <- m2$data
     
     #### Betaknots et betaorder ####
@@ -977,7 +996,7 @@
     logNormal <- switch(RandDist,"Gamma"=0,"LogN"=1)
     
     if (RandDist=="LogN" & jointGeneral==TRUE)        stop("Log normal distribution is not available for the Joint General Model !")
-    if ((hazard=='Weibull') & jointGeneral== TRUE)    stop("No parametrical general joint frailty model allowed here!")
+    if ((hazard!="Splines") & jointGeneral== TRUE)    stop("No general joint frailty model allowed here! Only 'Splines' is allowed")
     
     ##### hazard specification ######
     haztemp <- hazard
@@ -1050,6 +1069,18 @@
       }
     }	
     
+    #ad Julien pour nb.gh et nb.gl
+    if (missing(nb.gh)) {
+      if (typeof == 0) {nb.gh <- 20}
+      else {nb.gh <- 32}
+    }
+    if (!(nb.gh %in% c(5,7,9,12,15,20,32))) stop("nb.gh must be chosen among 5,7,9,12,15,20 and 32")
+    if (missing(nb.gl)) {
+      if (typeof == 0) {nb.gl <- 20}
+      else {nb.gl <- 32}
+    }
+    if (!(nb.gl %in% c(20,32))) stop("nb.gl must be chosen among 20 and 32")
+
     #AD:
     if (missing(formula))stop("The argument formula must be specified in any model")
     if(class(formula)!="formula")stop("The argument formula must be a formula")
@@ -1085,7 +1116,7 @@
     
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur	
     
-    m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$jointGeneral <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <-  m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha <- m$init.Ksi <- m$Ksi <- m$init.Eta <- m$Eta <- m$initialize <- m$... <- NULL    
+    m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$jointGeneral <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <-  m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha <- m$init.Ksi <- m$Ksi <- m$init.Eta <- m$Eta <- m$initialize <- m$nb.gh <- m$nb.gl <- m$... <- NULL    
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep", "wts") #wts for weights (ncc design) ncc - nested case-control
     
     Terms <- if (missing(data)){ 
@@ -1229,7 +1260,7 @@
     
     mt <- attr(m, "terms") #m devient de class "formula" et "terms"
     
-    X <- if (!is.empty.model(mt))model.matrix(mt, m, contrasts) #idem que mt sauf que ici les factor sont divise en plusieurs variables
+    X <- if (!is.empty.model(mt)) model.matrix(mt, m) #, contrasts) #idem que mt sauf que ici les factor sont divise en plusieurs variables
     
     ind.place <- unique(attr(X,"assign")[duplicated(attr(X,"assign"))]) ### unique : changement au 25/09/2014
     
@@ -1724,7 +1755,8 @@
                       as.integer(betaorder),
                       as.integer(filtretps),
                       BetaTpsMat=as.double(matrix(0,nrow=101,ncol=1+4*nvartimedep)),
-                      EPS=as.double(c(LIMparam,LIMlogl,LIMderiv))
+                      EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
+                      nbgh = as.integer(nb.gh)
       )#,
       #PACKAGE = "frailtypack") # 58 arguments
       #AD:      
@@ -1821,6 +1853,14 @@
       fit$n.strat <- uni.strat
       fit$n.iter <- ans[[33]]
       
+      median <- NULL
+      for (i in (1:fit$n.strat)) median[i] <- ifelse(typeof==0, minmin(fit$surv[,1,i],fit$x), minmin(fit$surv[,1,i],fit$xSu))
+      lower <- NULL
+      for (i in (1:fit$n.strat)) lower[i] <- ifelse(typeof==0, minmin(fit$surv[,2,i],fit$x), minmin(fit$surv[,2,i],fit$xSu))
+      upper <- NULL
+      for (i in (1:fit$n.strat)) upper[i] <- ifelse(typeof==0, minmin(fit$surv[,3,i],fit$x), minmin(fit$surv[,3,i],fit$xSu))
+      fit$median <- cbind(lower,median,upper)
+      
       if (typeof == 0){
         fit$n.knots<-n.knots
         if (uni.strat > 1) fit$kappa <- ans[[36]]
@@ -1850,7 +1890,7 @@
       fit$AG <- recurrentAG
       fit$intcens <- intcens # rajout
       fit$logNormal <- ans$logNormal
-      
+
       fit$shape.weib <- ans$shape.weib
       fit$scale.weib <- ans$scale.weib
       fit$Names.data <- Names.data
@@ -2102,9 +2142,9 @@
       m2 <- match.call(expand.dots = FALSE)
       ## AD: modified 20 06 2011, for no covariates on terminal event part
       if (missing(formula.terminalEvent)){
-        m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+        m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$... <- NULL
       }else{
-        m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+        m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$... <- NULL
       }     
       
       m2$formula <- Terms2
@@ -2445,7 +2485,7 @@
                       #k0=as.double(kappa), # joint intcens,tps,cluster
                       axT=as.double(kappa), # joint avec generalisation de strate
                       as.double(tt0),
-                      as.double(tt1),
+                      as.double(tt1), #8
                       
                       as.integer(cens),
                       as.integer(cluster),
@@ -2457,7 +2497,7 @@
                       as.double(tempdc),###
                       as.integer(icdc00),###
                       as.integer(nvarRec),
-                      as.double(var),
+                      as.double(var), #19
                       
                       as.integer(nvarEnd),
                       as.double(vardc),
@@ -2469,7 +2509,7 @@
                       np=as.integer(np),
                       b=as.double(Beta),
                       H=as.double(matrix(0,nrow=np,ncol=np)),
-                      HIH=as.double(matrix(0,nrow=np,ncol=np)),
+                      HIH=as.double(matrix(0,nrow=np,ncol=np)), #29
                       
                       loglik=as.double(0),
                       LCV=as.double(rep(0,2)),
@@ -2480,7 +2520,7 @@
                       xD=as.double(rep(0,size2)),
                       lamD=as.double(matrix(0,nrow=size2,ncol=3)),
                       xSuD=as.double(xSu2),
-                      survD=as.double(matrix(0,nrow=mt12,ncol=3)),
+                      survD=as.double(matrix(0,nrow=mt12,ncol=3)), #39
                       
                       as.integer(c(typeof, equidistant)),
                       #as.integer(equidistant),
@@ -2494,7 +2534,7 @@
                       paraweib=as.double(rep(0,4)),
                       #			shape.weib=as.double(rep(0,2)),
                       #			scale.weib=as.double(rep(0,2)),
-                      MartinGale=as.double(matrix(0,nrow=length(uni.cluster),ncol=5)),###
+                      MartinGale=as.double(matrix(0,nrow=length(uni.cluster),ncol=5)),###46
                       
                       linear.pred=as.double(rep(0,n)),
                       lineardc.pred=as.double(rep(0,as.integer(length(uni.cluster)))),
@@ -2514,14 +2554,15 @@
                       # censure par intervalle, indic_alpha
                       as.double(ttU),
                       as.integer(ordretmp),
-                      as.integer(initialize),
+                      as.integer(initialize),#58
                       
                       logNormal=as.integer(logNormal),
                       paratps=as.integer(c(timedep,betaknots,betaorder)),
                       as.integer(c(filtretps,filtretps2)),
                       BetaTpsMat=as.double(matrix(0,nrow=101,ncol=1+4*nvartimedep)),
                       BetaTpsMatDc=as.double(matrix(0,nrow=101,ncol=1+4*nvartimedep2)),
-                      EPS=as.double(c(LIMparam,LIMlogl,LIMderiv))
+                      EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
+                      nbgauss = as.integer(c(nb.gh,nb.gl))
       )#,
       #PACKAGE = "frailtypack") # 65 arguments
       
@@ -2655,6 +2696,22 @@
         fit$time <- ans$time
         fit$timedc <- ans$timedc
       }
+      fit$nb.gh <- nb.gh
+      fit$nb.gl <- nb.gl
+      
+      medianR <- NULL
+      for (i in (1:fit$n.strat)) medianR[i] <- ifelse(typeof==0, minmin(fit$survR[,1,i],fit$xR), minmin(fit$survR[,1,i],fit$xSuR))
+      lowerR <- NULL
+      for (i in (1:fit$n.strat)) lowerR[i] <- ifelse(typeof==0, minmin(fit$survR[,2,i],fit$xR), minmin(fit$survR[,2,i],fit$xSuR))
+      upperR <- NULL
+      for (i in (1:fit$n.strat)) upperR[i] <- ifelse(typeof==0, minmin(fit$survR[,3,i],fit$xR), minmin(fit$survR[,3,i],fit$xSuR))
+      fit$medianR <- cbind(lowerR,medianR,upperR)
+      
+      medianD <- ifelse(typeof==0, minmin(fit$survD[,1],fit$xD), minmin(fit$survD[,1],fit$xSuD))
+      lowerD <- ifelse(typeof==0, minmin(fit$survD[,3],fit$xD), minmin(fit$survD[,3],fit$xSuD))
+      upperD <- ifelse(typeof==0, minmin(fit$survD[,2],fit$xD), minmin(fit$survD[,2],fit$xSuD))
+      fit$medianD <- cbind(lowerD,medianD,upperD)
+      
       #AD:
       fit$noVar1 <- noVar1
       fit$noVar2 <- noVar2
@@ -2934,7 +2991,8 @@
                       frailty.sd.group=as.double(rep(0,as.integer(length(uni.cluster)))),
                       frailty.sd.subgroup=as.double(matrix(0,nrow=ngg,ncol=maxng)),
                       linear.pred=as.double(rep(0,n)),
-                      EPS=as.double(c(LIMparam,LIMlogl,LIMderiv))
+                      EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
+                      nbgl = as.integer(nb.gl)
       )#,
       #PACKAGE = "frailtypack") # 57 arguments
       
@@ -2997,7 +3055,16 @@
       fit$n.strat <- uni.strat
       fit$n.iter <- ans$ni
       fit$typeof <- typeof
+      fit$nb.gl <- nb.gl
       fit$noVar1 <- noVar1
+      
+      median <- NULL
+      for (i in (1:fit$n.strat)) median[i] <- ifelse(typeof==0, minmin(fit$surv[,1,i],fit$x), minmin(fit$surv[,1,i],fit$xSu))
+      lower <- NULL
+      for (i in (1:fit$n.strat)) lower[i] <- ifelse(typeof==0, minmin(fit$surv[,3,i],fit$x), minmin(fit$surv[,3,i],fit$xSu))
+      upper <- NULL
+      for (i in (1:fit$n.strat)) upper[i] <- ifelse(typeof==0, minmin(fit$surv[,2,i],fit$x), minmin(fit$surv[,2,i],fit$xSu))
+      fit$median <- cbind(lower,median,upper)
       
       if (typeof == 0){
         fit$n.knots<-n.knots
@@ -3169,7 +3236,7 @@
       if(!all(terminalEvent %in% c(2,1,0))) stop("'terminal' must contain a variable coded 0-1 and a non-factor variable")
       m2 <- match.call(expand.dots = FALSE)
       
-      m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$... <- NULL
+      m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gl <- m2$... <- NULL
       
       m2$formula <- Terms2
       m2[[1]] <- as.name("model.frame")
@@ -3504,7 +3571,8 @@
                       as.integer(c(filtretps, filtretps2)),
                       BetaTpsMat = as.double(matrix(0,nrow=101, ncol=1+4*nvartimedep)),
                       BetaTpsMatDc = as.double(matrix(0,nrow=101, ncol=1+4*nvartimedep2)),
-                      EPS = as.double(c(LIMparam, LIMlogl, LIMderiv))
+                      EPS = as.double(c(LIMparam, LIMlogl, LIMderiv)),
+                      nbgauss = as.integer(c(nb.gh,nb.gl))
       )#,
       #PACKAGE = "frailtypack") #65 arguments
       
@@ -3522,6 +3590,8 @@
       fit <- NULL
       
       fit$b <- ans$b
+      fit$timedep <- timedep
+      fit$typejoint0 <- joint.clust
       fit$na.action <- attr(m,"na.action")
       fit$call <- call
       fit$n <- n
@@ -3553,6 +3623,21 @@
       fit$n.strat <- uni.strat
       fit$n.iter <- ans$counts[1]
       fit$typeof <- typeof
+      fit$nb.gh <- nb.gh
+      fit$nb.gl <- nb.gl
+        
+      medianR <- NULL
+      for (i in (1:fit$n.strat)) medianR[i] <- ifelse(typeof==0, minmin(fit$survR[,1,i],fit$xR), minmin(fit$survR[,1,i],fit$xSuR))
+      lowerR <- NULL
+      for (i in (1:fit$n.strat)) lowerR[i] <- ifelse(typeof==0, minmin(fit$survR[,2,i],fit$xR), minmin(fit$survR[,2,i],fit$xSuR))
+      upperR <- NULL
+      for (i in (1:fit$n.strat)) upperR[i] <- ifelse(typeof==0, minmin(fit$survR[,3,i],fit$xR), minmin(fit$survR[,3,i],fit$xSuR))
+      fit$medianR <- cbind(lowerR,medianR,upperR)
+      
+      medianD <- ifelse(typeof==0, minmin(fit$survD[,1],fit$xD), minmin(fit$survD[,1],fit$xSuD))
+      lowerD <- ifelse(typeof==0, minmin(fit$survD[,3],fit$xD), minmin(fit$survD[,3],fit$xSuD))
+      upperD <- ifelse(typeof==0, minmin(fit$survD[,2],fit$xD), minmin(fit$survD[,2],fit$xSuD))
+      fit$medianD <- cbind(lowerD,medianD,upperD)
       
       fit$noVar1 <- noVar1
       fit$noVar2 <- noVar2

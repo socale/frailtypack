@@ -24,34 +24,34 @@
         ! for the numerical integral hrmsym
         integer :: restar,nf2,jj,ier
         double precision:: epsabs,epsrel
-        double precision,dimension(2):: result, abserr2
-        double precision,dimension(1000) :: work
+        !double precision,dimension(2):: result, abserr2
+        !double precision,dimension(1000) :: work
         external :: vraistot,vraistot_splines,vraistot_weib
         double precision,dimension(nea) :: xea
-        integer ::neval,ifail
+        !integer ::neval,ifail
         !
-        integer::n,i,j,k,vj,ig,choix,l
-        integer,dimension(ngmax)::cpt
-        double precision::pe1,pe2,sum,som1,som2,res,vet,vet2,h1
+        integer::n,i,j,k,vj,ig,choix
+        !integer,dimension(ngmax)::cpt
+        double precision::sum,res
         double precision :: eps_s
     
-        double precision,dimension(-2:npmax):: the1,the2
+        !double precision,dimension(-2:npmax):: the1,the2
         double precision,dimension(np)::bh
-        double precision,dimension(ngmax)::res2,res1dc,res2dc &
-        ,res3dc,integrale1,integrale2,integrale3,integrale4
+        double precision,dimension(ngmax):: &
+        integrale4
     !AD: for death,change dimension
-        double precision,dimension(ndatemax)::dut1
-        double precision,dimension(ndatemaxdc)::dut2
+        !double precision,dimension(ndatemax)::dut1
+        !double precision,dimension(ndatemaxdc)::dut2
     !AD:end
-        double precision,dimension(0:ndatemax)::ut1
-        double precision,dimension(0:ndatemaxdc)::ut2
+        !double precision,dimension(0:ndatemax)::ut1
+        !double precision,dimension(0:ndatemaxdc)::ut2
         double precision::int,eps
         double precision,parameter::pi=3.141592653589793d0
        
         external:: func7j
     double precision::func7j,finddet
        double precision,dimension(nea*(nea+1)/2)::matv
-       double precision,dimension(nsujety,1)::vey_bh
+       !double precision,dimension(nsujety,1)::vey_bh
         
 
             npp = np
@@ -287,9 +287,9 @@
         ! for the numerical integral hrmsym
         integer :: ier
         !
-        integer::n,i,j,k,vj,ig,choix,l,jj
+        integer::i,j,k,jj
             double precision,dimension(np)::bh
-          double precision::int,eps
+          double precision::eps
         double precision,parameter::pi=3.141592653589793d0
        
 

@@ -83,12 +83,12 @@
 
       double precision,intent(in)::frail
       double precision,dimension(3)::survR
-      double precision::theta,nrecj,gammaJ,Xbeta
+      double precision::theta,nrecj,logGammaJ,Xbeta
 
       func1predShaRec = ((survR(1)**(frail*Xbeta))-(survR(2)**(frail*Xbeta))) & 
                       *(frail**nrecj)*(survR(3)**(frail*Xbeta)) &
                       *(frail**(1.d0/theta -1.d0) * exp(-frail/theta))&
-                      /(theta**(1.d0/theta) * dexp(gammaJ(1.d0/theta)))
+                      /(theta**(1.d0/theta) * dexp(logGammaJ(1.d0/theta)))
       return
     end function func1predShaRec
 
@@ -101,11 +101,11 @@
 
       double precision,intent(in)::frail
       double precision,dimension(3)::survR
-      double precision::theta,nrecj,gammaJ,Xbeta
+      double precision::theta,nrecj,logGammaJ,Xbeta
 
       func2predShaRec = (survR(1)**(frail*Xbeta))*(frail**nrecj)&
              *(survR(3)**(frail*Xbeta))*(frail**(1.d0/theta -1.d0) &
-       * exp(-frail/theta)) / (theta**(1.d0/theta) *dexp( gammaJ(1.d0/theta)))
+       * exp(-frail/theta)) / (theta**(1.d0/theta) *dexp( logGammaJ(1.d0/theta)))
       return
     end function func2predShaRec
 

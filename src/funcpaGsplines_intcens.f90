@@ -9,7 +9,7 @@
     im3,im2,im1,im,mm3dc,mm2dc,mm1dc,mmdc,im3dc,im2dc,im1dc,imdc,date,datedc,zi,&
     c,cdc,nt0,nt1,nt0dc,nt1dc,nsujet,nva,nva1,nva2,ndate,ndatedc,nst,&
     stra,ve,vedc,pe,effet,ng,g,nig,AG,indic_ALPHA,theta,alpha,&
-    auxig,aux1,aux2,res1,res3,indictronq,resnonpen,resL,resU,ntU
+    auxig,aux1,aux2,res1,res3,indictronq,resnonpen,resL,resU,ntU,nb_gl
     use tailles
     use comongroup
     use residusM
@@ -18,7 +18,7 @@
 
     integer::nb,n,np,id,jd,i,j,k,vj,cptg,l,ig,choix
     integer,dimension(ngmax)::cpt
-    double precision::thi,thj,pe1,pe2,dnb,sum,inv,som1,som2,res,h1,int,gammaJ
+    double precision::thi,thj,pe1,pe2,dnb,sum,inv,som1,som2,res,h1,int,logGammaJ
     double precision,dimension(ngmax)::res2,res1dc,res2dc,res3dc
     double precision,dimension(np)::b,bh
     double precision,dimension(2)::k0
@@ -196,7 +196,7 @@
 
         res = 0.d0
         cptg = 0
-!     gam2 = gammaJ(inv)
+!     gam2 = logGammaJ(inv)
 ! k indice les groupes
 
         do k=1,ng
@@ -204,7 +204,7 @@
             if(cpt(k).gt.0)then
                 nb = nig(k)
                 dnb = dble(nig(k))
-!     gam1 = gammaJ(dnb + inv)
+!     gam1 = logGammaJ(dnb + inv)
                 if (dnb.gt.1.d0) then
                     do l=1,nb
                         sum=sum+dlog(1.d0+theta*dble(nb-l))
@@ -330,14 +330,14 @@
         do ig=1,ng
             auxig = ig
             choix = 1
-            call gaulagJ_intcens(int,choix)
+            call gaulagJ_intcens(int,choix,nb_gl)
             integrale1(ig) = int
 !             if (integrale1(ig).eq.0.d0) then
 !                 integrale1(ig) = 1.d-300
 !             endif
             if (indictronq.eq.1) then
                 choix = 2
-                call gaulagJ_intcens(int,choix)
+                call gaulagJ_intcens(int,choix,nb_gl)
                 integrale2(ig) = int
 !                 if (integrale2(ig).eq.0.d0) then
 !                     integrale2(ig) = 1.d0
@@ -354,7 +354,7 @@
                     dlog(integrale1(k)) - dlog(integrale2(k))
                 else
                     res = res + res2dc(k) - &
-                    gammaJ(1.d0/theta)-dlog(theta)/theta + &
+                    logGammaJ(1.d0/theta)-dlog(theta)/theta + &
                     dlog(integrale1(k))
                 endif
 

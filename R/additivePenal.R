@@ -158,7 +158,9 @@
 #' seq(0,max(time),length=99), where time is the vector of survival times.}
 #' \item{lam}{array (dim=3) of hazard estimates and confidence bands.}
 #' \item{surv}{array (dim=3) of baseline survival estimates and confidence
-#' bands.} \item{type.of.hazard}{Type of hazard functions (0:"Splines",
+#' bands.} \item{median}{The value of the median survival and its confidence bands. If there are
+#' two stratas or more, the first value corresponds to the value for the 
+#' first strata, etc.} \item{type.of.hazard}{Type of hazard functions (0:"Splines",
 #' "1:Piecewise", "2:Weibull").} \item{type.of.Piecewise}{Type of Piecewise
 #' hazard functions (1:"percentile", 0:"equidistant").} \item{nbintervR}{Number
 #' of intervals (between 1 and 20) for the parametric hazard functions
@@ -229,6 +231,20 @@
   function (formula, data, correlation=FALSE, recurrentAG=FALSE, cross.validation=FALSE, n.knots, kappa,
             maxit=350, hazard="Splines", nb.int, LIMparam=1e-4, LIMlogl=1e-4, LIMderiv=1e-3, print.times=TRUE)
   {
+    
+    # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
+    minmin <- function(y, x) {
+      tolerance <- .Machine$double.eps^.5   #same as used in all.equal()
+      keep <- (!is.na(y) & y <(.5 + tolerance))
+      if (!any(keep)) NA
+      else {
+        x <- x[keep]
+        y <- y[keep]
+        if (abs(y[1]-.5) <tolerance  && any(y< y[1])) 
+          (x[1] + x[min(which(y<y[1]))])/2
+        else x[1]
+      }
+    }
     
     ##### hazard specification ######
     
@@ -351,7 +367,7 @@
     
     mt <- attr(m, "terms")
     X <- if (!is.empty.model(mt)) 
-      model.matrix(mt, m, contrasts)
+      model.matrix(mt, m)
     
     
     strats <- attr(Terms, "specials")$strata
@@ -792,6 +808,14 @@
     fit$npar <- np
     fit$type <- type
     fit$AG <- recurrentAG
+    
+    median <- NULL
+    for (i in (1:fit$n.strat)) median[i] <- ifelse(typeof==0, minmin(fit$surv[,1,i],fit$x), minmin(fit$surv[,1,i],fit$xSu))
+    lower <- NULL
+    for (i in (1:fit$n.strat)) lower[i] <- ifelse(typeof==0, minmin(fit$surv[,2,i],fit$x), minmin(fit$surv[,2,i],fit$xSu))
+    upper <- NULL
+    for (i in (1:fit$n.strat)) upper[i] <- ifelse(typeof==0, minmin(fit$surv[,3,i],fit$x), minmin(fit$surv[,3,i],fit$xSu))
+    fit$median <- cbind(lower,median,upper)
     
     #AD:
     fit$noVar <- noVar

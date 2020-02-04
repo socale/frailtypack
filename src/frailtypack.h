@@ -18,36 +18,36 @@ F77_SUB(additive)(int *ns0, int *ng0, int *nst0, int *nz0, double *xmin10, doubl
 void 
 F77_SUB(cvpl)(int *nobs, int *nsujet, int *groupe0, int *c0, int *cdc0, int *nva10, 
 						int *nva20, double *ve0, double *vedc0, int *typeof0, 
-						double *nz0, double *zi0, double *ttt0, double *tttdc0, 
-						double *nbintervR0, double *nbintervDC0, double *np, double *b, 
+						int *nz0, double *zi0, double *ttt0, double *tttdc0, 
+						int *nbintervR0, int *nbintervDC0, int *np, double *b, 
 						double *H_1, double *t00, double *t10, double *t0dc0, 
-						double *t1dc0, double *nt, double *valT, double *rl_cond, 
+						double *t1dc0, int *nt, double *valT, double *rl_cond, 
 						double *epoir, double *contribt, double *atrisk);
 						
 void 
 F77_SUB(cvpl_logn)(int *nobs, int *nsujet, int *groupe0, int *c0, int *cdc0, int *nva10, 
 						int *nva20, double *ve0, double *vedc0, int *typeof0, 
-						double *nz0, double *zi0, double *ttt0, double *tttdc0, 
-						double *nbintervR0, double *nbintervDC0, double *np, double *b, 
+						int *nz0, double *zi0, double *ttt0, double *tttdc0, 
+						int *nbintervR0, int *nbintervDC0, int *np, double *b, 
 						double *H_1, double *t00, double *t10, double *t0dc0, 
-						double *t1dc0, double *nt, double *valT, double *rl_cond, 
+						double *t1dc0, int *nt, double *valT, double *rl_cond, 
 						double *epoir, double *contribt, double *atrisk);
 						
 void 
-F77_SUB(cvpl_long)(int *ng0, int *nsujet, int *nsujety0, int *groupe0, int *groupey0,
+F77_SUB(cvpl_long)(int *ng0, int *nsujet0, int *nsujety0, int *groupe0, int *groupey0,
 						int *c0, int *cdc0, double *Y0, int *nva10, int *nva20, int *nva30, 
 						int *nb10, int *netar0, int *netadc0, int *link0, double *ve0, 
 						double *vedc0,double *velong0, double *matzy0, double *s_cag0,
-						int *s_cag_id0, int *typeof0, int *typeJoint0, double *nz0, 
+						int *s_cag_id0, int *typeof0, int *typeJoint0, int *nz0, 
 						double *zi0, int *np0, double *b0, double *H_1, double *t00, 
-						double *t10, double *t0dc0, double *t1dc0, double *nt, 
+						double *t10, double *t0dc0, double *t1dc0, int *nt, 
 						double *valT, double *rl_cond, double *epoir, 
 						double *contribt, double *atrisk);
 						
 void
 F77_SUB(cvplnl)(int *ng0, int *nsujet0, int *nsujety0, int *groupe0, int *groupey0,
 					int *c0, int *cdc0, double *Y0, int *nva10, int *nva20, int *nva30,
-					int *nva40, int *nb10, int which_random0, double box_cox0,int *netar0,
+					int *nva40, int *nb10, int *which_random0, double *box_cox0, int *netar0,
 					int *netadc0, int *link0, double *ve0,
 					double *vedc0, double *velong0, double *matzy0, double *s_cag0,
 					int *s_cag_id0, int *typeof0, int *nz0, double *zi0, int *np0,
@@ -70,7 +70,7 @@ F77_SUB(frailpenal)(int *nsujetAux, int *ngAux, int *icenAux, int *nstAux, int *
 						double *frailtyvar, double *frailtysd, double *linearpred, 
 						double *time, int *intcensAux, double *ttUAux,int *logNormal0,
 						int *timedep0, int *nbinnerknots0, int *qorder0,int *filtretps0, 
-						double *BetaTpsMat, double *EPS);
+						double *BetaTpsMat, double *EPS, int *nbgh);
 						
 void 
 F77_SUB(frailpred_sha_nor_mc)(int *np0, double *frailtypred, double *sig20, double *res10, 
@@ -81,35 +81,36 @@ F77_SUB(joint)(int *nsujet0, int *ngrp, int *strAux, int *lignedc0, int *nz0,
 						double *axT, double *tt00, double *tt10, int *ic0, int *groupe0, 
 						int *groupe00, int *fam0, double *tt0dc0, double *tt1dc0, int *icdc0, 
 						double *tempdc, int *icdc00, int *nva10, double *vax0, int *nva20, double *vaxdc0, 
-						double *vaxdc00, int *noVar, double wtsvec0, int *maxit0, int *np, double *b, 
+						double *vaxdc00, int *noVar, double *wtsvec0, int *maxit0, int *np, double *b, 
 						double *H_hessOut, double *HIHOut, double *resOut, double *LCV, double *x1Out, 
 						double *lamOut, double *xSu1, double *suOut, double *x2Out, 
-						double *lam2Out, double *xSu2, double *su2Out, int *typeofequidist,
+						double *lam2Out, double *xSu2, double *su2Out, int *typeofequidist, 
 						int *nbinterv0, int *mtaille, int *counts, 
 						int *IerIstop, double *paraweib, double *MartinGales, 
 						double *linearpred, double *linearpreddc, double *ziOut, 
 						double *time, double *timedc, double *linearpredG, int *typeJoint0, 
 						int *intcens0, int *indices0, double *ttU0, int *ordretmp, int *initialize,
 						int *logNormal0, int *paratps, int *filtretps0, double *BetaTpsMat, 
-						double *BetaTpsMatDc, double *EPS);	
+						double *BetaTpsMatDc, double *EPS, int *nbgauss);	
 				
 void 
-F77_SUB(joint_longi)(int *nsujet0, int *nsujety0, int *ng0, int *nz0, double *k0, 
-						double *tt00, double *tt10, int *ic0, int *groupe0, 
-						double *tt0dc0, double *tt1dc0, int *icdc0, int *link0, 
-						double *yy0, int *groupey0, int *nb0, double *matzy0, 
-						double *cag0, double *nva10, double *vax0, double *nva20, 
-						double *vaxdc0, double *nva30, double *vaxy0, int *noVar, 
-						int *ag0, int *maxit0, int *np, int *neta0, double *b, 
-						double *H_hessOut, double *HIHOut, double *resOut, double *LCV, 
-						double *x1Out, double *lamOut, double *xSu1, double *suOut, 
-						double *x2Out, double *lam2Out, double *xSu2, double *su2Out, 
-						int *typeof0, int *equidistant, int *mtaille, int *counts, 
-						int *ier_istop, double *paraweib, double *MartinGales, 
-						double *ResLongi, double *Pred_y0, double *linearpred, 
-						double *linearpreddc, double *ziOut, int *paratps, int *filtretps0, 
-						double *BetaTpsMat, double *BetaTpsMatDc, double *BetaTpsMatY, 
-						double *EPS, int *GH, double *paGH);
+F77_SUB(joint_longi)(const int *vectnsujet, const int *ngnzag, double *k0, 
+                     double *tt00, double *tt10, const int *ic0, const int *groupe0, 
+                     double *tt0dc0, double *tt1dc0, const int *icdc0, const int *link0, 
+                     double *yy0, double *bb0, const int *groupey0, const int *groupeb0, 
+                     const int *vectnb0, double *matzy0, double *matzb0, const double *cag0, 
+                     const int *vectnvar, const double *vax0, const double *vaxdc0, 
+                     const double *vaxy0, const double *vaxb0, const int *novar, int *maxit0, 
+                     int *np, const int *neta0, double *b, double *h_hessout, double *hihout, 
+                     double *resout, double *lcv, double *x1out, double *lamout, double *xsu1, 
+                     double *suout, double *x2out, double *lam2out, double *xsu2, double *su2out, 
+                     int *typeof0, const int *equidistant, const int *mtaille, int *counts, 
+                     int *ier_istop, double *paraweib, double *martingales, double *reslongi, 
+                     double *pred_y0, const int *glmlog0, const int *positionvartime, 
+                     const int *numinterac, double *linearpred, double *linearpreddc, 
+                     double *ziout, const int *paratps, const int *filtretps0, double *betatpsmat, 
+                     double *betatpsmatdc, double *betatpsmaty, double *eps, const int *gh, 
+                     const double *pagh);
 
 void
 F77_SUB(jointlonginl)(int *nsujet0, int *nsujety0, int *ng0, int *nz0, double *k0, double *tt00,
@@ -121,22 +122,22 @@ F77_SUB(jointlonginl)(int *nsujet0, int *nsujety0, int *ng0, int *nz0, double *k
 						double *HIHOut, double *resOut, double *LCV, double *x1Out, double *lamOut,
 						double *xSu1, double *suOut, double *x2Out, double *lam2Out, double *xSu2,
 						double *su2Out, int *typeof0, int *equidistant, int *mtaille, int *counts,
-						double *ier_istop, double *paraweib, double *ziOut, double *EPS,
-						double *GH, double *paGH0, double *b_pred0, int *effet0, int *indic_alpha0,
-						double *weights0, double *nodes0, double *nnodes_all0, int *RE_which0);
+						int *ier_istop, double *paraweib, double *ziOut, double *EPS,
+						int *GH, double *paGH0, double *b_pred0, int *effet0, int *indic_alpha0,
+						double *weights0, double *nodes0, int *nnodes_all0, int *RE_which0);
 						
 void 
 F77_SUB(joint_multiv)(int *nobsEvent, int *nz0, double *k0, double *tt00, double *tt10, 
 						double *tt0meta0,double *tt1meta0, int *ic0, int *icmeta0,
-						int *groupe0, int *groupe0meta, int *groupe0dc, int *tt0dc0, 
-						int *tt1dc0, int *icdc0, int *nbvar, double *vax0, double *vaxmeta0, 
+						int *groupe0, int *groupe0meta, int *groupe0dc, double *tt0dc0, 
+						double *tt1dc0, int *icdc0, int *nbvar, double *vax0, double *vaxmeta0, 
 						double *vaxdc0, int *noVarEvent, int *maxIteration, int *initialize, 
 						int *np, double *b, double *H_hessOut, double *HIHOut, double *resOut, 
 						double *LCV, int *critCV, double *x1Out, double *lamOut, double *xSu1, 
 						double *suOut, double *x2Out,	double *lam2Out, double *xSu2, 
 						double *su2Out, double *x3Out, double *lam3Out, double *xSu3, 
 						double *su3Out, int *typeof0, int *equidistant0, int *nbIntervEvent, 
-						int *mtEvent, int *ni, int *cptEvent, int *shape_weib, int *scale_weib, 
+						int *mtEvent, int *ni, int *cptEvent, double *shape_weib, double *scale_weib, 
 						int *mt1Event, int *irep, int *ag0, double *ResMartingaleEvent, 
 						double *frailtyEstimates, double *linearpred, double *linearpreddc, 
 						double *linearpredM, double *ziOut1, double *ziOutdc, double *ziOutmeta, 
@@ -147,9 +148,9 @@ F77_SUB(longiuninl)(int *nsujety0, int *ng0, double *yy0, int *groupey0, int *nb
 						int *which_random0, double *box_cox0, double *matzy0, double *cag0,
 						int *nva30, int *nva40, double *vaxy0, int *noVar, int *maxit0,
 						int *np, double *b, double *H_hessOut, double *HIHOut, double *resOut,
-						double *LCV, double *counts, double *ier_istop, double *EPS,
-						double *GH, double *paGH, double *b_pred, double *weights0,
-						double *nodes0, double *nnodes_all0, int *initialGH, double *axT);
+						double *LCV, int *counts, int *ier_istop, double *EPS,
+						int *GH, double *paGH, double *b_pred, double *weights0,
+						double *nodes0, int *nnodes_all0, int *initialGH, double *axT);
 						
 void 
 F77_SUB(nested)(int *ns0, int *ng0, int *nssgbyg0, int *nst0, int *nz0, double *axT, 
@@ -164,7 +165,7 @@ F77_SUB(nested)(int *ns0, int *ng0, int *nssgbyg0, int *nst0, int *nz0, double *
 						double *shapeweib, double *scaleweib, int *mt1, double *ziOut, 
 						double *time, double *Resmartingale, double *frailtypred, 
 						double *frailtypredg, double *frailtyvar, double *frailtyvarg, 
-						double *frailtysd, double *frailtysdg, double *linearpred, double *EPS);
+						double *frailtysd, double *frailtysdg, double *linearpred, double *EPS, int *nbgl);
 						
 void 
 F77_SUB(predict)(int *np, double *b, int *nz, int *nbintervR, int *nbintervDC, int *nva1, 
@@ -236,14 +237,14 @@ F77_SUB(predicttrinl)(int *np, double *b, int *nz, int *nva10, int *nva20, int *
 						int *s_cag_id0, double *s_cag0);
 						
 void 
-F77_SUB(risque2)(double *t, double *the_s, double *the1_s, int *nz, double *zi_s, 
+F77_SUB(risque2)(double *t, double *the0, int *nz, double *zi0, 
 						double *lam, int *nst);
 void 
 F77_SUB(survival_cpm)(double *t, double *b, int *nst, int *nbintervR, double *time,double *surv);
 
 void 
-F77_SUB(survival_cpm2)(double *t, double *b, int *nst, int *nbintervR, int *nbintervDC, 
-						double *time, double *timedc, double *surv);
+F77_SUB(survival_cpm2)(double *t, double *b, int *nst, int *nbintervR, 
+						double *time, double *surv);
 						
 void 
 F77_SUB(survival_frailty)(double *t, double *the_s, double *the1_s, int *nz, double *zi_s, 
