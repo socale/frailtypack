@@ -47,7 +47,7 @@ The STE is obtained by solving the equation \if{latex}{\eqn{l(\alpha_0)}}
 the corresponding STE, and \if{latex}{\eqn{l(\alpha_0)}} 
 \if{html}{\code{l(\eqn{\alpha}\out{<sub>0</sub>})}} (resp. \if{latex}{\eqn{u(\alpha_0)}} 
 \if{html}{\code{u(\eqn{\alpha}\out{<sub>0</sub>})}}) is the lower (resp. upper) bound of the prediction interval 
-of the treatment effect on the true endpoint \code{(\eqn{\beta} + b\out{<sub>0</sub>})}. Thereby,
+of the treatment effect on the true endpoint \if{html}{\code{(\eqn{\beta} + b\out{<sub>0</sub>})}} \if{latex}{(\eqn{\beta} + \eqn{b_0})}. Thereby,
 
 \if{latex}{\eqn{l(\alpha_0) \equiv 
 E(\beta + b_0|\alpha_0, \vartheta) - Z_{1-(\gamma/2)} \sqrt(Var(\beta + b_0|\alpha_0, \vartheta))}

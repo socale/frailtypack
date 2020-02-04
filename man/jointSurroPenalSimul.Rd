@@ -149,7 +149,7 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 \item{betat.init}{Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
-\item{random.generator}{Random number generator to use by the Fortran compiler, 
+\item{random.generator}{Random number generator used by the Fortran compiler, 
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 subroutine \code{uniran()}. The default is \code{1}.}
 
@@ -219,7 +219,7 @@ by the changing of the number of nodes for the Gauss-Hermite quadrature. The def
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
 at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-as seed. In the last case, it is not possible to reproduce the generated datasets". 
+as seed. In the last case, it is not possible to reproduce the generated datasets. 
 The default is \code{0}. Required if \code{random.generator} is set to 1.}
 
 \item{random.nb.sim}{If \code{random} is set to \code{1}, a binary that indicates the number 

@@ -18,7 +18,7 @@ jointSurroPenal(data, maxit=40, indicator.zeta = 1,
    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
-\item{data}{A \code{\link{data.frame}} containing at least seven variables intitled: 
+\item{data}{A \code{\link{data.frame}} containing at least seven variables entitled: 
 \itemize{
 \item{\code{patientID:} A numeric, that represents the patient's identifier and must be unique;}
 \item{\code{trialID:} A numeric, that represents the trial in which each patient was randomized;}
@@ -39,12 +39,13 @@ be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} du
 The default is \code{1}. This parameter can be seted to \code{0} in the event of convergence and 
 identification issues.}
 
-\item{indicator.alpha}{A binary, indicates whether the power's parameter \eqn{\alpha} should 
+\item{indicator.alpha}{A binary, indicating whether the power's parameter \eqn{\alpha} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 The default is 1.}
 
-\item{frail.base}{Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
-the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}, or not (\code{0}). The default is \code{1}.}
+\item{frail.base}{A binary, indicating whether the heterogeneity between trial on the baseline risk 
+is  considered (\code{1}) or not (\code{0}), using 
+the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}. The default is \code{1}.}
 
 \item{n.knots}{integer giving the number of knots to use. Value required in
 the penalized likelihood estimation.  It corresponds to the (n.knots+2)
@@ -107,7 +108,7 @@ If set to \code{2}, \eqn{\alpha} and \eqn{\gamma} are initialised using two sepa
 frailty model, considering individual level random effects. If the joint frailty model is 
 faced to convergence issues, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
 \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using 
-two shared frailty models.  In all others scenarios, if the simplified model does not converge,
+two shared frailty models.  In all other scenarios, if the simplified model does not converge,
 default given parameters values are used. Initial values for spline's associated parameters 
 are fixed to \code{0.5}. The default for this argument is \code{0}.}
 
@@ -141,11 +142,11 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 \item{betat.init}{Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
-\item{scale}{A numeric that allows to rescale the survival times, to avoid numerical 
-problems in the event of some convergence issues. If no change is need the argument is set to 1, the default value. 
-eg: 365 aims to convert days to years ".}
+\item{scale}{A numeric that allows to rescale (multiplication) the survival times, to avoid numerical 
+problems in the event of some convergence issues. If no change is needed the argument is set to 1, the default value. 
+eg: code{1/365} aims to convert days to years ".}
 
-\item{random.generator}{Random number generator to use by the Fortran compiler, 
+\item{random.generator}{Random number generator used by the Fortran compiler, 
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 subroutine \code{uniran()}. The default is \code{1}. in the event of convergence problem 
 with \code{int.method} set to \code{0}, \code{2} or \code{4}, that requires  
@@ -162,7 +163,7 @@ The default is \code{4}.}
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
 at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-as seed. In the last case, it is not possible to reproduce the generated datasets". 
+as seed. In the last case, it is not possible to reproduce the generated datasets. 
 The default is \code{0}. Required if \code{random.generator} is set to 1.}
 
 \item{random.nb.sim}{If \code{random} is set to \code{1}, a binary that indicates the number 
@@ -174,7 +175,7 @@ The default is \code{0}.}
 \item{init.kappa}{smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 are obtain by cross-validation.}
 
-\item{ckappa}{Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
+\item{ckappa}{Vector of two fixed values to add to the smoothing parameters. By default it is set to (0,0). this argument allows
 to well manage the smoothing parameters in the event of convergence issues.}
 
 \item{nb.decimal}{Number of decimal required for results presentation.}

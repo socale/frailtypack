@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.jointSurroPenal.R
 \name{predict.jointSurroPenal}
 \alias{predict.jointSurroPenal}
-\title{Predict Method for the one-step Joint surrogate model for the evaluation of a 
+\title{Predict Method for the one-step Joint surrogate models for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
 \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
@@ -10,7 +10,7 @@ ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red",
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling the function \code{jointSurroPenal} or \code{jointSurrocopPenal}).}
+(output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).}
 
 \item{datapred}{Dataset to use for the prediction. If this argument is specified,
 the data structure must be the same as the parameter \code{data} in the 
@@ -21,7 +21,7 @@ not available, columns timeT and \code{statusT} can be absent.}
 the treatment effect on the true endpoint. If not null, this value is used for prediction insted of
 \code{datapred}. The default is \code{NULL}.}
 
-\item{betaT.obs}{Observec treatment effect on the true endpoint. Used to assess the prediction if not null.
+\item{betaT.obs}{Observed treatment effect on the true endpoint. Used to assess the prediction if not null.
 The defaut is \code{NULL}.}
 
 \item{ntrial0}{Number of subjects include in the new trial. Required if \code{betaS.obs} is not null.
@@ -52,10 +52,11 @@ Returns and display a dataframe including for each trial the number of included 
 (if available), the observed 
 treatment effect on surrogate endpoint, the observed treatment effect on
 true endpoint (if available) and the predicted treatment effect on 
-true enpoint with the associated prediction intervals. If the observed treatment effect on true 
+true enpoint with the associated prediction intervals. If the observe treatment effect on true 
 endpoint (if available) is included into the prediction interval, the last columns contains "*".
-For the given treatment effects on the surrogate enpoint, plot the associated treatment effects 
-on the true endpoint predicted from the joint surrogate model with the prediction intervals.
+This function also produces a plot of predicted treatment effects on the true endpoint
+according to the given values of the treatment effects on the surrogate endpoint, with 
+the prediction intervals.
 }
 \description{
 {

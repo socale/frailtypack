@@ -33,7 +33,7 @@ values at which to evaluate. The default is \code{1000}.}
 
 \item{lty}{The line type. Line types can either be specified as an integer 
 (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one 
-of the character strings \code{"blank", "solid", "dashed", "dotted", "dotdash", "longdash",
+of the character strings \code{"blank", "solid", "dashed", "dotted", "dotdash"}, \code{"longdash",
  or "twodash"}, where \code{"blank"} uses "invisible lines" (i.e., does not draw them). 
  The default is \code{2}.}
 
