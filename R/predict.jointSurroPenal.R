@@ -266,7 +266,7 @@
 
   }
   matrixPred[,-c(1,2,8)] <- round(matrixPred[,-c(1,2,8)],dec)
-  plot.predict.jointSurroPenal(object, from = from, to = to)
+  plotTreatPredJointSurro(object, from = from, to = to)
   for(k in 1:nrow(matrixPred)){
     points(matrixPred$beta.S[k],matrixPred$beta.T.i[k])
     points(matrixPred$beta.S[k],matrixPred$Inf.95.CI[k], col = colCI)

@@ -6,9 +6,9 @@
 #' the x axis to the value of \link{ste}.
 #'
 #'
-#' @aliases plot.predict.jointSurroPenal
+#' @aliases plotTreatPredJointSurro
 #' @usage
-#' plot.predict.jointSurroPenal(object, from = -2, to = 2, type = "Coef", 
+#' plotTreatPredJointSurro(object, from = -2, to = 2, type = "Coef", 
 #'    var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3, 
 #'    colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict")
 #' 
@@ -69,12 +69,12 @@
 #'                 nb.mc = 200, scale = 1/365)
 #' 
 #' 
-#' plot.predict.jointSurroPenal(joint.surro.ovar, from = -2, to = 2, 
+#' plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
 #'                 type = "HR", var.used = "error.estim", lty = 2)
 #' 
 #' }
 #' 
-plot.predict.jointSurroPenal= function(object, from = -2, to = 2, type = "Coef", var.used = "error.estim", 
+plotTreatPredJointSurro= function(object, from = -2, to = 2, type = "Coef", var.used = "error.estim", 
                                        alpha. = 0.05, n = 1000, lty = 2, d = 3, colCI = "blue", xlab = "beta.S", 
                                        ylab = "beta.T.predict"){
   # type  = "coef" or "HR"
