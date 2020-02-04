@@ -78,6 +78,10 @@
 ##' endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
 ##' Statistics in Medicine 38, 2928-2942. 
 ##' 
+##' Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
+##' endpoints using individual patient data from meta-analyses of randomized controlled trials. 
+##' PLOS ONE; 15, 1–25.
+##' 
 ##' @keywords surrogate prediction ste Surrogate threshold effect
 ##' @export
 ##' @importFrom stats optimize

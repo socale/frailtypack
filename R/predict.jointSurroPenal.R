@@ -62,6 +62,10 @@
 ##' measure for meta-analytic surrogate endpoint validation." Pharmaceutical 
 ##' Statistics, 5(3), 173-186.ISSN 1539-1612.
 ##' 
+##' Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
+##' endpoints using individual patient data from meta-analyses of randomized controlled trials. 
+##' PLOS ONE; 15, 1–25.
+##' 
 ##' @keywords surrogate prediction
 ##' @export
 ##' 
