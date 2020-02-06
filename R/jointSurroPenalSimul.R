@@ -200,7 +200,7 @@
 #' @param time.cens Censorship time. The default is \code{549}, for about \code{40\%} of censored 
 #' subjects.
 #' @param R2 Desired \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}. The default is \code{0.81}.
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}}. The default is \code{0.81}.
 #' @param sigma.s True value for \if{latex}{\eqn{\sigma^2_{v_S}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}
 #' The default is \code{0.7}.
 #' @param sigma.t True value for \if{latex}{\eqn{\sigma^2_{v_T}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}. The default is \code{0.7}.
@@ -239,11 +239,11 @@
 #' @param ckappa Vector of two constantes to add to the smoothing parameters. By default it is set to (0,0). this argument allows
 #' to well manage the smoothing parameters in the event of convergence issues.
 #' @param type.joint.estim  Model to considered for the estimation. If this argument is set to \code{1}, the joint surrogate model
-#' is used, the default (see \link{joinSurroPenal}). If set to \code{3}, parameters are estimated under the joint frailty-copula model
-#' for surrogacy (see \link{joinSurroCopPenal}).
+#' is used, the default (see \link{jointSurroPenal}). If set to \code{3}, parameters are estimated under the joint frailty-copula model
+#' for surrogacy (see \link{jointSurroCopPenal}).
 #' @param type.joint.simul Model to considered for data generation. If this argument is set to \code{1}, the joint surrogate model
-#' is used, the default (see \link{joinSurroPenal}). If set to \code{3}, data are generated following the joint frailty-copula model
-#' for surrogacy (see \link{joinSurroCopPenal}).
+#' is used, the default (see \link{jointSurroPenal}). If set to \code{3}, data are generated following the joint frailty-copula model
+#' for surrogacy (see \link{jointSurroCopPenal}).
 #' @param mbetast Matrix or dataframe containing the true fixed traitment effects associated with the covariates. This matrix includes 
 #' two columns (first one for surrogate endpoint and second one for true endpoint) and the number of row corresponding 
 #' to the number of covariate. Require if \code{type.joint.simul = 3} with more than one covariate. The default 
@@ -286,7 +286,7 @@
 #'    \item{betas}{true value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}};}
 #'    \item{betat}{true value for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}};}
 #'    \item{R2}{true value for \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}};}
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}};}
 #'    \item{nb.subject}{total number of subjects used;}
 #'    \item{nb.trials}{total number of trials used;}
 #'    \item{nb.simul}{number of simulated datasets;}
@@ -303,7 +303,7 @@
 #'    Delta method if \code{type.joint.estim = 3}). All non-convergence cases  are represented by a line of 0;}
 #'    \item{dataR2boot}{a matrix with \code{nb.dataset} line(s) and three columns, of the estimates of 
 #'    \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} 
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}} 
 #'    and theirs confidence intervals using the parametric bootstrap. All non-convergence cases are represented by a line of 0.}
 #'    \item{dataParamEstim}{a dataframe including all estimates with the associated standard errors, for all simulation. 
 #'    All non-convergence cases  are represented by a line of 0;}

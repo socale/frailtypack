@@ -14,8 +14,9 @@
 ##' @aliases predict.jointSurroPenal 
 ##' @usage
 ##' 
-##' \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
-##' ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", from = -2, to = 2, ...)
+##' \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, 
+##' betaT.obs = NULL, ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, 
+##' dec = 3, colCI = "red", from = -2, to = 2, ...)
 ##' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).
 ##' @param datapred Dataset to use for the prediction. If this argument is specified,
@@ -39,8 +40,10 @@
 ##' @param dec The desired number of digits after the decimal point for parameters
 ##' and confidence intervals. Default of 3 digits is used.
 ##' @param colCI The color used to display the confidence interval.
-##' @param from, The range over which the function will be plotted. The default is \code{from -2 to 2}
-##' @param to 
+##' @param from The range (with \code{to}) over which the function will be plotted. The default is 
+##' \code{from -2 to 2}
+##' @param to The range (with \code{from}) over which the function will be plotted. The default is 
+##' \code{from -2 to 2} 
 ##' @param ... other unused arguments.
 ##' 
 ##' @return Returns and display a dataframe including for each trial the number of included subjects 
@@ -64,7 +67,7 @@
 ##' 
 ##' Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
 ##' endpoints using individual patient data from meta-analyses of randomized controlled trials. 
-##' PLOS ONE; 15, 1–25.
+##' PLOS ONE; 15, 1-25.
 ##' 
 ##' @importFrom graphics points
 ##' @keywords surrogate prediction

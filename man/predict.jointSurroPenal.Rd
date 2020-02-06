@@ -5,8 +5,9 @@
 \title{Predict Method for the one-step Joint surrogate models for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-\method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, betaT.obs = NULL, 
-ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, dec = 3, colCI = "red", from = -2, to = 2, ...)
+\method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, 
+betaT.obs = NULL, ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, 
+dec = 3, colCI = "red", from = -2, to = 2, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -41,9 +42,11 @@ and confidence intervals. Default of 3 digits is used.}
 
 \item{colCI}{The color used to display the confidence interval.}
 
-\item{from, }{The range over which the function will be plotted. The default is \code{from -2 to 2}}
+\item{from}{The range (with \code{to}) over which the function will be plotted. The default is 
+\code{from -2 to 2}}
 
-\item{to}{}
+\item{to}{The range (with \code{from}) over which the function will be plotted. The default is 
+\code{from -2 to 2}}
 
 \item{...}{other unused arguments.}
 }
@@ -103,7 +106,7 @@ Statistics, 5(3), 173-186.ISSN 1539-1612.
 
 Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
 endpoints using individual patient data from meta-analyses of randomized controlled trials. 
-PLOS ONE; 15, 1–25.
+PLOS ONE; 15, 1-25.
 }
 \seealso{
 \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}

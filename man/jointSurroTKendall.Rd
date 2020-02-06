@@ -14,19 +14,19 @@ jointSurroTKendall(object = NULL, theta, gamma, alpha = 1, zeta = 1,
 \item{object}{An object inheriting from \code{jointSurroPenal} class. The default is \code{NULL}}
 
 \item{theta}{Variance of the individual-level random effect, \if{latex}{\eqn{\omega_{ij}}} 
-\if{html}{\code{\eqn{\omega}\out{<sub>ij</sub>}}}. 
+\if{html}{\eqn{\omega}\out{<sub>ij</sub>}}. 
 Required if \code{object} is set to \code{NULL}}
 
 \item{gamma}{Variance of the trial-level random effect associated with the baseline risk, 
-\if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}}. 
+\if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}}. 
 Required if \code{object} is set to \code{NULL}. The default is \code{3.5}.}
 
 \item{alpha}{Power parameter associated with \if{latex}{\eqn{u_i}} 
-\if{html}{\code{u\out{<sub>i</sub>}}}. Required if \code{object} is set to \code{NULL}.
+\if{html}{\code{u}\out{<sub>i</sub>}}. Required if \code{object} is set to \code{NULL}.
  The default is \code{1}.}
 
 \item{zeta}{Power parameter associated with \if{latex}{\eqn{\omega_{ij}}} 
-\if{html}{\code{\eqn{\omega}\out{<sub>ij</sub>}}}. Required if \code{object} is set to \code{NULL} 
+\if{html}{\eqn{\omega}\out{<sub>ij</sub>}}. Required if \code{object} is set to \code{NULL} 
 The default is \code{1}.}
 
 \item{sigma.v}{Covariance matrix  of the random effects treatment-by-trial interaction 

@@ -21,7 +21,7 @@
 #' @param cor Desired level of correlation between \if{latex}{\eqn{v_{S_i}} and 
 #' \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and v\out{<sub>T<sub>i</sub></sub>}}. 
 #'  \if{latex}{\eqn{R^2_{trial} = cor^2}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}} = cor \out{<sup>2</sup>}}. 
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>} = cor \out{<sup>2</sup>}}. 
 #' The default is \code{0.8}.
 #' @param betas Vector of the fixed effects for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}.
 #'  The size must be equal to \code{ver} 
@@ -42,7 +42,7 @@
 #' @param ver Number of covariates. The mandatory covariate is the treatment arm. The default is \code{2}.
 #' @param typeOf Type of joint model used for data generation: 0 = classical joint model 
 #' with a shared individual frailty effect (Rondeau, 2007), 1 = joint frailty-copula model with shared frailty 
-#' effects \if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}} and two correlated random effects treatment-by-trial interaction 
+#' effects \if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}} and two correlated random effects treatment-by-trial interaction 
 #' (\if{latex}{\eqn{v_{S_i}}, \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>}, v\out{<sub>T<sub>i</sub></sub>}}),
 #'  see \code{\link{jointSurroCopPenal}}.
 #' @param equi.subj.trial A binary variable that indicates if the same proportion of subjects should be included per trial (1) 
@@ -67,10 +67,9 @@
 #' when data generation is for simulation. With a fixed parameter and \code{random.generator} set to 1,
 #' all ganerated data are the same. By varying this parameter, different datasets are obtained during data generations. The default value is 0, 
 #' in the event of one dataset.
-#' @param theta.copule The copula parameter. The default is \code{6}, for an individual-level
-#' association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula
 #' @param filter.surr Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
 #' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.
+#' @param thetacopule The desired value for the copula parameter. The default is \code{6}.
 #' @param filter.true Vector defines as \code{filter.surr}, for the true endpoint. \code{filter.true} and \code{filter.surr}
 #' should have the same size
 #' @param covar.names Vector of the names of covariables. By default it contains "trt" for the 
@@ -94,9 +93,9 @@
 #'    0 = no event, 1 = event;}
 #'and other covariates named \code{Var2, var3, ..., var[ver-1]} if \code{ver > 1}.
 #' If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
-#'\if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}}, \if{latex}{\eqn{v_{S_i}} and 
-#'\eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and
-#' v\out{<sub>T<sub>i</sub></sub>}} are returned. 
+#'\if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}}, \if{latex}{\eqn{v_{S_i}} and 
+#'\eqn{v_{T_i}}}\if{html}{\code{v}\out{<sub>S<sub>i</sub></sub>} and
+#' \code{v}\out{<sub>T<sub>i</sub></sub>}} are returned. 
 #'    
 #'
 #' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

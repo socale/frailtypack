@@ -10,7 +10,7 @@
 #' including in the bivariate copula model the random effects treatment-by-trial interaction. 
 #' 
 #' Assume S\out{<sub>ij</sub>} and \out{T<sub>ij</sub>} the failure times associated respectively 
-#' with the surrogate and the true endpoints, for subject \code{j(j = 1,..., n\out{<sub>i</sub>})} belonging to 
+#' with the surrogate and the true endpoints, for subject \code{j(j = 1,..., n}\out{<sub>i</sub>}\code{)} belonging to 
 #' the trial \code{i (i = 1,..., G)}.
 #' 
 #' Let \out{<strong>v</strong>}\out{<sub>i</sub>} = (u\out{<sub>i</sub>}, 
@@ -407,10 +407,10 @@
 #'     the squared root of \eqn{\theta} if the Gumbel copula is considered. The last two parameters represent 
 #'     the regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
 #'     \if{html}{A vector containing estimates for the splines parameter's; elements of the
-#'     lower triangular matrix (L) from the Cholesky decomposition such that \code{\eqn{\Sigma} = LL\out{<sup>T</sup>}}, with \eqn{\Sigma} 
-#'     the covariance of the random effects \code{(\out{v<sub>S<sub>i</sub></sub>},\out{v<sub>T<sub>i</sub></sub>})}; 
+#'     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma} = LL\out{<sup>T</sup>}, with \eqn{\Sigma} 
+#'     the covariance of the random effects (\out{v<sub>S<sub>i</sub></sub>},\out{v<sub>T<sub>i</sub></sub>}); 
 #'     the coefficient \eqn{\alpha} (if \code{indicator.alpha} is set to \code{1}); the satandard error 
-#'     of the random effect \code{u\out{<sub>i</sub>}}; the logarithm
+#'     of the random effect \code{u}\out{<sub>i</sub>}; the logarithm
 #'     of the copula parameter (\eqn{\theta}) if the Clayton copula function is considered, or 
 #'     the squared root of \eqn{\theta} if the Gumbel copula is considered. The last two parameters represent 
 #'     the regression coefficients \eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>};}}
@@ -443,11 +443,11 @@
 #'    \item{beta.t}{Estimate for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}};}
 #'    \item{ui}{A binary, that indicates if the heterogeneity between trial on the baseline risk 
 #'    has been Considered (\code{1}), using the shared cluster specific frailties \if{latex}{(\eqn{u_i})}
-#'    \if{html}{\code{(u\out{<sub>i</sub>})}}, 
+#'    \if{html}{(\code{u}\out{<sub>i</sub>})}, 
 #'    or not (\code{0});}
 #'    \item{ktau}{The Kendall's \eqn{\tau} with the correspondant 95  \eqn{\%} CI obtained from the delta-method;}
 #'    \item{R2.boot}{The \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}}
 #'     with the correspondant 95 \eqn{\%} CI obtained from the parametric bootstrap;}
 #'    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
 #'    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
@@ -495,14 +495,17 @@
 #' \dontrun{
 #' # Data from the advanced ovarian cancer randomized clinical trials.
 #' data(dataOvarian)
-#' joint.surro.Gumbel <- jointSurroCopPenal(data = dataOvarian, int.method = 0, n.knots = 8, maxit = 50,
-#'       kappa.use = 4, nb.mc = 1000, typecopula = 2, print.iter = T, scale = 1/365)
+#' joint.surro.Gumbel <- jointSurroCopPenal(data = dataOvarian, int.method = 0, 
+#'       n.knots = 8, maxit = 50, kappa.use = 4, nb.mc = 1000, typecopula = 2, 
+#'       print.iter = T, scale = 1/365)
 #'       
-#'       summary(joint.surro.Gumbel)
+#' summary(joint.surro.Gumbel)
 #'
-#' joint.surro.Clayton <- jointSurroCopPenal(data = dataOvarian, int.method = 0, n.knots = 8, maxit = 50,
-#'       kappa.use = 4, nb.mc = 1000, typecopula = 1, print.iter = T, scale = 1/365)   
-#'        summary(joint.surro.Clayton)
+#' joint.surro.Clayton <- jointSurroCopPenal(data = dataOvarian, int.method = 0, 
+#'       n.knots = 8, maxit = 50, kappa.use = 4, nb.mc = 1000, typecopula = 1, 
+#'       print.iter = T, scale = 1/365) 
+#' 
+#' summary(joint.surro.Clayton)
 #' }
 #' 
 jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base = 1, 

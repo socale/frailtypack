@@ -11,7 +11,7 @@
 ##' @param object an object inheriting from \code{jointSurroPenalSimul} class.
 ##' @param d The desired number of digits after the decimal point f. Default of 3 
 ##' @param R2boot A binary that specifies whether the confidence interval of \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} 
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}} 
 ##' should be computed using parametric bootstrap (\code{1}) or Delta-method (\code{0}). 
 ##' The default is \code{0}
 ##' @param displayMSE A binary that indicates if the results include bias and mean square errors (MSE), 
@@ -30,7 +30,7 @@
 ##' For Kendall's \eqn{\tau}, the 95\% Confidence interval is obtained by 
 ##' parametric bootstrap (for joint frailty model) or Delta-method (for joint frailty-copula model). 
 ##' For \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}(R2trial), the standard error is obtained
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}}(R2trial), the standard error is obtained
 ##' by Delta-method and the 95\% Confidence interval could be obtained directly or by 
 ##' parametric bootstrap. We also display the total number of non convergence case with 
 ##' the associated percentage (R : n(\%)), the mean number of iterations to reach convergence,

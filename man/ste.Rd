@@ -41,14 +41,14 @@ true endpoint (Burzykowski \emph{et al.}, 2006).
 \details{
 {  
 The STE is obtained by solving the equation \if{latex}{\eqn{l(\alpha_0)}} 
-\if{html}{\code{l(\eqn{\alpha}\out{<sub>0</sub>})}} \code{= 0}
+\if{html}{\code{l}(\eqn{\alpha}\out{<sub>0</sub>})} \code{= 0}
   (resp. \if{latex}{\eqn{u(\alpha_0)}} 
-\if{html}{\code{u(\eqn{\alpha}\out{<sub>0</sub>})}} \code{= 0}), where 
-\if{latex}{\eqn{\alpha_0}} \if{html}{\code{\eqn{\alpha}\out{<sub>0</sub>}}} represents
+\if{html}{\code{u}(\eqn{\alpha}\out{<sub>0</sub>})} \code{= 0}), where 
+\if{latex}{\eqn{\alpha_0}} \if{html}{\eqn{\alpha}\out{<sub>0</sub>}} represents
 the corresponding STE, and \if{latex}{\eqn{l(\alpha_0)}} 
-\if{html}{\code{l(\eqn{\alpha}\out{<sub>0</sub>})}} (resp. \if{latex}{\eqn{u(\alpha_0)}} 
-\if{html}{\code{u(\eqn{\alpha}\out{<sub>0</sub>})}}) is the lower (resp. upper) bound of the prediction interval 
-of the treatment effect on the true endpoint \if{html}{\code{(\eqn{\beta} + b\out{<sub>0</sub>})}} \if{latex}{(\eqn{\beta} + \eqn{b_0})}. Thereby,
+\if{html}{\code{l}(\eqn{\alpha}\out{<sub>0</sub>})} (resp. \if{latex}{\eqn{u(\alpha_0)}} 
+\if{html}{\code{u}(\eqn{\alpha}\out{<sub>0</sub>})}) is the lower (resp. upper) bound of the prediction interval 
+of the treatment effect on the true endpoint \if{html}{(\eqn{\beta} + b\out{<sub>0</sub>})} \if{latex}{(\eqn{\beta} + \eqn{b_0})}. Thereby,
 
 \if{latex}{\eqn{l(\alpha_0) \equiv 
 E(\beta + b_0|\alpha_0, \vartheta) - Z_{1-(\gamma/2)} \sqrt(Var(\beta + b_0|\alpha_0, \vartheta))}
@@ -69,7 +69,7 @@ Given that negative values of treatment effect indicate a reduction of the risk
 of failure and are considered beneficial, STE is recommended to be computed from 
 the upper prediction
 limit  \if{latex}{\eqn{u(\alpha_0)}} 
-\if{html}{\code{u(\eqn{\alpha}\out{<sub>0</sub>})}}.
+\if{html}{\code{u}(\eqn{\alpha}\out{<sub>0</sub>})}.
 
 The details on the computation of STE is describes in 
 Burzykowski \emph{et al.} (2006).
@@ -109,7 +109,7 @@ Statistics in Medicine 38, 2928-2942.
 
 Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
 endpoints using individual patient data from meta-analyses of randomized controlled trials. 
-PLOS ONE; 15, 1–25.
+PLOS ONE; 15, 1-25.
 }
 \seealso{
 \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}, \code{\link[=predict.jointSurroPenal]{predict}}

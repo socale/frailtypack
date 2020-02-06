@@ -377,10 +377,10 @@
 #'     \if{html}{A vector containing estimates for the splines parameter's; 
 #'     the power's parameter \eqn{\zeta} (if \code{indicator.zeta} is set to \code{1}),
 #'     the standard error of the shared individual-level frailty \eqn{\omega}\out{<sub>ij</sub>} (\eqn{\theta}),elements of the
-#'     lower triangular matrix (L) from the Cholesky decomposition such that \code{\eqn{\Sigma} = LL\out{<sup>T</sup>}}, with \eqn{\Sigma} 
-#'     the covariance of the random effects \code{(\out{v<sub>S<sub>i</sub></sub>},\out{v<sub>T<sub>i</sub></sub>})}; 
+#'     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma} = LL\out{<sup>T</sup>}, with \eqn{\Sigma} 
+#'     the covariance of the random effects (\out{v<sub>S<sub>i</sub></sub>},\out{v<sub>T<sub>i</sub></sub>}); 
 #'     the coefficient \eqn{\alpha} (if \code{indicator.alpha} is set to \code{1}); the satandard error 
-#'     of the random effect \code{u\out{<sub>i</sub>}}and the regression coefficients \eqn{\beta}\out{<sub>S</sub>} 
+#'     of the random effect \code{u}\out{<sub>i</sub>}and the regression coefficients \eqn{\beta}\out{<sub>S</sub>} 
 #'     and \eqn{\beta}\out{<sub>T</sub>};}
 #'     }
 #'     \item{varH}{The variance matrix of all parameters in \code{b} (before positivity constraint transformation 
@@ -412,11 +412,11 @@
 #'    \item{beta.t}{Estimate for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}};}
 #'    \item{ui}{A binary, that indicates if the heterogeneity between trial on the baseline risk 
 #'    has been Considered (\code{1}), using the shared cluster specific frailties \if{latex}{(\eqn{u_i})}
-#'    \if{html}{\code{(u\out{<sub>i</sub>})}}, 
+#'    \if{html}{(\code{u}\out{<sub>i</sub>})}, 
 #'    or not (\code{0});}
 #'    \item{ktau}{The Kendall's \eqn{\tau} with the correspondant 95  \eqn{\%} CI computed using the parametric bootstrap;}
 #'    \item{R2.boot}{The \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
 #'    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
 #'    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
 #'    values if \code{kappa.use} is set to \code{3} or \code{4};}

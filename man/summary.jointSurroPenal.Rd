@@ -35,13 +35,13 @@ intervals for each covariate. For the surrogacy evaluation criteria, its prints 
 Kendall's \eqn{\tau} with its 95\% Confidence interval obtained by the parametric bootstrap
  or Delta-method, 
 the estimated \if{latex}{\eqn{R^2_{trial}}}
-   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}(R2trial) with standard error and the 95\% Confidence interval 
+   \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}}(R2trial) with standard error and the 95\% Confidence interval 
 obtained by Delta-method (Dowd \emph{et al.}, 2014), \if{latex}{\eqn{R^2_{trial}}}
-   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}}(R2.boot) and its 95\% 
+   \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}}(R2.boot) and its 95\% 
 Confidence interval obtained by the parametric bootstrap. 
 We notice that, using bootstrap, 
 the standard error of the point estimate is not available. We propose a classification of \if{latex}{\eqn{R^2_{trial}}}
-   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}} according to 
+   \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}} according to 
 the suggestion of the Institute of Quality and Efficiency in Health Care 
 (Prasad \emph{et al.}, 2015). 
 We also display the surrogate threshold effect (\code{\link[=ste]{ste}}) with the associated hazard risk.
@@ -53,7 +53,7 @@ This function returns the estimate of the coefficients and their standard error 
 of the Wald test for the joint surrogate model, also hazard ratios (HR) and their 
 confidence intervals for the fixed treatment effects, and finaly an estimate of the 
 surrogacy evaluation criterian (Kendall's \eqn{\tau} and \if{latex}{\eqn{R^2_{trial}}}
-   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}}})
+   \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}})
 }
 \examples{
 

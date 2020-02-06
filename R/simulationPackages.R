@@ -121,9 +121,18 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
       }
       
       if(program.to.estimate == 5){ # Variation of the number of subject per trial
-        utils::data("dataOvarian", envir = environment(), package = "frailtypack")
+        # utils::data("dataOvarian", envir = environment(), package = "frailtypack")
         # consider the proportion from the advanced avarian cancer dataset including 50 trials
-        prop = table(dataOvarian$trialID)/nrow(dataOvarian)
+        # prop = table(dataOvarian$trialID)/nrow(dataOvarian)
+        prop <- c(0.229865772, 0.104865772, 0.057885906, 0.098154362, 0.017617450, 0.006711409, 
+                  0.041107383, 0.033557047, 0.005872483, 0.009228188, 0.020973154, 0.008389262,
+                  0.014261745, 0.020973154, 0.009228188, 0.014261745, 0.006711409, 0.005033557, 
+                  0.010906040, 0.015100671, 0.005033557, 0.001677852, 0.015939597, 0.012583893,
+                  0.017617450, 0.012583893, 0.004194631, 0.010067114, 0.007550336, 0.002516779,
+                  0.006711409, 0.010067114, 0.001677852, 0.014261745, 0.007550336, 0.033557047,
+                  0.003355705, 0.002516779, 0.026006711, 0.002516779, 0.005033557, 0.003355705, 
+                  0.004194631, 0.014261745, 0.010067114, 0.005033557, 0.004194631, 0.014261745,
+                  0.002516779, 0.008389262)
         joint.simul2 <- jointSurroPenalSimul(nb.dataset = N.sim.data, nbSubSimul = nsubjet, ntrialSimul = ntrial, 
                                              int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, 
                                              adaptatif = adaptatif, n.knots = nspline, kappa.use = kappa.use, 

@@ -34,7 +34,7 @@ jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549,
 \item{cor}{Desired level of correlation between \if{latex}{\eqn{v_{S_i}} and 
 \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and v\out{<sub>T<sub>i</sub></sub>}}. 
  \if{latex}{\eqn{R^2_{trial} = cor^2}}
-   \if{html}{\code{R\out{<sup>2</sup><sub>trial</sub>}} = cor \out{<sup>2</sup>}}. 
+   \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>} = cor \out{<sup>2</sup>}}. 
 The default is \code{0.8}.}
 
 \item{betas}{Vector of the fixed effects for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}.
@@ -64,7 +64,7 @@ The default is 0.0025.}
 
 \item{typeOf}{Type of joint model used for data generation: 0 = classical joint model 
 with a shared individual frailty effect (Rondeau, 2007), 1 = joint frailty-copula model with shared frailty 
-effects \if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}} and two correlated random effects treatment-by-trial interaction 
+effects \if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}} and two correlated random effects treatment-by-trial interaction 
 (\if{latex}{\eqn{v_{S_i}}, \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>}, v\out{<sub>T<sub>i</sub></sub>}}),
  see \code{\link{jointSurroCopPenal}}.}
 
@@ -100,6 +100,8 @@ when data generation is for simulation. With a fixed parameter and \code{random.
 all ganerated data are the same. By varying this parameter, different datasets are obtained during data generations. The default value is 0, 
 in the event of one dataset.}
 
+\item{thetacopule}{The desired value for the copula parameter. The default is \code{6}.}
+
 \item{filter.surr}{Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
 surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.}
 
@@ -111,9 +113,6 @@ tratment arm. Should contains the names of all covarites wished in the generated
 
 \item{pfs}{Is used to specify if the time to progression should be censored by the death time (0) or not (1). 
 The default is 0. In the event with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS.}
-
-\item{theta.copule}{The copula parameter. The default is \code{6}, for an individual-level
-association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula}
 }
 \value{
 This function returns if the parameter \code{full.data} is set to 0, a \code{\link{data.frame}} with columns :
@@ -128,9 +127,9 @@ This function returns if the parameter \code{full.data} is set to 0, a \code{\li
    0 = no event, 1 = event;}
 and other covariates named \code{Var2, var3, ..., var[ver-1]} if \code{ver > 1}.
 If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
-\if{latex}{\eqn{u_i}} \if{html}{\code{u\out{<sub>i</sub>}}}, \if{latex}{\eqn{v_{S_i}} and 
-\eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and
-v\out{<sub>T<sub>i</sub></sub>}} are returned.
+\if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}}, \if{latex}{\eqn{v_{S_i}} and 
+\eqn{v_{T_i}}}\if{html}{\code{v}\out{<sub>S<sub>i</sub></sub>} and
+\code{v}\out{<sub>T<sub>i</sub></sub>}} are returned.
 }
 \description{
 Date are generated from the one-step joint frailty-copula model, under the Claton 

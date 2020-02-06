@@ -10,13 +10,15 @@
 #' @usage
 #' plotTreatPredJointSurro(object, from = -2, to = 2, type = "Coef", 
 #'    var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3, 
-#'    colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict, 
-#'    pred.int.use = "up"")
+#'    colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict", 
+#'    pred.int.use = "up")
 #' 
 #' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal} ).
-#' @param from, The range over which the function will be plotted. The default is \code{from -2 to 2}
-#' @param to 
+#' @param from The range (with \code{to}) over which the function will be plotted. The default is 
+#' \code{from -2 to 2}
+#' @param to The range (with \code{from}) over which the function will be plotted. The default is 
+#' \code{from -2 to 2}
 #' @param type The type of graphic, \code{"Coef"} for the \code{log HR} or \code{"HR"} for hazard ratio.
 #' If set to \code{HR}, the arguments \code{from} and \code{to} must take positive values.
 #' The default is \code{"Coef"}.
@@ -60,7 +62,7 @@
 #' 
 #' Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
 #' endpoints using individual patient data from meta-analyses of randomized controlled trials. 
-#' PLOS ONE; 15, 1–25.
+#' PLOS ONE; 15, 1-25.
 #' @importFrom graphics points curve
 #' @keywords surrogate prediction
 #' @export
@@ -78,9 +80,13 @@
 #'                 init.kappa = c(2000,1000), indicator.alpha = 0, 
 #'                 nb.mc = 200, scale = 1/365)
 #' 
-#' 
-#' plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
+#' ## "HR"
+#' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
 #'                 type = "HR", var.used = "error.estim", lty = 2)
+#'              
+#' ## "log HR"
+#' plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
+#'                 type = "Coef", var.used = "error.estim", lty = 2)
 #'                 
 #' ### For a value of ste greater than 0 (HR > 1), which induces deleterious
 #' ### treatment effet, argument "pred.int.use" can be set to "lw"  
