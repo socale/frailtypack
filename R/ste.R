@@ -61,7 +61,8 @@
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param pred.int.use A character string that indicates the bound of the prediction interval 
 ##' to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
-##' or \code{lw} for the lower bound.
+##' or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
+#' induces risk factors.
 ##' 
 ##' @return Returns and displays the STE.
 ##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}, \code{\link[=predict.jointSurroPenal]{predict}}
