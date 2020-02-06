@@ -820,8 +820,8 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   #zeta.init  # valeur initiale de zeta_wij
   #betas.init  # valeur initiale de betas
   #betat.init  # valeur initiale de betat
-  vbetast = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
-  vbetastinit = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilisé dans cette fonction
+  vbetast = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilise dans cette fonction
+  vbetastinit = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilise dans cette fonction
   
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
