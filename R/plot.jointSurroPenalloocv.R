@@ -6,14 +6,16 @@
 ##' }
 ##' 
 ##' @aliases plot.jointSurroPenalloocv
-##' @usage \method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
+##' @usage 
 ##' 
-##' @param object Object inherent from the \code{jointSurroPenalloocv} Class
+##' \method{plot}{jointSurroPenalloocv}(x, unusedtrial = NULL, xleg = "bottomleft", 
+##' yleg = NULL, main = NULL, ...)
+##' @param x An object inherent from the \code{jointSurroPenalloocv} Class
 ##' @param unusedtrial Vector of unconsidered trials, may be due to the fact that the 
 ##' predicted treatment effects on true endpoint have an outlier. In this case, 
 ##' one can drop from the data the trials with very hight absolute predicted value 
-##' @param x X-coordinate for the location of the legend
-##' @param y Y-coordinate for the location of the legend, the default is \code{NULL}
+##' @param xleg X-coordinate for the location of the legend
+##' @param yleg Y-coordinate for the location of the legend, the default is \code{NULL}
 ##' @param main The desired main
 ##' @param ... other unused arguments.
 ##' 
@@ -33,6 +35,7 @@
 ##' measure for meta-analytic surrogate endpoint validation." Pharmaceutical 
 ##' Statistics, 5(3), 173-186.ISSN 1539-1612.
 ##' 
+##' @importFrom graphics boxplot points
 ##' @keywords surrogate prediction loocv plot
 ##' @export
 ##' @examples
@@ -54,9 +57,10 @@
 ##'                           x = "bottomleft", y = NULL)
 ##' }
 ##' 
-"plot.jointSurroPenalloocv" <- 
-  function(object, unusedtrial = NULL, x = "bottomleft", y = NULL, main = NULL, ...){
-    data.gumbel = object$result
+"plot.jointSurroPenalloocv" <- function(x, unusedtrial = NULL, xleg = "bottomleft", 
+                                        yleg = NULL, main = NULL, ...){
+    object <- x
+    data.gumbel <- object$result
     data.gumbel <- data.gumbel[!(data.gumbel$trialID %in% unusedtrial),]
     data.plot <- data.frame(matrix(NA, nrow = 3 * nrow(data.gumbel), ncol = 4))
     names(data.plot) <- c("trialID", "beta.T", "ordre", "beta")
@@ -127,7 +131,7 @@
               main = main)
     }
     points(data.plot2$trialID[!(data.plot2$trialID %in% unusedtrial)],data.plot2$beta.T[!(data.plot2$trialID %in% unusedtrial)])
-    legend(x = x, y = y, c("Beta observed", "Beta predict"), cex = 1, pch= c(1,15))
+    legend(x = xleg, y = yleg, c("Beta observed", "Beta predict"), cex = 1, pch= c(1,15))
     abline(h = 0)
     return(paste("Unused trials = ", mainlabel, sep = ""))
   }

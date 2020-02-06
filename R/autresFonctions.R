@@ -56,14 +56,14 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 0,
                                   frailt.base = frailt.base, thetacopule = thetacopule, ver = ver,
                                   random.generator = random.generator)
     d[i,1] <- mean(data.sim$v_Si[pour.essai])
-    d[i,2] <- var(data.sim$v_Si[pour.essai])
+    d[i,2] <- stats::var(data.sim$v_Si[pour.essai])
     d[i,3] <- mean(data.sim$v_Ti[pour.essai])
-    d[i,4] <- var(data.sim$v_Ti[pour.essai])
-    d[i,5] <- cov(data.sim$v_Si[pour.essai],data.sim$v_Ti[pour.essai])
+    d[i,4] <- stats::var(data.sim$v_Ti[pour.essai])
+    d[i,5] <- stats::cov(data.sim$v_Si[pour.essai],data.sim$v_Ti[pour.essai])
     d[i,6] <- mean(data.sim$u_i[pour.essai])
-    d[i,7] <- var(data.sim$u_i[pour.essai])
-    d[i,8] <- median(data.sim$timeS)
-    d[i,9] <- median(data.sim$timeT)
+    d[i,7] <- stats::var(data.sim$u_i[pour.essai])
+    d[i,8] <- stats::median(data.sim$timeS)
+    d[i,9] <- stats::median(data.sim$timeT)
     d[i,10] <- prop.table(table(data.sim$statusS))["1"]
     d[i,11] <- prop.table(table(data.sim$statusT))["1"]
     d[i,12] <- prop.table(table(data.sim$trt))["1"]
@@ -76,7 +76,7 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 0,
     ## Compute Kendall's tau at each study ##
     Tau <- numeric(n.trial)
     for(k in 1:n.trial){
-      Tau[k] <- cor(data.sim$timeS[(data.sim$trialID == k) & (data.sim$trt == 1)],
+      Tau[k] <- stats::cor(data.sim$timeS[(data.sim$trialID == k) & (data.sim$trt == 1)],
                  data.sim$timeT[(data.sim$trialID == k) & (data.sim$trt == 1)],method="kendall")
     }
     
@@ -100,9 +100,9 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 0,
   result$SD <- NA
   
   for(k in 1 : np){
-    result$Mean[k] <- round(mean(na.omit(d[,k])),dec)
-    result$Median[k] <- round(median(na.omit(d[,k])),dec)
-    result$SD[k] <- round(sd(na.omit(d[,k])),dec)
+    result$Mean[k] <- round(mean(stats::na.omit(d[,k])),dec)
+    result$Median[k] <- round(stats::median(stats::na.omit(d[,k])),dec)
+    result$SD[k] <- round(stats::sd(stats::na.omit(d[,k])),dec)
   }
   
   #prettyR::describe(d)

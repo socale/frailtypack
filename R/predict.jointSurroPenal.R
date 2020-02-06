@@ -66,6 +66,7 @@
 ##' endpoints using individual patient data from meta-analyses of randomized controlled trials. 
 ##' PLOS ONE; 15, 1–25.
 ##' 
+##' @importFrom graphics points
 ##' @keywords surrogate prediction
 ##' @export
 ##' 

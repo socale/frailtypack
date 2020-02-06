@@ -23,7 +23,8 @@ The default is \code{error.estim}.}
 
 \item{pred.int.use}{A character string that indicates the bound of the prediction interval 
 to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
-or \code{lw} for the lower bound.}
+or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
+induces risk factors.}
 }
 \value{
 Returns and displays the STE.

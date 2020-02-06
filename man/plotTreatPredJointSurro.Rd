@@ -6,7 +6,8 @@
 \usage{
 plotTreatPredJointSurro(object, from = -2, to = 2, type = "Coef", 
    var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3, 
-   colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict")
+   colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict, 
+   pred.int.use = "up"")
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -17,6 +18,7 @@ plotTreatPredJointSurro(object, from = -2, to = 2, type = "Coef",
 \item{to}{}
 
 \item{type}{The type of graphic, \code{"Coef"} for the \code{log HR} or \code{"HR"} for hazard ratio.
+If set to \code{HR}, the arguments \code{from} and \code{to} must take positive values.
 The default is \code{"Coef"}.}
 
 \item{var.used}{This argument can take two values. The first one is \code{"error.estim"}
@@ -45,6 +47,11 @@ and confidence intervals. Default of 3 digits is used.}
 \item{xlab}{A title for the x axis.}
 
 \item{ylab}{A title for the y axis.}
+
+\item{pred.int.use}{A character string that indicates the bound of the prediction interval 
+to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
+or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
+induces risk factors.}
 }
 \value{
 For a considered treatment effects on the surrogate enpoint, plot the
@@ -73,6 +80,13 @@ joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8,
 
 plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
                 type = "HR", var.used = "error.estim", lty = 2)
+                
+### For a value of ste greater than 0 (HR > 1), which induces deleterious
+### treatment effet, argument "pred.int.use" can be set to "lw"  
+
+plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
+                type = "HR", var.used = "error.estim", lty = 2,
+                pred.int.use = "lw")
 
 }
 

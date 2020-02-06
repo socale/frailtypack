@@ -5,18 +5,19 @@
 \title{Plot of leave-one-out crossvalidation Outputs from the one-step Joint surrogate model for evaluating a 
 canditate surrogate endpoint.}
 \usage{
-\method{plot}{jointSurroPenalloocv}(object, unusedtrial = NULL, x = "bottomleft", y = NULL, ...)
+\method{plot}{jointSurroPenalloocv}(x, unusedtrial = NULL, xleg = "bottomleft", 
+yleg = NULL, main = NULL, ...)
 }
 \arguments{
-\item{object}{Object inherent from the \code{jointSurroPenalloocv} Class}
+\item{x}{An object inherent from the \code{jointSurroPenalloocv} Class}
 
 \item{unusedtrial}{Vector of unconsidered trials, may be due to the fact that the 
 predicted treatment effects on true endpoint have an outlier. In this case, 
 one can drop from the data the trials with very hight absolute predicted value}
 
-\item{x}{X-coordinate for the location of the legend}
+\item{xleg}{X-coordinate for the location of the legend}
 
-\item{y}{Y-coordinate for the location of the legend, the default is \code{NULL}}
+\item{yleg}{Y-coordinate for the location of the legend, the default is \code{NULL}}
 
 \item{main}{The desired main}
 

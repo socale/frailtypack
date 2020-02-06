@@ -121,7 +121,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
       }
       
       if(program.to.estimate == 5){ # Variation of the number of subject per trial
-        data(dataOvarian, package = "frailtypack")
+        utils::data("dataOvarian", envir = environment(), package = "frailtypack")
         # consider the proportion from the advanced avarian cancer dataset including 50 trials
         prop = table(dataOvarian$trialID)/nrow(dataOvarian)
         joint.simul2 <- jointSurroPenalSimul(nb.dataset = N.sim.data, nbSubSimul = nsubjet, ntrialSimul = ntrial, 
@@ -139,14 +139,14 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
 
     }
     
-    i <- i + 1
-    
     # save of the RData
-    save.image(paste("wd/joint.simul2_",numsimul, ".RData", sep = ""))
+    save.image(paste("wd/joint.simul2_",i, ".RData", sep = ""))
+    
+    i <- i + 1
   }
   
   # Merge from all packages
-  joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = nb.paquet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
+  joint.simul <- mergeJointSurroSimul(nb.packet = nb.paquet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
                                                     wd = wd)
   setwd(current)
   
