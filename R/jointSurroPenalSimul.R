@@ -71,7 +71,7 @@
 #'    random.nb.sim = 0, seed = 0, nb.reject.data = 0, init.kappa = NULL, 
 #'    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
 #'    mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
-#'    thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), 
+#'    thetacopula.init = 3, filter.surr = c(1), filter.true = c(1), 
 #'    nb.decimal = 4, pfs = 0, print.times = TRUE, print.iter=FALSE)
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
@@ -258,7 +258,8 @@
 #' association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula
 #' @param thetacopula.init Initial value for the copula parameter. Require if \code{type.joint.estim = 3}, the default is 3 
 #' @param filter.surr Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
-#' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.
+#' surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, only the treatment effect is 
+#' considered.
 #' @param filter.true Vector defines as \code{filter.surr}, for true endpoint. \code{filter.true} and \code{filter.surr}
 #' should have the same size
 #' @param nb.decimal Number of decimal required for results presentation.
@@ -376,7 +377,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                       R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, random.nb.sim = 0, 
                       seed = 0, nb.reject.data = 0, init.kappa = NULL, ckappa = c(0,0), 
                       type.joint.estim = 1, type.joint.simul = 1, mbetast = NULL, mbetast.init = NULL, typecopula = 1, 
-                      theta.copula = 6, thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), nb.decimal = 4, 
+                      theta.copula = 6, thetacopula.init = 3, filter.surr = c(1), filter.true = c(1), nb.decimal = 4, 
                       pfs = 0, print.times = TRUE, print.iter = FALSE){
   
   data <- NULL

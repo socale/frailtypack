@@ -23,7 +23,7 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    random.nb.sim = 0, seed = 0, nb.reject.data = 0, init.kappa = NULL, 
    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
    mbetast =NULL, mbetast.init = NULL, typecopula =1, theta.copula = 6,
-   thetacopula.init = 3, filter.surr = c(1,1), filter.true = c(1,1), 
+   thetacopula.init = 3, filter.surr = c(1), filter.true = c(1), 
    nb.decimal = 4, pfs = 0, print.times = TRUE, print.iter=FALSE)
 }
 \arguments{
@@ -269,7 +269,8 @@ association (kendall's \eqn{\tau}) of 0.75 in the event of Clayton copula}
 \item{thetacopula.init}{Initial value for the copula parameter. Require if \code{type.joint.estim = 3}, the default is 3}
 
 \item{filter.surr}{Vector of size the number of covariates, with the i-th element that indicates if the hazard for 
-surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, 2 covariates are considered.}
+surrogate is adjusted on the i-th covariate (code 1) or not (code 0). By default, only the treatment effect is 
+considered.}
 
 \item{filter.true}{Vector defines as \code{filter.surr}, for true endpoint. \code{filter.true} and \code{filter.surr}
 should have the same size}
