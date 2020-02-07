@@ -358,6 +358,9 @@
 #'                    typecopula = 1, type.joint.simul = 3, theta.copula = 3, 
 #'                    time.cens = 349, true.init.val = 1, R2 = 0.81, maxit = 40, 
 #'                    print.iter = F)
+#'                    
+#' summary(joint.simul.cop.clay)
+#' 
 #' }
 #' 
 
