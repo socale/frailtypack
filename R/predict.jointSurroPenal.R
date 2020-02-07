@@ -88,7 +88,7 @@
 ##'                 nb.mc = 200, scale = 1/365)
 ##' 
 ##' # prediction of the treatment effects on the true endpoint in each trial of 
-##' the dataOvarian dataset
+##' # the dataOvarian dataset
 ##' predict(joint.surro.ovar)
 ##' 
 ##' # prediction of the treatment effect on the true endpoint from an observed 
