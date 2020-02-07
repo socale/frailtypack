@@ -341,6 +341,7 @@
 #' # To realize a simulation study on 100 samples or more (as required), use 
 #' # nb.dataset = 100
 #' 
+#' ### joint frailty model
 #' joint.simul <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul= 600, 
 #'                    ntrialSimul = 30, LIMparam = 0.001, LIMlogl = 0.001, 
 #'                    LIMderiv = 0.001, nb.mc = 200, nb.gh = 20, 
@@ -350,8 +351,16 @@
 #' summary(joint.simul, d = 3, R2boot = 1) # bootstrap
 #' summary(joint.simul, d = 3, R2boot = 0) # Delta-method
 #' 
+#' ### joint frailty copula model
+#' 
+#' joint.simul.cop.clay <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul= 600, 
+#'                    ntrialSimul = 30, nb.mc = 1000, type.joint.estim = 3, 
+#'                    typecopula = 1, type.joint.simul = 3, theta.copula = 3, 
+#'                    time.cens = 349, true.init.val = 1, R2 = 0.81, maxit = 40, 
+#'                    print.iter = F)
 #' }
 #' 
+
 jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, n.knots = 6,
                       nb.dataset = 1, nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001,
                       LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, 
