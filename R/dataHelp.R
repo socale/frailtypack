@@ -279,7 +279,7 @@ NULL
 ##' @usage data(dataOvarian)
 ##' @format This data frame contains the following columns: 
 ##' \describe{
-##' \item{patienID}{The identification number of a patient} 
+##' \item{patientID}{The identification number of a patient} 
 ##' \item{trialID}{The center in which a patient was treated}
 ##' \item{trt}{The treatment indicator, coded as 0 = cyclophosphamide plus cisplatin (CP)
 ##' and 1 = cyclophosphamide plus adriamycin plus cisplatin(CAP)}
@@ -315,7 +315,7 @@ NULL
 ##' @format This data frame contains the following columns: 
 ##' \describe{
 ##' \item{trialID}{The trial in which the patient was treated}
-##' \item{patienID}{The identification number of a patient} 
+##' \item{patientID}{The identification number of a patient} 
 ##' \item{trt}{The treatment indicator, coded as 0 = Control and 1 = Experimental}
 ##' \item{timeS}{The candidate surrogate (progression-free survival in days) }
 ##' \item{statusS}{Censoring indicator for for Progression-free survival 

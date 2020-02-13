@@ -6,7 +6,7 @@
 \title{Advanced Ovarian Cancer dataset}
 \format{This data frame contains the following columns: 
 \describe{
-\item{patienID}{The identification number of a patient} 
+\item{patientID}{The identification number of a patient} 
 \item{trialID}{The center in which a patient was treated}
 \item{trt}{The treatment indicator, coded as 0 = cyclophosphamide plus cisplatin (CP)
 and 1 = cyclophosphamide plus adriamycin plus cisplatin(CAP)}
