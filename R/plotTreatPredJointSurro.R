@@ -91,7 +91,7 @@
 #' ### For a value of ste greater than 0 (HR > 1), which induces deleterious
 #' ### treatment effet, argument "pred.int.use" can be set to "lw"  
 #' 
-#' plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
+#' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 2, 
 #'                 type = "HR", var.used = "error.estim", lty = 2,
 #'                 pred.int.use = "lw")
 #' 
