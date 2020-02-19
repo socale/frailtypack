@@ -116,14 +116,14 @@
         # The initial followup time. The default value is 0
         data$initTime <- 0 
         # dataset's names control
-        varStatus=(c("initTime","timeS","statusS","trialID","patienID","trt") %in% names(data))
+        varStatus=(c("initTime","timeS","statusS","trialID","patientID","trt") %in% names(data))
         if(F %in% varStatus){
-          stop("Control the names of your variables. They must contain at leat 5 variables named: timeS, statusS, trialID, patienID and trt. seed the help on this function")
+          stop("Control the names of your variables. They must contain at leat 5 variables named: timeS, statusS, trialID, patientID and trt. seed the help on this function")
         }
         
         # traitement des donnees
-        if(max(table(data$patienID)) > 1){
-          stop("Control your dataset. You probably have a duplicate on individual (patienID variable)")
+        if(max(table(data$patientID)) > 1){
+          stop("Control your dataset. You probably have a duplicate on individual (patientID variable)")
         }
         
         if(!is.numeric(data$timeS)|!is.numeric(data$trialID)){
