@@ -2455,17 +2455,18 @@ end if
         integer :: j,i,k
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,Xea
+        double precision :: resultdc,abserr,resabs,resasc
+        double precision, dimension(1)::Xea
         double precision,parameter::pi=3.141592653589793d0
     
         upper = .false.
         i = numpat
     
             if(method_GH.eq.1) then
-            Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
+            Xea(1) = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
             else
-            Xea = frail!*sqrt(2.d0)*ut(1,1)
-            !Xea = frail*sqrt(2.d0)
+            Xea(1) = frail!*sqrt(2.d0)*ut(1,1)
+            !Xea(1) = frail*sqrt(2.d0)
             end if
     
     
@@ -2476,7 +2477,7 @@ end if
 !        end if
     
         if(nmescur.gt.0) then
-            mu1(1:nmescur,1) = mu(1:nmescur,1) +Xea*Z1(1:nmescur,1)
+            mu1(1:nmescur,1) = mu(1:nmescur,1) +Xea(1)*Z1(1:nmescur,1)
         else
             mu1(1:nmescur,1)  = mu(1:nmescur,1)
         end if
@@ -2517,7 +2518,7 @@ end if
     
             !if(typeof.eq.2) then
             !    aux1(i)=((t1dc(i)/etaD)**betaD)*vet2*dexp(etaydc1*current_mean(1))
-        call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,Xea)
+        call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,Xea(1))
     
         aux1(i) = resultdc
     !         if(aux1(i).ge.1.d0) write(*,*)i,aux1(i),Xea
@@ -2536,7 +2537,7 @@ end if
             Z1cur(1,1) = 1.d0
             current_mean = 0.d0
     
-            current_mean(1) =dot_product(X2cur(1,1:nva3),b1((npp-nva3+1):npp))+Z1cur(1,1)*Xea
+            current_mean(1) =dot_product(X2cur(1,1:nva3),b1((npp-nva3+1):npp))+Z1cur(1,1)*Xea(1)
     
     
         end if
@@ -2575,12 +2576,12 @@ end if
     
             if(link.eq.1) then
         func6JL =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                    - (Xea**2.d0)/(2.d0*ut(1,1)**2) &
+                    - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2) &
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
-                        -aux1(numpat)*dexp(etaydc(1)*Xea)  + cdc(numpat)*etaydc(1)*Xea
+                        -aux1(numpat)*dexp(etaydc(1)*Xea(1))  + cdc(numpat)*etaydc(1)*Xea(1)
         else
         func6JL =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                        - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
+                        - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2)&
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -aux1(numpat) &
                         + cdc(numpat)*etaydc(1)*current_mean(1)
@@ -4762,7 +4763,7 @@ double precision, dimension(nmesy(numpat),1):: mu1G
 double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
-        double precision,dimension(nb1):: uii, Xea22,XeaG
+        double precision,dimension(nb1):: uii, Xea22,XeaG,Xea
         double precision,dimension(1)::uiiui
         double precision,dimension(nb1,nb1)::mat,matb_chol
         double precision, dimension(1)::current_meanG
@@ -4770,7 +4771,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         integer :: j,jj,i,k,ier
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,Xea,vet2
+        double precision :: resultdc,abserr,resabs,resasc,vet2
         double precision,parameter::pi=3.141592653589793d0
         double precision :: resultf1, resultf2, f1, f2 ! add TwoPart
         double precision,dimension(1) :: Bscalar,Bscal,Bcv,Bcurrentvalue, cmY,cmGtemp
@@ -4783,7 +4784,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
  current_meanG = 0.d0
  cmGtemp=0.d0
  det=0.d0
-Xea=0.d0
+Xea(1)=0.d0
 Xea2=0.d0
 Xea22=0.d0
 XeaG=0.d0
@@ -4802,9 +4803,9 @@ resultf2=0.d0
 
     if(nb1.eq.1) then
             if(method_GH.eq.1) then
-            Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
+            Xea(1) = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
             else
-            Xea = frail!*sqrt(2.d0)*ut(1,1)
+            Xea(1) = frail!*sqrt(2.d0)*ut(1,1)
             end if
 else if(nb1.gt.1) then
 if(nb1.eq.2) then
@@ -4958,7 +4959,7 @@ else if(nb1.eq.5) then
 
         if(nmescur.gt.0) then
         if(nb1.eq.1) then
-            mu1G(1:nmescur,1) = mu(1:nmescur,1) +Xea*Z1(1:nmescur,1)
+            mu1G(1:nmescur,1) = mu(1:nmescur,1) +Xea(1)*Z1(1:nmescur,1)
             else if(nb1.gt.1) then
             mu1G(1:nmescur,1) = mu(1:nmescur,1) +MATMUL(Z1(1:nmescur,1:nby),Xea2(1:nby,1))
             end if
@@ -5006,7 +5007,7 @@ else if(nb1.eq.5) then
         counter=0
         counter2=1
       if(nb1.eq.1) then
-        call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,Xea)
+        call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,Xea(1))
     else if(nb1.gt.1) then
         call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,xea22)
     end if
@@ -5114,7 +5115,7 @@ z1BcurG=0.d0
             
 
     if(nb1.eq.1) then
-            current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1YcurG(1,1)*Xea
+            current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1YcurG(1,1)*Xea(1)
     else if(nb1.gt.1) then
     
     if(TwoPart.eq.1) then
@@ -5297,12 +5298,12 @@ funcG=0.d0
     if(nb1.eq.1) then
             if(link.eq.1) then
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog& !longi part
-                    - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
+                    - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
-                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
+                        -auxG(i)*dexp(etaydc(1)*Xea(1))  + cdc(i)*etaydc(1)*Xea(1) ! survival part
         else
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
-                        - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
+                        - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2)&
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
                         + cdc(i)*etaydc(1)*current_meanG(1)
@@ -5359,12 +5360,12 @@ funcG=0.d0
             if(nb1.eq.1) then
             if(link.eq.1) then
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog& !longi part
-                   ! - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
+                   ! - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
                    ! - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
-                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
+                        -auxG(i)*dexp(etaydc(1)*Xea(1))  + cdc(i)*etaydc(1)*Xea(1) ! survival part
         else
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
-                    !    - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
+                    !    - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2)&
                     !- dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
                         + cdc(i)*etaydc(1)*current_meanG(1)
