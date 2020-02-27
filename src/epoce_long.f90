@@ -795,7 +795,7 @@
             double precision,dimension(-2:npp)::the1,the2
             double precision,dimension(2)::su,sut1,sut0
         double precision::lam
-            double precision::T
+            double precision::T, tempscl
             logical :: upper
             double precision,parameter::pi=3.141592653589793d0
             upper = .false.
@@ -907,7 +907,8 @@
                                     if (c(k).eq.1) then
                                             select case(typeof)
                                                     case(0)
-                                                            call susps(t1(k),the1,nz1,su,lam,zi)
+                                                            call susps(t1(k),the1,nz1,tempscl,lam,zi)
+															su = tempscl
                                                             if (t1(k).eq.date(ndate)) then
                                                                     lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                                                             endif
@@ -1301,7 +1302,7 @@
             double precision,dimension(-2:npp)::the1,the2
             double precision,dimension(npp)::betacoef
             double precision,dimension(2)::su,sut1,sut0
-        double precision::lam
+        double precision::lam, tempscl
             logical::upper
             double precision,parameter::pi=3.141592653589793d0
     
@@ -1405,7 +1406,8 @@
                 if (c(k).eq.1) then
                     select case(typeof)
                         case(0)
-                            call susps(t1(k),the1,nz1,su,lam,zi)
+                            call susps(t1(k),the1,nz1,tempscl,lam,zi)
+							su = tempscl
                             if (t1(k).eq.date(ndate)) then
                                 lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                             endif
@@ -2234,7 +2236,7 @@
             double precision :: resultR
             double precision,dimension(1):: current_meanR
                     double precision::sudc
-        double precision::lamdc,temp,lam
+        double precision::lamdc,temp,lam, tempscl
             double precision:: T
     
     
@@ -2382,7 +2384,8 @@
                                     if (c(k).eq.1) then
                                             select case(typeof)
                                                     case(0)
-                                                            call susps(t1(k),the1,nz1,su,lam,zi)
+                                                            call susps(t1(k),the1,nz1,tempscl,lam,zi)
+															su = tempscl
                                                             if (t1(k).eq.date(ndate)) then
                                                                     lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                                                             endif
@@ -2601,7 +2604,7 @@
             double precision,dimension(2)::su,sut1,sut0
             double precision,dimension(-2:npp)::the1,the2
             double precision::sudc
-        double precision::lamdc,temp,lam
+        double precision::lamdc,temp,lam, tempscl
             double precision:: T
             logical :: upper
             double precision,parameter::pi=3.141592653589793d0
@@ -2748,7 +2751,8 @@
                                     if (c(k).eq.1) then
                                             select case(typeof)
                                                     case(0)
-                                                            call susps(t1(k),the1,nz1,su,lam,zi)
+                                                            call susps(t1(k),the1,nz1,tempscl,lam,zi)
+															su = tempscl
                                                             if (t1(k).eq.date(ndate)) then
                                                                     lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                                                             endif

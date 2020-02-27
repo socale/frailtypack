@@ -992,7 +992,7 @@
           double precision,dimension(2)::su,sut1,sut0
             double precision,dimension(-2:npp)::the1,the2
             double precision::sudc
-        double precision::lamdc,temp,lam
+        double precision::lamdc,temp,lam, tempscl
         
         upper = .false.
         ss=0.d0
@@ -1120,6 +1120,7 @@
              select case(typeof)
                  case(0)
                     call susps(t1(k),the1,nz1,su,lam,zi)
+					su = tempscl
                     if (t1(k).eq.date(ndate)) then
                          lam = 4.d0*the1(nn-2-1)/(zi(nn-2)-zi(nn-2-1))
                      endif
