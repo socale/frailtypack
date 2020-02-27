@@ -2443,7 +2443,7 @@ end if
         use tailles
         use comongroup,only:vet2!vet
         use optim
-        use comon,only:aux1,cdc,sigmae,nmesy,&
+        use comon,only:aux1,cdc,sigmae,nmesy,nb1,&
             nva2,npp,nva3,vedc,betaD,etaD,t1dc,etaydc,link,t0dc,&
             vey,typeof,s_cag_id,s_cag,ut,method_GH,b_lme,invBi_chol
             !auxig,alpha,sig2,res1,res3,nb1,nea,nig,utt,
@@ -2456,7 +2456,7 @@ end if
         logical :: upper
         double precision,external::survdcCM
         double precision :: resultdc,abserr,resabs,resasc
-        double precision, dimension(1)::Xea
+        double precision, dimension(nb1)::Xea
         double precision,parameter::pi=3.141592653589793d0
     
         upper = .false.
@@ -2518,10 +2518,10 @@ end if
     
             !if(typeof.eq.2) then
             !    aux1(i)=((t1dc(i)/etaD)**betaD)*vet2*dexp(etaydc1*current_mean(1))
-        call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,Xea(1))
+        call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,Xea)
     
         aux1(i) = resultdc
-    !         if(aux1(i).ge.1.d0) write(*,*)i,aux1(i),Xea
+    !         if(aux1(i).ge.1.d0) write(*,*)i,aux1(i),Xea(1)
     
         !    else if(typeof.eq.0) then
         !        aux1(i)=ut2cur*vet2*dexp(etaydc1*current_mean(1))
@@ -5007,7 +5007,7 @@ else if(nb1.eq.5) then
         counter=0
         counter2=1
       if(nb1.eq.1) then
-        call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,Xea(1))
+        call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,Xea)
     else if(nb1.gt.1) then
         call integrationdc(survdcCM,t0dc(i),t1dc(i),resultdc,abserr,resabs,resasc,i,b1,npp,xea22)
     end if
