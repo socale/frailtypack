@@ -66,7 +66,7 @@
 #'    equi.subj.trt = 1, prop.subj.trt = NULL, 
 #'    theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, 
 #'    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
-#'    lambdat = 3, nut = 0.0025, cens.adm = 0.75, time.cens = 549, R2 = 0.81,
+#'    lambdat = 3, nut = 0.0025, prop.cens = 0, time.cens = 549, R2 = 0.81,
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, nb.reject.data = 0, init.kappa = NULL, 
 #'    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
