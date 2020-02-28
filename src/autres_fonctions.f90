@@ -416,7 +416,37 @@ module InverseMatrix
 
     end subroutine percentile_scl
    
-
+   ! generation d'une uniforme dans l'intervalle [a,b]
+     ! extrait de la fonction C "runif" du package "stats": fichier runif.c des sources de R.
+	
+	subroutine runif(a, b, rgener)
+	    ! a,b : borne de l'interval 
+		! rgener : nombre aleatoire genere
+	    use var_surrogate, only: random_generator
+	    implicit none
+		double precision, intent(in)::a,b
+		double precision, intent(out)::rgener
+		double precision::u
+		
+		if(b < a .or. a < 0 .or. b <0) then
+			rgener = -1
+		else
+		    if(a == b) then 
+		        rgener = a
+			else
+			    if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
+                    u = UNIRAN()
+                else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
+                    CALL RANDOM_NUMBER(u)
+                endif
+		        rgener = a + (b - a) * u
+			endif
+		endif 
+		
+		return
+		
+	end subroutine runif
+	
    
 !C ******************** BGOS ********************************
 ! pour la simulation des X_i suivant une gaussienne centree reduite
@@ -2063,8 +2093,435 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     ! use Autres_fonctions
     ! theta2: variance des frailties gaussiens associe a S
     ! gamma1,gamma2: parametres de la gamma
-    ! cens_A:censure administrative
-    ! propC:proportion de personnes censurees
+    ! cens_A:censure administrative. 
+    ! propC:proportion minimale de personnes censurees aleatoirement. si 0, alors censure fixe
+    ! n_essai:  nombre d'essai a generer
+    ! rsqrt: niveau de correlation souhaite entre les fragilites sepecifiques aux traitement au niveau essai S et T
+    ! sigma_s: variance des frailties au niveau essai associee au surrogate
+    ! sigma_t: variance des frailties au niveau essai associee au true
+    ! p: proportion des personnes traitees par essai
+    ! prop_i: proportion des sujets par essai
+    ! gamma: variance de l'effet aleatoire u_i associe au risque de base chez S
+    ! alpha: parametre de puissance (zeta) associe a u_i pour les deces
+    ! frailt_base: dit si l'on prend en compte l'heterogeneite sur le risque de base aussi bien dans la generation des donnes que dans l'estimation(1) ou non (0)
+    ! thetacopule : parametre de la copule de clayton
+    ! filtre: vecteur qui dit si une variable est prise en compte pour le surrogate
+    ! filtre2: vecteur qui dit si une variable est prise en compte pour le true endpoint
+	! pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 0 as in sofeu et al. (2019). In this case, death is not included in the surrogate endpoint. 
+    
+     use var_surrogate, only: random_generator
+
+      integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver, pfs
+      double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
+                                    lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t,&
+                                    thetacopule
+      double precision, dimension(ver), intent(in)::betas,betat ! vecteur des coefficients associes aux effets fixe du model. contiont le meme nombre d'element, et donc doit etre bien rempli
+      double precision,dimension(n_essai),intent(in)::prop_i,p      
+      double precision,intent(out)::vrai_theta
+      double precision,dimension(n_obs,n_col),intent(out)::don_simulS1,don_simul
+      
+      integer, parameter::npmax=70,NOBSMAX=15000,nvarmax=45,ngmax=5000,nboumax=1000,NSIMAX=5000,&
+                          ndatemax=30000
+      integer  j,k,n,ii,iii,iii2,i,nbou
+      integer, dimension(ver), intent(in):: filtre, filtre2
+      integer ind(nboumax), values(8)
+      double precision maxtemps
+      character*18 nomvar(nvarmax),nomvar2(nvarmax)
+      character*20 dateamj, zone, heure1
+
+!************declarations pour donnees generees **********
+      integer :: nb_recur,nb_dc,nb_cens,delta,deltadc,jj,ig,nrecurr,nobs,max_recu, nobs_save, nobs_temp
+      real , dimension(:), allocatable:: v1
+      real :: piece,demi
+	  double precision, dimension(n_obs):: x, xdc ! permet le stockage pour utilisation par la suite
+      double precision :: ui,temps1,temps1_S,gapx,gapdc,moy_idnum,cens,cbeta2,&
+      auxbeta1,auxbeta2,uniran,moyui, cbeta4 
+	  double precision, dimension(n_essai)::qi
+      double precision, dimension(2):: bg1,bw1,bw2
+      integer, dimension(ngmax):: idnum
+      double precision, dimension(ngmax):: vecui
+
+      integer :: nmax, ibou
+      common /nmax/nmax
+      double precision date(ndatemax), zi(-2:npmax)
+      common /dace1/date,zi
+      double precision t0(NOBSMAX),t1(NOBSMAX),t1_S(NOBSMAX), ve(n_obs,ver),ve2(n_obs,ver)
+      integer c(NOBSMAX), cdc(NOBSMAX), g(NOBSMAX), nig(ngmax)
+
+      ! Ajout SCL
+      double precision::x22,sigma_st,u_i,tempon
+      double precision,dimension(:),allocatable::tempsD,mu
+      integer::Aretenir
+      integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,timeS1=5,timeT1=6,&
+                      timeC1=7,statusS1=8,statusT1=9,initTime1=10,Patienref1=11,u_i1=12 ! definissent les indices du tableau de donnee simulees
+      double precision,dimension(n_essai)::n_i
+      double precision,dimension(:,:),allocatable::sigma,x_ 
+    
+     ! ! some print
+	  ! call intpr("n_obs", -1,n_obs , 1)	
+	  ! call intpr("n_col", -1,n_col , 1)
+	  ! call intpr("lognormal", -1, lognormal, 1)	
+	  ! call dblepr("vrai_theta", -1,vrai_theta , 1)
+	  ! call intpr("ng", -1,ng , 1)	
+	  ! call intpr("ver", -1,ver , 1)
+	  ! call dblepr("truealpha", -1, truealpha, 1)	
+	  ! call dblepr("propC", -1,propC , 1)
+	  ! call dblepr("cens_A", -1, cens_A, 1)	
+	  ! call dblepr("gamma1", -1,gamma1 , 1)
+	  ! call dblepr("gamma2", -1,gamma2 , 1)	
+	  ! call dblepr("theta2", -1, theta2, 1)
+	  ! call dblepr("lambda_S", -1, lambda_S, 1)	
+	  ! call dblepr("nu_S", -1,nu_S , 1)
+	  ! call dblepr("lambda_T", -1, lambda_T, 1)	
+	  ! call dblepr("nu_T", -1,nu_T , 1)
+	  ! call dblepr("betas", -1,betas , ver)
+	  ! call dblepr("betat", -1,betat, ver)	
+	  ! call intpr("n_essai", -1, n_essai, 1)
+	  ! call dblepr("rsqrt", -1, rsqrt, 1)
+	  ! call dblepr("sigma_s", -1,sigma_s , 1)	
+	  ! call dblepr("sigma_t", -1,sigma_t , 1)
+	  ! call dblepr("p", -1,p, size(p))
+	  ! call dblepr("prop_i", -1, prop_i, size(prop_i))	
+	  ! call dblepr("gamma", -1,gamma , 1)
+	  ! call dblepr("alpha", -1,alpha , 1)
+	  ! call intpr("frailt_base", -1, frailt_base, 1)	
+	  ! call dblepr("thetacopule", -1,thetacopule , 1)
+	  ! call intpr("filtre", -1,filtre,size(filtre))	
+	  ! call intpr("filtre2", -1,filtre, size(filtre2))
+	  ! call intpr("frailt_base", -1, pfs, 1)
+!CCCCCCCCCCCCCCCCChosur9.f CCCCCCCCCCCCCCCCCCCCCCCC
+      allocate(v1(ver))
+      don_simulS1 = 0.d0
+      don_simul = 0.d0
+      
+      call date_and_time(dateamj,heure1,zone,values)                  
+      nrecurr=1
+      nbou=1
+      
+      allocate(tempsD(ng))
+
+    Aretenir=1
+        
+!c*******************************************
+!c***** DEBUT SIMULATIONS *******************
+!c*******************************************
+    maxtemps = 0.d0
+    don_simulS1=0.d0
+    don_simul=0.d0
+    
+!==============initialisation des parametres======================
+    ! call dblepr("prop_i", -1, prop_i(:), size(prop_i))
+    n_i=NINT(n_obs*prop_i) ! nombre de sujet par essai
+
+    if(sum(n_i)<n_obs) then
+        n_i(minloc(n_i,mask=n_i==minval(n_i)))=n_i(minloc(n_i,mask=n_i==minval(n_i)))+(n_obs-sum(n_i)) ! on ajoute au premier essai de plus petite taille le nombre d'individu non encore affecte (1 generalement) a cause des problemes d'arrondi
+    endif
+    if(sum(n_i)>n_obs) then 
+        n_i(maxloc(n_i,mask=n_i==maxval(n_i)))=n_i(maxloc(n_i,mask=n_i==maxval(n_i)))-(sum(n_i)-n_obs) ! on soustrait au premier essai de plus grande taille le nombre d'individu affecte en trop (1 generalement) a cause des problemes d'arrondi
+    endif
+    
+    ! simulation des effets aleatoires specifiques aux essais
+    
+    ! matrice des covariances des frailties au niveau essai, en supposant une correlation de 0.95 (erreurs liees aux effets du traitement sur S et T niveau essai) 
+    sigma_st=rsqrt*sqrt(sigma_s)*sqrt(sigma_t)
+    
+    if(frailt_base==1) then
+        allocate(sigma(3,3),mu(3),x_(n_essai,3))
+        sigma(1,1)=sigma_s
+        sigma(1,2)=sigma_st
+        sigma(2,1)=sigma_st
+        sigma(2,2)=sigma_t
+        !pour u_i
+        sigma(3,1:2)=0.d0
+        sigma(1:2,3)=0.d0
+        sigma(3,3)=gamma
+        !!print*,sigma
+        !stop
+    else
+        allocate(sigma(2,2),mu(2),x_(n_essai,2))
+        sigma(1,1)=sigma_s
+        sigma(1,2)=sigma_st
+        sigma(2,1)=sigma_st
+        sigma(2,2)=sigma_t
+    endif
+    mu=0.d0
+    
+    !generation de (vs_i, vt_i) suivant une multinormale
+	!call dblepr("sigma =", -1, sigma, size(sigma)**2)
+    call rmvnorm(mu,sigma,n_essai,0,x_)    
+    
+    k=1
+    do i=1,n_essai
+        ! effet aleatoires specifiques aux essais
+        don_simul(k:((k+NINT(n_i(i)))-1),v_s1)=x_(i,1)
+        don_simul(k:((k+NINT(n_i(i)))-1),v_t1)=x_(i,2)
+        !don_simul(k:((k+NINT(n_i(i)))-1),u_i1)=x_(i,3)
+        ! simulation des u_i associee aux risques de base suivant une normale
+        if(frailt_base==1) then
+            ! call bgos(sqrt(gamma),0,u_i,x22,0.d0)
+            u_i=x_(i,3)
+        else
+            u_i=0.d0
+        endif
+        don_simul(k:((k+NINT(n_i(i)))-1),u_i1)=u_i
+        ! variable trialref
+        don_simul(k:((k+NINT(n_i(i)))-1),trialref1)=i
+        !!print*,don_simul(k:((k+NINT(n_i(i)))-1),trialref1)
+        k=k+NINT(n_i(i))
+    enddo
+    
+    don_simulS1=don_simul
+        ibou=1 
+        ind(ibou)=0
+        nig = 0
+        g=0
+        maxtemps = 0.d0
+        auxbeta1=0.d0
+        auxbeta2=0.d0
+
+!c********************************************************
+!c******** DEBUT generation des donnees *******************
+!c********************************************************
+            bg1(1)=gamma1
+            bg1(2)=gamma1
+           if(ibou.eq.1)then
+                if (lognormal==0)then ! Gamma
+                    vrai_theta=bg1(1)/(bg1(2)*bg1(2))
+                else !lognormale
+                    vrai_theta=theta2
+                endif
+           endif
+
+!!c-- parametres de la WEibull for recurrent events 
+         bw1(1)=lambda_S 
+         bw1(2)=nu_S
+!!c-- parametres de la WEibull for death
+         bw2(1)=lambda_T
+         bw2(2)=nu_T
+
+         demi = 0.5             ! pour var expli       
+         nb_recur = 0           ! nb de temps 
+         nb_dc = 0              ! nb de dc
+         nb_cens = 0            ! nb de cens
+         nobs=0
+         max_recu= 1
+         moyui = 0.d0
+		 x = 0.d0
+         xdc = 0.d0
+        !close(10)
+    do ig=1,ng ! sur les groupes                 
+!!c---  variables explicatives par sujet
+        do 111 j=1,ver
+        if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
+            tempon= uniran()
+        else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
+            CALL RANDOM_NUMBER(tempon)
+        endif
+            
+        piece = real(tempon)
+        if (piece.le.demi) then
+            v1(j) = 0.
+        else
+            v1(j) = 1.
+        endif
+        111        continue
+         
+        cens = 0.d0
+        k = 1
+        if(k.gt.max_recu)then
+            max_recu = k 
+        endif
+        nobs=nobs+1   ! indice l ensemble des observations
+        idnum(ig) = k
+!c-----------Surrogate --------------------------------------------
+!c---  genere temps de progression a partir 2 var explic :
+        if (lognormal==0)then ! Gamma
+
+        else ! lognormale
+            if (lognormal==1)then !joint surrogate
+                if(frailt_base==1) then ! on tient compte des u_i
+                    auxbeta1=don_simul(ig,u_i1)+don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
+                    auxbeta2=alpha*don_simul(ig,u_i1)+don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+                    if(ver > 1) then
+                        do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
+                            if(filtre(ii).eq.1)then
+                                auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
+                            endif
+                            if(filtre2(ii).eq.1)then
+                                auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
+                            endif
+                        enddo
+                    endif
+                else ! on ne tient pas compte des u_i dans la generation des temps de survie
+                    auxbeta1=don_simul(ig,v_s1)*dble(v1(1))+betas(1)*dble(v1(1))
+                    auxbeta2=don_simul(ig,v_t1)*dble(v1(1))+betat(1)*dble(v1(1)) ! on utilise le log pour pouvour mettre l'expression dans l'exponentiel
+                    if(ver > 1) then
+                        do ii = 2,ver ! on considere a partir de la 2 ieme variable car le traitement est prise en compte deja
+                            if(filtre(ii).eq.1)then
+                                auxbeta1 = auxbeta1 + betas(ii)*dble(v1(ii))
+                            endif
+                            if(filtre2(ii).eq.1)then
+                                auxbeta2 = auxbeta2 + betat(ii)*dble(v1(ii))
+                            endif
+                        enddo
+                    endif
+                endif
+            endif
+        endif
+
+        call weiguicopule(bw1(1),bw2(1),bw1(2),bw2(2),auxbeta1,auxbeta2,thetacopule,gapx,gapdc)
+        x(ig)=gapx ! temps de progression
+        xdc(ig)=gapdc ! temps de deces
+        tempsD(ig)=xdc(ig)
+			
+        !c****** for gap time :  
+        iii = 0
+        iii2 = 0		
+        do ii = 1,ver
+            if(filtre(ii).eq.1)then
+                iii = iii + 1
+                ve(nobs,iii) = dble(v1(ii))
+            endif
+            if(filtre2(ii).eq.1)then
+                iii2 = iii2 + 1
+                ve2(nobs,iii2) = dble(v1(ii))   
+            endif
+        enddo                 	
+	enddo
+	
+	nobs = 0
+	! recherche des quantiles par essai sur lequel on s'appuie pour la generation uniforme des temps de censures. Exp: 75ieme percentile = 0.75 dans propC
+	if(propC > 0.d0) then! censure aleatoire 
+	    k = 1
+	    do i = 1, n_essai
+		    call percentile_scl(xdc(k:(k+NINT(n_i(i))-1)),NINT(n_i(i)),propC,qi(i))
+			k = k + NINT(n_i(i))
+		enddo
+	endif
+	
+	!call dblepr("temps de deces pour les deux premier essais: xdc(1:40)", -1, xdc(1:40), 40)
+	!call intpr("NINT(n_i(1))", -1, NINT(n_i(1)), 1)
+	!call dblepr("Voila les quantiles qi", -1, qi, n_essai)
+	
+	do ig=1,ng ! sur les groupes
+		
+		nobs = nobs + 1   ! indice l ensemble des observations
+        ! scl============censure====================
+        if(propC == 0.d0) then! censure fixe ou administrative
+			cens=cens_A
+		else ! censure aleatoire: generation uniforme entre 1 et la quantile  de l'essai i calcule precedemment
+		    ! sortie d'etude
+		    call runif(1.d0, qi(NINT(don_simul(ig,trialref1))), cens)
+			! je prends le min entre la censure administrative et la date de sortie d'etude.
+			cens = min(cens, cens_A)
+		endif
+		
+        if(xdc(ig).le.cens)then ! patient decede
+            deltadc=1.d0
+            temps1 = xdc(ig)
+            nb_dc =nb_dc + 1
+        else    !patient censuree administrativement
+            deltadc=0.d0
+            temps1 = cens
+            nb_cens =nb_cens + 1
+        endif
+
+                !on construit les temps de progression
+        if(x(ig) < temps1)then ! evenement avant la censure
+            delta=1.d0
+            temps1_S = x(ig)
+            nb_recur =nb_recur + 1
+            nig(ig) = nig(ig)+1 !nb events recurrents
+        else
+            if((x(ig).eq.cens).and.(deltadc==0.d0)) then !evenement a la date de censure et patient vivant
+                delta=1.d0
+                temps1_S = x(ig)
+                nb_recur =nb_recur + 1
+                nig(ig) = nig(ig)+1 !nb events recurrents
+            else ! progression le meme jour que le deces ou sans progression
+		     	! delta=0.d0           
+                ! temps1_S=temps1
+			    if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
+				    delta=0.d0           
+                    temps1_S=temps1
+				else ! le patient fait la progression le meme jour que le deces
+					if(pfs == 0) then ! le deces censure la progression et donc on considere qu'il n'ya pas eu de progression
+						delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+						temps1_S=temps1! et on censure a la date de deces(ou censure)
+					else ! dans ce cas la progression inclue le deces: cas de la PFS ou DFS
+						delta=1.d0
+						temps1_S = temps1
+						nb_recur =nb_recur + 1
+						nig(ig) = nig(ig)+1 !nb events recurrents
+					endif
+			    endif
+            endif
+        endif
+        !c****** for gap time :         
+        t0(nobs) = 0.d0
+        !c fin gap
+        t1(nobs) = temps1
+        t1_S(nobs) = temps1_S
+        c(nobs) = delta
+        cdc(nobs) = deltadc
+        g(nobs)= ig
+
+        !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
+        don_simulS1(ig,initTime1)=t0(nobs)
+        don_simulS1(ig,timeS1)=t1_S(nobs)
+        don_simulS1(ig,statusS1)=c(nobs)
+        don_simulS1(ig,Patienref1)=g(nobs)
+        don_simulS1(ig,trt1)=ve2(nobs,1)
+        !don_simulS1(ig,w_ij1)=ui        
+                   
+        don_simul(ig,initTime1)=t0(nobs)
+        don_simul(ig,timeT1)=t1(nobs)
+        don_simul(ig,statusT1)=cdc(nobs)
+        don_simul(ig,Patienref1)=g(nobs)
+        don_simul(ig,trt1)=ve2(nobs,1)
+        !don_simul(ig,w_ij1)=ui                   
+                
+        ! j'ajoute les autres variables a la fin
+        if(ver > 1) then
+            do ii = 2,ver
+                if(filtre(ii).eq.1)then
+                    don_simulS1(ig,size(don_simulS1,2) - ver + ii - 1)=ve(nobs,ii)
+                endif
+                if(filtre2(ii).eq.1)then
+                    don_simul(ig,size(don_simul,2)- ver + ii - 1)=ve2(nobs,ii)
+                endif
+            enddo    
+        endif                    
+
+        !c****************************************************
+        !c******** FIN generation des donnees****************
+        !c****************************************************
+          
+        if (maxtemps.lt.t1(nobs))then
+            maxtemps = t1(nobs)
+        endif                    
+    enddo                  !observations par sujet            
+     ! scl============censure conseillee pour la proportion souhaitee de censure==
+    call percentile_scl(tempsD,ng,1.d0-propC,cens)
+    deallocate(tempsD,sigma,mu,x_,v1)
+    ! call dblepr("betas", -1, betas, ver)
+    ! call dblepr("betat", -1, betat, ver)
+    ! call dblepr("voile don_simul", -1, don_simul(1,:), size(don_simul,2))
+    ! call dblepr("voile don_simul", -1, don_simul(2,:), size(don_simul,2))
+endsubroutine Generation_surrogate_copula
+
+
+! ====== === Sauvegarde avant modification ===== === ===
+subroutine Generation_surrogate_copula_Save(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
+            ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
+            betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,thetacopule,filtre, filtre2,&
+			pfs)
+    ! lognormal: dit si la distribution des effets aleatoires est lognormal pour le modele complet (1) ou lognormal pour le joint classique de 2007 (2) ou gamma pour le joint classique de 2007(0)
+    ! use Autres_fonctions
+    ! theta2: variance des frailties gaussiens associe a S
+    ! gamma1,gamma2: parametres de la gamma
+    ! cens_A:censure administrative. si 0, alors censure aleatoire
+    ! propC:proportion minimale de personnes censurees administrativement
     ! n_essai:  nombre d'essai a generer
     ! rsqrt: niveau de correlation souhaite entre les fragilites sepecifiques aux traitement au niveau essai S et T
     ! sigma_s: variance des frailties au niveau essai associee au surrogate
@@ -2103,6 +2560,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       integer :: nb_recur,nb_dc,nb_cens,delta,deltadc,jj,ig,nrecurr,nobs,max_recu
       real , dimension(:), allocatable:: v1
       real :: piece,demi
+	  
       double precision :: ui,temps1,temps1_S,gapx,gapdc,moy_idnum,x,xdc,cens,cbeta2,&
       auxbeta1,auxbeta2,uniran,moyui, cbeta4
       double precision, dimension(2):: bg1,bw1,bw2
@@ -2275,22 +2733,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
          max_recu= 1
          moyui = 0.d0
         !close(10)
-    do ig=1,ng ! sur les groupes
-            
-        ! if (lognormal==0)then ! Gamma    
-            ! ! call gamgui(bg1(1),ui) !genere gamma pour zi
-            ! ! ui = ui/bg1(2)
-           ! ! ! c     verification des ui
-            ! ! vecui(ig) = ui
-            ! ! moyui = moyui + ui
-        ! else !lognormale
-            ! x22=0.d0
-            ! call bgos(sqrt(theta2),0,ui,x22,0.d0) !on simule les w_ij suivant une normale
-            ! !verification des ui
-            ! vecui(ig) = ui
-            ! moyui = moyui + ui
-        ! endif
-        
+    do ig=1,ng ! sur les groupes                 
 !!c---  variables explicatives par sujet
          do 111 j=1,ver
             if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
@@ -2307,14 +2750,6 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
             endif
          111        continue
          
-        ! if(ig==1) then 
-		   ! call intpr("voile random_generator", -1, random_generator, 1)
-		   ! call dblepr("voile tempon", -1, tempon, 1)
-           ! call realpr("voile v1", -1, v1, ver)
-           ! call realpr("voile piece", -1, piece, 1)
-           ! call dblepr("voile tempon", -1, tempon, 1)
-        ! endif
-        
          x=0.d0
          xdc=0.d0
          cens=0.d0
@@ -2431,12 +2866,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
                           endif
                           if(filtre2(ii).eq.1)then
                              iii2 = iii2 + 1
-                             ve2(nobs,iii2) = dble(v1(ii))
-                            ! if(ig==1) then 
-                               ! call realpr("v1", -1, v1, ver)
-                               ! call dblepr("dble(v1)", -1, dble(v1), ver)
-                               ! call dblepr("ve2(nobs,iii2)", -1, ve2(nobs,iii2), 1)
-                            ! endif    
+                             ve2(nobs,iii2) = dble(v1(ii))   
                           endif
                        enddo
                !c*** pour le tester sur un autre programme: on complete les nouveaux parametres simules dans le jeux de donnees
@@ -2490,8 +2920,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     ! call dblepr("betat", -1, betat, ver)
     ! call dblepr("voile don_simul", -1, don_simul(1,:), size(don_simul,2))
     ! call dblepr("voile don_simul", -1, don_simul(2,:), size(don_simul,2))
-endsubroutine Generation_surrogate_copula
-
+endsubroutine Generation_surrogate_copula_Save
 !==============================================================================================================================
 !     subroutine pour la generation  des donnees du modèle surrogate complet avec des effets aleatoires correles aussi bien au niveau individuel 
 !    qu'au niveau essai avec et sans interaction avec le traitement

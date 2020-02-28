@@ -66,7 +66,7 @@
 #'    equi.subj.trt = 1, prop.subj.trt = NULL, 
 #'    theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, 
 #'    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
-#'    lambdat = 3, nut = 0.0025, time.cens = 549, R2 = 0.81,
+#'    lambdat = 3, nut = 0.0025, cens.adm = 0.75, time.cens = 549, R2 = 0.81,
 #'    sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, nb.reject.data = 0, init.kappa = NULL, 
 #'    ckappa = c(0,0), type.joint.estim = 1, type.joint.simul = 1, 
@@ -197,8 +197,14 @@
 #' endpoint.The default is \code{3}.
 #' @param nut Desired shape parameter for the \code{Weibull} distribution associated with the True endpoint.
 #' The default is \code{0.0025}.
-#' @param time.cens Censorship time. The default is \code{549}, for about \code{40\%} of censored 
-#' subjects.
+#' @param prop.cens A value between \code{0} and \code{1}, \code{1-prop.cens} is the minimum proportion of people who are randomly censored. 
+#' Represents the quantile to use for generating the random censorship time. In this case, the censorship 
+#' time follows a uniform distribution in \code{1} and \code{(prop.cens)ieme} percentile of the 
+#' generated death times. If this argument is set to \code{0}, the fix censorship is considered.
+#' The default is \code{0}. Required if \code{type.joint.simul = 3}. 
+#' @param time.cens Censorship time. If argument \code{prop.cens} is set to \code{0}, it represents 
+#' the administrative censorship time, else it represents the fix censoring time. The default is \code{549}, 
+#' for about \code{40\%} of fix censored subjects.
 #' @param R2 Desired \if{latex}{\eqn{R^2_{trial}}}
 #'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}}. The default is \code{0.81}.
 #' @param sigma.s True value for \if{latex}{\eqn{\sigma^2_{v_S}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}
@@ -346,7 +352,7 @@
 #' joint.simul <- jointSurroPenalSimul(nb.dataset = 10, nbSubSimul= 600, 
 #'                    ntrialSimul = 30, LIMparam = 0.001, LIMlogl = 0.001, 
 #'                    LIMderiv = 0.001, nb.mc = 200, nb.gh = 20, 
-#'                    nb.gh2 = 32, true.init.val = 1, print.iter = F)
+#'                    nb.gh2 = 32, true.init.val = 1, print.iter = F, pfs = 0)
 #'
 #' # results
 #' summary(joint.simul, d = 3, R2boot = 1) # bootstrap
@@ -373,9 +379,9 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                       gamma.init = 0.5, alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5,
                       random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, equi.subj.trt = 1,
                       prop.subj.trt = NULL, theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, 
-                      betat = -1.25, lambdas = 1.8, nus = 0.0045, lambdat = 3, nut = 0.0025, time.cens = 549, 
-                      R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, random.nb.sim = 0, 
-                      seed = 0, nb.reject.data = 0, init.kappa = NULL, ckappa = c(0,0), 
+                      betat = -1.25, lambdas = 1.8, nus = 0.0045, lambdat = 3, nut = 0.0025, prop.cens = 0, 
+                      time.cens = 549, R2 = 0.81, sigma.s = 0.7, sigma.t = 0.7, kappa.use = 4, random = 0, 
+                      random.nb.sim = 0, seed = 0, nb.reject.data = 0, init.kappa = NULL, ckappa = c(0,0), 
                       type.joint.estim = 1, type.joint.simul = 1, mbetast = NULL, mbetast.init = NULL, typecopula = 1, 
                       theta.copula = 6, thetacopula.init = 3, filter.surr = c(1), filter.true = c(1), nb.decimal = 4, 
                       pfs = 0, print.times = TRUE, print.iter = FALSE){
@@ -586,8 +592,8 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                         random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1, 
                         pfs = pfs)
       }else{ # joint frailty copula model
-         data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
-                       alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
+         data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul, prop.cens = prop.cens,
+                       cens.adm = time.cens, alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
                        sigma.t = sigma.t, cor = sqrt(R2), betas = mbetast[,1], betat = mbetast[,2],
                        lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
                        equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
@@ -760,7 +766,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   # nut <- # nut
   mode_cens <- 1 # 1= quantille et 2= date fixe
   temps_cens <- time.cens# censure fixe: temps a preciser
-  cens0 <- 0.25 # si quentile, proportion des patients censures
+  cens0 <- prop.cens # si censure aleatoire(temps_cens = 0), (1-prop.cens) est proportion minimale des patients censures
   rsqrt <- sqrt(R2)# niveau de correlation souhaite pour les frailties niveau essai
   # sigma.s <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au surrogate
   # sigma.t <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au true

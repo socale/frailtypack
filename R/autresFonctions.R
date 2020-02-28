@@ -1,6 +1,6 @@
 # autres fonctions
 param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 0,
-                           n.obs = 600, n.trial = 30, cens.adm=549, lambda.S = 1.3,
+                           n.obs = 600, n.trial = 30, prop.cens = 1, cens.adm=549, lambda.S = 1.3,
                            nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, 
                            seed = 0,alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7,
                            cor = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
@@ -48,13 +48,16 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 0,
       seed1 <- seed 
       nb.reject.data1 <-  nb.reject.data + i -1
     }
-    data.sim <- jointSurrCopSimul(n.obs = n.obs, n.trial = n.trial, cens.adm = cens.adm, lambda.S = lambda.S, nu.S = nu.S, 
-                                  lambda.T = lambda.T, nu.T = nu.T, full.data = full.data,
-                                  seed = seed1, nb.reject.data = nb.reject.data1, alpha = alpha, gamma = gamma, 
-                                  sigma.s = sigma.s, sigma.t = sigma.t, filter.surr = filter.surr,
-                                  cor = cor, betas = betas, betat = betat, filter.true= filter.true,
-                                  frailt.base = frailt.base, thetacopule = thetacopule, ver = ver,
-                                  random.generator = random.generator)
+    data.sim <- jointSurrCopSimul(n.obs = n.obs, n.trial = n.trial, prop.cens = prop.cens, cens.adm = cens.adm, 
+                   lambda.S = lambda.S, nu.S = nu.S, lambda.T = lambda.T, nu.T = nu.T, full.data = full.data,
+                   seed = seed1, nb.reject.data = nb.reject.data1, alpha = alpha, gamma = gamma, 
+                   sigma.s = sigma.s, sigma.t = sigma.t, filter.surr = filter.surr,
+                   cor = cor, betas = betas, betat = betat, filter.true= filter.true,
+                   frailt.base = frailt.base, thetacopule = thetacopule, ver = ver,
+                   random.generator = random.generator
+                   )
+                   
+                                  
     d[i,1] <- mean(data.sim$v_Si[pour.essai])
     d[i,2] <- stats::var(data.sim$v_Si[pour.essai])
     d[i,3] <- mean(data.sim$v_Ti[pour.essai])
