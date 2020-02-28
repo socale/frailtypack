@@ -94,7 +94,7 @@ predict(joint.surro.ovar)
 
 # prediction of the treatment effect on the true endpoint from an observed 
 # treatment effect on the surrogate endpoint in a given trial
-predict(joint.surro.jointSurro, betaS.obs = -0.797, betaT.obs = -1.018)
+predict(joint.surro.ovar, betaS.obs = -0.797, betaT.obs = -1.018)
 }
 
 

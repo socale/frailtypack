@@ -51,8 +51,8 @@ summary(joint.surro.Gumbel)
 loocv.result <- loocv(joint.surro.Gumbel)
 loocv.result
 
-plot.jointSurroPenalloocv(object = loocv.result, unusedtrial = c(22, 30, 33, 38, 42, 47, 49), 
-                          x = "bottomleft", y = NULL)
+plot(x = loocv.result, unusedtrial = c(22, 30, 33, 38, 42, 47, 49), 
+                          xleg = "bottomleft", y = NULL)
 }
 
 }

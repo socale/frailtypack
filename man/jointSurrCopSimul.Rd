@@ -4,14 +4,14 @@
 \alias{jointSurrCopSimul}
 \title{Generate survival times for two endpoints using the joint frailty-copula model for surrogacy}
 \usage{
-jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549,
-  alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, cor = 0.9,
-  betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), frailt.base = 1,
-  lambda.S = 1.3, nu.S = 0.0025, lambda.T = 1.1, nu.T = 0.0025,
-  ver = 2, typeOf = 1, equi.subj.trial = 1, equi.subj.trt = 1,
-  prop.subj.trial = NULL, prop.subj.trt = NULL, full.data = 0,
-  random.generator = 1, random = 0, random.nb.sim = 0, seed = 0,
-  nb.reject.data = 0, thetacopule = 6, filter.surr = c(1, 1),
+jointSurrCopSimul(n.obs = 600, n.trial = 30, prop.cens = 0,
+  cens.adm = 549, alpha = 1.5, gamma = 2.5, sigma.s = 0.7,
+  sigma.t = 0.7, cor = 0.9, betas = c(-1.25, 0.5), betat = c(-1.25,
+  0.5), frailt.base = 1, lambda.S = 1.3, nu.S = 0.0025, lambda.T = 1.1,
+  nu.T = 0.0025, ver = 2, typeOf = 1, equi.subj.trial = 1,
+  equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
+  full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
+  seed = 0, nb.reject.data = 0, thetacopule = 6, filter.surr = c(1, 1),
   filter.true = c(1, 1), covar.names = "trt", pfs = 0)
 }
 \arguments{
@@ -19,7 +19,16 @@ jointSurrCopSimul(n.obs = 600, n.trial = 30, cens.adm = 549,
 
 \item{n.trial}{Number of considered  trials. The default is \code{30}.}
 
-\item{cens.adm}{censorship time. The default is \code{549}, for about \code{40\%} of censored subjects.}
+\item{prop.cens}{A value between \code{0} and \code{1}, \code{1-prop.cens} is the minimum proportion of 
+people who are randomly censored. 
+Represents the quantile to use for generating the random censorship time. In this case, the censorship 
+time follows a uniform distribution in \code{1} and \code{(prop.cens)ieme} percentile of the 
+generated death times. If this argument is set to \code{0}, the fix censorship is considered.
+The default is \code{0}.}
+
+\item{cens.adm}{Censorship time. If argument \code{prop.cens} is set to \code{0}, it represents 
+the administrative censorship time, else it represents the fix censoring time. The default is \code{549}, 
+for about \code{40\%} of fix censored subjects.}
 
 \item{alpha}{Fixed value for \eqn{\alpha}. The default is \code{1.5}.}
 
@@ -143,13 +152,22 @@ The desired individual level correlation (Kendall's \eqn{\tau}) depend on the va
 }
 \examples{
 
-# dataset with 2 covariates
-data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30,cens.adm=549, 
+# dataset with 2 covariates and fixed censorship
+data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30, prop.cens = 0, cens.adm=549, 
             alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, 
             cor = 0.8, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
             full.data = 0, random.generator = 1,ver = 2, covar.names = "trt", 
             nb.reject.data = 0, thetacopule = 6, filter.surr = c(1,1), 
             filter.true = c(1,1), seed = 0)
+            
+#dataset with 2 covariates and random censorship
+
+data.sim2 <- jointSurrCopSimul(n.obs=600, n.trial = 30, prop.cens = 0.75, 
+            cens.adm = 549, alpha = 1.5, gamma = 2.5, sigma.s = 0.7, 
+            sigma.t = 0.7, cor = 0.8, betas = c(-1.25, 0.5), 
+            betat = c(-1.25, 0.5), full.data = 0, random.generator = 1,
+            ver = 2, covar.names = "trt", nb.reject.data = 0, thetacopule = 6, 
+            filter.surr = c(1,1), filter.true = c(1,1), seed = 0)
 
 }
 \references{
