@@ -696,11 +696,11 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 do while(l.le.nbre_sim)
                     SX=1.d0
                     xMC=0.d0
-                    Vect_sim_MC(l,1)=MC(l) ! random gaussian number N(0,1)
+                    Vect_sim_MC(l,1)=MC((graine-1)+l) ! random gaussian number N(0,1)
                 if(nb1.gt.1) then
                     do m=2,nb1
                     SX=1.d0
-                         Vect_sim_MC(l,m)=MC((m-1)*nbre_sim+l) ! random gaussian number N(0,1)
+                         Vect_sim_MC(l,m)=MC((graine-1)+(m-1)*nbre_sim+l) ! random gaussian number N(0,1)
                      end do
                 endif
                     l=l+1
