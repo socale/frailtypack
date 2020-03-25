@@ -6,7 +6,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
                                nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, adaptatif = 0,
                                nspline = 6, kappa.use = 4, type.joint.estim = 3, 
                                typecopula = 1, type.joint.simul = 3, theta.copula = 3, 
-                               time.cens = 349, true.init.val = 1, R2 = 0.81, maxit = 40, 
+                               time.cens = 349, prop.cens = 0, true.init.val = 1, R2 = 0.81, maxit = 40, 
                                nb.paquet = 10, num.paquet = 1, program.to.estimate = 1, 
                                list.package = NULL
 ){
@@ -117,7 +117,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
                                              init.kappa = NULL, maxit = maxit, true.init.val = true.init.val, 
                                              theta.copula = theta.copula, thetacopula.init = 1, alpha.init = 0.5, R2 = R2,
                                              typecopula = typecopula, ckappa = c(ckappa1, ckappa2), gamma.ui = 0.8, 
-                                             nb.reject.data = nb.reject.data, pfs = pfs, print.iter = T)
+                                             nb.reject.data = nb.reject.data, pfs = pfs, print.iter = F)
       }
       
       if(program.to.estimate == 5){ # Variation of the number of subject per trial
@@ -146,16 +146,80 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
                                              pfs = 0, print.iter = F)
       }
 
+      if(script.a.estimer==6){ # Change of the weibull parameters in order to have times in year, with early censorship
+        joint.simul2 <- jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul=nsubjet, ntrialSimul = ntrial,
+                                             int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif,
+                                             n.knots = nspline, kappa.use = kappa.use, type.joint.estim = type.joint.estim, print.iter = T,
+                                             type.joint.simul = type.joint.simul, time.cens = 25, lambdas = 1.0, nus = 0.1185,
+                                             lambdat = 0.8, nut = 0.1185, seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = c(1),
+                                             filter.true = c(1), betas.init = c(-0.25), betat.init = c(-0.25), init.kappa = NULL, maxit = maxit,
+                                             true.init.val = true.init.val, theta.copula = theta.copula, thetacopula.init = 3, R2 = R2,
+                                             typecopula = typecopula, ckappa = c(ckappa1, ckappa2), gamma.ui = 0.8, nb.reject.data = nb.reject.data, 
+                                             pfs = pfs)
+      }
+      
+      if(script.a.estimer==7){ # case with true alpha set to 0.1
+        joint.simul2 <- jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul=nsubjet, ntrialSimul = ntrial,
+                                             int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif,
+                                             n.knots = nspline, kappa.use = kappa.use, type.joint.estim = type.joint.estim, print.iter = T,
+                                             type.joint.simul = type.joint.simul, time.cens = time.cens, lambdas = 1.3, nus = 0.0025,
+                                             lambdat = 1.1, nut = 0.0025, seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = c(1),
+                                             filter.true = c(1), betas.init = c(-0.25), betat.init = c(-0.25), init.kappa = NULL, maxit = maxit,
+                                             true.init.val = true.init.val, theta.copula = theta.copula, thetacopula.init = 3, R2 = R2,
+                                             typecopula = typecopula, ckappa = c(ckappa1, ckappa2), gamma.ui = 0.8, nb.reject.data = nb.reject.data, 
+                                             pfs = pfs, alpha.ui = 0.1
+        )
+      }
+      
+      if(script.a.estimer==8){ # case with random censorship
+        joint.simul2 <- jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul=nsubjet, ntrialSimul = ntrial,
+                                             int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif,
+                                             n.knots = nspline, kappa.use = kappa.use, type.joint.estim = type.joint.estim, print.iter = T,
+                                             type.joint.simul = type.joint.simul, prop.cens = 1, time.cens = time.cens, lambdas = 1.3, nus = 0.0025,
+                                             lambdat = 1.1, nut = 0.0025, seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = c(1),
+                                             filter.true = c(1), betas.init = c(-0.25), betat.init = c(-0.25), init.kappa = NULL, maxit = maxit,
+                                             true.init.val = true.init.val, theta.copula = theta.copula, thetacopula.init = 3, R2 = R2,
+                                             typecopula = typecopula, ckappa = c(ckappa1, ckappa2), gamma.ui = 0.8, nb.reject.data = nb.reject.data, 
+                                             pfs = pfs, alpha.ui = 1
+        )
+      }
+      
+      if(script.a.estimer == 9){ # Variation of the number of subject per trial and random censorship
+        # utils::data("dataOvarian", envir = environment(), package = "frailtypack")
+        # consider the proportion from the advanced avarian cancer dataset including 50 trials
+        # prop = table(dataOvarian$trialID)/nrow(dataOvarian)
+        prop <- c(0.229865772, 0.104865772, 0.057885906, 0.098154362, 0.017617450, 0.006711409, 
+                  0.041107383, 0.033557047, 0.005872483, 0.009228188, 0.020973154, 0.008389262,
+                  0.014261745, 0.020973154, 0.009228188, 0.014261745, 0.006711409, 0.005033557, 
+                  0.010906040, 0.015100671, 0.005033557, 0.001677852, 0.015939597, 0.012583893,
+                  0.017617450, 0.012583893, 0.004194631, 0.010067114, 0.007550336, 0.002516779,
+                  0.006711409, 0.010067114, 0.001677852, 0.014261745, 0.007550336, 0.033557047,
+                  0.003355705, 0.002516779, 0.026006711, 0.002516779, 0.005033557, 0.003355705, 
+                  0.004194631, 0.014261745, 0.010067114, 0.005033557, 0.004194631, 0.014261745,
+                  0.002516779, 0.008389262)
+        joint.simul2 <- jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul = nsubjet, ntrialSimul = ntrial, 
+                                             int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, 
+                                             adaptatif = adaptatif, n.knots = nspline, kappa.use = kappa.use, 
+                                             type.joint.estim = type.joint.estim, type.joint.simul = type.joint.simul, 
+                                             time.cens = time.cens, lambdas = 1.3, nus = 0.0025, lambdat = 1.1, nut = 0.0025, 
+                                             seed = 0, betas = c(-1.25), betat = c(-1.25), filter.surr = 1, filter.true = 1, 
+                                             betas.init = c(-0.25), betat.init = c(-0.25), init.kappa = NULL, maxit = maxit,
+                                             true.init.val = true.init.val, theta.copula = theta.copula, thetacopula.init = 3, 
+                                             R2 = R2, typecopula = typecopula, ckappa = c(ckappa1, ckappa2), gamma.ui = 0.8, 
+                                             nb.reject.data = nb.reject.data, equi.subj.trial = 0, prop.subj.trial = prop, 
+                                             pfs = 0, print.iter = F, prop.cens = 1)
+        
+      }      
+      
+      # save of the RData
+      save(joint.simul2, file = paste(wd,"/joint.simul2_", num.paquet, i, ".RData", sep = "")) 
     }
-    
-    # save of the RData
-    save.image(paste("wd/joint.simul2_",i, ".RData", sep = ""))
     
     i <- i + 1
   }
   
   # Merge from all packages
-  joint.simul <- mergeJointSurroSimul(nb.packet = nb.paquet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
+  joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = nb.paquet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
                                                     wd = wd)
   setwd(current)
   
