@@ -146,7 +146,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
                                              pfs = 0, print.iter = F)
       }
 
-      if(script.a.estimer==6){ # Change of the weibull parameters in order to have times in year, with early censorship
+      if(program.to.estimate==6){ # Change of the weibull parameters in order to have times in year, with early censorship
         joint.simul2 <- jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul=nsubjet, ntrialSimul = ntrial,
                                              int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif,
                                              n.knots = nspline, kappa.use = kappa.use, type.joint.estim = type.joint.estim, print.iter = T,
@@ -158,7 +158,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
                                              pfs = pfs)
       }
       
-      if(script.a.estimer==7){ # case with true alpha set to 0.1
+      if(program.to.estimate==7){ # case with true alpha set to 0.1
         joint.simul2 <- jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul=nsubjet, ntrialSimul = ntrial,
                                              int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif,
                                              n.knots = nspline, kappa.use = kappa.use, type.joint.estim = type.joint.estim, print.iter = T,
@@ -171,7 +171,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
         )
       }
       
-      if(script.a.estimer==8){ # case with random censorship
+      if(program.to.estimate==8){ # case with random censorship
         joint.simul2 <- jointSurroPenalSimul(nb.dataset = nsim, nbSubSimul=nsubjet, ntrialSimul = ntrial,
                                              int.method = int.method, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif,
                                              n.knots = nspline, kappa.use = kappa.use, type.joint.estim = type.joint.estim, print.iter = T,
@@ -184,7 +184,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
         )
       }
       
-      if(script.a.estimer == 9){ # Variation of the number of subject per trial and random censorship
+      if(program.to.estimate == 9){ # Variation of the number of subject per trial and random censorship
         # utils::data("dataOvarian", envir = environment(), package = "frailtypack")
         # consider the proportion from the advanced avarian cancer dataset including 50 trials
         # prop = table(dataOvarian$trialID)/nrow(dataOvarian)
@@ -219,7 +219,7 @@ simulationPackages <- function(nsim = 500, nsubjet = 600, ntrial = 30, int.metho
   }
   
   # Merge from all packages
-  joint.simul <- frailtypack:::mergeJointSurroSimul(nb.packet = nb.paquet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
+  joint.simul <- mergeJointSurroSimul(nb.packet = nb.paquet, envir.name = "joint.simul2_", envir.num.base = num.paquet,
                                                     wd = wd)
   setwd(current)
   
