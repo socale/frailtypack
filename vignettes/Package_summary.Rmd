@@ -53,6 +53,8 @@ Table 1: Package characteristics. Blue cross is for option available for a given
 Agnieszka Krol, Audrey Mauguen, Yassin Mazroui, Alexandre Laurent, Stefan Michiels, Virginie Rondeau (2017), [Tutorial in Joint Modeling and Prediction: A Statistical Software for Correlated Longitudinal Outcomes, Recurrent Events and a Terminal Event.](https://www.jstatsoft.org/article/view/v081i03)
 *Journal of Statistical Software*, **81**.
 
+Casimir Ledoux Sofeu and Virginie Rondeau (2020). [How to use frailtypack for validating failure-time surrogate endpoints using individual patient data from meta-analyses of randomized controlled trials.] (https://doi.org/10.1371/journal.pone.0228098) *PLOS ONE*, **15**, 1–25.
+
 
 #### Shiny
 A shiny application of frailtypack is available, allowing modelisation and prediction of several models presents in frailtypack, at https://frailtypack-pkg.shinyapps.io/shiny_frailtypack.
