@@ -433,11 +433,11 @@
         i = 1
         do j=1,nsujetB
         if(groupeeB(j).eq.i) then
-			nmesB(i)=nmesB(i)+1
-		else
-		i=i+1
+            nmesB(i)=nmesB(i)+1
+        else
+        i=i+1
             if(groupeeB(j).eq.i) then
-			nmesB(i)=nmesB(i)+1
+            nmesB(i)=nmesB(i)+1
             end if
         end if
         end do
@@ -5287,7 +5287,7 @@ Bscal(1)=0.d0
             if(MTP0.eq.0) then
             Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1)))))
             Bscalar(1) = Bscalar(1) + Bscal(1)       
-			else if(MTP0.eq.1) then
+            else if(MTP0.eq.1) then
 Bscalar(1) = Bscalar(1) - dlog(1.d0+dexp(mu1BG(k,1)))
             end if
         end do

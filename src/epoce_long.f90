@@ -908,7 +908,7 @@
                                             select case(typeof)
                                                     case(0)
                                                             call susps(t1(k),the1,nz1,tempscl,lam,zi)
-															su = tempscl
+                                                            su = tempscl
                                                             if (t1(k).eq.date(ndate)) then
                                                                     lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                                                             endif
@@ -1407,7 +1407,7 @@
                     select case(typeof)
                         case(0)
                             call susps(t1(k),the1,nz1,tempscl,lam,zi)
-							su = tempscl
+                            su = tempscl
                             if (t1(k).eq.date(ndate)) then
                                 lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                             endif
@@ -2385,7 +2385,7 @@
                                             select case(typeof)
                                                     case(0)
                                                             call susps(t1(k),the1,nz1,tempscl,lam,zi)
-															su = tempscl
+                                                            su = tempscl
                                                             if (t1(k).eq.date(ndate)) then
                                                                     lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                                                             endif
@@ -2752,7 +2752,7 @@
                                             select case(typeof)
                                                     case(0)
                                                             call susps(t1(k),the1,nz1,tempscl,lam,zi)
-															su = tempscl
+                                                            su = tempscl
                                                             if (t1(k).eq.date(ndate)) then
                                                                     lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                                                             endif

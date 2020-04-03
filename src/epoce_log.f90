@@ -493,7 +493,7 @@
                 select case(typeof)
                     case(0)
                         call susps(t1(k),the1,nz1,tempscl,lam,zi)
-						su = tempscl
+                        su = tempscl
                         if (t1(k).eq.date(ndate)) then
                             lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                         endif
@@ -562,7 +562,7 @@
         select case(typeof)
             case(0)
                 call susps(t1dc(i),the2,nz2,tempscl,lamdc,zi)
-				sudc = tempscl
+                sudc = tempscl
                 if (t1dc(i).eq.datedc(ndatedc)) then
                     lamdc = 4.d0*the2(n-2-1)/(zi(n-2)-zi(n-2-1))
                 endif
@@ -697,7 +697,7 @@
                 select case(typeof)
                     case(0)
                         call susps(t1(k),the1,nz1,tempscl,lam,zi)
-						su = tempscl
+                        su = tempscl
                         if (t1(k).eq.date(ndate)) then
                             lam = 4.d0*the1(n-2-1)/(zi(n-2)-zi(n-2-1))
                         endif

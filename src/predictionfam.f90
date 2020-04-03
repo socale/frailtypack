@@ -60,7 +60,7 @@
 
     coefBeta(1,:) = b((np-nva1-nva2+1):(np-nva2))
     coefBetadc(1,:) = b((np-nva2+1):np)
-	
+    
     XbetapredRall = matmul(coefBeta,transpose(vaxpred0))
     XbetapredDC = matmul(coefBetadc,transpose(vaxdcpred0))
     
@@ -177,11 +177,11 @@
             !write(*,*) 'power', ((frailind0**alpha)*frailfam0)*dexp(XbetapredDC(1,indID))
             !write(*,*) 'predictfam, pred', window, pred
         !    if(iii.eq.1) then 
-		!	write(*,*)xbetapredR(1,:)
+        !    write(*,*)xbetapredR(1,:)
         !   write(*,*)xbetapredR(2,:)
         !!   write(*,*)xbetapredR(3,:)
         !!    write(*,*)xbetapredR(4,:)
-		!	 end if
+        !     end if
             call gaulagJpredfam(ss1,ss2, indID, theta,alpha,eta,xi, &
             XbetapredR, XbetapredDC,survR,survDC,survDCi, icdctime(1:npred0,iii), nrec0,nrecT(1:npred0,iii), npred0)
            
@@ -360,7 +360,7 @@
     do j=1,nrec0
         survRfam(indID) = survRfam(indID)*survR(indID,j)**(&
         (frail*frail2**pxi)*dexp(XbetapredR(indID,j)))
-!		if(frail.eq. 4.4489365071058273E-002.and.frail2.eq. 4.4489365071058273E-002) then 
+!        if(frail.eq. 4.4489365071058273E-002.and.frail2.eq. 4.4489365071058273E-002) then 
 !write(*,*) j,indID,survR(indID,j),XbetapredR(indID,j) ,(frail*frail2**pxi),survRfam(indID)
 !end if
     end do
@@ -401,7 +401,7 @@
 
     func1predfam = term*famHistALL*gui*gw   
 !if(frail.eq.4.4489365071058273E-002.and.frail2.eq.0.23452611267566681) then
-	
+    
 !write(*,*)func1predfam,term,survRfam(indID),XbetapredR(indID,1:2),XbetapredDC(1,indID)
 !end if
     return

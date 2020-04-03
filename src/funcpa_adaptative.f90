@@ -21,7 +21,7 @@ module func_adaptative
         double precision::vsi,vti,res,ui !test
         double precision,dimension(:),allocatable::bh
         double precision::wij
-		
+        
         allocate(bh(np))
         !call dblepr("b(1) funcpafrailtyPred_ind 41", -1, b(1), 1)             
         bh(1)=b(1)
@@ -63,7 +63,7 @@ module func_adaptative
     
     123     continue
     deallocate(bh)
-	!call dblepr("funcpa95", -1, funcpafrailtyPred_ind, 1)
+    !call dblepr("funcpa95", -1, funcpafrailtyPred_ind, 1)
     return
     
     endfunction funcpafrailtyPred_ind
@@ -266,9 +266,9 @@ module func_adaptative
     return
     
     endfunction funcpafrailtyPred_Essai
-	
-	! joint frailty_copula
-	double precision function funcpafrailtyPred_copula(b,np,id,thi,jd,thj,k0)
+    
+    ! joint frailty_copula
+    double precision function funcpafrailtyPred_copula(b,np,id,thi,jd,thj,k0)
         use var_surrogate, only:essai_courant,nsujeti,frailt_base
         use fonction_A_integrer,only:Integrant_Copula
         
@@ -296,24 +296,24 @@ module func_adaptative
         else
             ui=bh(3)
         endif
-		
+        
         res = Integrant_Copula(vsi,vti,ui,essai_courant,nsujeti(essai_courant))
         !call dblepr("res funcpaadaptativ = ", -1, res, 1)
-		res = dlog(res)
-		!call dblepr("log res funcpaadaptativ = ", -1, res, 1)
-		
-		if ((res.ne.res).or.(abs(res).ge. 1.d30)) then ! pour test infini et NaN
-			funcpafrailtyPred_copula =-1.d9
-			!call dblepr("log res funcpaadaptativ = ", -1, res, 1)
-			goto 124
-		else
-			funcpafrailtyPred_copula = res
-		end if
+        res = dlog(res)
+        !call dblepr("log res funcpaadaptativ = ", -1, res, 1)
+        
+        if ((res.ne.res).or.(abs(res).ge. 1.d30)) then ! pour test infini et NaN
+            funcpafrailtyPred_copula =-1.d9
+            !call dblepr("log res funcpaadaptativ = ", -1, res, 1)
+            goto 124
+        else
+            funcpafrailtyPred_copula = res
+        end if
     
     
-		124    continue
-		
-		return
+        124    continue
+        
+        return
     
     endfunction funcpafrailtyPred_copula
 

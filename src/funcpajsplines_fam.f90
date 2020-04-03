@@ -405,7 +405,7 @@
     else
     funcpajsplines_fam = res
         do k=1,ng
-		
+        
             Rrec(k)=res1(k)
             Nrec(k)=nig(k)
             Rdc(k)=aux1(k)
@@ -414,22 +414,22 @@
         k=0
         do i= 1,nfam
         do j=1,fsize(i)
-		!	 if(i.eq.1) then 
-		!	 write(*,*)i,fam(i),fsize(i),fsize(1)+j,aux1(fsize(1)+j)
-		!	else  
-		!	write(*,*)i,fam(i),fsize(i),aux1(k+j)
-		!	end if
+        !     if(i.eq.1) then 
+        !     write(*,*)i,fam(i),fsize(i),fsize(1)+j,aux1(fsize(1)+j)
+        !    else  
+        !    write(*,*)i,fam(i),fsize(i),aux1(k+j)
+        !    end if
         cumulhaz1(i,j) = res1(k+j)
                 cumulhaz0(i,j) = res3(k+j)
                 cumulhazdc(i,j) = aux1(k+j)
-				
+                
             end do
-			
+            
            ! if(i.lt.ng.and.fam(i).ne.fam(i+1)) then 
                 k = k +fsize(i)
             !end if
         end do 
-	!	stop
+    !    stop
     end if
 !Ad:
 123     continue

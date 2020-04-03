@@ -217,7 +217,7 @@
     prod4 = 1.d0
     prod5 = 1.d0        
 
-	
+    
     do j=1,fsize(indg)
         prod1 = prod1 * (frail2(j)**Nrec_ind(sum(fsize(1:(indg-1)))+j)) * dexp(-frail1**xi * frail2(j) * cumulhaz1(indg,j))
         prod2 = prod2 *  dexp(-frail2(j)/theta)

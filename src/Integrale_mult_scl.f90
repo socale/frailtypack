@@ -295,7 +295,7 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
     allocate(vc(ndim,ndim),fraili(nsim,ndim))
     !vc=ABS(chol)
     !vc = chol
-	if(frailt_base==0)then
+    if(frailt_base==0)then
         vc = 0.d0 
         vc(1,1) = Chol(1,1)
         vc(2,1) = Chol(2,1)
@@ -349,10 +349,10 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
     end do
     
     ! call intpr(" dans nb_procs=", -1, nb_procs, 1)
-	! call intpr(" dans ndim=", -1, ndim, 1)
+    ! call intpr(" dans ndim=", -1, ndim, 1)
     !integration sur vsi et vti
     ss=0.d0
-	! call OMP_SET_NUM_THREADS(1)
+    ! call OMP_SET_NUM_THREADS(1)
     if(nb_procs==1) then !on fait du open MP car un seul processus
         rang=0
         if(ndim.eq.2) then
@@ -372,8 +372,8 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
                 end do
            !$OMP END PARALLEL DO
         end if
-		! call intpr("cluster i ", -1, i, 1)
-		! call dblepr("integrant ss ", -1, ss, 1)
+        ! call intpr("cluster i ", -1, i, 1)
+        ! call dblepr("integrant ss ", -1, ss, 1)
     else ! dans ce cas on va faire du MPI
         ! rang du processus courang
         !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code)
@@ -405,11 +405,11 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
         ! !call MPI_ABORT(MPI_COMM_WORLD,erreur,code)
     endif
     MC_Copula_Essai=ss/dble(nsimu)
-	! if(control_affichage == 0)then
-		! control_affichage = 1
-	    ! call intpr("ss=", -1, ss, 1)
-	    ! call intpr("MC_Copula_Essai=", -1, MC_Copula_Essai, 1)
-	! endif
+    ! if(control_affichage == 0)then
+        ! control_affichage = 1
+        ! call intpr("ss=", -1, ss, 1)
+        ! call intpr("MC_Copula_Essai=", -1, MC_Copula_Essai, 1)
+    ! endif
 
     deallocate(vi,usim,vc,fraili)
     return
@@ -2655,17 +2655,17 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
     ! bloc interface pour la definition de la fonction func
     interface
         double precision function func(vsi,vti,ui,ig,nsujet_trial)
-			! vsi= frailtie niveau essai associe a s
-			! vti= frailtie niveau essai associe a t
-			! ui = random effect associated xith the baseline hazard
-			! ig = current cluster
-			! nsujet_trial = number of subjects in the current trial    
-			IMPLICIT NONE
-			integer,intent(in):: ig, nsujet_trial
-			double precision,intent(in)::vsi,vti,ui
+            ! vsi= frailtie niveau essai associe a s
+            ! vti= frailtie niveau essai associe a t
+            ! ui = random effect associated xith the baseline hazard
+            ! ig = current cluster
+            ! nsujet_trial = number of subjects in the current trial    
+            IMPLICIT NONE
+            integer,intent(in):: ig, nsujet_trial
+            double precision,intent(in)::vsi,vti,ui
         end function func
     end interface
-	
+    
     npg=nnodes    
     auxfunca=0.d0
     ss=0.d0

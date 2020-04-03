@@ -15,14 +15,14 @@
     use func_adaptative
     use parameters, only: maxiter
     use optim_scl2, only:marq98j_scl2  ! pour faire appel a marquard
-	use optim_scl, only:marq98j_scl  ! pour faire appel a marquard
+    use optim_scl, only:marq98j_scl  ! pour faire appel a marquard
     use Autres_fonctions,only:Determinant_2,cholesky_factorisation
     !use func_laplace  ! pour tout ce qui est de l'approximation de laplace: fichier funcpa_laplace.f90
     use Laplace_contribution ! pour tout ce qui est de l'approximation de laplace: fichier Integrale_mult_scl.f90
     ! !$ use OMP_LIB
     !use mpi ! module pour l'environnement MPI
     use Autres_fonctions, only:init_random_seed
-	use func_laplace, only: funcpaLaplace_copula
+    use func_laplace, only: funcpaLaplace_copula
     
     IMPLICIT NONE
 
@@ -68,8 +68,8 @@
     double precision, allocatable, dimension(:,:)::H_hessOut,HIH,HIHOut,IH,invBi_chol_2,H_hess_scl,I_hess_scl
     double precision,dimension(:,:), allocatable::hess_scl
     double precision,dimension(:), allocatable::vvv_scl
-	double precision, dimension(:,:),allocatable::m1,m3  
-    double precision, dimension(:,:),allocatable::m	
+    double precision, dimension(:,:),allocatable::m1,m3  
+    double precision, dimension(:,:),allocatable::m    
 
 !    !print*,'debut funcpa'
         
@@ -89,7 +89,7 @@
 
     if (id.ne.0) bh(id)=bh(id)+thi
     if (jd.ne.0) bh(jd)=bh(jd)+thj   
-	!call intpr("nva", -1, nva, 1)	
+    !call intpr("nva", -1, nva, 1)    
     n = (np-nva-nparamfrail)/nst
     ! reparametrisation des parametres de la spline (>=0) pour être sur d'avoir une fonction des risquer de base positive
     do i=1,n
@@ -102,17 +102,17 @@
     
     if(effet.eq.1) then
         if(logNormal==1)then
-		    !== 17/05/2019== introduction of some corrections on the value of theta, to avoid very high values==
+            !== 17/05/2019== introduction of some corrections on the value of theta, to avoid very high values==
             if(copula_function == 1) then 
-				theta_copule = dexp(bh(np-nva)) ! clayton: exp transform
-				!theta_copule = dexp(minval((/6.d0,bh(np-nva)/))) ! clayton: exp transform
-			endif
+                theta_copule = dexp(bh(np-nva)) ! clayton: exp transform
+                !theta_copule = dexp(minval((/6.d0,bh(np-nva)/))) ! clayton: exp transform
+            endif
             if(copula_function == 2)then 
-				theta_copule = (bh(np-nva))**2.d0  ! Gumbel: choleschy transform
-				!theta_copule = minval((/bh(np-nva),15.d0/))**2.d0
-			endif
-			!theta_copule = bh(np-nva) ! sans transformation
-			!call dblepr("theta_copule = ", -1, theta_copule, 1)
+                theta_copule = (bh(np-nva))**2.d0  ! Gumbel: choleschy transform
+                !theta_copule = minval((/bh(np-nva),15.d0/))**2.d0
+            endif
+            !theta_copule = bh(np-nva) ! sans transformation
+            !call dblepr("theta_copule = ", -1, theta_copule, 1)
             varS1 = bh(np-nva-nparamfrail+indice_varS)
             varT1 = bh(np-nva-nparamfrail+indice_varS+indice_varT)
             !sig2=theta2 ! je fais appel a sig2 car c'est la variable utilisee dans la suite des procedures pour le joint classique
@@ -175,7 +175,7 @@
     ! pour eviter d'avoir des matrices de variances-covariances non defini positive, je suppose que c'est la cholesky qui est generee. par consequent sigma=Chol*Chol^T
     !Chol: matrice triangulaire inferieur. pour eviter de refaire la factorisation de cholesky pour l'algo MC, j'utilise directement cette matrice de cholesky a la place de la matrice de variance-covariance
     if(type_joint==1 .or. type_joint==3) then !cas modele a fragilites partages
-		allocate(mat_A(3,3))
+        allocate(mat_A(3,3))
         if(frailt_base==0)then
             Chol=0.d0 
             Chol(1,1)=varS1
@@ -193,18 +193,18 @@
         varT=mat_A(2,2)
         covST=mat_A(1,2)
         if(frailt_base==1)    gamma_ui = mat_A(3,3)
-	
-		! if(control_affichage == 0) then
-			! call dblepr("bh = ", -1, bh(np-nva-nparamfrail +1 :np),nva+nparamfrail)
-			! call dblepr(" gamma_ui funcpa =", -1, gamma_ui, 1)
-			! call dblepr(" Chol =", -1, Chol, 9)
-			! call dblepr(" TRANSPOSE(Chol) =", -1, TRANSPOSE(Chol), 9)
-			! call dblepr(" mat_A =", -1, mat_A, size(mat_A,1)*size(mat_A,2))
-			! control_affichage = 1
-		! endif
-	endif
-	! call intpr(" size(Chol, 2)=", -1, size(Chol, 2), 1)
-	
+    
+        ! if(control_affichage == 0) then
+            ! call dblepr("bh = ", -1, bh(np-nva-nparamfrail +1 :np),nva+nparamfrail)
+            ! call dblepr(" gamma_ui funcpa =", -1, gamma_ui, 1)
+            ! call dblepr(" Chol =", -1, Chol, 9)
+            ! call dblepr(" TRANSPOSE(Chol) =", -1, TRANSPOSE(Chol), 9)
+            ! call dblepr(" mat_A =", -1, mat_A, size(mat_A,1)*size(mat_A,2))
+            ! control_affichage = 1
+        ! endif
+    endif
+    ! call intpr(" size(Chol, 2)=", -1, size(Chol, 2), 1)
+    
 !!print*,"suis la dans funcpa============2"
 !----------  calcul de ut1(ti) et ut2(ti) ---------------------------
 !    attention the(1)  sont en nz=1
@@ -335,8 +335,8 @@
         else
             vet=1.d0
         endif
-		! call intpr("nva1", -1, nva1, 1)
-		! call dblepr(" ve(i,j)=", -1, ve(i,:), 2)
+        ! call intpr("nva1", -1, nva1, 1)
+        ! call dblepr(" ve(i,j)=", -1, ve(i,:), 2)
          
     !res2s_sujet(i)=dlog(dut1(nt1(i)))+vet
     res2s_sujet(i)=dut1(nt1(i)) * dexp(vet) ! baseline hazard for subject i
@@ -355,13 +355,13 @@
             goto 123
         end if
     end do
-	
+    
 !ccccccccccccccccccccccccccccccccccccccccc
 ! pour le deces 
 !ccccccccccccccccccccccccccccccccccccccccc 
 
     do k=1,ng  
-		!call dblepr("suis danc funcpan vedc=", -1, dble(vedc(k,:)), size(vedc,2))
+        !call dblepr("suis danc funcpan vedc=", -1, dble(vedc(k,:)), size(vedc,2))
         if(nva2.gt.0)then
             vet2 = 0.d0   
             do j=1,nva2
@@ -389,21 +389,21 @@
         end if
     end do
     ! call dblepr("const_res4=", -1, const_res4, nsujet)
-	! call dblepr("const_res5=", -1, const_res5, nsujet)
-	! call dblepr("res2s_sujet=", -1, res2s_sujet, nsujet)
-	! call dblepr("res2_dcs_sujet=", -1, res2_dcs_sujet, nsujet)
+    ! call dblepr("const_res5=", -1, const_res5, nsujet)
+    ! call dblepr("res2s_sujet=", -1, res2s_sujet, nsujet)
+    ! call dblepr("res2_dcs_sujet=", -1, res2_dcs_sujet, nsujet)
 !**************INTEGRALES ****************************
 
     !================================================================================
     !==========distribution lognormale des effects aleatoires==============================
     !================================================================================
     ! call intpr(" dans methodInt=", -1, methodInt, 1)
-	 ! call intpr("nsujeti=", -1, nsujeti, ntrials)
+     ! call intpr("nsujeti=", -1, nsujeti, ntrials)
     if (logNormal==1) then 
         select case(methodInt)
         case(0) ! estimation par monte carlo
             posind_i=1
-			! varcov(1,1)=varS
+            ! varcov(1,1)=varS
             ! varcov(1,2)=covST
             ! varcov(2,1)=covST
             ! varcov(2,2)=varT
@@ -435,12 +435,12 @@
             endif
             
             ! ========= End for now===============
-			!call dblepr("integrale3=", -1, integrale3, ntrials)
-			!call dblepr("log integrale3=", -1, dlog(integrale3), ntrials)
+            !call dblepr("integrale3=", -1, integrale3, ntrials)
+            !call dblepr("log integrale3=", -1, dlog(integrale3), ntrials)
             ! call dblepr(" dans sum integrale3=", -1, sum(integrale3), 1)
-			! call dblepr(" dans log sum integrale3=", -1, dlog(sum(integrale3)), 1)
+            ! call dblepr(" dans log sum integrale3=", -1, dlog(sum(integrale3)), 1)
         
-		case(1)! quadature classique (non-adaptative) ou pseudo-adaptative selon le contenu de la variable adaptative
+        case(1)! quadature classique (non-adaptative) ou pseudo-adaptative selon le contenu de la variable adaptative
             !call MPI_COMM_RANK(MPI_COMM_WORLD,rang,code) ! recherche du rang du processus
             l=1
             res = 0.d0
@@ -465,7 +465,7 @@
                 !if(estim_wij_chap.eq.0) then ! on n'a pas encore estime les wij_chap 
                     ! !print*,""
                     if(rang==0)then
-						!call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
+                        !call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
                     endif
                     ! !print*,""
                     k0_2=k0 
@@ -512,7 +512,7 @@
                         10 continue
                         call marq98J_scl2(k0_2,b_i,np_2,ni,v_i,res,ier,istop,effet2,ca,cb,dd,funcpafrailtyPred_copula,&
                                          I_hess_scl,H_hess_scl,hess_scl,vvv_scl)
-							
+                            
                         if (istop.ne.1 .and. non_conv<=10) then ! on passe à l'individu suivant, juste pour le test
                             b_i=-0.5*non_conv
                             non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
@@ -573,7 +573,7 @@
                     control_adaptative=0
 
                 if(rang==0)then
-					!call dblepr("Fin estimation des fragilites a posteriorie", -1, integrale3(1), 1)
+                    !call dblepr("Fin estimation des fragilites a posteriorie", -1, integrale3(1), 1)
                 endif
             endif
 
@@ -594,7 +594,7 @@
             end do
    
             ! call dblepr("integrale3=", -1, integrale3, ntrials)
-			! call dblepr("log integrale3=", -1, dlog(integrale3), ntrials)
+            ! call dblepr("log integrale3=", -1, dlog(integrale3), ntrials)
             
             
             ! cas modele a effet aleatoires correles
@@ -650,7 +650,7 @@
             !estimation des fragilites a posteriori, a utiliser dans le calcul integral
             !================================================================================
             if(rang==0)then
-				!call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
+                !call dblepr("Recherche des effets aleatoires  à postériorie", -1, integrale3(1), 1)
             endif
             k0_2=k0                     
             !initialisation des variables de module
@@ -667,99 +667,99 @@
             !i=1
             !nmax_2=0 ! pour la somme cumulee du nombre de sujet par essai
             
-			! call intpr("je vais pour le calcul integral=", -1, posind_i, 1)
-			if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
+            ! call intpr("je vais pour le calcul integral=", -1, posind_i, 1)
+            if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de l'heterogeneite sur les risque des bas
                 np_2=2
                 nparamfrail=2
             else
                 np_2=3
                 nparamfrail=3
             endif
-			if(control_adaptative_laplace == 0) then
-				b_i_laplace = 0.5d0
-				v_i_laplace = 0.d0
-			endif
-				
-			posind_i=1 
+            if(control_adaptative_laplace == 0) then
+                b_i_laplace = 0.5d0
+                v_i_laplace = 0.d0
+            endif
+                
+            posind_i=1 
             do k=1,ntrials
                 essai_courant=k
                 ! ====================================================================================================
                 ! estimation des ui_chapeau, vs_i_chapeau et vt_i_chapeau
                 ! ====================================================================================================
                 
-				if(control_adaptative_laplace == 0) then	! ici on voudrait estimer les une seule fois les v_i 			
-					100 continue
-					call marq98J_scl2(k0_2,b_i_laplace,np_2,ni,v_i_laplace,res,ier,istop,&
-					    effet2,ca,cb,dd,funcpaLaplace_copula,IhessLaplace,H_hess_laplace,&
-					    hess_laplace,vvv_laplace)
-					
-					! if(control_affichage == 0) then
-						! control_affichage = 1
-						! call intpr("istop=", -1, istop, 1)		
-						! call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
-					! endif
-					if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
-						b_i_laplace=-0.5*non_conv
-						non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
-						goto 100
-					endif
-									
-					if(non_conv==11 .and. istop .ne. 1)then
-						!print*,"le nombre de tentative sans convergence vaut:",non_conv
-						!print*,"istop=",istop,"essai k=",k
-						non_conv=0
-						funcpajsplines_copule_surrogate=-1.d9
-						goto 123
-					endif
-									
-					if(non_conv>0 .and. non_conv<=10) then
-						non_conv=0
-						! il y'a eu concergence
-						if(adaptative)control_adaptative_laplace = 1
-					endif 
-				endif	
+                if(control_adaptative_laplace == 0) then    ! ici on voudrait estimer les une seule fois les v_i             
+                    100 continue
+                    call marq98J_scl2(k0_2,b_i_laplace,np_2,ni,v_i_laplace,res,ier,istop,&
+                        effet2,ca,cb,dd,funcpaLaplace_copula,IhessLaplace,H_hess_laplace,&
+                        hess_laplace,vvv_laplace)
+                    
+                    ! if(control_affichage == 0) then
+                        ! control_affichage = 1
+                        ! call intpr("istop=", -1, istop, 1)        
+                        ! call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)    
+                    ! endif
+                    if (istop.ne.1 .and. non_conv<=10) then ! pas de convergence, on modifie la valeur initiale et recommence l'optimisation
+                        b_i_laplace=-0.5*non_conv
+                        non_conv=non_conv+1 !compte le nombre de fois qu'on n'a pas pu estime les frailties niveau essai sur certains individus
+                        goto 100
+                    endif
+                                    
+                    if(non_conv==11 .and. istop .ne. 1)then
+                        !print*,"le nombre de tentative sans convergence vaut:",non_conv
+                        !print*,"istop=",istop,"essai k=",k
+                        non_conv=0
+                        funcpajsplines_copule_surrogate=-1.d9
+                        goto 123
+                    endif
+                                    
+                    if(non_conv>0 .and. non_conv<=10) then
+                        non_conv=0
+                        ! il y'a eu concergence
+                        if(adaptative)control_adaptative_laplace = 1
+                    endif 
+                endif    
 
-				
-				jacobien = Determinant_2(IhessLaplace,np_2) ! determinant de la hesienne
-				v_si = b_i_laplace(1)
-				v_ti = b_i_laplace(2)
-				if(frailt_base==1) then
-					ui = b_i_laplace(3)
-				else
-					ui = 0.d0
-				endif
-				
-				! if(control_affichage == 0) then
-					! control_affichage = 1
-					! call dblepr("jacobien=", -1, jacobien, 1)		
-					! call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)	
-				! endif
-				
-				! allocate(m(1,1),m1(1,2),m3(1,2))
-				! m1(1,1)= v_si
-				! m1(1,2)= v_ti
-				! m3=MATMUL(m1,varcovinv)
-				! m=MATMUL(m3,TRANSPOSE(m1))
-				! f_vi = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * &
-				       ! dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
-				
-				! deallocate(m,m1,m3) 
-				! integrale3(k) = f_vi * (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
-									! jacobien**(-1.d0/2.d0)
-				integrale3(k) = (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
-									jacobien**(-1.d0/2.d0)
-				posind_i=posind_i+nsujeti(k)
+                
+                jacobien = Determinant_2(IhessLaplace,np_2) ! determinant de la hesienne
+                v_si = b_i_laplace(1)
+                v_ti = b_i_laplace(2)
+                if(frailt_base==1) then
+                    ui = b_i_laplace(3)
+                else
+                    ui = 0.d0
+                endif
+                
+                ! if(control_affichage == 0) then
+                    ! control_affichage = 1
+                    ! call dblepr("jacobien=", -1, jacobien, 1)        
+                    ! call dblepr("b_i_laplace=", -1, b_i_laplace, np_2)    
+                ! endif
+                
+                ! allocate(m(1,1),m1(1,2),m3(1,2))
+                ! m1(1,1)= v_si
+                ! m1(1,2)= v_ti
+                ! m3=MATMUL(m1,varcovinv)
+                ! m=MATMUL(m3,TRANSPOSE(m1))
+                ! f_vi = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * &
+                       ! dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
+                
+                ! deallocate(m,m1,m3) 
+                ! integrale3(k) = f_vi * (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
+                                    ! jacobien**(-1.d0/2.d0)
+                integrale3(k) = (2.d0 * pi)**(np_2/2.d0) * Integrant_Copula(v_si,v_ti,ui,essai_courant,nsujeti(essai_courant))*&
+                                    jacobien**(-1.d0/2.d0)
+                posind_i=posind_i+nsujeti(k)
                !i=nmax_2+1 ! on continu avec le premier sujet du prochain cluster
             enddo ! fin calcul integral    
 
-			! call dblepr("integrale3=", -1, integrale3, ntrials)
-			
-			model=model_save
+            ! call dblepr("integrale3=", -1, integrale3, ntrials)
+            
+            model=model_save
             nparamfrail=nparamfrail_save
             maxiter=maxiter_save                   
 
             if(rang==0)then
-				!call dblepr("Fin estimation des fragilites a posteriorie", -1, integrale3(1), 1)
+                !call dblepr("Fin estimation des fragilites a posteriorie", -1, integrale3(1), 1)
             endif
  
                 ! !call MPI_COMM_SIZE(MPI_COMM_WORLD,nb_pro2,code)
@@ -818,7 +818,7 @@
                 ! ! call sleep(1)
                 ! som_cont=som_cont_0
                 ! !!call MPI_ABORT(MPI_COMM_WORLD,erreur,comm)
-                ! !!call MPI_Barrier(MPI_COMM_WORLD,comm2) ! pour la synchronisation globale avant 	
+                ! !!call MPI_Barrier(MPI_COMM_WORLD,comm2) ! pour la synchronisation globale avant     
         end select
     
     !************* FIN INTEGRALES **************************
@@ -827,26 +827,26 @@
         select case(methodInt)
         case(0) ! estimation par monte carlo
             ! call dblepr("integrale3=", -1, integrale3, ntrials)
-			! call dblepr("log(integrale3)=", -1, dlog(integrale3), ntrials)
-			res = sum(dlog(integrale3))
-			if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+            ! call dblepr("log(integrale3)=", -1, dlog(integrale3), ntrials)
+            res = sum(dlog(integrale3))
+            if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
                 goto 123
             end if 
-		case(1) ! estimation par monte carlo
-			res = sum(dlog(integrale3))
-			if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
+        case(1) ! estimation par monte carlo
+            res = sum(dlog(integrale3))
+            if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
                 goto 123
             end if 
         case(3) ! estimation par approximation de laplace
             res = sum(dlog(integrale3))
-			! if(control_affichage == 0) then
-				! control_affichage = 1
-				! call dblepr("integrale3=", -1, integrale3, ntrials)		
-				! call dblepr("dlog(integrale3)=", -1, dlog(integrale3), ntrials)	
-				! call dblepr("res=", -1, res, 1)
-			! endif
+            ! if(control_affichage == 0) then
+                ! control_affichage = 1
+                ! call dblepr("integrale3=", -1, integrale3, ntrials)        
+                ! call dblepr("dlog(integrale3)=", -1, dlog(integrale3), ntrials)    
+                ! call dblepr("res=", -1, res, 1)
+            ! endif
             if ((res.ne.res).or.(abs(res).ge. 1.d30)) then
                 funcpajsplines_copule_surrogate=-1.d9
                 goto 123
@@ -885,17 +885,17 @@
     pe = k0(1)*pe1 + k0(2)*pe2 
     resnonpen = res
     res = res - pe
-	! if(control_affichage == 0) then
-		! control_affichage = 1
-		! call dblepr("resnonpen=", -1, resnonpen, 1)		
-		! call dblepr("k0=", -1, k0, 2)	
-		! call dblepr("pe2=", -1, pe2, 1)
-		! call dblepr("pe1=", -1, pe1, 1)
-		! call dblepr("pe=", -1, pe, 1)
-		! call dblepr("res=", -1, res, 1)	
-	! endif
+    ! if(control_affichage == 0) then
+        ! control_affichage = 1
+        ! call dblepr("resnonpen=", -1, resnonpen, 1)        
+        ! call dblepr("k0=", -1, k0, 2)    
+        ! call dblepr("pe2=", -1, pe2, 1)
+        ! call dblepr("pe1=", -1, pe1, 1)
+        ! call dblepr("pe=", -1, pe, 1)
+        ! call dblepr("res=", -1, res, 1)    
+    ! endif
     ! call dblepr("k0 ", -1, k0, 2)
-	! call dblepr("res ", -1, res, 1)
+    ! call dblepr("res ", -1, res, 1)
     deallocate(mat_A)
     if ((res.ne.res).or.(abs(res).ge. 1.d30).or.(res .ge. 0.d0)) then
         funcpajsplines_copule_surrogate=-1.d9

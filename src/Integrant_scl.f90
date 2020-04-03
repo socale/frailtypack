@@ -18,7 +18,7 @@ contains
     
     use var_surrogate, only: posind_i, alpha_ui, const_res4, const_res5, res2_dcs_sujet,res2s_sujet, &
         theta_copule, delta, deltastar, copula_function, methodInt, pi, gamma_ui, determinant, &
-		varcovinv, adaptative, control_affichage
+        varcovinv, adaptative, control_affichage
     use comon, only: ve
     
     IMPLICIT NONE
@@ -27,10 +27,10 @@ contains
     integer::j,n
     double precision::integrant, f_Sij, f_Tij, fbar_Sij, fbar_Tij, C_theta, phimun_S, phimun_T,phiprim_ST,&
                       sumphimun_ST, phisecond_ST, phiprimphimun_S, derivphi_ij, contri_indiv,phiprimphimun_T,&
-					  f_V, tempon, logfbar_Sij, logfbar_Tij
+                      f_V, tempon, logfbar_Sij, logfbar_Tij
     double precision, dimension(:,:),allocatable::m1,m3  
-    double precision, dimension(:,:),allocatable::m	
-	 
+    double precision, dimension(:,:),allocatable::m    
+     
     integrant = 1.d0
     do j = 1, nsujet_trial
         ! Expression in the log-vraisamblance
@@ -52,10 +52,10 @@ contains
                 phisecond_ST = (1.d0 + theta_copule) * (1.d0 + theta_copule * sumphimun_ST)**(- (1.d0 + &
                              2.d0 * theta_copule)/theta_copule)
                 phiprimphimun_S = - fbar_Sij**(1.d0 + theta_copule)
-				phiprimphimun_T = - fbar_Tij**(1.d0 + theta_copule)
+                phiprimphimun_T = - fbar_Tij**(1.d0 + theta_copule)
             case(2) ! Gumbel copula
-				logfbar_Sij = - const_res4(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1)))
-				logfbar_Tij = - const_res5(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1)))
+                logfbar_Sij = - const_res4(posind_i-1+j) * dexp(ui + vsi*dble(ve(posind_i-1+j,1)))
+                logfbar_Tij = - const_res5(posind_i-1+j) * dexp(alpha_ui * ui + vti*dble(ve(posind_i-1+j,1)))
                 C_theta = dexp(-((-logfbar_Sij)**(theta_copule + 1.d0) + (- logfbar_Tij)**&
                         (theta_copule + 1.d0))**(1.d0/(theta_copule + 1.d0)))
                 phimun_S = (-logfbar_Sij)**(1.d0 + theta_copule)
@@ -68,7 +68,7 @@ contains
                              (-(2.d0 * theta_copule + 1.d0)/(theta_copule + 1.d0)) + sumphimun_ST**&
                              (-(2.d0 * theta_copule)/(theta_copule + 1.d0))) * dexp(- sumphimun_ST**&
                              (1.d0/(1.d0 + theta_copule)))
-				phiprimphimun_S = (-fbar_Sij/(1.d0 + theta_copule)) * (- logfbar_Sij)**(- theta_copule)
+                phiprimphimun_S = (-fbar_Sij/(1.d0 + theta_copule)) * (- logfbar_Sij)**(- theta_copule)
                 phiprimphimun_T = (-fbar_Tij/(1.d0 + theta_copule)) * (- logfbar_Tij)**(- theta_copule)
         end select
         
@@ -79,175 +79,175 @@ contains
                     (1.d0 - dble(deltastar(posind_i-1+j))) * C_theta
         
         ! individual contributions
-		if(phiprimphimun_S > -1.d-299) phiprimphimun_S = -1.d-299
-		if(phiprimphimun_T > -1.d-299) phiprimphimun_T = -1.d-299
-		
-		contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**dble(delta(posind_i-1+j)) * &
-		               (f_Tij / phiprimphimun_T)&
-					   **dble(deltastar(posind_i-1+j))
-		
-		tempon = integrant
-		integrant = integrant * contri_indiv
-		
-		if(adaptative .and. integrant==0) then
-		    ! call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
-		    ! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
-			! call dblepr("integrant = ", -1, integrant, 1)
-		endif
-		!if((integrant .ne. integrant) .and. (control_affichage == 0)) then
-		! ! if(control_affichage == 0) then
-			! control_affichage = 1
-			! call dblepr("vsi = ", -1, vsi, 1)
-			! call dblepr("vti = ", -1, vti, 1)
-			! call dblepr("ui = ", -1, ui, 1)
-			! call intpr("ig = ", -1, ig, 1)
-			! call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
-			! call intpr("posind_i = ", -1, posind_i, 1)
-			! call dblepr("alpha_ui = ", -1, alpha_ui, 1)
-			! call dblepr("const_res4 = ", -1, const_res4, 1)
-			! call dblepr("const_res5 = ", -1, const_res5, 1)
-			! call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
-			! call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
-			! call dblepr("theta_copule = ", -1, theta_copule, 1)
-			! call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
-			! call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
-			! call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
-			! call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
-			! call intpr("copula_function = ", -1, copula_function, 1)
-			! call intpr("methodInt = ", -1, methodInt, 1)
-			! call dblepr("pi = ", -1, pi, 1)
-			! call dblepr("gamma_ui = ", -1, gamma_ui, 1)
-			! call dblepr("determinant = ", -1, determinant, 1)
-			! if (methodInt == 1) call dblepr("varcovinv = ", -1, varcovinv, 9)
-			! call intpr("adaptative = ", -1, adaptative, 1)
-			! call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
-			! call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
-			! call dblepr("f_Sij = ", -1, f_Sij, 1)
-			! call dblepr("f_Tij = ", -1, f_Tij, 1)
-			! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
-			! call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
-			! call dblepr("C_theta = ", -1, C_theta, 1)
-			! call dblepr("phimun_S = ", -1, phimun_S, 1)
-			! call dblepr("phimun_T = ", -1, phimun_T, 1)
-			! call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
-			! call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
-			! call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
-			! call dblepr("phiprimphimun_S = ", -1, phiprimphimun_S, 1)
-			! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1) 
-			! call dblepr("f_Sij / phiprimphimun_S = ", -1, f_Sij / phiprimphimun_S, 1)
-			! call dblepr("dble(delta(posind_i-1+j)) = ", -1, dble(delta(posind_i-1+j)), 1)
-			! call dblepr("f_Tij /phiprimphimun_T = ", -1, f_Tij / phiprimphimun_T, 1)
-			! call dblepr("dble(deltastar(posind_i-1+j)) = ", -1, dble(deltastar(posind_i-1+j)), 1)
-			! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
-			! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
-			! call dblepr("tempon = ", -1, tempon, 1)
-			! call dblepr("integrant = ", -1, integrant, 1)
-		! endif
-		
-		! if((integrant < 0.d0) .and. (control_affichage == 0)) then
-			! control_affichage = 1
-			! call dblepr("vsi = ", -1, vsi, 1)
-			! call dblepr("vti = ", -1, vti, 1)
-			! call dblepr("ui = ", -1, ui, 1)
-			! call intpr("ig = ", -1, ig, 1)
-			! call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
-			! call intpr("posind_i = ", -1, posind_i, 1)
-			! call dblepr("alpha_ui = ", -1, alpha_ui, 1)
-			! call dblepr("const_res4 = ", -1, const_res4, 1)
-			! call dblepr("const_res5 = ", -1, const_res5, 1)
-			! call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
-			! call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
-			! call dblepr("theta_copule = ", -1, theta_copule, 1)
-			! call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
-			! call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
-			! call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
-			! call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
-			! call intpr("copula_function = ", -1, copula_function, 1)
-			! call intpr("methodInt = ", -1, methodInt, 1)
-			! call dblepr("pi = ", -1, pi, 1)
-			! call dblepr("gamma_ui = ", -1, gamma_ui, 1)
-			! call dblepr("determinant = ", -1, determinant, 1)
-			! if (methodInt == 1) call dblepr("varcovinv = ", -1, varcovinv, 9)
-			! call intpr("adaptative = ", -1, adaptative, 1)
-			! call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
-			! call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
-			! call dblepr("f_Sij = ", -1, f_Sij, 1)
-			! call dblepr("f_Tij = ", -1, f_Tij, 1)
-			! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
-			! call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
-			! call dblepr("C_theta = ", -1, C_theta, 1)
-			! call dblepr("phimun_S = ", -1, phimun_S, 1)
-			! call dblepr("phimun_T = ", -1, phimun_T, 1)
-			! call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
-			! call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
-			! call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
-			! call dblepr("phiprimphimun_S = ", -1, phiprimphimun_S, 1)
-			! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
-			! call dblepr("f_Sij / phiprimphimun_S = ", -1, f_Sij / phiprimphimun_S, 1)
-			! call dblepr("dble(delta(posind_i-1+j)) = ", -1, dble(delta(posind_i-1+j)), 1)
-			! call dblepr("f_Tij /phiprimphimun_T = ", -1, f_Tij / phiprimphimun_T, 1)
-			! call dblepr("dble(deltastar(posind_i-1+j)) = ", -1, dble(deltastar(posind_i-1+j)), 1)
-			! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
-			! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
-			! call dblepr("tempon = ", -1, tempon, 1)
-			! call dblepr("integrant = ", -1, integrant, 1)
-		! endif
+        if(phiprimphimun_S > -1.d-299) phiprimphimun_S = -1.d-299
+        if(phiprimphimun_T > -1.d-299) phiprimphimun_T = -1.d-299
+        
+        contri_indiv = derivphi_ij * (f_Sij / phiprimphimun_S)**dble(delta(posind_i-1+j)) * &
+                       (f_Tij / phiprimphimun_T)&
+                       **dble(deltastar(posind_i-1+j))
+        
+        tempon = integrant
+        integrant = integrant * contri_indiv
+        
+        if(adaptative .and. integrant==0) then
+            ! call intpr("posind_i-1+j ", -1, posind_i-1+j, 1)
+            ! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+            ! call dblepr("integrant = ", -1, integrant, 1)
+        endif
+        !if((integrant .ne. integrant) .and. (control_affichage == 0)) then
+        ! ! if(control_affichage == 0) then
+            ! control_affichage = 1
+            ! call dblepr("vsi = ", -1, vsi, 1)
+            ! call dblepr("vti = ", -1, vti, 1)
+            ! call dblepr("ui = ", -1, ui, 1)
+            ! call intpr("ig = ", -1, ig, 1)
+            ! call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
+            ! call intpr("posind_i = ", -1, posind_i, 1)
+            ! call dblepr("alpha_ui = ", -1, alpha_ui, 1)
+            ! call dblepr("const_res4 = ", -1, const_res4, 1)
+            ! call dblepr("const_res5 = ", -1, const_res5, 1)
+            ! call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
+            ! call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
+            ! call dblepr("theta_copule = ", -1, theta_copule, 1)
+            ! call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
+            ! call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
+            ! call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
+            ! call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
+            ! call intpr("copula_function = ", -1, copula_function, 1)
+            ! call intpr("methodInt = ", -1, methodInt, 1)
+            ! call dblepr("pi = ", -1, pi, 1)
+            ! call dblepr("gamma_ui = ", -1, gamma_ui, 1)
+            ! call dblepr("determinant = ", -1, determinant, 1)
+            ! if (methodInt == 1) call dblepr("varcovinv = ", -1, varcovinv, 9)
+            ! call intpr("adaptative = ", -1, adaptative, 1)
+            ! call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
+            ! call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
+            ! call dblepr("f_Sij = ", -1, f_Sij, 1)
+            ! call dblepr("f_Tij = ", -1, f_Tij, 1)
+            ! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
+            ! call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
+            ! call dblepr("C_theta = ", -1, C_theta, 1)
+            ! call dblepr("phimun_S = ", -1, phimun_S, 1)
+            ! call dblepr("phimun_T = ", -1, phimun_T, 1)
+            ! call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
+            ! call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
+            ! call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
+            ! call dblepr("phiprimphimun_S = ", -1, phiprimphimun_S, 1)
+            ! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1) 
+            ! call dblepr("f_Sij / phiprimphimun_S = ", -1, f_Sij / phiprimphimun_S, 1)
+            ! call dblepr("dble(delta(posind_i-1+j)) = ", -1, dble(delta(posind_i-1+j)), 1)
+            ! call dblepr("f_Tij /phiprimphimun_T = ", -1, f_Tij / phiprimphimun_T, 1)
+            ! call dblepr("dble(deltastar(posind_i-1+j)) = ", -1, dble(deltastar(posind_i-1+j)), 1)
+            ! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
+            ! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+            ! call dblepr("tempon = ", -1, tempon, 1)
+            ! call dblepr("integrant = ", -1, integrant, 1)
+        ! endif
+        
+        ! if((integrant < 0.d0) .and. (control_affichage == 0)) then
+            ! control_affichage = 1
+            ! call dblepr("vsi = ", -1, vsi, 1)
+            ! call dblepr("vti = ", -1, vti, 1)
+            ! call dblepr("ui = ", -1, ui, 1)
+            ! call intpr("ig = ", -1, ig, 1)
+            ! call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
+            ! call intpr("posind_i = ", -1, posind_i, 1)
+            ! call dblepr("alpha_ui = ", -1, alpha_ui, 1)
+            ! call dblepr("const_res4 = ", -1, const_res4, 1)
+            ! call dblepr("const_res5 = ", -1, const_res5, 1)
+            ! call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
+            ! call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
+            ! call dblepr("theta_copule = ", -1, theta_copule, 1)
+            ! call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
+            ! call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
+            ! call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
+            ! call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
+            ! call intpr("copula_function = ", -1, copula_function, 1)
+            ! call intpr("methodInt = ", -1, methodInt, 1)
+            ! call dblepr("pi = ", -1, pi, 1)
+            ! call dblepr("gamma_ui = ", -1, gamma_ui, 1)
+            ! call dblepr("determinant = ", -1, determinant, 1)
+            ! if (methodInt == 1) call dblepr("varcovinv = ", -1, varcovinv, 9)
+            ! call intpr("adaptative = ", -1, adaptative, 1)
+            ! call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
+            ! call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
+            ! call dblepr("f_Sij = ", -1, f_Sij, 1)
+            ! call dblepr("f_Tij = ", -1, f_Tij, 1)
+            ! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
+            ! call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
+            ! call dblepr("C_theta = ", -1, C_theta, 1)
+            ! call dblepr("phimun_S = ", -1, phimun_S, 1)
+            ! call dblepr("phimun_T = ", -1, phimun_T, 1)
+            ! call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
+            ! call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
+            ! call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
+            ! call dblepr("phiprimphimun_S = ", -1, phiprimphimun_S, 1)
+            ! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
+            ! call dblepr("f_Sij / phiprimphimun_S = ", -1, f_Sij / phiprimphimun_S, 1)
+            ! call dblepr("dble(delta(posind_i-1+j)) = ", -1, dble(delta(posind_i-1+j)), 1)
+            ! call dblepr("f_Tij /phiprimphimun_T = ", -1, f_Tij / phiprimphimun_T, 1)
+            ! call dblepr("dble(deltastar(posind_i-1+j)) = ", -1, dble(deltastar(posind_i-1+j)), 1)
+            ! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
+            ! call dblepr("contri_indiv = ", -1, contri_indiv, 1)
+            ! call dblepr("tempon = ", -1, tempon, 1)
+            ! call dblepr("integrant = ", -1, integrant, 1)
+        ! endif
     enddo
-	
-	if (methodInt == 1 .or. methodInt == 3)then
-		allocate(m(1,1),m1(1,2),m3(1,2))
-		m1(1,1)=vsi
-		m1(1,2)=vti
-		m3=MATMUL(m1,varcovinv)
+    
+    if (methodInt == 1 .or. methodInt == 3)then
+        allocate(m(1,1),m1(1,2),m3(1,2))
+        m1(1,1)=vsi
+        m1(1,2)=vti
+        m3=MATMUL(m1,varcovinv)
         m=MATMUL(m3,TRANSPOSE(m1))
-		f_V = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
-		Integrant_Copula = integrant * f_V
-		deallocate(m,m1,m3)
-	endif
-	
-	if (methodInt == 0) Integrant_Copula = integrant
+        f_V = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
+        Integrant_Copula = integrant * f_V
+        deallocate(m,m1,m3)
+    endif
+    
+    if (methodInt == 0) Integrant_Copula = integrant
 
-	! if(control_affichage == 0)then
-		! control_affichage = 1
-		! call dblepr("vsi = ", -1, vsi, 1)
-		! call dblepr("vti = ", -1, vti, 1)
-		! call dblepr("ui = ", -1, ui, 1)
-		! call intpr("ig = ", -1, ig, 1)
-		! call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
-		! call intpr("posind_i = ", -1, posind_i, 1)
-		! call dblepr("alpha_ui = ", -1, alpha_ui, 1)
-		! call dblepr("const_res4 = ", -1, const_res4, 1)
-		! call dblepr("const_res5 = ", -1, const_res5, 1)
-		! call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
-		! call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
-		! call dblepr("theta_copule = ", -1, theta_copule, 1)
-		! call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
-		! call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
-		! call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
-		! call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
-		! call intpr("copula_function = ", -1, copula_function, 1)
-		! call intpr("methodInt = ", -1, methodInt, 1)
-		! call dblepr("pi = ", -1, pi, 1)
-		! call dblepr("gamma_ui = ", -1, gamma_ui, 1)
-		! call dblepr("determinant = ", -1, determinant, 1)
-		! if (methodInt == 1) call dblepr("varcovinv = ", -1, varcovinv, 9)
-		! call intpr("adaptative = ", -1, adaptative, 1)
-		! call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
-		! call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
-		! call dblepr("f_Sij = ", -1, f_Sij, 1)
-		! call dblepr("f_Tij = ", -1, f_Tij, 1)
-		! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
-		! call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
-		! call dblepr("C_theta = ", -1, C_theta, 1)
-		! call dblepr("phimun_S = ", -1, phimun_S, 1)
-		! call dblepr("phimun_T = ", -1, phimun_T, 1)
-		! call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
-		! call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
-		! call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
-		! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
-		! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
-		! call dblepr("integrant = ", -1, integrant, 1)		
-	! endif
+    ! if(control_affichage == 0)then
+        ! control_affichage = 1
+        ! call dblepr("vsi = ", -1, vsi, 1)
+        ! call dblepr("vti = ", -1, vti, 1)
+        ! call dblepr("ui = ", -1, ui, 1)
+        ! call intpr("ig = ", -1, ig, 1)
+        ! call intpr("nsujet_trial = ", -1, nsujet_trial, 1)
+        ! call intpr("posind_i = ", -1, posind_i, 1)
+        ! call dblepr("alpha_ui = ", -1, alpha_ui, 1)
+        ! call dblepr("const_res4 = ", -1, const_res4, 1)
+        ! call dblepr("const_res5 = ", -1, const_res5, 1)
+        ! call dblepr("res2_dcs_sujet = ", -1, res2_dcs_sujet, 1)
+        ! call dblepr("res2s_sujet = ", -1, res2s_sujet, 1)
+        ! call dblepr("theta_copule = ", -1, theta_copule, 1)
+        ! call intpr("delta(posind_i-1+1) = ", -1, delta(posind_i-1+1), 1)
+        ! call intpr("deltastar(posind_i-1+1) = ", -1, deltastar(posind_i-1+1), 1)
+        ! call intpr("delta(posind_i-1+2) = ", -1, delta(posind_i-1+2), 1)
+        ! call intpr("deltastar(posind_i-1+2) = ", -1, deltastar(posind_i-1+2), 1)
+        ! call intpr("copula_function = ", -1, copula_function, 1)
+        ! call intpr("methodInt = ", -1, methodInt, 1)
+        ! call dblepr("pi = ", -1, pi, 1)
+        ! call dblepr("gamma_ui = ", -1, gamma_ui, 1)
+        ! call dblepr("determinant = ", -1, determinant, 1)
+        ! if (methodInt == 1) call dblepr("varcovinv = ", -1, varcovinv, 9)
+        ! call intpr("adaptative = ", -1, adaptative, 1)
+        ! call dblepr("ve(posind_i-1+1,1) = ", -1, ve(posind_i-1+1,1), 1)
+        ! call dblepr("ve(posind_i-1+2,1) = ", -1, ve(posind_i-1+2,1), 1)
+        ! call dblepr("f_Sij = ", -1, f_Sij, 1)
+        ! call dblepr("f_Tij = ", -1, f_Tij, 1)
+        ! call dblepr("fbar_Sij = ", -1, fbar_Sij, 1)
+        ! call dblepr("fbar_Tij = ", -1, fbar_Tij, 1)
+        ! call dblepr("C_theta = ", -1, C_theta, 1)
+        ! call dblepr("phimun_S = ", -1, phimun_S, 1)
+        ! call dblepr("phimun_T = ", -1, phimun_T, 1)
+        ! call dblepr("phiprim_ST = ", -1, phiprim_ST, 1)
+        ! call dblepr("sumphimun_ST = ", -1, sumphimun_ST, 1)
+        ! call dblepr("phisecond_ST = ", -1, phisecond_ST, 1)
+        ! call dblepr("phiprimphimun_T = ", -1, phiprimphimun_T, 1)
+        ! call dblepr("derivphi_ij = ", -1, derivphi_ij, 1)
+        ! call dblepr("integrant = ", -1, integrant, 1)        
+    ! endif
     return
     end function Integrant_Copula
     

@@ -121,10 +121,10 @@
 !  1: critere d'arret satisfait (prm=ca, vraisblce=cb, derivee=dd)
 !  2: nb max d'iterations atteints
 !  4: Erreur
-    !use residusM,only:indg	
+    !use residusM,only:indg    
     use parameters,only:epsa,epsb,epsd,maxiter
     use comon,only:nva,model,indic_ALPHA,typeof
-	!t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc,PEN_deri,Hspl_hess, &
+    !t0,t1,t0dc,t1dc,c,cdc,nt0,nt1,nt0dc,PEN_deri,Hspl_hess, &
     !nt1dc,nsujet,nva1,nva2,ndate,ndatedc,nst,indic_eta
 
 !add additive
@@ -161,8 +161,8 @@
 !---------- ajout
     integer::kkk
     
-	! /scl 21/02/2019 allocation des vecteur pour eviter des probleme lorsqu'on estime un seul parametre 
-	allocate(delta(m),b1(m),bh(m))
+    ! /scl 21/02/2019 allocation des vecteur pour eviter des probleme lorsqu'on estime un seul parametre 
+    allocate(delta(m),b1(m),bh(m))
     v=0.d0
     zero=0.d0
     id=0
@@ -184,8 +184,8 @@
 
     Main:Do
 
-    call derivaJ_scl(b,m,v,rl,k0,fctnames,individu)	
-		
+    call derivaJ_scl(b,m,v,rl,k0,fctnames,individu)    
+        
     rl1=rl
     if(rl.eq.-1.D9) then
         istop=4
@@ -412,7 +412,7 @@
                 hess(i,j)=v1((j-1)*j/2+i)
             end do
         end do
-		
+        
         do i=2,m1
             do j=1,i-1
                 hess(i,j)=hess(j,i)
@@ -486,7 +486,7 @@
        
  110   continue
     deallocate(delta,b1,bh) ! scl_22-09-2017
-		!call dblepr("b(1) sortie Marquard 510", -1, b(1), 1)
+        !call dblepr("b(1) sortie Marquard 510", -1, b(1), 1)
        return    
        end subroutine marq98j_scl
 
@@ -538,7 +538,7 @@
     i0=0
     iun =1
     !!print*,"debut appel de la vraisamblance dans derrivaJ rl=",rl
-	!call dblepr("b(1)derivaJ_scl 562", -1, b(1), 1)
+    !call dblepr("b(1)derivaJ_scl 562", -1, b(1), 1)
     rl=fctnames(b,m,iun,z,iun,z,k0,individu)
     !!print*,"fin appel de la vraisamblance rl=",rl
     !stop
@@ -568,12 +568,12 @@
                     goto 123
                 end if    
         vl=(fcith(i)-vaux)/(2.d0*th)
-		
+        
         tail= size(v)
-		! call intpr(" ll pseudo-adpdative 1136", -1, ll, 1)
-		! call dblepr(" v pseudo-adpdative 1136", -1, vl, 1)
-		! call intpr(" tail pseudo-adpdative 1136", -1, tail, 1)
-		! call dblepr(" v(ll) pseudo-adpdative 1136", -1, v(ll), 1)
+        ! call intpr(" ll pseudo-adpdative 1136", -1, ll, 1)
+        ! call dblepr(" v pseudo-adpdative 1136", -1, vl, 1)
+        ! call intpr(" tail pseudo-adpdative 1136", -1, tail, 1)
+        ! call dblepr(" v(ll) pseudo-adpdative 1136", -1, v(ll), 1)
         v(ll)=vl
         do j=1,i
             k=k+1

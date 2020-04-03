@@ -300,7 +300,7 @@
              
                                 
                 predProba1(i) = ss11/ss12
-			
+            
                 it = it +nreci_all(i)
             end do
          
@@ -1094,8 +1094,8 @@
                 *dexp(-uiiui(1)/2.d0)/dsqrt(det)*(2.d0*pi)**(-3.d0/2.d0)    
         end if    
     
-	
-	
+    
+    
         return
     
       end function func2pred2GHtri    

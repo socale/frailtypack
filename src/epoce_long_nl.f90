@@ -1120,7 +1120,7 @@
              select case(typeof)
                  case(0)
                     call susps(t1(k),the1,nz1,tempscl,lam,zi)
-					su = tempscl
+                    su = tempscl
                     if (t1(k).eq.date(ndate)) then
                          lam = 4.d0*the1(nn-2-1)/(zi(nn-2)-zi(nn-2-1))
                      endif

@@ -77,7 +77,7 @@
             end do
         end do
     end if
-	
+    
     do iii=1,ntimeAll
         do i=1,npred0
             if (movingwindow.eq.1) then 
@@ -110,7 +110,7 @@
                     lowertime2(i) = lowertime(i)
                 endif
             endif
-			
+            
         end do
         
         ! Calcul des risques de base
@@ -246,7 +246,7 @@
                 if ((typevent.eq.1).or.(typevent.eq.3)) then
                     predProbaR1(i) = ss11R/ss12R
                 endif
-				
+                
             else
                 if (modeltype == 0) then
                     call gaulagJpredic(ss21,ss22,thesig,alpha,XbetapredR(1,i),XbetapredDC(1,i),hazRi, &

@@ -135,8 +135,8 @@
     
     param_weibull=param_weibull0
     estim_wij_chap=0
-	control_affichage = 0
-	control_adaptative_laplace = 0
+    control_affichage = 0
+    control_adaptative_laplace = 0
     
    ! 100 continue
     !rang=0
@@ -237,14 +237,14 @@
     if(methodInt==3) then !integration par laplace
         allocate(wij_chap(nsujet0,1),control_wij_chap(nsujet0))
         control_wij_chap=0
-		if(frailt_base == 1) then
-			np_2 = 3
-			
-		else
-			np_2 = 2
-		endif
-		allocate(IhessLaplace(np_2,np_2),H_hess_laplace(np_2,np_2),&
-				b_i_laplace(np_2),v_i_laplace(np_2*(np_2+3)/2),hess_laplace(np_2,np_2),vvv_laplace(np_2*(np_2+1)/2))
+        if(frailt_base == 1) then
+            np_2 = 3
+            
+        else
+            np_2 = 2
+        endif
+        allocate(IhessLaplace(np_2,np_2),H_hess_laplace(np_2,np_2),&
+                b_i_laplace(np_2),v_i_laplace(np_2*(np_2+3)/2),hess_laplace(np_2,np_2),vvv_laplace(np_2*(np_2+1)/2))
         ! !print*,"suis dans joint",size(wij_chap),size(wij_chap,1),size(wij_chap,2)
     endif
     
@@ -572,7 +572,7 @@
         ttU=ttU0(i) !! rajout
         ic=ic0(i)
         groupe=groupe0(i)
-		!call dblepr("suis danc funcpan vax0=", -1, dble(vax0(i,:)), size(vax0,2))
+        !call dblepr("suis danc funcpan vax0=", -1, dble(vax0(i,:)), size(vax0,2))
 !------------------
         do j=1,nva10
             vax(j)=vax0(i,j) ! ensemble des observation du sujet i associees au surrrogate
@@ -1218,8 +1218,8 @@
         allocate(invBi_chol_Essai(ntrials*9),invBi_chol_Individuel(ng0),ui_chap_Essai(ntrials,3))
                         
     endif
-	
-	!call intpr("type_joint =", -1, type_joint, 1)	
+    
+    !call intpr("type_joint =", -1, type_joint, 1)    
     call cpu_time(tp1)
     select case(typeof)
         case(0) ! fonction de risque de base approximee par des splines
@@ -1794,8 +1794,8 @@ deallocate(res2s_sujet,res2_dcs_sujet)
         mm3,mm2,mm1,mm,im3,im2,im1,im,zi,zidc,m3m3,m2m2,m1m1,mmm,&
         m3m2,m3m1,m3m,m2m1,m2m,m1m)
     end if
-	
-	if(methodInt==3) deallocate(IhessLaplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace)
+    
+    if(methodInt==3) deallocate(IhessLaplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace)
 
     if (typeof .ne. 0)deallocate(vvv) !,kkapa)
     

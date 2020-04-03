@@ -19,7 +19,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     use Autres_fonctions, only:pos_proc_domaine
     !use mpi ! module pour l'environnement MPI
     !$ use OMP_LIB 
-						
+                        
     implicit none
 
     ! =======debut declaration des variables================
@@ -40,7 +40,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(2), intent(in):: kappa0
     double precision,dimension(9), intent(in):: param_init
     double precision,dimension(23+nbrevar(1) + nbrevar(2)-2), intent(in):: paramSimul
-	!double precision,dimension(:), intent(in):: paramSimul
+    !double precision,dimension(:), intent(in):: paramSimul
     double precision,dimension(3), intent(inout)::EPS2
     character(len=30),dimension(5)::NomFichier
     double precision, intent(in)::prop_trait,revision_echelle
@@ -54,7 +54,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer, intent(out):: ni, istop, ier
     double precision,dimension(n_sim1,3), intent(out):: fichier_kendall,fichier_R2
     double precision,dimension(n_sim1,nsim_node(13)),intent(out):: param_estimes
-	!double precision,dimension(:,:),intent(inout):: param_estimes
+    !double precision,dimension(:,:),intent(inout):: param_estimes
     double precision,dimension(sizeVect(1)), intent(out)::b
     double precision,dimension(2), intent(out)::LCV
     double precision,dimension(sizeVect(2)), intent(out)::x1Out
@@ -100,7 +100,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     !double precision::Xgamma
 !predictor
     double precision,dimension(:,:),allocatable::MartinGales,v_chap_kendall,v_chap_R2,theta_chap_kendall,theta_chap_R2, &
-												theta_chap_copula, v_chap_copula
+                                                theta_chap_copula, v_chap_copula
     double precision,dimension(:),allocatable::linearpred,vect_kendall_tau,t_chap_kendall,t_chap_R2,vect_kendall_tau_temp,vect_R2
     double precision,dimension(:),allocatable::linearpreddc
     double precision,dimension(:),allocatable::time
@@ -122,7 +122,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 rangparam_gammast,rangparam_alpha,decoup_simul,incre_decoup,method_int_kendal,N_MC_kendall,&
                 param_weibull,donne_reel,indice_seed,npoint1,npoint2,rangparam_eta,nboot_kendal,nparam_kendall,&
                 rangparam_theta,erreur_fichier,indicCP,controlgoto,remplnsim,indice_kapa, type_joint_estim,&
-				rangparam_copula,pfs
+                rangparam_copula,pfs
                 
                 
     double precision::theta,eta,betas,alpha,betat,lambdas,nus,lambdat,nut,temps_cens,&
@@ -163,13 +163,13 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         se_kendal_01,se_kendal_00,moy_tau_boots,IC_Inf,IC_sup,zeta_init,moy_R2_boots,IC_Inf_R2,IC_sup_R2,&
                         CP_R2_boot,CP_ktau_boot,moy_R2_boots_test,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,&
                         bi_R2_trial,bs_R2_trial,thetacopule, thetacopula_init, printnbre, moy_param_cop, moy_se_param_cop,&
-						bi_param_cop, bs_param_cop, pour_ic, taux_couverture_param_cop,taux_couverture_tauk, vrai_tau_copula
+                        bi_param_cop, bs_param_cop, pour_ic, taux_couverture_param_cop,taux_couverture_tauk, vrai_tau_copula
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS, don_simultamp,don_simulStamp,don_simulS1,&
                         parametre_empirique, parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,&
                         parametre_estimes_MPI_T,result_bootstrap
     double precision, dimension(:),allocatable::tab_var_theta,tampon,tampon_all, moy_betaS, moy_betaT,moy_betaS_se, moy_betaT_se,&
-						taux_couvertureS, taux_couvertureT
+                        taux_couvertureS, taux_couvertureT
     double precision, dimension(:,:),allocatable::tab_var_sigma
     integer,parameter ::trt1=1,v_s1=2,v_t1=3,trialref1=4,w_ij1=5,timeS1=6,timeT1=7,&
                       timeC1=8,statusS1=9,statusT1=10,initTime1=11,Patienref1=12,u_i1=13,& 
@@ -190,9 +190,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     !*********fin declaration des variables et debut du programme principale**************
     !=====================================================================================
     ! test operators priority
-	! printnbre = 1.d0/2.d0 *5.d0
+    ! printnbre = 1.d0/2.d0 *5.d0
     ! call dblepr("test 1/2 *5", -1, printnbre, 1)
-	! printnbre = (1.d0/2.d0) *5.d0
+    ! printnbre = (1.d0/2.d0) *5.d0
     ! call dblepr("test (1/2) *5", -1, printnbre, 1)
     ! call dblepr("voile kappa", -1, vect_kappa, n_sim1)
     ! goto 998
@@ -284,16 +284,16 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     sigma_s = paramSimul(21)
     sigma_t = paramSimul(22)
     thetacopule = paramSimul(23)
-	! les les parametres de simulation pour les autres covariables se trouvent a la fin du tableau paramSimul
-	
-	!call dblepr("paramSimul = ",-1,paramSimul,size(paramSimul))
+    ! les les parametres de simulation pour les autres covariables se trouvent a la fin du tableau paramSimul
+    
+    !call dblepr("paramSimul = ",-1,paramSimul,size(paramSimul))
     if(nsim_node(11) == 3) then ! joint frailty copula, remplissage des vecteurs des variables explicatives
         do i = 1, size(vbetast,1)
             vbetas(i) = vbetast(i,1) ! beta_s
             vbetat(i) = vbetast(i,2) ! beta_t
-			vbetas_intit(i) = vbetastinit(i,1) ! beta_s
+            vbetas_intit(i) = vbetastinit(i,1) ! beta_s
             vbetat_intit(i) = vbetastinit(i,2) ! beta_t
-			!call dblepr("vbetast", -1, vbetast(i,:), size(vbetast,2))
+            !call dblepr("vbetast", -1, vbetast(i,:), size(vbetast,2))
         enddo
     endif
     
@@ -316,10 +316,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     aleatoire = autreParamSim(11)
     nbre_sim = autreParamSim(12)
     graine = autreParamSim(13)
-	ckappa(1) =dble(autreParamSim(14))
-	ckappa(2) =dble(autreParamSim(15))
-	pfs = autreParamSim(16)
-	! call intpr("avant appel joint:pfs", -1,pfs, 1)
+    ckappa(1) =dble(autreParamSim(14))
+    ckappa(2) =dble(autreParamSim(15))
+    pfs = autreParamSim(16)
+    ! call intpr("avant appel joint:pfs", -1,pfs, 1)
     
     np=sizeVect(1)
     call date_and_time(dateamj,heure1,zone,values) ! pour la date de debut du programme
@@ -540,8 +540,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     nva = nva1+nva2
 
     allocate(vaxdc(ng,nva2)) ! matrice des variables explicatives presentes dans le jeux de donnees deces
-	allocate(moy_betaS(nva1), moy_betaT(nva2),moy_betaS_se(nva1), moy_betaT_se(nva2),&
-			taux_couvertureS(nva1), taux_couvertureT(nva2))
+    allocate(moy_betaS(nva1), moy_betaT(nva2),moy_betaS_se(nva1), moy_betaT_se(nva2),&
+            taux_couvertureS(nva1), taux_couvertureT(nva2))
     !!write(4,*)trim('---> Nombre de variables explicatives pour les donnees surrrogate:'),nva1
    ! if(rang_proc==0) !write(*,*)trim('---> Nombre de variables explicatives pour les donnees surrrogate:'),nva1
     !!write(4,*)trim('---> Nombre de variables explicatives pour les donnees deces:'),nva2
@@ -742,15 +742,15 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     debut_exe=1  ! pour dire on peut commencer l'execution pour ce processus
     indice_sim_proc=1 ! pour indicer le table des parametres estimes MPI
     indicCP=1 ! pour indicer le vecteur des IC par bootstrap
-	moy_param_cop = 0.d0
-	moy_se_param_cop = 0.d0
-	taux_couverture_param_cop = 0.d0
-	taux_couverture_tauk = 0.d0
+    moy_param_cop = 0.d0
+    moy_se_param_cop = 0.d0
+    taux_couverture_param_cop = 0.d0
+    taux_couverture_tauk = 0.d0
     
     allocate(parametre_empirique(n_sim,12),parametre_empirique_NC(n_sim,12)) !parametre_empirique: contient les parametres empirique pour chaque simul (trt,theta,surrrogate,deces,vars,vart,rhost,gamma) 
     if(nsim_node(8)==0)then !model conjoint surrogate classique
         allocate(parametre_estimes(n_sim,8)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd)
-		!allocate(param_estimes(n_sim,24))
+        !allocate(param_estimes(n_sim,24))
     else
         if(nsim_node(8)==1)then ! modele avec les effets aleatoires partages
             allocate(parametre_estimes(n_sim,24)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall)
@@ -763,18 +763,18 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             allocate(parametre_estimes_MPI(n_sim,32))! contient les parametres estimes par chaque processus dans MPI
             allocate(parametre_estimes_MPI_T(n_sim,32)) ! contient tous les parametres, de tous les processus
         endif
-		
-		if(nsim_node(8)==3)then ! joint frailty-copula model
+        
+        if(nsim_node(8)==3)then ! joint frailty-copula model
             allocate(parametre_estimes(n_sim,25 + nva -2)) !parametres estimes: contient les parametres estimes(theta_copula+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall + sd) + variables explicative supplementaires
             allocate(parametre_estimes_MPI(n_sim,25 + nva -2))! contient les parametres estimes par chaque processus dans MPI
             allocate(parametre_estimes_MPI_T(n_sim,25 + nva -2)) ! contient tous les parametres, de tous les processus
         endif
-		
-		!allocate(param_estimes(n_sim,size(parametre_estimes,2)))
+        
+        !allocate(param_estimes(n_sim,size(parametre_estimes,2)))
     endif
-	
-	
-	
+    
+    
+    
     allocate(tab_rejet(n_sim),tab_var_theta(n_sim),tab_var_sigma(n_sim,8))
     !allocate(Vect_sim_MC(nsim_node(1),1))
     parametre_empirique=0.d0
@@ -876,7 +876,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             do i = 2,nbrevar(3)
                 if(filtre(i).eq.1)then
                     don_simulS1(:,size(don_simulS1,2) - nbrevar(3) + i - 1)=d_S(i_min:i_max,size(don_simulS1,2) &
-					- nbrevar(3) + i - 1)
+                    - nbrevar(3) + i - 1)
                 endif
                 if(filtre2(i).eq.1)then
                     don_simul(:,size(don_simul,2)- nbrevar(3) + i - 1)=d_T(i_min_t:i_max_t,size(don_simul,2)- nbrevar(3) + i - 1)
@@ -920,7 +920,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             !stop
         else            
             theta=0.d0
-			!call intpr("nsim_node(8) =", -1, nsim_node(8), 1)
+            !call intpr("nsim_node(8) =", -1, nsim_node(8), 1)
             if(nsim_node(8)==0) then
                 indice_seed=0
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
@@ -950,21 +950,21 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,pfs)    
                 endif
                 
-				! call dblepr("sigma_s", -1, sigma_s, 1)	
-				! call dblepr("sigma_s", -1, sigma_s, 1)	
-				! call dblepr("rsqrt", -1, rsqrt, 1)					
-				
+                ! call dblepr("sigma_s", -1, sigma_s, 1)    
+                ! call dblepr("sigma_s", -1, sigma_s, 1)    
+                ! call dblepr("rsqrt", -1, rsqrt, 1)                    
+                
                 if(nsim_node(11)==3) then ! joint frailty copula model
                     call Generation_surrogate_copula(don_simultamp,don_simulStamp,ng,n_col,logNormal,affiche_stat,theta,&
                         ng,ver,alpha,cens0,temps_cens,gamma1,gamma2,theta2,lambdas,nus,lambdat,nut,vbetas,vbetat,&
                         n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma_ui,alpha_ui,frailt_base,thetacopule, filtre,&
                         filtre2,pfs)  
-					don_simul(:,1:4) = don_simultamp(:,1:4)
-					don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
-					don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:(size(don_simultamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
-					don_simulS1(:,1:4) = don_simulStamp(:,1:4)
-					don_simulS1(:,5) = 0.d0
-					don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:(size(don_simulStamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
+                    don_simul(:,1:4) = don_simultamp(:,1:4)
+                    don_simul(:,5) = 0.d0 ! on le met a 0 car je ne prends pas en compte les w_ij au moment de generation avec les copule. ducoup matricce avec -1 colone, par rapport a la generation a partir du modele joint surrogate
+                    don_simul(:,6:size(don_simul,2)) = don_simultamp(:,5:(size(don_simultamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
+                    don_simulS1(:,1:4) = don_simulStamp(:,1:4)
+                    don_simulS1(:,5) = 0.d0
+                    don_simulS1(:,6:size(don_simulS1,2)) = don_simulStamp(:,5:(size(don_simulStamp,2)-1)) ! -1 car la derniere colonne n'est pas rempli
 
                 endif
                 
@@ -975,12 +975,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         ! gamma_uit,rsqrt_gamma_ui,indice_gamma_st)    
                 endif
      
-		!==================================================================
+        !==================================================================
         !==================22/05/2019==== ================================= 
-		!==================================================================
-		
-		 ! je commente ces lignes qui ne sont plus utilisees, car le vecteur des kappas produit correspond exactement au nombre de simulation a faire dans le pacquet ourant.
-         ! ces lignes seraient a decommenter si j'utilisais mon programme fortran qui prend en entree le fichier de tous les kappas issus de la falidation croisee sur R		 
+        !==================================================================
+        
+         ! je commente ces lignes qui ne sont plus utilisees, car le vecteur des kappas produit correspond exactement au nombre de simulation a faire dans le pacquet ourant.
+         ! ces lignes seraient a decommenter si j'utilisais mon programme fortran qui prend en entree le fichier de tous les kappas issus de la falidation croisee sur R         
 
                 ! 2004    continue                
                 ! ! pour la gestion des paquets de simulation, on genere sans utiliser les decoup_simul premiers jeux de donnees
@@ -992,9 +992,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     ! incre_decoup=incre_decoup+1
                     ! goto 2004 ! pour etre sur qu'on n'utilise pas le jeu de donnee
                 ! endif
-		!==================================================================
+        !==================================================================
         !==================22/05/2019 Fin commentaires==== ================================= 
-		!==================================================================
+        !==================================================================
                 
                 ! si je suis avec des paquets de simulation, alors quand je suis la, je genere les premier jeu de donnees a ne pas considere, apres reinitialisation de l'environnement de generation
                 indice_seed=indice_seed+1
@@ -1030,10 +1030,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !!print*,don_simul(:,:)    
         !!print*,don_simulS1(1:5,)        
         !stop    
-        	
-! call dblepr("don_simultamp", -1, dble(don_simultamp(1,:)), size(don_simultamp,2))		
-! call dblepr("don_simulStamp", -1, dble(don_simulStamp(1,:)), size(don_simulStamp,2))		
-! call dblepr("don_simulS1", -1, dble(don_simulS1(1,:)), size(don_simulS1,2))		
+            
+! call dblepr("don_simultamp", -1, dble(don_simultamp(1,:)), size(don_simultamp,2))        
+! call dblepr("don_simulStamp", -1, dble(don_simulStamp(1,:)), size(don_simulStamp,2))        
+! call dblepr("don_simulS1", -1, dble(don_simulS1(1,:)), size(don_simulS1,2))        
 
         
         
@@ -1133,7 +1133,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     
 !---------------------->  Surrogate
     vax=0.d0
-	
+    
 ! call intpr("suis danc funcpan n_col=", -1, n_col, 1)
 ! call dblepr("suis danc funcpan don_simulS=", -1, dble(don_simulS(1,:)), size(don_simulS,2))
 
@@ -1433,8 +1433,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 indice_theta_t+indice_theta_st+indice_gamma_t+indice_gamma_st)=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
             
         endif
-		
-		if(nsim_node(8)==3)then !joint frailty-copula
+        
+        if(nsim_node(8)==3)then !joint frailty-copula
             b(np-nva-nparamfrail+indice_varS)=dsqrt(sigma_s)
             b(np-nva-nparamfrail+indice_varS+indice_varT)=dsqrt(sigma_t)
             if(indice_covST==1) then
@@ -1446,11 +1446,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma)=&
                   dsqrt(gamma_ui)
             endif
-			if(copula_function == 1) b(np-nva) = dlog(thetacopule) ! claton: exp transform
+            if(copula_function == 1) b(np-nva) = dlog(thetacopule) ! claton: exp transform
             if(copula_function == 2) b(np-nva) = dsqrt(thetacopule)  ! Gumbel: choleschy transform
-			b((np-nva + 1) : (np - nva + nva1)) = vbetas
-			b((np-nva2 + 1) : np) = vbetat
-			! call dblepr(" gamma_ui joint =", -1, gamma_ui, 1)
+            b((np-nva + 1) : (np - nva + nva1)) = vbetas
+            b((np-nva2 + 1) : np) = vbetat
+            ! call dblepr(" gamma_ui joint =", -1, gamma_ui, 1)
         endif
     endif
     
@@ -1480,11 +1480,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         thetast_init=rsqrt_theta*dsqrt(theta)*dsqrt(theta2_t)
         gammat_init=gamma_uit
         gammast_init=rsqrt_gamma_ui*dsqrt(gamma_ui)*dsqrt(gamma_uit)
-		
-		! frailty-copula 
-		thetacopula_init = thetacopule
-		vbetas_intit = vbetas
-		vbetat_intit = vbetat
+        
+        ! frailty-copula 
+        thetacopula_init = thetacopule
+        vbetas_intit = vbetas
+        vbetat_intit = vbetat
         
     endif
     
@@ -1496,7 +1496,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         endif
     endif
     
-	if(nsim_node(8)==3)then !joint frailty-copula
+    if(nsim_node(8)==3)then !joint frailty-copula
         b(np-nva-nparamfrail+indice_varS)=dsqrt(sigma_ss_init)
         b(np-nva-nparamfrail+indice_varS+indice_varT)=dsqrt(sigma_tt_init-&
                 (sigma_st_init**2.d0)/sigma_ss_init)
@@ -1509,17 +1509,17 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 b(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma)=&
                     dsqrt(gamma_init)
             endif
-		if(copula_function == 1)  b(np-nva) =  dlog(thetacopula_init)! claton: exp transform
+        if(copula_function == 1)  b(np-nva) =  dlog(thetacopula_init)! claton: exp transform
         if(copula_function == 2) b(np-nva) = dsqrt(thetacopula_init)  ! Gumbel: choleschy transform
-		b((np-nva + 1) : (np - nva + nva1)) = vbetas_intit
-		b((np-nva2 + 1) : np) = vbetat_intit
+        b((np-nva + 1) : (np - nva + nva1)) = vbetas_intit
+        b((np-nva2 + 1) : np) = vbetat_intit
     else 
-		b(np-1)=betas_init !b_s
-		b(np)=betat_init
-		if(indice_eta==1)then
-			b(np-2-nparamfrail+indice_eta)=zeta_init !eta
-		endif
-	endif
+        b(np-1)=betas_init !b_s
+        b(np)=betat_init
+        if(indice_eta==1)then
+            b(np-2-nparamfrail+indice_eta)=zeta_init !eta
+        endif
+    endif
     
     ! si modele complet avec effets aleatoires partages
     if(nsim_node(8)==1)then
@@ -1529,7 +1529,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 (sigma_st_init**2.d0)/sigma_ss_init)
         if(indice_covST==1) then
             b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST)=sigma_st_init/&
-			    dsqrt(sigma_ss_init)
+                dsqrt(sigma_ss_init)
          endif
         if(frailt_base==1) then
             if(indice_alpha==1) b(np-2-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+&
@@ -1601,65 +1601,65 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! call intpr("size(H_hessOut) avant appel joint:", -1, size(H_hessOut,1), 1)
     ! call intpr("size(H_hessOut) avant appel joint:", -1, size(H_hessOut,2), 1)
     ! call dblepr("H_hessOut(17,17) avant appel joint:", -1, H_hessOut(17,17), 1)
-	! j'incremente le kappa d'une constante en cas de precision pour la gestion des probleme de convergence
-	k0(1) = k0(1) + ckappa(1)
-	k0(2) = k0(2) + ckappa(2)
-	
-	if(affiche_itteration == 1) then
-		!call dblepr("avant appel joint:ckappa", -1,ckappa , 2)
-		! call dblepr("avant appel joint:k0", -1,k0 , 2)
-		! call intpr("avant appel joint:nsujet", -1, nsujet, 1)
-		! call intpr("avant appel joint:ng", -1, ng, 1)
-		! call intpr("avant appel joint:ntrials", -1, ntrials, 1)
-		! call intpr("avant appel joint:nz", -1,nz , 1)
-		! call intpr("avant appel joint:nst", -1,nst, 1)
-		!call intpr("avant appel joint:pourtrial", -1, pourtrial, nsujet)
-		! call intpr("avant appel joint:trials", -1,trials , ntrials)
-		! call intpr("personnes avec progression:nig_Ts(:,1)", -1, nig_Ts(:,1), ntrials)
-		! call intpr("personnes avec progression traitees:nig_Ts(:,2)", -1,nig_Ts(:,2) , ntrials)
-		! call intpr("personnes decedees:cdc_Ts(:,1)", -1, cdc_Ts(:,1), ntrials)
-		! call intpr("personnes decedees traitees:cdc_Ts(:,2)", -1, cdc_Ts(:,2), ntrials)
-		! call intpr("--->Nombre de personnes traitees globalement", -1, randomisation(1), 1)
-		! call dblepr("en %", -1, (randomisation(1)/dble(nsujet))*100, 1)
-		! call intpr("--->Nombre de personnes Decedees globalement", -1, deces(1), 1)
-		! call dblepr("en %", -1, (deces(1)/dble(nsujet))*100, 1)
-		! call intpr("--->Nombre de personnes avec une progression", -1, surrogate(1), 1)
-		! call dblepr("en %", -1, (surrogate(1)/dble(nsujet))*100, 1)
-		! call dblepr("temps de progression Min - Max - Mediane", -1, (/descripSurr(1), descripSurr(2), descripSurr(3)/) , 3)
-		! call dblepr("temps de deces Min - Max - Mediane", -1, (/descripDeces(1), descripDeces(2), descripDeces(3)/) , 3)
-			
-		! call intpr("avant appel joint:icdc(1:10)", -1,icdc(1:10) , 10)
-		! call intpr("avant appel joint:nva1", -1,nva1 , 1)
-		! call intpr("avant appel joint:noVar1", -1,noVar1 , 1)
-		! call intpr("avant appel joint:noVar2", -1, noVar2, 1)
-		! call dblepr("avant appel joint:tt0", -1, tt0, size(tt0))
-		! call dblepr("avant appel joint:tt1(1:10)", -1, tt1(1:10), 10)
-		! call intpr("avant appel joint:ic(1:10)", -1,ic(1:10) , 10)
-		! call intpr("avant appel joint:groupe", -1,groupe , ntrials)
+    ! j'incremente le kappa d'une constante en cas de precision pour la gestion des probleme de convergence
+    k0(1) = k0(1) + ckappa(1)
+    k0(2) = k0(2) + ckappa(2)
+    
+    if(affiche_itteration == 1) then
+        !call dblepr("avant appel joint:ckappa", -1,ckappa , 2)
+        ! call dblepr("avant appel joint:k0", -1,k0 , 2)
+        ! call intpr("avant appel joint:nsujet", -1, nsujet, 1)
+        ! call intpr("avant appel joint:ng", -1, ng, 1)
+        ! call intpr("avant appel joint:ntrials", -1, ntrials, 1)
+        ! call intpr("avant appel joint:nz", -1,nz , 1)
+        ! call intpr("avant appel joint:nst", -1,nst, 1)
+        !call intpr("avant appel joint:pourtrial", -1, pourtrial, nsujet)
+        ! call intpr("avant appel joint:trials", -1,trials , ntrials)
+        ! call intpr("personnes avec progression:nig_Ts(:,1)", -1, nig_Ts(:,1), ntrials)
+        ! call intpr("personnes avec progression traitees:nig_Ts(:,2)", -1,nig_Ts(:,2) , ntrials)
+        ! call intpr("personnes decedees:cdc_Ts(:,1)", -1, cdc_Ts(:,1), ntrials)
+        ! call intpr("personnes decedees traitees:cdc_Ts(:,2)", -1, cdc_Ts(:,2), ntrials)
+        ! call intpr("--->Nombre de personnes traitees globalement", -1, randomisation(1), 1)
+        ! call dblepr("en %", -1, (randomisation(1)/dble(nsujet))*100, 1)
+        ! call intpr("--->Nombre de personnes Decedees globalement", -1, deces(1), 1)
+        ! call dblepr("en %", -1, (deces(1)/dble(nsujet))*100, 1)
+        ! call intpr("--->Nombre de personnes avec une progression", -1, surrogate(1), 1)
+        ! call dblepr("en %", -1, (surrogate(1)/dble(nsujet))*100, 1)
+        ! call dblepr("temps de progression Min - Max - Mediane", -1, (/descripSurr(1), descripSurr(2), descripSurr(3)/) , 3)
+        ! call dblepr("temps de deces Min - Max - Mediane", -1, (/descripDeces(1), descripDeces(2), descripDeces(3)/) , 3)
+            
+        ! call intpr("avant appel joint:icdc(1:10)", -1,icdc(1:10) , 10)
+        ! call intpr("avant appel joint:nva1", -1,nva1 , 1)
+        ! call intpr("avant appel joint:noVar1", -1,noVar1 , 1)
+        ! call intpr("avant appel joint:noVar2", -1, noVar2, 1)
+        ! call dblepr("avant appel joint:tt0", -1, tt0, size(tt0))
+        ! call dblepr("avant appel joint:tt1(1:10)", -1, tt1(1:10), 10)
+        ! call intpr("avant appel joint:ic(1:10)", -1,ic(1:10) , 10)
+        ! call intpr("avant appel joint:groupe", -1,groupe , ntrials)
 
-		!call dblepr("avant appel joint:tt0dc", -1,tt0dc , nsujet)
-		! call dblepr("avant appel joint:tt1dc(1:10)", -1,tt1dc(1:10) , 10)
-		!call dblepr("avant appel joint:vax(:,1)", -1,vax(:,1) , nsujet)
-		!call dblepr("avant appel joint:vaxdc(:,1)", -1,vaxdc(:,1) , nsujet)
-		! call dblepr("avant appel joint:paraweib", -1,paraweib , 4)
-		! call dblepr("avant appel joint:ziOut", -1, ziOut, nz+6)
-		! call dblepr("avant appel joint:EPS", -1,EPS , 3)
-		! call intpr("avant appel joint:ag", -1, ag, 1)
-		! call intpr("avant appel joint:maxiter", -1,maxiter , 1)
-		! call intpr("avant appel joint:np", -1,np , 1)
-		! call intpr("avant appel joint:typeof", -1,typeof , 1)
-		! call intpr("avant appel joint:equidistant", -1,equidistant , 1)
-		! call intpr("avant appel joint:nbintervR", -1, nbintervR, 1)
-		! call intpr("avant appel joint:nbintervDC", -1, nbintervDC, 1)
-		! call intpr("avant appel joint:mtaille", -1, mtaille, 4)
-		! call intpr("avant appel joint:logNormal", -1,logNormal , 1)
-		! call intpr("avant appel joint:nsim_node", -1,nsim_node , 13)
-		! call intpr("avant appel joint:indice_esti", -1, indice_esti, 4)
-		! call intpr("avant appel joint:indice_covST", -1,indice_covST , 1)
-		! call intpr("==============avant appel joint:param_weibull======", -1,param_weibull , 1)
-	endif
-						
-	Call joint_surrogate(nsujet,ng,ntrials,0,nz,nst,k0,tt0,tt1,ic,groupe,trials,pourtrial,nig_Ts,cdc_Ts,0, &
+        !call dblepr("avant appel joint:tt0dc", -1,tt0dc , nsujet)
+        ! call dblepr("avant appel joint:tt1dc(1:10)", -1,tt1dc(1:10) , 10)
+        !call dblepr("avant appel joint:vax(:,1)", -1,vax(:,1) , nsujet)
+        !call dblepr("avant appel joint:vaxdc(:,1)", -1,vaxdc(:,1) , nsujet)
+        ! call dblepr("avant appel joint:paraweib", -1,paraweib , 4)
+        ! call dblepr("avant appel joint:ziOut", -1, ziOut, nz+6)
+        ! call dblepr("avant appel joint:EPS", -1,EPS , 3)
+        ! call intpr("avant appel joint:ag", -1, ag, 1)
+        ! call intpr("avant appel joint:maxiter", -1,maxiter , 1)
+        ! call intpr("avant appel joint:np", -1,np , 1)
+        ! call intpr("avant appel joint:typeof", -1,typeof , 1)
+        ! call intpr("avant appel joint:equidistant", -1,equidistant , 1)
+        ! call intpr("avant appel joint:nbintervR", -1, nbintervR, 1)
+        ! call intpr("avant appel joint:nbintervDC", -1, nbintervDC, 1)
+        ! call intpr("avant appel joint:mtaille", -1, mtaille, 4)
+        ! call intpr("avant appel joint:logNormal", -1,logNormal , 1)
+        ! call intpr("avant appel joint:nsim_node", -1,nsim_node , 13)
+        ! call intpr("avant appel joint:indice_esti", -1, indice_esti, 4)
+        ! call intpr("avant appel joint:indice_covST", -1,indice_covST , 1)
+        ! call intpr("==============avant appel joint:param_weibull======", -1,param_weibull , 1)
+    endif
+                        
+    Call joint_surrogate(nsujet,ng,ntrials,0,nz,nst,k0,tt0,tt1,ic,groupe,trials,pourtrial,nig_Ts,cdc_Ts,0, &
                         tt0dc,tt1dc,icdc,0.d0,0,nva1,vax,nva2,vaxdc,0.d0,noVar1,noVar2,ag,maxiter,np,b,H_hessOut,&
                         HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out,typeof,equidistant,&
                         nbintervR,nbintervDC,mtaille,ni,cpt,cpt_dc,ier,istop,paraweib,MartinGales,linearpred,&
@@ -1667,7 +1667,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         EPS,nsim_node,indice_esti,indice_covST,0.d0,param_weibull)
     ! call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
-		call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
+        call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
     endif
 !122     continue
     !if(s_i<5) nsim_node(2)=32 ! on fait ceci juste pour debugger le programme
@@ -1902,7 +1902,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     k=1
     do i=1,n_essai
         !if(nsim_node(8)==2 .or. nsim_node(8)==3)then
-		if(nsim_node(8)==2)then
+        if(nsim_node(8)==2)then
             donnee_essai(i,:)=don_simulS(k,(/v_s1,v_t1,trialref1,u_i1,u_it/))
         else
             donnee_essai(i,:)=don_simulS(k,(/v_s1,v_t1,trialref1,u_i1/))
@@ -2018,14 +2018,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         rangparam_sigst=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST
         rangparam_alpha=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha
         rangparam_gamma=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma
-		rangparam_copula=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma + 1
-		
-		! call intpr("indice_eta", -1, indice_eta, 1)
-		! call intpr("indice_theta", -1, indice_theta, 1)
-		! call intpr("rangparam_sigs", -1, rangparam_sigs, 1)
-		! call intpr("rangparam_sigt", -1, rangparam_sigt, 1)
-		! call dblepr("H_hessOut", -1, H_hessOut, size(H_hessOut,2)**2)
-		
+        rangparam_copula=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma + 1
+        
+        ! call intpr("indice_eta", -1, indice_eta, 1)
+        ! call intpr("indice_theta", -1, indice_theta, 1)
+        ! call intpr("rangparam_sigs", -1, rangparam_sigs, 1)
+        ! call intpr("rangparam_sigt", -1, rangparam_sigt, 1)
+        ! call dblepr("H_hessOut", -1, H_hessOut, size(H_hessOut,2)**2)
+        
         if(nsim_node(8)==2)then !effets aleatoires correles
             rangparam_thetat=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha+&
                 indice_gamma+indice_theta_t
@@ -2094,27 +2094,27 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             taux_couverture_theta=taux_couverture_theta+1.d0
         endif
         
-		if(nsim_node(8)==3) then
-			if(copula_function == 1) then  ! claton: exp transform
-				moy_param_cop = moy_param_cop+dexp(b(rangparam_copula)) ! param copule estime
-				! par delta methode, SE = sqrt(exp(theta_chap) * H_theta_chap * exp(theta_chap))
-				pour_ic = dexp(b(rangparam_copula)) * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))
-				bi_param_cop = dexp(b(rangparam_copula)) - 1.96d0 * pour_ic
-				bs_param_cop = dexp(b(rangparam_copula)) + 1.96d0 * pour_ic
-			endif
-			if(copula_function == 2) then  ! Gumbel: choleschy transform
-				moy_param_cop = moy_param_cop+(b(rangparam_copula)**2.d0) ! param copule estime
-				pour_ic = 2.d0*b(rangparam_copula) * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))
-				bi_param_cop = b(rangparam_copula)**2.d0 - 1.96d0 * pour_ic
-				bs_param_cop = b(rangparam_copula)**2.d0 + 1.96d0 * pour_ic
-			endif
-			moy_se_param_cop=moy_se_param_cop + pour_ic
-			!taux de couverture
-			if(thetacopule>=bi_param_cop .and. thetacopule<=bs_param_cop)then ! taux de couverture
-				taux_couverture_param_cop = taux_couverture_param_cop+1.d0
-			endif
-		
-		endif
+        if(nsim_node(8)==3) then
+            if(copula_function == 1) then  ! claton: exp transform
+                moy_param_cop = moy_param_cop+dexp(b(rangparam_copula)) ! param copule estime
+                ! par delta methode, SE = sqrt(exp(theta_chap) * H_theta_chap * exp(theta_chap))
+                pour_ic = dexp(b(rangparam_copula)) * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))
+                bi_param_cop = dexp(b(rangparam_copula)) - 1.96d0 * pour_ic
+                bs_param_cop = dexp(b(rangparam_copula)) + 1.96d0 * pour_ic
+            endif
+            if(copula_function == 2) then  ! Gumbel: choleschy transform
+                moy_param_cop = moy_param_cop+(b(rangparam_copula)**2.d0) ! param copule estime
+                pour_ic = 2.d0*b(rangparam_copula) * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))
+                bi_param_cop = b(rangparam_copula)**2.d0 - 1.96d0 * pour_ic
+                bs_param_cop = b(rangparam_copula)**2.d0 + 1.96d0 * pour_ic
+            endif
+            moy_se_param_cop=moy_se_param_cop + pour_ic
+            !taux de couverture
+            if(thetacopule>=bi_param_cop .and. thetacopule<=bs_param_cop)then ! taux de couverture
+                taux_couverture_param_cop = taux_couverture_param_cop+1.d0
+            endif
+        
+        endif
         if(nsim_node(8)==2) then
             !theta estime. j'utilise les variables au niveau essai juste pour ne pas avoir a declarer de nouvelles et pas pour grand chose
             if(logNormal==1)then
@@ -2392,77 +2392,77 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             endif
         endif
         
-		if(nsim_node(8).ne.3) then 
-			do i=1,nva
-				rangparam=np-nva+i
-				!Intervalle de confiance
-				bi2 = b(rangparam) - 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
-				bs2 = b(rangparam) + 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
-					
-				if(i.eq.1)then
-					! if(rang_proc==0) !write(*,*)'*** For surrogate ***'
-					moy_betaS(1)=moy_betaS(1)+b(rangparam)
-					moy_betaS_se(1)=moy_betaS_se(1)+(dsqrt(H_hessOut(rangparam,rangparam)))
-					parametre_estimes(s_i-nbre_rejet,5)=b(rangparam) !beta_s_chap
-					parametre_estimes(s_i-nbre_rejet,6)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_s_chap
-					if(betas>=bi2 .and. betas<=bs2)then ! taux de couverture
-						taux_couvertureS(1)=taux_couvertureS(1)+1.d0
-					endif
-				endif
-					
-				if(i.eq.nva1+1)then
-					! if(rang_proc==0) !write(*,*)'*** For true endpoint ***',nva,i
-					moy_betaT(1)=moy_betaT(1)+b(rangparam)
-					moy_betaT_se(1)=moy_betaT_se(1)+(dsqrt(H_hessOut(rangparam,rangparam)))
-					parametre_estimes(s_i-nbre_rejet,7)=b(rangparam) !beta_t_chap
-					parametre_estimes(s_i-nbre_rejet,8)=(dsqrt(H_hessOut(rangparam,rangparam))) !sd beta_t_chap
-					if(betat>=bi2 .and. betat<=bs2)then ! taux de couverture
-						taux_couvertureT(1)=taux_couvertureT(1)+1.d0
-					endif
-				endif
-			end do 
-		else ! copula model
-			do i=1,nva1
-				rangparam=np-nva+i
-				!Intervalle de confiance
-				bi2 = b(rangparam) - 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
-				bs2 = b(rangparam) + 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
-				moy_betaS(i)=moy_betaS(i)+b(rangparam)
-				moy_betaS_se(i)=moy_betaS_se(i)+(dsqrt(H_hessOut(rangparam,rangparam)))
-				if(i.eq.1) then ! traitement
-					parametre_estimes(s_i-nbre_rejet,5)=b(rangparam) !beta_s_chap
-					parametre_estimes(s_i-nbre_rejet,6)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_s_chap
-				else ! sauvegarde des autres covariables
-					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+1)=b(rangparam) 
-					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
-				endif
-				if(betas>=bi2 .and. betas<=bs2)then ! taux de couverture
-					taux_couvertureS(i)=taux_couvertureS(i)+1.d0
-				endif
-			enddo
-			do i=1,nva2
-				rangparam = np - nva + nva1 + i
-				!Intervalle de confiance
-				bi2 = b(rangparam) - 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
-				bs2 = b(rangparam) + 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
-					
-				!if(i.eq.nva1+1)then
-				! if(rang_proc==0) !write(*,*)'*** For true endpoint ***',nva,i
-				moy_betaT(i)=moy_betaT(i)+b(rangparam)
-				moy_betaT_se(i)=moy_betaT_se(i)+(dsqrt(H_hessOut(rangparam,rangparam)))
-				if(i.eq.1) then ! traitement
-					parametre_estimes(s_i-nbre_rejet,7)=b(rangparam) !beta_t_chap
-					parametre_estimes(s_i-nbre_rejet,8)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_t_chap
-				else ! sauvegarde des autres covariables
-					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+1)=b(rangparam) 
-					parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
-				endif	
-				if(betat>=bi2 .and. betat<=bs2)then ! taux de couverture
-					taux_couvertureT(i)=taux_couvertureT(i)+1.d0
-				endif
-				!endif
-			end do 
-		endif
+        if(nsim_node(8).ne.3) then 
+            do i=1,nva
+                rangparam=np-nva+i
+                !Intervalle de confiance
+                bi2 = b(rangparam) - 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
+                bs2 = b(rangparam) + 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
+                    
+                if(i.eq.1)then
+                    ! if(rang_proc==0) !write(*,*)'*** For surrogate ***'
+                    moy_betaS(1)=moy_betaS(1)+b(rangparam)
+                    moy_betaS_se(1)=moy_betaS_se(1)+(dsqrt(H_hessOut(rangparam,rangparam)))
+                    parametre_estimes(s_i-nbre_rejet,5)=b(rangparam) !beta_s_chap
+                    parametre_estimes(s_i-nbre_rejet,6)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_s_chap
+                    if(betas>=bi2 .and. betas<=bs2)then ! taux de couverture
+                        taux_couvertureS(1)=taux_couvertureS(1)+1.d0
+                    endif
+                endif
+                    
+                if(i.eq.nva1+1)then
+                    ! if(rang_proc==0) !write(*,*)'*** For true endpoint ***',nva,i
+                    moy_betaT(1)=moy_betaT(1)+b(rangparam)
+                    moy_betaT_se(1)=moy_betaT_se(1)+(dsqrt(H_hessOut(rangparam,rangparam)))
+                    parametre_estimes(s_i-nbre_rejet,7)=b(rangparam) !beta_t_chap
+                    parametre_estimes(s_i-nbre_rejet,8)=(dsqrt(H_hessOut(rangparam,rangparam))) !sd beta_t_chap
+                    if(betat>=bi2 .and. betat<=bs2)then ! taux de couverture
+                        taux_couvertureT(1)=taux_couvertureT(1)+1.d0
+                    endif
+                endif
+            end do 
+        else ! copula model
+            do i=1,nva1
+                rangparam=np-nva+i
+                !Intervalle de confiance
+                bi2 = b(rangparam) - 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
+                bs2 = b(rangparam) + 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
+                moy_betaS(i)=moy_betaS(i)+b(rangparam)
+                moy_betaS_se(i)=moy_betaS_se(i)+(dsqrt(H_hessOut(rangparam,rangparam)))
+                if(i.eq.1) then ! traitement
+                    parametre_estimes(s_i-nbre_rejet,5)=b(rangparam) !beta_s_chap
+                    parametre_estimes(s_i-nbre_rejet,6)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_s_chap
+                else ! sauvegarde des autres covariables
+                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+1)=b(rangparam) 
+                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
+                endif
+                if(betas>=bi2 .and. betas<=bs2)then ! taux de couverture
+                    taux_couvertureS(i)=taux_couvertureS(i)+1.d0
+                endif
+            enddo
+            do i=1,nva2
+                rangparam = np - nva + nva1 + i
+                !Intervalle de confiance
+                bi2 = b(rangparam) - 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
+                bs2 = b(rangparam) + 1.96d0*dsqrt(H_hessOut(rangparam,rangparam))
+                    
+                !if(i.eq.nva1+1)then
+                ! if(rang_proc==0) !write(*,*)'*** For true endpoint ***',nva,i
+                moy_betaT(i)=moy_betaT(i)+b(rangparam)
+                moy_betaT_se(i)=moy_betaT_se(i)+(dsqrt(H_hessOut(rangparam,rangparam)))
+                if(i.eq.1) then ! traitement
+                    parametre_estimes(s_i-nbre_rejet,7)=b(rangparam) !beta_t_chap
+                    parametre_estimes(s_i-nbre_rejet,8)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_t_chap
+                else ! sauvegarde des autres covariables
+                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+1)=b(rangparam) 
+                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
+                endif    
+                if(betat>=bi2 .and. betat<=bs2)then ! taux de couverture
+                    taux_couvertureT(i)=taux_couvertureT(i)+1.d0
+                endif
+                !endif
+            end do 
+        endif
         
         ! parametres empiriques
         parametre_empirique(s_i-nbre_rejet,1)=sum(don_simul(:,trt1))*100.d0/n_obs ! personne traitees
@@ -2489,21 +2489,21 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             
             !!print*,"suis là 1 s_i=",s_i
         !Parametres estimes
-		if(nsim_node(8).ne.3) then
-			parametre_estimes(s_i-nbre_rejet,1)=(b(rangparam2)**2.d0) !theta
-			parametre_estimes(s_i-nbre_rejet,2)=(dsqrt(((2.d0*b(rangparam2))**2.d0)*H_hessOut(rangparam2,rangparam2)))! se theta
-		else ! copula
-			if(copula_function == 1) then ! claton: exp transform
-				parametre_estimes(s_i-nbre_rejet,1) = dexp(b(rangparam_copula)) !theta_copula
-				parametre_estimes(s_i-nbre_rejet,2) = pour_ic
-			endif
+        if(nsim_node(8).ne.3) then
+            parametre_estimes(s_i-nbre_rejet,1)=(b(rangparam2)**2.d0) !theta
+            parametre_estimes(s_i-nbre_rejet,2)=(dsqrt(((2.d0*b(rangparam2))**2.d0)*H_hessOut(rangparam2,rangparam2)))! se theta
+        else ! copula
+            if(copula_function == 1) then ! claton: exp transform
+                parametre_estimes(s_i-nbre_rejet,1) = dexp(b(rangparam_copula)) !theta_copula
+                parametre_estimes(s_i-nbre_rejet,2) = pour_ic
+            endif
             if(copula_function == 2) then ! Gumbel
-				parametre_estimes(s_i-nbre_rejet,1) = b(rangparam_copula)**2.d0 !theta_copula
-				parametre_estimes(s_i-nbre_rejet,2) = pour_ic
-			endif
-			
-		endif
-		
+                parametre_estimes(s_i-nbre_rejet,1) = b(rangparam_copula)**2.d0 !theta_copula
+                parametre_estimes(s_i-nbre_rejet,2) = pour_ic
+            endif
+            
+        endif
+        
         if(indice_eta==1)then
             parametre_estimes(s_i-nbre_rejet,3)=(b(np-nva-nparamfrail+indice_eta))!zeta
             parametre_estimes(s_i-nbre_rejet,4)=(dsqrt(H_hessOut(np-nva-nparamfrail+indice_eta,np-nva-nparamfrail+indice_eta))) !se zeta
@@ -2597,67 +2597,67 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 allocate(theta_ST_2(1,1),gamma_st_2(1,1))
                 theta_ST_2(1,1)= parametre_estimes(s_i-nbre_rejet,1) !theta estime
                 gamma_st_2(1,1)= parametre_estimes(s_i-nbre_rejet,15) ! gamma estime
-				if(nsim_node(8)==1) then
-					tau_kendal_00=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
-					parametre_estimes(s_i-nbre_rejet,17),parametre_estimes(s_i-nbre_rejet,3),0)    !tau de kendal des non traites z_11=0,z_21=0
-					
-				else !copula
-					if(copula_function == 1) then! claton
-					    tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +2.d0) 
-					endif
-					if(copula_function == 2) then ! Gumbel
-					    tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +1.d0)
-					endif						
-				endif
-				
+                if(nsim_node(8)==1) then
+                    tau_kendal_00=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                    parametre_estimes(s_i-nbre_rejet,17),parametre_estimes(s_i-nbre_rejet,3),0)    !tau de kendal des non traites z_11=0,z_21=0
+                    
+                else !copula
+                    if(copula_function == 1) then! claton
+                        tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +2.d0) 
+                    endif
+                    if(copula_function == 2) then ! Gumbel
+                        tau_kendal_00 = parametre_estimes(s_i-nbre_rejet,1) / (parametre_estimes(s_i-nbre_rejet,1) +1.d0)
+                    endif                        
+                endif
+                
                 moy_kendal_00=moy_kendal_00+tau_kendal_00
                 
                 !calcul intervalle de confiance du tau de kendall par bootstrap parametrique, a partir de la distribution a posteriorie des parametres
                 if(nsim_node(8).ne.3)then ! si pas modele de copule
-					if(indice_alpha==0 .and. indice_eta==0)then ! on estime ni alpha, ni eta
-						v_chap_kendall=0.d0
-						t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma)/) ! parametres necessaire: theta, gamma, zeta, alpha
-						v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,rangparam_gamma)/)
-						v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)/)
-					else ! on estime au moins un des deux
-						if(indice_alpha==1 .and. indice_eta == 1)then !on estime les deux
-							t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_eta),b(rangparam_alpha)/) ! parametres necessaire: theta, gamma, zeta, alpha
-							v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,rangparam_gamma)&
-												,H_hessOut(rangparam_theta,rangparam_eta),H_hessOut(rangparam_theta,rangparam_alpha)/)
-							v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)&
-												,H_hessOut(rangparam_eta,rangparam_gamma),H_hessOut(rangparam_alpha,rangparam_gamma)/)
-							v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_eta),H_hessOut(rangparam_eta,rangparam_gamma)&
-												,H_hessOut(rangparam_eta,rangparam_eta),H_hessOut(rangparam_eta,rangparam_alpha)/)
-							v_chap_kendall(4,:)=(/H_hessOut(rangparam_theta,rangparam_alpha),H_hessOut(rangparam_alpha,rangparam_gamma)&
-												,H_hessOut(rangparam_alpha,rangparam_eta),H_hessOut(rangparam_alpha,rangparam_alpha)/)
-						else ! on estime seulement un des deux
-							if(indice_alpha==1)then ! c'est alpha on estime
-								v_chap_kendall=0.d0
-								t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_alpha)/) ! parametres necessaire: theta, gamma, alpha
-								v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),&
-													 H_hessOut(rangparam_theta,rangparam_gamma)&
-													,H_hessOut(rangparam_theta,rangparam_alpha)/)
-								v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),&
-													H_hessOut(rangparam_gamma,rangparam_gamma)&
-													,H_hessOut(rangparam_alpha,rangparam_gamma)/)    
-								v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_alpha),&
-													 H_hessOut(rangparam_gamma,rangparam_alpha)&
-													,H_hessOut(rangparam_alpha,rangparam_alpha)/)
-							else ! c'est eta on estime
-								t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_eta)/) ! parametres necessaire: theta, gamma, zeta
-								v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),&
-													H_hessOut(rangparam_theta,rangparam_gamma)&
-													,H_hessOut(rangparam_theta,rangparam_eta)/)
-								v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),&
-													H_hessOut(rangparam_gamma,rangparam_gamma),&
-													H_hessOut(rangparam_eta,rangparam_gamma)/)
-								v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_eta),&
-													H_hessOut(rangparam_eta,rangparam_gamma),&
-													H_hessOut(rangparam_eta,rangparam_eta)/)
-							endif
-						endif
-					endif
-				endif
+                    if(indice_alpha==0 .and. indice_eta==0)then ! on estime ni alpha, ni eta
+                        v_chap_kendall=0.d0
+                        t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma)/) ! parametres necessaire: theta, gamma, zeta, alpha
+                        v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,rangparam_gamma)/)
+                        v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)/)
+                    else ! on estime au moins un des deux
+                        if(indice_alpha==1 .and. indice_eta == 1)then !on estime les deux
+                            t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_eta),b(rangparam_alpha)/) ! parametres necessaire: theta, gamma, zeta, alpha
+                            v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,rangparam_gamma)&
+                                                ,H_hessOut(rangparam_theta,rangparam_eta),H_hessOut(rangparam_theta,rangparam_alpha)/)
+                            v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)&
+                                                ,H_hessOut(rangparam_eta,rangparam_gamma),H_hessOut(rangparam_alpha,rangparam_gamma)/)
+                            v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_eta),H_hessOut(rangparam_eta,rangparam_gamma)&
+                                                ,H_hessOut(rangparam_eta,rangparam_eta),H_hessOut(rangparam_eta,rangparam_alpha)/)
+                            v_chap_kendall(4,:)=(/H_hessOut(rangparam_theta,rangparam_alpha),H_hessOut(rangparam_alpha,rangparam_gamma)&
+                                                ,H_hessOut(rangparam_alpha,rangparam_eta),H_hessOut(rangparam_alpha,rangparam_alpha)/)
+                        else ! on estime seulement un des deux
+                            if(indice_alpha==1)then ! c'est alpha on estime
+                                v_chap_kendall=0.d0
+                                t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_alpha)/) ! parametres necessaire: theta, gamma, alpha
+                                v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),&
+                                                     H_hessOut(rangparam_theta,rangparam_gamma)&
+                                                    ,H_hessOut(rangparam_theta,rangparam_alpha)/)
+                                v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),&
+                                                    H_hessOut(rangparam_gamma,rangparam_gamma)&
+                                                    ,H_hessOut(rangparam_alpha,rangparam_gamma)/)    
+                                v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_alpha),&
+                                                     H_hessOut(rangparam_gamma,rangparam_alpha)&
+                                                    ,H_hessOut(rangparam_alpha,rangparam_alpha)/)
+                            else ! c'est eta on estime
+                                t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_eta)/) ! parametres necessaire: theta, gamma, zeta
+                                v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),&
+                                                    H_hessOut(rangparam_theta,rangparam_gamma)&
+                                                    ,H_hessOut(rangparam_theta,rangparam_eta)/)
+                                v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),&
+                                                    H_hessOut(rangparam_gamma,rangparam_gamma),&
+                                                    H_hessOut(rangparam_eta,rangparam_gamma)/)
+                                v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_eta),&
+                                                    H_hessOut(rangparam_eta,rangparam_gamma),&
+                                                    H_hessOut(rangparam_eta,rangparam_eta)/)
+                            endif
+                        endif
+                    endif
+                endif
                 
                 ! pour R2
                 v_chap_R2=0.d0
@@ -2675,7 +2675,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 
                 call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation
                 allocate(matrice_generation(1,np))
-				v_chap_copula(1,1) = H_hessOut(rangparam_copula,rangparam_copula)
+                v_chap_copula(1,1) = H_hessOut(rangparam_copula,rangparam_copula)
                 
                 do i=1,nboot_kendal
                     ! call rmvnorm(b,H_hessOut,1,0,matrice_generation)
@@ -2683,66 +2683,66 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     ! gamma_st_2(1,1)= matrice_generation(1,rangparam_gamma)**2.d0  ! gamma simule
                     
                     if(nsim_node(8).ne.3) then 
-						call rmvnorm(t_chap_kendall,v_chap_kendall,1,0,theta_chap_kendall)
-						theta_ST_2(1,1)= theta_chap_kendall(1,1)**2.d0 !theta simule
-						gamma_st_2(1,1)= theta_chap_kendall(1,2)**2.d0  ! gamma simule
-					else
-						call rmvnorm((/b(rangparam_copula)/),v_chap_copula,1,0,theta_chap_copula)
-					endif
+                        call rmvnorm(t_chap_kendall,v_chap_kendall,1,0,theta_chap_kendall)
+                        theta_ST_2(1,1)= theta_chap_kendall(1,1)**2.d0 !theta simule
+                        gamma_st_2(1,1)= theta_chap_kendall(1,2)**2.d0  ! gamma simule
+                    else
+                        call rmvnorm((/b(rangparam_copula)/),v_chap_copula,1,0,theta_chap_copula)
+                    endif
                     
                     if(indice_alpha==0 .and. indice_eta==0)then
-						if(nsim_node(8).ne.3) then
-							vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
-												  1.d0,1.d0,0)    !tau de kendal des non traites z_11=0,z_21=0
-						else
-							! if(copula_function == 1) vect_kendall_tau(i) = parametre_estimes(s_i-nbre_rejet,1) / &
-								! (parametre_estimes(s_i-nbre_rejet,1) +1.d0) ! claton
-							! if(copula_function == 2) vect_kendall_tau(i) = parametre_estimes(s_i-nbre_rejet,1) / &
-								! (parametre_estimes(s_i-nbre_rejet,1) +2.d0)  ! Gumbel
-							if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-								(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
-							if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-								(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
-						endif
+                        if(nsim_node(8).ne.3) then
+                            vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                                                  1.d0,1.d0,0)    !tau de kendal des non traites z_11=0,z_21=0
+                        else
+                            ! if(copula_function == 1) vect_kendall_tau(i) = parametre_estimes(s_i-nbre_rejet,1) / &
+                                ! (parametre_estimes(s_i-nbre_rejet,1) +1.d0) ! claton
+                            ! if(copula_function == 2) vect_kendall_tau(i) = parametre_estimes(s_i-nbre_rejet,1) / &
+                                ! (parametre_estimes(s_i-nbre_rejet,1) +2.d0)  ! Gumbel
+                            if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
+                                (dexp(theta_chap_copula(1,1)) +2.d0) ! claton
+                            if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
+                                (theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
+                        endif
                     else
                         if(indice_alpha==1 .and. indice_eta==1)then
-							if(nsim_node(8).ne.3) then
-								vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
-													theta_chap_kendall(1,4),theta_chap_kendall(1,3),0)
-							else
-								if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-									(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
-								if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-									(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
-							endif
+                            if(nsim_node(8).ne.3) then
+                                vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                                                    theta_chap_kendall(1,4),theta_chap_kendall(1,3),0)
+                            else
+                                if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
+                                    (dexp(theta_chap_copula(1,1)) +2.d0) ! claton
+                                if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
+                                    (theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
+                            endif
                         else
                             if(indice_alpha==1)then
-								if(nsim_node(8).ne.3) then
-									vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
-													theta_chap_kendall(1,4),1.d0,0)
+                                if(nsim_node(8).ne.3) then
+                                    vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                                                    theta_chap_kendall(1,4),1.d0,0)
                                 else
-									if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-										(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
-									if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-										(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
-								endif
+                                    if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
+                                        (dexp(theta_chap_copula(1,1)) +2.d0) ! claton
+                                    if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
+                                        (theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
+                                endif
                             else
-								if(nsim_node(8).ne.3) then
-									vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
-													1.d0,theta_chap_kendall(1,3),0)
+                                if(nsim_node(8).ne.3) then
+                                    vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                                                    1.d0,theta_chap_kendall(1,3),0)
                                 else
-									if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
-										(dexp(theta_chap_copula(1,1)) +2.d0) ! claton
-									if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
-										(theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
-								endif
+                                    if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
+                                        (dexp(theta_chap_copula(1,1)) +2.d0) ! claton
+                                    if(copula_function == 2) vect_kendall_tau(i) = theta_chap_copula(1,1)**2.d0 / &
+                                        (theta_chap_copula(1,1)**2.d0 +1.d0)  ! Gumbel
+                                endif
                             endif
                         endif
                     endif
                     
                     moy_tau_boots=moy_tau_boots+vect_kendall_tau(i)        
                     !R2
-					!call dblepr("Avant ", -1, v_chap_R2, size(v_chap_R2,2)**2)
+                    !call dblepr("Avant ", -1, v_chap_R2, size(v_chap_R2,2)**2)
                     call rmvnorm(t_chap_R2,v_chap_R2,1,0,theta_chap_R2)
                     Chol_R2=0.d0 
                     Chol_R2(1,1)=theta_chap_R2(1,1) ! associe a sigma S
@@ -2860,7 +2860,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             !!print*,"suis là 4 s_i=",s_i
             
             !if(nsim_node(8)==1 .or. nsim_node(8)==3)then
-			if(nsim_node(8)==1)then
+            if(nsim_node(8)==1)then
                 parametre_estimes(s_i-nbre_rejet,21)=tau_kendal_11    !tau de kendal des traites z_11=1,z_21=1
                 parametre_estimes(s_i-nbre_rejet,22)=tau_kendal_10    !tau de kendal des 1 traite et l'autre non traite z_11=1,z_21=0
                 parametre_estimes(s_i-nbre_rejet,23)=tau_kendal_01    !tau de kendal des traite z_11=0,z_21=1
@@ -2872,44 +2872,44 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 parametre_estimes(s_i-nbre_rejet,31)=tau_kendal_01    !tau de kendal des traite z_11=0,z_21=1
                 parametre_estimes(s_i-nbre_rejet,32)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
             endif
-			
-			if(nsim_node(8)==3)then
+            
+            if(nsim_node(8)==3)then
                 if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
-					parametre_estimes(s_i-nbre_rejet,22)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
-				else
-					parametre_estimes(s_i-nbre_rejet,24)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
-				endif
-				! SE de kendall_tau par delta method. voir cahier le 18/04/2019 pour demonstration
-				if(copula_function == 1) then
-					if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
-						parametre_estimes(s_i-nbre_rejet,23) =  2.d0 * dexp(b(rangparam_copula))/&
-							(dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
-					else
-						parametre_estimes(s_i-nbre_rejet,25) =  2.d0 * dexp(b(rangparam_copula))/&
-							(dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
-					endif
-					bi_sigmas = dexp(b(rangparam_copula)) - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
-					bs_sigmas = dexp(b(rangparam_copula)) + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
-					!taux de couverture
-					vrai_tau_copula = thetacopule/(thetacopule + 2.d0)
-				endif
-				if(copula_function == 2) then
-					if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
-						parametre_estimes(s_i-nbre_rejet,23) =   2.d0 * b(rangparam_copula)/&
-							(b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
-					else
-						parametre_estimes(s_i-nbre_rejet,25) =   2.d0 * b(rangparam_copula)/&
-							(b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
-					endif
-					bi_sigmas = b(rangparam_copula)**2.d0 - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
-					bs_sigmas = b(rangparam_copula)**2.d0  + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
-					!taux de couverture
-					vrai_tau_copula = thetacopule/(thetacopule + 1.d0)
-				endif
-				if(vrai_tau_copula >= bi_sigmas .and. vrai_tau_copula <= bs_sigmas)then ! taux de couverture
-					taux_couverture_tauk=taux_couverture_tauk+1.d0
-				endif	
-				
+                    parametre_estimes(s_i-nbre_rejet,22)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
+                else
+                    parametre_estimes(s_i-nbre_rejet,24)=tau_kendal_00    !tau de kendal des non traites z_11=0,z_21=0
+                endif
+                ! SE de kendall_tau par delta method. voir cahier le 18/04/2019 pour demonstration
+                if(copula_function == 1) then
+                    if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
+                        parametre_estimes(s_i-nbre_rejet,23) =  2.d0 * dexp(b(rangparam_copula))/&
+                            (dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                    else
+                        parametre_estimes(s_i-nbre_rejet,25) =  2.d0 * dexp(b(rangparam_copula))/&
+                            (dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                    endif
+                    bi_sigmas = dexp(b(rangparam_copula)) - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
+                    bs_sigmas = dexp(b(rangparam_copula)) + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
+                    !taux de couverture
+                    vrai_tau_copula = thetacopule/(thetacopule + 2.d0)
+                endif
+                if(copula_function == 2) then
+                    if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
+                        parametre_estimes(s_i-nbre_rejet,23) =   2.d0 * b(rangparam_copula)/&
+                            (b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                    else
+                        parametre_estimes(s_i-nbre_rejet,25) =   2.d0 * b(rangparam_copula)/&
+                            (b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                    endif
+                    bi_sigmas = b(rangparam_copula)**2.d0 - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
+                    bs_sigmas = b(rangparam_copula)**2.d0  + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
+                    !taux de couverture
+                    vrai_tau_copula = thetacopule/(thetacopule + 1.d0)
+                endif
+                if(vrai_tau_copula >= bi_sigmas .and. vrai_tau_copula <= bs_sigmas)then ! taux de couverture
+                    taux_couverture_tauk=taux_couverture_tauk+1.d0
+                endif    
+                
             endif
             
         endif
@@ -3492,7 +3492,7 @@ end do
                     tau_kendal_00=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,0,0,method_int_kendal,N_MC_kendall,alpha_ui,eta,0)!tau de kendal des non traites z_11=0,z_21=0
                 endif
             endif
-			if(nsim_node(8).eq.3)then ! modele reduit copule
+            if(nsim_node(8).eq.3)then ! modele reduit copule
                 tau_kendal_00=vrai_tau_copula
             endif
             
@@ -4173,12 +4173,12 @@ end do
     ! !deallocate(Vect_sim_MC)
     
     !generation des donnees par joint failty-copula 
-	!call intpr("position test 1:", -1, ni, 1)
+    !call intpr("position test 1:", -1, ni, 1)
     if(nsim_node(11)==3) deallocate(don_simultamp,don_simulStamp)
     deallocate(moy_betaS, moy_betaT,moy_betaS_se, moy_betaT_se,taux_couvertureS, taux_couvertureT, theta_chap_copula,&
-			   v_chap_copula)
+               v_chap_copula)
     deallocate(d_S,d_T,vbetas,vbetat)
-	!call intpr("position test 2:", -1, ni, 1)
+    !call intpr("position test 2:", -1, ni, 1)
     endsubroutine jointsurrogate
     !complilation:
     !mpif90 -fopenmp -O3 -o exe_joint_surr_MPI_OMP  Adonnees.f90 Aparameters.f90 autres_fonctions.f90 Integrant_scl.f90 aaOptim_New_scl.f90 aaOptim_New_scl2.f90 funcpa_laplace.f90 aaOptim.f90 aaOptim_SCL_0.f90 aaOptimres.f90 funcpa_adaptative.f90 Integrale_mult_scl.f90 Pour_Adaptative.f90 aaUseFunction.f90 funcpajsplines_surrogate_scl_1.f90 funcpajsplines_surrogate_scl_2.f90 afuncpasres.f90 aresidusMartingale.f90 distance.f90 joint_surrogate.f90 main_Surr_simulation.f90

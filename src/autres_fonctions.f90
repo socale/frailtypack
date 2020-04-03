@@ -418,35 +418,35 @@ module InverseMatrix
    
    ! generation d'une uniforme dans l'intervalle [a,b]
      ! extrait de la fonction C "runif" du package "stats": fichier runif.c des sources de R.
-	
-	subroutine runif(a, b, rgener)
-	    ! a,b : borne de l'interval 
-		! rgener : nombre aleatoire genere
-	    use var_surrogate, only: random_generator
-	    implicit none
-		double precision, intent(in)::a,b
-		double precision, intent(out)::rgener
-		double precision::u
-		
-		if(b < a .or. a < 0 .or. b <0) then
-			rgener = -1
-		else
-		    if(a == b) then 
-		        rgener = a
-			else
-			    if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
+    
+    subroutine runif(a, b, rgener)
+        ! a,b : borne de l'interval 
+        ! rgener : nombre aleatoire genere
+        use var_surrogate, only: random_generator
+        implicit none
+        double precision, intent(in)::a,b
+        double precision, intent(out)::rgener
+        double precision::u
+        
+        if(b < a .or. a < 0 .or. b <0) then
+            rgener = -1
+        else
+            if(a == b) then 
+                rgener = a
+            else
+                if(random_generator==2)then ! on generer avec uniran(mais gestion du seed pas garanti)
                     u = UNIRAN()
                 else !on generer avec RANDOM_NUMBER(avec gestion du seed garanti)
                     CALL RANDOM_NUMBER(u)
                 endif
-		        rgener = a + (b - a) * u
-			endif
-		endif 
-		
-		return
-		
-	end subroutine runif
-	
+                rgener = a + (b - a) * u
+            endif
+        endif 
+        
+        return
+        
+    end subroutine runif
+    
    
 !C ******************** BGOS ********************************
 ! pour la simulation des X_i suivant une gaussienne centree reduite
@@ -1715,7 +1715,7 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
     ! gamma: variance de l'effet aleatoire u_i associe au risque de base chez S
     ! alpha: parametre de puissance (zeta) associe a u_i pour les deces
     ! frailt_base: dit si l'on prend en compte l'heterogeneite sur le risque de base aussi bien dans la generation des donnes que dans l'estimation(1) ou non (0)
-	! pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 0 as in sofeu et al. (2019). In this case, death is not included in the surrogate endpoint. 
+    ! pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 0 as in sofeu et al. (2019). In this case, death is not included in the surrogate endpoint. 
      use var_surrogate, only: random_generator
 
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver, pfs
@@ -1999,21 +1999,21 @@ subroutine Generation_surrogate(don_simul,don_simulS1,n_obs,n_col,lognormal,affi
                         nb_recur =nb_recur + 1
                         nig(ig) = nig(ig)+1 !nb events recurrents
                     else ! progression le meme jour que le deces ou sans progression
-						if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
-							delta=0.d0           
+                        if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
+                            delta=0.d0           
                             temps1_S=temps1
-						else ! le patient fait la progression le meme jour que le deces
-							if(pfs == 0) then ! le deces censure la progression et donc on considere qu'il n'ya pas eu de progression
-								delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
-								temps1_S=temps1! et on censure a la date de deces(ou censure)
-							else ! dans ce cas la progression inclue le deces: cas de la PFS ou DFS
-								delta=1.d0
-								temps1_S = temps1
-								nb_recur =nb_recur + 1
-								nig(ig) = nig(ig)+1 !nb events recurrents
-							endif
-						endif
-					endif
+                        else ! le patient fait la progression le meme jour que le deces
+                            if(pfs == 0) then ! le deces censure la progression et donc on considere qu'il n'ya pas eu de progression
+                                delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+                                temps1_S=temps1! et on censure a la date de deces(ou censure)
+                            else ! dans ce cas la progression inclue le deces: cas de la PFS ou DFS
+                                delta=1.d0
+                                temps1_S = temps1
+                                nb_recur =nb_recur + 1
+                                nig(ig) = nig(ig)+1 !nb events recurrents
+                            endif
+                        endif
+                    endif
                 endif
         !c****** for gap time :         
                  t0(nobs) = 0.d0
@@ -2088,7 +2088,7 @@ endsubroutine Generation_surrogate
 subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vrai_theta,&
             ng,ver,truealpha,propC,cens_A,gamma1,gamma2,theta2,lambda_S,nu_S,lambda_T,nu_T,betas,&
             betat,n_essai,rsqrt,sigma_s,sigma_t,p,prop_i,gamma,alpha,frailt_base,thetacopule,filtre, filtre2,&
-			pfs)
+            pfs)
     ! lognormal: dit si la distribution des effets aleatoires est lognormal pour le modele complet (1) ou lognormal pour le joint classique de 2007 (2) ou gamma pour le joint classique de 2007(0)
     ! use Autres_fonctions
     ! theta2: variance des frailties gaussiens associe a S
@@ -2107,7 +2107,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     ! thetacopule : parametre de la copule de clayton
     ! filtre: vecteur qui dit si une variable est prise en compte pour le surrogate
     ! filtre2: vecteur qui dit si une variable est prise en compte pour le true endpoint
-	! pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 0 as in sofeu et al. (2019). In this case, death is not included in the surrogate endpoint. 
+    ! pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 0 as in sofeu et al. (2019). In this case, death is not included in the surrogate endpoint. 
     
      use var_surrogate, only: random_generator
 
@@ -2133,10 +2133,10 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       integer :: nb_recur,nb_dc,nb_cens,delta,deltadc,jj,ig,nrecurr,nobs,max_recu, nobs_save, nobs_temp
       real , dimension(:), allocatable:: v1
       real :: piece,demi
-	  double precision, dimension(n_obs):: x, xdc ! permet le stockage pour utilisation par la suite
+      double precision, dimension(n_obs):: x, xdc ! permet le stockage pour utilisation par la suite
       double precision :: ui,temps1,temps1_S,gapx,gapdc,moy_idnum,cens,cbeta2,&
       auxbeta1,auxbeta2,uniran,moyui, cbeta4 
-	  double precision, dimension(n_essai)::qi
+      double precision, dimension(n_essai)::qi
       double precision, dimension(2):: bg1,bw1,bw2
       integer, dimension(ngmax):: idnum
       double precision, dimension(ngmax):: vecui
@@ -2158,37 +2158,37 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
       double precision,dimension(:,:),allocatable::sigma,x_ 
     
      ! ! some print
-	  ! call intpr("n_obs", -1,n_obs , 1)	
-	  ! call intpr("n_col", -1,n_col , 1)
-	  ! call intpr("lognormal", -1, lognormal, 1)	
-	  ! call dblepr("vrai_theta", -1,vrai_theta , 1)
-	  ! call intpr("ng", -1,ng , 1)	
-	  ! call intpr("ver", -1,ver , 1)
-	  ! call dblepr("truealpha", -1, truealpha, 1)	
-	  ! call dblepr("propC", -1,propC , 1)
-	  ! call dblepr("cens_A", -1, cens_A, 1)	
-	  ! call dblepr("gamma1", -1,gamma1 , 1)
-	  ! call dblepr("gamma2", -1,gamma2 , 1)	
-	  ! call dblepr("theta2", -1, theta2, 1)
-	  ! call dblepr("lambda_S", -1, lambda_S, 1)	
-	  ! call dblepr("nu_S", -1,nu_S , 1)
-	  ! call dblepr("lambda_T", -1, lambda_T, 1)	
-	  ! call dblepr("nu_T", -1,nu_T , 1)
-	  ! call dblepr("betas", -1,betas , ver)
-	  ! call dblepr("betat", -1,betat, ver)	
-	  ! call intpr("n_essai", -1, n_essai, 1)
-	  ! call dblepr("rsqrt", -1, rsqrt, 1)
-	  ! call dblepr("sigma_s", -1,sigma_s , 1)	
-	  ! call dblepr("sigma_t", -1,sigma_t , 1)
-	  ! call dblepr("p", -1,p, size(p))
-	  ! call dblepr("prop_i", -1, prop_i, size(prop_i))	
-	  ! call dblepr("gamma", -1,gamma , 1)
-	  ! call dblepr("alpha", -1,alpha , 1)
-	  ! call intpr("frailt_base", -1, frailt_base, 1)	
-	  ! call dblepr("thetacopule", -1,thetacopule , 1)
-	  ! call intpr("filtre", -1,filtre,size(filtre))	
-	  ! call intpr("filtre2", -1,filtre, size(filtre2))
-	  ! call intpr("frailt_base", -1, pfs, 1)
+      ! call intpr("n_obs", -1,n_obs , 1)    
+      ! call intpr("n_col", -1,n_col , 1)
+      ! call intpr("lognormal", -1, lognormal, 1)    
+      ! call dblepr("vrai_theta", -1,vrai_theta , 1)
+      ! call intpr("ng", -1,ng , 1)    
+      ! call intpr("ver", -1,ver , 1)
+      ! call dblepr("truealpha", -1, truealpha, 1)    
+      ! call dblepr("propC", -1,propC , 1)
+      ! call dblepr("cens_A", -1, cens_A, 1)    
+      ! call dblepr("gamma1", -1,gamma1 , 1)
+      ! call dblepr("gamma2", -1,gamma2 , 1)    
+      ! call dblepr("theta2", -1, theta2, 1)
+      ! call dblepr("lambda_S", -1, lambda_S, 1)    
+      ! call dblepr("nu_S", -1,nu_S , 1)
+      ! call dblepr("lambda_T", -1, lambda_T, 1)    
+      ! call dblepr("nu_T", -1,nu_T , 1)
+      ! call dblepr("betas", -1,betas , ver)
+      ! call dblepr("betat", -1,betat, ver)    
+      ! call intpr("n_essai", -1, n_essai, 1)
+      ! call dblepr("rsqrt", -1, rsqrt, 1)
+      ! call dblepr("sigma_s", -1,sigma_s , 1)    
+      ! call dblepr("sigma_t", -1,sigma_t , 1)
+      ! call dblepr("p", -1,p, size(p))
+      ! call dblepr("prop_i", -1, prop_i, size(prop_i))    
+      ! call dblepr("gamma", -1,gamma , 1)
+      ! call dblepr("alpha", -1,alpha , 1)
+      ! call intpr("frailt_base", -1, frailt_base, 1)    
+      ! call dblepr("thetacopule", -1,thetacopule , 1)
+      ! call intpr("filtre", -1,filtre,size(filtre))    
+      ! call intpr("filtre2", -1,filtre, size(filtre2))
+      ! call intpr("frailt_base", -1, pfs, 1)
 !CCCCCCCCCCCCCCCCChosur9.f CCCCCCCCCCCCCCCCCCCCCCCC
       allocate(v1(ver))
       don_simulS1 = 0.d0
@@ -2247,7 +2247,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
     mu=0.d0
     
     !generation de (vs_i, vt_i) suivant une multinormale
-	!call dblepr("sigma =", -1, sigma, size(sigma)**2)
+    !call dblepr("sigma =", -1, sigma, size(sigma)**2)
     call rmvnorm(mu,sigma,n_essai,0,x_)    
     
     k=1
@@ -2306,7 +2306,7 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
          nobs=0
          max_recu= 1
          moyui = 0.d0
-		 x = 0.d0
+         x = 0.d0
          xdc = 0.d0
         !close(10)
     do ig=1,ng ! sur les groupes                 
@@ -2373,10 +2373,10 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
         x(ig)=gapx ! temps de progression
         xdc(ig)=gapdc ! temps de deces
         tempsD(ig)=xdc(ig)
-			
+            
         !c****** for gap time :  
         iii = 0
-        iii2 = 0		
+        iii2 = 0        
         do ii = 1,ver
             if(filtre(ii).eq.1)then
                 iii = iii + 1
@@ -2386,36 +2386,36 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
                 iii2 = iii2 + 1
                 ve2(nobs,iii2) = dble(v1(ii))   
             endif
-        enddo                 	
-	enddo
-	
-	nobs = 0
-	! recherche des quantiles par essai sur lequel on s'appuie pour la generation uniforme des temps de censures. Exp: 75ieme percentile = 0.75 dans propC
-	if(propC > 0.d0) then! censure aleatoire 
-	    k = 1
-	    do i = 1, n_essai
-		    call percentile_scl(xdc(k:(k+NINT(n_i(i))-1)),NINT(n_i(i)),propC,qi(i))
-			k = k + NINT(n_i(i))
-		enddo
-	endif
-	
-	!call dblepr("temps de deces pour les deux premier essais: xdc(1:40)", -1, xdc(1:40), 40)
-	!call intpr("NINT(n_i(1))", -1, NINT(n_i(1)), 1)
-	!call dblepr("Voila les quantiles qi", -1, qi, n_essai)
-	
-	do ig=1,ng ! sur les groupes
-		
-		nobs = nobs + 1   ! indice l ensemble des observations
+        enddo                     
+    enddo
+    
+    nobs = 0
+    ! recherche des quantiles par essai sur lequel on s'appuie pour la generation uniforme des temps de censures. Exp: 75ieme percentile = 0.75 dans propC
+    if(propC > 0.d0) then! censure aleatoire 
+        k = 1
+        do i = 1, n_essai
+            call percentile_scl(xdc(k:(k+NINT(n_i(i))-1)),NINT(n_i(i)),propC,qi(i))
+            k = k + NINT(n_i(i))
+        enddo
+    endif
+    
+    !call dblepr("temps de deces pour les deux premier essais: xdc(1:40)", -1, xdc(1:40), 40)
+    !call intpr("NINT(n_i(1))", -1, NINT(n_i(1)), 1)
+    !call dblepr("Voila les quantiles qi", -1, qi, n_essai)
+    
+    do ig=1,ng ! sur les groupes
+        
+        nobs = nobs + 1   ! indice l ensemble des observations
         ! scl============censure====================
         if(propC == 0.d0) then! censure fixe ou administrative
-			cens = cens_A
-		else ! censure aleatoire: generation uniforme entre 1 et la quantile  de l'essai i calcule precedemment
-		    ! sortie d'etude
-		    call runif(1.d0, qi(NINT(don_simul(ig,trialref1))), cens)
-			! je prends le min entre la censure administrative et la date de sortie d'etude.
-			cens = min(cens, cens_A)
-		endif
-		
+            cens = cens_A
+        else ! censure aleatoire: generation uniforme entre 1 et la quantile  de l'essai i calcule precedemment
+            ! sortie d'etude
+            call runif(1.d0, qi(NINT(don_simul(ig,trialref1))), cens)
+            ! je prends le min entre la censure administrative et la date de sortie d'etude.
+            cens = min(cens, cens_A)
+        endif
+        
         if(xdc(ig).le.cens)then ! patient decede
             deltadc=1.d0
             temps1 = xdc(ig)
@@ -2439,22 +2439,22 @@ subroutine Generation_surrogate_copula(don_simul,don_simulS1,n_obs,n_col,lognorm
                 nb_recur =nb_recur + 1
                 nig(ig) = nig(ig)+1 !nb events recurrents
             else ! progression le meme jour que le deces ou sans progression
-		     	! delta=0.d0           
+                 ! delta=0.d0           
                 ! temps1_S=temps1
-			    if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
-				    delta=0.d0           
+                if(deltadc == 0.d0) then ! si le patient est vivant alors pas de progression
+                    delta=0.d0           
                     temps1_S=temps1
-				else ! le patient fait la progression le meme jour que le deces
-					if(pfs == 0) then ! le deces censure la progression et donc on considere qu'il n'ya pas eu de progression
-						delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
-						temps1_S=temps1! et on censure a la date de deces(ou censure)
-					else ! dans ce cas la progression inclue le deces: cas de la PFS ou DFS
-						delta=1.d0
-						temps1_S = temps1
-						nb_recur =nb_recur + 1
-						nig(ig) = nig(ig)+1 !nb events recurrents
-					endif
-			    endif
+                else ! le patient fait la progression le meme jour que le deces
+                    if(pfs == 0) then ! le deces censure la progression et donc on considere qu'il n'ya pas eu de progression
+                        delta=0.d0             ! on suppose pas d'evenement si le meme jour que le deces
+                        temps1_S=temps1! et on censure a la date de deces(ou censure)
+                    else ! dans ce cas la progression inclue le deces: cas de la PFS ou DFS
+                        delta=1.d0
+                        temps1_S = temps1
+                        nb_recur =nb_recur + 1
+                        nig(ig) = nig(ig)+1 !nb events recurrents
+                    endif
+                endif
             endif
         endif
         !c****** for gap time :         
@@ -3385,7 +3385,7 @@ subroutine rmvnorm(mu,vc1,nsim,vcdiag,ysim)
     end do
     ! !print*,vi
     EPS=10.d-10
-	!call dblepr("Vi =", -1, Vi, size(Vi))
+    !call dblepr("Vi =", -1, Vi, size(Vi))
     if(vcdiag.eq.0) then
         CALL DMFSD(Vi,maxmes,eps,ier) ! si matice diagonale on na pas besoin de ceci
     end if

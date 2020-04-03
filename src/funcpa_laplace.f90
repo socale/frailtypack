@@ -357,9 +357,9 @@ module func_laplace
     
     return
     endfunction funcpaXi_chapeau
-	
-	! joint frailty_copula
-	double precision function funcpaLaplace_copula(b,np,id,thi,jd,thj,k0)
+    
+    ! joint frailty_copula
+    double precision function funcpaLaplace_copula(b,np,id,thi,jd,thj,k0)
         use var_surrogate, only:essai_courant,nsujeti,frailt_base
         use fonction_A_integrer,only:Integrant_Copula
         
@@ -388,23 +388,23 @@ module func_laplace
             ui=bh(3)
         endif
         res = Integrant_Copula(vsi,vti,ui,essai_courant,nsujeti(essai_courant))
-		if(res == 0.d0) res = 1.d-299
+        if(res == 0.d0) res = 1.d-299
         ! call dblepr("res funcpaadaptativ = ", -1, res, 1)
-		res = -(- dlog(res))
-		! call dblepr("log res funcpaadaptativ = ", -1, res, 1)
-		
-		if ((res.ne.res).or.(abs(res).ge. 1.d30)) then ! pour test infini et NaN
-			funcpaLaplace_copula =-1.d9
-			!call dblepr("log res funcpaadaptativ = ", -1, res, 1)
-			goto 126
-		else
-			funcpaLaplace_copula = res
-		end if
+        res = -(- dlog(res))
+        ! call dblepr("log res funcpaadaptativ = ", -1, res, 1)
+        
+        if ((res.ne.res).or.(abs(res).ge. 1.d30)) then ! pour test infini et NaN
+            funcpaLaplace_copula =-1.d9
+            !call dblepr("log res funcpaadaptativ = ", -1, res, 1)
+            goto 126
+        else
+            funcpaLaplace_copula = res
+        end if
     
-		126    continue
-		
-		!funcpaLaplace_copula = -((bh(1)+1.d0) ** 2.d0 + (bh(2)+2.d0) ** 2.d0 + (bh(3)-6.d0) ** 2.d0 )
-		return
+        126    continue
+        
+        !funcpaLaplace_copula = -((bh(1)+1.d0) ** 2.d0 + (bh(2)+2.d0) ** 2.d0 + (bh(3)-6.d0) ** 2.d0 )
+        return
     
     endfunction funcpaLaplace_copula
     
