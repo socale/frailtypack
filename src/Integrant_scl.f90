@@ -200,7 +200,8 @@ contains
         m1(1,2)=vti
         m3=MATMUL(m1,varcovinv)
         m=MATMUL(m3,TRANSPOSE(m1))
-        f_V = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
+        f_V = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * &
+		dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
         Integrant_Copula = integrant * f_V
         deallocate(m,m1,m3)
     endif

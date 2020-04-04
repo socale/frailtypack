@@ -2018,7 +2018,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         rangparam_sigst=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST
         rangparam_alpha=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha
         rangparam_gamma=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma
-        rangparam_copula=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+indice_alpha+indice_gamma + 1
+        rangparam_copula=np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST+&
+		indice_alpha+indice_gamma + 1
         
         ! call intpr("indice_eta", -1, indice_eta, 1)
         ! call intpr("indice_theta", -1, indice_theta, 1)
@@ -2434,7 +2435,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     parametre_estimes(s_i-nbre_rejet,6)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_s_chap
                 else ! sauvegarde des autres covariables
                     parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+1)=b(rangparam) 
-                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
+                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2)=&
+					dsqrt(H_hessOut(rangparam,rangparam)) 
                 endif
                 if(betas>=bi2 .and. betas<=bs2)then ! taux de couverture
                     taux_couvertureS(i)=taux_couvertureS(i)+1.d0
@@ -2455,7 +2457,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     parametre_estimes(s_i-nbre_rejet,8)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_t_chap
                 else ! sauvegarde des autres covariables
                     parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+1)=b(rangparam) 
-                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+2)=dsqrt(H_hessOut(rangparam,rangparam)) 
+                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+2)=&
+					dsqrt(H_hessOut(rangparam,rangparam)) 
                 endif    
                 if(betat>=bi2 .and. betat<=bs2)then ! taux de couverture
                     taux_couvertureT(i)=taux_couvertureT(i)+1.d0
@@ -2617,19 +2620,25 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     if(indice_alpha==0 .and. indice_eta==0)then ! on estime ni alpha, ni eta
                         v_chap_kendall=0.d0
                         t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma)/) ! parametres necessaire: theta, gamma, zeta, alpha
-                        v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,rangparam_gamma)/)
-                        v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)/)
+                        v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),&
+						H_hessOut(rangparam_theta,rangparam_gamma)/)
+                        v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),&
+						H_hessOut(rangparam_gamma,rangparam_gamma)/)
                     else ! on estime au moins un des deux
                         if(indice_alpha==1 .and. indice_eta == 1)then !on estime les deux
                             t_chap_kendall=(/b(rangparam_theta),b(rangparam_gamma),b(rangparam_eta),b(rangparam_alpha)/) ! parametres necessaire: theta, gamma, zeta, alpha
-                            v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,rangparam_gamma)&
-                                                ,H_hessOut(rangparam_theta,rangparam_eta),H_hessOut(rangparam_theta,rangparam_alpha)/)
-                            v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,rangparam_gamma)&
-                                                ,H_hessOut(rangparam_eta,rangparam_gamma),H_hessOut(rangparam_alpha,rangparam_gamma)/)
-                            v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_eta),H_hessOut(rangparam_eta,rangparam_gamma)&
-                                                ,H_hessOut(rangparam_eta,rangparam_eta),H_hessOut(rangparam_eta,rangparam_alpha)/)
-                            v_chap_kendall(4,:)=(/H_hessOut(rangparam_theta,rangparam_alpha),H_hessOut(rangparam_alpha,rangparam_gamma)&
-                                                ,H_hessOut(rangparam_alpha,rangparam_eta),H_hessOut(rangparam_alpha,rangparam_alpha)/)
+                            v_chap_kendall(1,:)=(/H_hessOut(rangparam_theta,rangparam_theta),H_hessOut(rangparam_theta,&
+							                    rangparam_gamma),H_hessOut(rangparam_theta,rangparam_eta),&
+												H_hessOut(rangparam_theta,rangparam_alpha)/)
+                            v_chap_kendall(2,:)=(/H_hessOut(rangparam_theta,rangparam_gamma),H_hessOut(rangparam_gamma,&
+							                    rangparam_gamma),H_hessOut(rangparam_eta,rangparam_gamma),&
+												H_hessOut(rangparam_alpha,rangparam_gamma)/)
+                            v_chap_kendall(3,:)=(/H_hessOut(rangparam_theta,rangparam_eta),H_hessOut(rangparam_eta,&
+							                    rangparam_gamma),H_hessOut(rangparam_eta,rangparam_eta),&
+												H_hessOut(rangparam_eta,rangparam_alpha)/)
+                            v_chap_kendall(4,:)=(/H_hessOut(rangparam_theta,rangparam_alpha),&
+							                    H_hessOut(rangparam_alpha,rangparam_gamma) ,H_hessOut(rangparam_alpha,&
+												rangparam_eta),H_hessOut(rangparam_alpha,rangparam_alpha)/)
                         else ! on estime seulement un des deux
                             if(indice_alpha==1)then ! c'est alpha on estime
                                 v_chap_kendall=0.d0
@@ -2662,12 +2671,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 ! pour R2
                 v_chap_R2=0.d0
                 t_chap_R2=(/b(rangparam_sigs),b(rangparam_sigt),b(rangparam_sigst)/) ! parametres necessaire: sigma_s,sigma_t,sigma_st 
-                v_chap_R2(1,:)=(/H_hessOut(rangparam_sigs,rangparam_sigs),H_hessOut(rangparam_sigs,rangparam_sigt),&
-                                H_hessOut(rangparam_sigs,rangparam_sigst)/)
-                v_chap_R2(2,:)=(/H_hessOut(rangparam_sigt,rangparam_sigs),H_hessOut(rangparam_sigt,rangparam_sigt),&
-                                H_hessOut(rangparam_sigt,rangparam_sigst)/)
-                v_chap_R2(3,:)=(/H_hessOut(rangparam_sigst,rangparam_sigs),H_hessOut(rangparam_sigst,rangparam_sigt),&
-                                H_hessOut(rangparam_sigst,rangparam_sigst)/)
+                v_chap_R2(1,:)=(/H_hessOut(rangparam_sigs,rangparam_sigs),H_hessOut(rangparam_sigs,&
+				                rangparam_sigt), H_hessOut(rangparam_sigs,rangparam_sigst)/)
+                v_chap_R2(2,:)=(/H_hessOut(rangparam_sigt,rangparam_sigs),H_hessOut(rangparam_sigt,&
+				                rangparam_sigt), H_hessOut(rangparam_sigt,rangparam_sigst)/)
+                v_chap_R2(3,:)=(/H_hessOut(rangparam_sigst,rangparam_sigs),H_hessOut(rangparam_sigst,&
+				                rangparam_sigt), H_hessOut(rangparam_sigst,rangparam_sigst)/)
 
                 moy_tau_boots=0.d0
                 moy_R2_boots=0.d0
@@ -2692,8 +2701,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     
                     if(indice_alpha==0 .and. indice_eta==0)then
                         if(nsim_node(8).ne.3) then
-                            vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
-                                                  1.d0,1.d0,0)    !tau de kendal des non traites z_11=0,z_21=0
+                            vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,&
+							                     method_int_kendal,N_MC_kendall, 1.d0,1.d0,0)    !tau de kendal des non traites z_11=0,z_21=0
                         else
                             ! if(copula_function == 1) vect_kendall_tau(i) = parametre_estimes(s_i-nbre_rejet,1) / &
                                 ! (parametre_estimes(s_i-nbre_rejet,1) +1.d0) ! claton
@@ -2707,7 +2716,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     else
                         if(indice_alpha==1 .and. indice_eta==1)then
                             if(nsim_node(8).ne.3) then
-                                vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                                vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,&
+								                    method_int_kendal,N_MC_kendall,&
                                                     theta_chap_kendall(1,4),theta_chap_kendall(1,3),0)
                             else
                                 if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
@@ -2718,7 +2728,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         else
                             if(indice_alpha==1)then
                                 if(nsim_node(8).ne.3) then
-                                    vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                                    vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,&
+									                method_int_kendal,N_MC_kendall,&
                                                     theta_chap_kendall(1,4),1.d0,0)
                                 else
                                     if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
@@ -2728,7 +2739,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                                 endif
                             else
                                 if(nsim_node(8).ne.3) then
-                                    vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,method_int_kendal,N_MC_kendall,&
+                                    vect_kendall_tau(i)=tau_kendall(theta_ST_2,gamma_st_2,sigma_st,0,0,&
+									                method_int_kendal,N_MC_kendall,&
                                                     1.d0,theta_chap_kendall(1,3),0)
                                 else
                                     if(copula_function == 1) vect_kendall_tau(i) = dexp(theta_chap_copula(1,1)) / &
@@ -2883,10 +2895,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 if(copula_function == 1) then
                     if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
                         parametre_estimes(s_i-nbre_rejet,23) =  2.d0 * dexp(b(rangparam_copula))/&
-                            (dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                            (dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,&
+							rangparam_copula))! se_tau_kendal
                     else
                         parametre_estimes(s_i-nbre_rejet,25) =  2.d0 * dexp(b(rangparam_copula))/&
-                            (dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                            (dexp(b(rangparam_copula)) + 2.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,&
+							rangparam_copula))! se_tau_kendal
                     endif
                     bi_sigmas = dexp(b(rangparam_copula)) - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
                     bs_sigmas = dexp(b(rangparam_copula)) + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
@@ -2896,10 +2910,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 if(copula_function == 2) then
                     if(nva1 > 1 .or. nva2 >1) then !si plus d'une variable explicative
                         parametre_estimes(s_i-nbre_rejet,23) =   2.d0 * b(rangparam_copula)/&
-                            (b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                            (b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,&
+							rangparam_copula))! se_tau_kendal
                     else
                         parametre_estimes(s_i-nbre_rejet,25) =   2.d0 * b(rangparam_copula)/&
-                            (b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,rangparam_copula))! se_tau_kendal
+                            (b(rangparam_copula)**2.d0 + 1.d0)**2.d0 * dsqrt(H_hessOut(rangparam_copula,&
+							rangparam_copula))! se_tau_kendal
                     endif
                     bi_sigmas = b(rangparam_copula)**2.d0 - 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
                     bs_sigmas = b(rangparam_copula)**2.d0  + 1.96d0*parametre_estimes(s_i-nbre_rejet,25)
@@ -3484,12 +3500,17 @@ end do
             
             if(nsim_node(8).eq.1)then ! modele reduit
                 if(method_int_kendal==4 .or. method_int_kendal==5)then ! 1 seul taux de kendall
-                    tau_kendal_00=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,0,0,method_int_kendal,N_MC_kendall,alpha_ui,eta,0)!tau de kendal des non traites z_11=0,z_21=0
+                    tau_kendal_00=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,0,0,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,0)!tau de kendal des non traites z_11=0,z_21=0
                 else
-                    tau_kendal_11=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,1,1,method_int_kendal,N_MC_kendall,alpha_ui,eta,0)!tau de kendal des traites z_11=1,z_21=1
-                    tau_kendal_10=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,1,0,method_int_kendal,N_MC_kendall,alpha_ui,eta,0)!tau de kendal des 1 traite et l'autre non traite z_11=1,z_21=0
-                    tau_kendal_01=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,0,1,method_int_kendal,N_MC_kendall,alpha_ui,eta,0)!tau de kendal des traite z_11=0,z_21=1
-                    tau_kendal_00=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,0,0,method_int_kendal,N_MC_kendall,alpha_ui,eta,0)!tau de kendal des non traites z_11=0,z_21=0
+                    tau_kendal_11=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,1,1,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,0)!tau de kendal des traites z_11=1,z_21=1
+                    tau_kendal_10=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,1,0,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,0)!tau de kendal des 1 traite et l'autre non traite z_11=1,z_21=0
+                    tau_kendal_01=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,0,1,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,0)!tau de kendal des traite z_11=0,z_21=1
+                    tau_kendal_00=tau_kendall(theta_ST0_2,gamma_st0_2,sigma_st0,0,0,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,0)!tau de kendal des non traites z_11=0,z_21=0
                 endif
             endif
             if(nsim_node(8).eq.3)then ! modele reduit copule
@@ -3500,12 +3521,17 @@ end do
             
             if(nsim_node(8).eq.2)then ! modele complet
                 if(method_int_kendal==4)then ! 1 seul taux de kendall
-                    tau_kendal_00=tau_kendall(theta_ST0,gamma_st0,sigma_st0,0,0,method_int_kendal,N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des non traites z_11=0,z_21=0
+                    tau_kendal_00=tau_kendall(theta_ST0,gamma_st0,sigma_st0,0,0,method_int_kendal,&
+					N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des non traites z_11=0,z_21=0
                 else
-                    tau_kendal_11=tau_kendall(theta_ST0,gamma_st0,sigma_st0,1,1,method_int_kendal,N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des traites z_11=1,z_21=1
-                    tau_kendal_10=tau_kendall(theta_ST0,gamma_st0,sigma_st0,1,0,method_int_kendal,N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des 1 traite et l'autre non traite z_11=1,z_21=0
-                    tau_kendal_01=tau_kendall(theta_ST0,gamma_st0,sigma_st0,0,1,method_int_kendal,N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des traite z_11=0,z_21=1
-                    tau_kendal_00=tau_kendall(theta_ST0,gamma_st0,sigma_st0,0,0,method_int_kendal,N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des non traites z_11=0,z_21=0
+                    tau_kendal_11=tau_kendall(theta_ST0,gamma_st0,sigma_st0,1,1,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des traites z_11=1,z_21=1
+                    tau_kendal_10=tau_kendall(theta_ST0,gamma_st0,sigma_st0,1,0,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des 1 traite et l'autre non traite z_11=1,z_21=0
+                    tau_kendal_01=tau_kendall(theta_ST0,gamma_st0,sigma_st0,0,1,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des traite z_11=0,z_21=1
+                    tau_kendal_00=tau_kendall(theta_ST0,gamma_st0,sigma_st0,0,0,method_int_kendal,&
+					              N_MC_kendall,alpha_ui,eta,1)    !tau de kendal des non traites z_11=0,z_21=0
                 endif
             endif
             
@@ -4175,8 +4201,8 @@ end do
     !generation des donnees par joint failty-copula 
     !call intpr("position test 1:", -1, ni, 1)
     if(nsim_node(11)==3) deallocate(don_simultamp,don_simulStamp)
-    deallocate(moy_betaS, moy_betaT,moy_betaS_se, moy_betaT_se,taux_couvertureS, taux_couvertureT, theta_chap_copula,&
-               v_chap_copula)
+    deallocate(moy_betaS, moy_betaT,moy_betaS_se, moy_betaT_se,taux_couvertureS, taux_couvertureT, &
+	           theta_chap_copula, v_chap_copula)
     deallocate(d_S,d_T,vbetas,vbetat)
     !call intpr("position test 2:", -1, ni, 1)
     endsubroutine jointsurrogate
