@@ -7,7 +7,7 @@ Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
         Agnieszka Krol, Casimir L. Sofeu, Julien Dumerc, Denis Rustand
 Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
-Depends: R (>= 2.10), survival, boot, MASS, survC1, doBy
+Depends: R (>= 2.10.0), survival, boot, MASS, survC1, doBy
 Imports: statmod, nlme, shiny, shinyjs,shinyBS,shinydashboard,rhandsontable,shinythemes,jsonlite
 LazyLoad: no
 Description: The following several classes of frailty models using a penalized likelihood estimation on the hazard function but also a parametric estimation can be fit using this R package:
