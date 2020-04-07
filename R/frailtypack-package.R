@@ -78,7 +78,8 @@
 #' penalized likelihood estimation. \emph{Statistics in Medecine}, \bold{25},
 #' 4036-4052.
 #' @useDynLib "frailtypack", .registration = TRUE, .fixes = "C_"
-##' @import survival boot MASS survC1 nlme doBy shiny shinyjs shinyBS shinydashboard rhandsontable shinythemes jsonlite
+##' @import survival boot MASS survC1 nlme doBy
+## @import shiny shinyjs shinyBS shinydashboard rhandsontable shinythemes jsonlite
 ##' @importFrom graphics abline legend lines matlines matplot par plot
 ##' @importFrom stats .getXlevels aggregate as.formula complete.cases
 ##' contrasts get_all_vars is.empty.model model.extract model.matrix 
