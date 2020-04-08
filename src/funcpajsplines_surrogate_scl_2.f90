@@ -694,7 +694,13 @@
                         integrale3(ig) = resultatInt(1) ! on recupere le premier element car les deux autres sont supposes etre la precision et la variance 
                     end if
                     !!print*,"funcpajsplines_surr ligne 312 nsujeti(ig)=",nsujeti(ig),"resultatInt=",integrale3(ig)  
-                end do    
+                end do 
+				!call intpr("control_affichage", -1, control_affichage, 1)
+				if (control_affichage < 2) then
+					call dblepr("valeur des integrales itteration 1", -1, integrale3, ntrials)
+					control_affichage = control_affichage + 1
+				endif
+				
             endif
             
             !cas effets aleatoires correles
