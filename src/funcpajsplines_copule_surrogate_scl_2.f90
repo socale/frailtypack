@@ -82,7 +82,10 @@
     ut1=0.d0
     ut2=0.d0
     dut2=0.d0
-    dut1=0.d0        
+    dut1=0.d0     
+    varS1=0.d0
+    varT1=0.d0
+    covST1=0.d0     
     do i=1,np
         bh(i)=b(i)
     end do 
@@ -131,7 +134,7 @@
         if(indice_covST==1)then
             covST1 =bh(np-nva-nparamfrail+indice_varS+indice_varT+indice_covST)
         else
-            covST1=0
+            covST1=0.d0
         endif
         
         if(type_joint==2) then !on ajoute les parametre associes au modele complet avec effets aleatoires correles

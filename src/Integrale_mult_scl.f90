@@ -1024,6 +1024,7 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
     end interface
     
    ! fin declaration et debut du programme
+    herm = 0.d0
     I1=1.d0
     if(lognormal==1)then
         herm =1.d0
@@ -1098,6 +1099,7 @@ double precision function MC_Copula_Essai(func,ndim,nsujet_trial,i)
         end interface
         
        ! fin declaration et debut du programme
+        herm = 0.d0
         I1=1.d0
         !!print*,"suisi laaa1"
         if(lognormal==1)then
@@ -2363,6 +2365,7 @@ recursive function gaussHermMultGen(func,frail,k,x,w,inc,i) result(herm)
 
    ! fin declaration et debut du programme
     !!print*,"suis la=======================1"
+    herm = 0.d0
     I1=1.d0
     if(lognormal==1)then
         herm =1.d0

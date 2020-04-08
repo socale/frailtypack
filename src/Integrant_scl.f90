@@ -31,6 +31,16 @@ contains
     double precision, dimension(:,:),allocatable::m1,m3  
     double precision, dimension(:,:),allocatable::m    
      
+    C_theta = 0.d0
+    phimun_S = 0.d0
+    phimun_T = 0.d0
+    phiprim_ST = 0.d0
+    sumphimun_ST = 0.d0
+    phisecond_ST = 0.d0
+    phiprimphimun_S = 0.d0
+    phiprimphimun_T = 0.d0
+    logfbar_Sij = 0.d0
+    logfbar_Tij = 0.d0
     integrant = 1.d0
     do j = 1, nsujet_trial
         ! Expression in the log-vraisamblance
@@ -201,7 +211,7 @@ contains
         m3=MATMUL(m1,varcovinv)
         m=MATMUL(m3,TRANSPOSE(m1))
         f_V = 1.d0/(2.d0 * pi *  dsqrt(2.d0 * pi * gamma_ui * determinant)) * &
-		dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
+        dexp(- 1.d0/2.d0 * m(1,1) - 1.d0/2.d0 * ui**2.d0 / gamma_ui)
         Integrant_Copula = integrant * f_V
         deallocate(m,m1,m3)
     endif
