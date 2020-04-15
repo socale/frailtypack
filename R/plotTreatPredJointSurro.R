@@ -160,11 +160,11 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       }
       
       expressxVect <- Vectorize(expressx)
-      if(lenght(STE) == 1){
+      if(length(STE) == 1){
         curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
       }else{
-        if(lenght(STE) == 2){
+        if(length(STE) == 2){
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                  main = if(is.null(main)) paste("STE = ", round(max(STE), d), 
                               "(HR = ", round(exp(max(STE)), d), ") and min(beta_S) = ", round(exp(min(STE)), d)) else main)
@@ -204,12 +204,12 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       expressxVect <- Vectorize(expressx)
       
       
-      if(lenght(STE) == 1){
+      if(length(STE) == 1){
         curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                main = if(is.null(main)) paste("STE = ", round(STE, d), 
                             "(HR = ", round(exp(STE), d), ")") else main)
       }else{
-        if(lenght(STE) == 2){
+        if(length(STE) == 2){
           curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                  main = if(is.null(main)) paste("STE = ", round(max(STE), d), 
                               "(HR = ", round(exp(max(STE)), d), ") and min(beta_S) = ", round(exp(min(STE)), d)) else main)
