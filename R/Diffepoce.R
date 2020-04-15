@@ -128,7 +128,7 @@ Diffepoce <- function(epoce1, epoce2){
 	if (epoce1$new.data==TRUE){
 		DEPOCE <- as.double(epoce1$mpol)-as.double(epoce2$mpol)
 	}
-	
+	 
 	diff <- epoce1$IndivContrib-epoce2$IndivContrib
 	diff_sq <- (epoce1$IndivContrib-epoce2$IndivContrib)^2
 
