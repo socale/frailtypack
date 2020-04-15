@@ -36,6 +36,7 @@
 ##' endpoint is included into the prediction interval, the last columns contains "*".} 
 ##' \item{ntrial}{The number of trials in the meta-analysis}
 ##' \item{notconvtrial}{The vector of trials that have not converged}
+##' \item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} the \code{i-th} trial}
 ##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -95,6 +96,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
   d <- data.frame(matrix(rep(NA,8), nrow = 1, ncol = 8))[-1,]
   names(d) <- c("trialID","ntrial","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
   notconvtrial = unusedtrial
+  lloocv = list()
   for(i in 1:length(trial)){
     if(!(i %in% unusedtrial)){ # one can identifie trials that pose problem when they are removed, and then ignore them
       dataUseloo <- dataUse[!(dataUse$trialID %in% trial[i]),]
@@ -206,7 +208,8 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
         cat("The program took", round(cost[3],2), "minutes \n")
       }
     }
-      
+    
+    lloocv[[i]] <- joint.surro
   }
   
   
@@ -215,6 +218,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
     result$result <- d
     result$ntrial <- length(trial)
     result$notconvtrial <- notconvtrial
+    result$different.models <- lloocv
     class(result) <- "jointSurroPenalloocv"
   }
   
