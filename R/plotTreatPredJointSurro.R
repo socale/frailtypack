@@ -2,8 +2,11 @@
 #' 
 #' Plot the prediction of the treatment effect on the true endpoint based on the observed treatment effect
 #' on the surrogate endpoint, with the prediction interval: results from the one-step Joint surrogate model  
-#' for evaluating a canditate surrogate endpoint. The graphic also includes a vertical line that cut 
-#' the x axis to the value of \link{ste}.
+#' for evaluating a canditate surrogate endpoint. The graphic also include vertical lines that cut 
+#' the x axis to the values of \link{ste}. A hatched rectagle indicated the values of 
+#' \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} that predict a non zeto 
+#' \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, according to the number of value 
+#' for \code{STE} and the shape of the upper confidence limit for the prediction model.
 #'
 #'
 #' @aliases plotTreatPredJointSurro
@@ -11,7 +14,8 @@
 #' plotTreatPredJointSurro(object, from = -2, to = 2, type = "Coef", 
 #'    var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3, 
 #'    colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict", 
-#'    pred.int.use = "up")
+#'    pred.int.use = "up", main = NULL, ybottom = -0.05, ytop = 0.05, 
+#'    density = 20, angle = 45)
 #' 
 #' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal} ).
@@ -45,6 +49,18 @@
 #' to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
 #' or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
 #' induces risk factors.
+#' @param main Title of the graphics
+#' @param ybottom A scalar of left y position of the rectangle on the x-axis associated with acceptable 
+#' value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
+#' non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{-0.05}.
+#' @param ytop A scalar of right y position of the rectangle on the x-axis associated with acceptable 
+#' value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
+#' non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{0.05}.
+#' @param density The density of shading lines, in lines per inch.  The default 
+#' value of ‘NULL’ means that no shading lines are drawn.  A 
+#' zero value of ‘density’ means no shading lines whereas
+#' negative values (and ‘NA’) suppress shading (and so allow color filling). The default is \code{20}
+#' @param angle Angle (in degrees) of the shading lines. The default is \code{45}
 #'
 #' @return For a considered treatment effects on the surrogate enpoint, plot the
 #' associated treatment effects on the true endpoint predicted from the joint surrogate model
@@ -99,7 +115,8 @@
 #' 
 plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", var.used = "error.estim", 
                                        alpha. = 0.05, n = 1000, lty = 2, d = 3, colCI = "blue", xlab = "beta.S", 
-                                       ylab = "beta.T.predict", pred.int.use = "up"){
+                                       ylab = "beta.T.predict", pred.int.use = "up", main = NULL,
+                                       ybottom = -0.05, ytop = 0.05, density = 20, angle = 45){
   # type  = "coef" or "HR"
   # n = number of points for the curve
   # colCI = color Confidence interval
@@ -131,6 +148,11 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
                      object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
   R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1] 
   
+  #ste : il est obtenu à partir de la resolution d'une equation de scond degre 
+  # de la forme "ax^2 + bx + c = 0"
+  
+  STE <- ste(object, var.used = var.used, pred.int.use = pred.int.use)
+  
   if(var.used == "error.estim"){
     if(type == "Coef"){ # log HR
       expressx <- function(x){
@@ -138,9 +160,21 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       }
       
       expressxVect <- Vectorize(expressx)
-      curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used, pred.int.use = pred.int.use), d), 
-                          "(HR = ", round(exp(ste(object, var.used = var.used, pred.int.use = pred.int.use)), d), ")"))
+      if(lenght(STE) == 1){
+        curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+               main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
+      }else{
+        if(lenght(STE) == 2){
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                 main = if(is.null(main)) paste("STE = ", round(max(STE), d), 
+                              "(HR = ", round(exp(max(STE)), d), ") and min(beta_S) = ", round(exp(min(STE)), d)) else main)
+        }else{ 
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                 main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                else main)
+        }
+      }
+      
       #inf
       expressInf <- function(x){
         beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
@@ -169,9 +203,21 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       
       expressxVect <- Vectorize(expressx)
       
-      curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used, pred.int.use = pred.int.use), d), 
-                          "(HR = ", round(exp(ste(object, var.used = var.used, pred.int.use = pred.int.use)), d), ")"))
+      
+      if(lenght(STE) == 1){
+        curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+               main = if(is.null(main)) paste("STE = ", round(STE, d), 
+                            "(HR = ", round(exp(STE), d), ")") else main)
+      }else{
+        if(lenght(STE) == 2){
+          curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                 main = if(is.null(main)) paste("STE = ", round(max(STE), d), 
+                              "(HR = ", round(exp(max(STE)), d), ") and min(beta_S) = ", round(exp(min(STE)), d)) else main)
+        }else{ 
+          curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                 main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model") else main)
+        }
+      }
       #inf
       expressInf <- function(x){
         x <- log(x) # on suppose que les entrees sont des HR et donc on les converti en log HR
@@ -257,16 +303,60 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
     }
   }
   
-  #ste
-  if(type == "HR"){ # log HR
-    abline(h = 1, col = "cyan", lty = 4)
-    points(exp(ste(object, var.used = var.used, pred.int.use = pred.int.use)),1)
-    abline(v = exp(ste(object, var.used = var.used, pred.int.use = pred.int.use)), col = "cyan", lty = 4)
-  }
-  else{
-    abline(h = 0, col = "cyan", lty = 4)
-    points(ste(object, var.used = var.used, pred.int.use = pred.int.use),0)
-    abline(v = ste(object, var.used = var.used, pred.int.use = pred.int.use), col = "cyan", lty = 4)
-  }
+  #ste 
   
+  if(length(STE) == 0){ # on est dans le cas Delta = 0, pas de solution entire pour cette equation
+    message("Warning : STE does not exist for this intermediate endpoint. Therefore, 
+            regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
+            surrogate endpoint can not permitted to predict a non zero treatment effect on true endpoint
+            using the considered joint surrogate model and the meta-analysis")
+  }else{
+    if(length(STE) == 1){ # une seule solution de l'equation 
+      if(type == "HR"){ # log HR
+        abline(h = 1, col = "cyan", lty = 4)
+        points(exp(STE),1)
+        abline(v = exp(STE), col = "cyan", lty = 4) 
+        rect(exp(from), ybottom, exp(STE), ytop, col = "cyan", density = density, angle = angle)
+      }
+      else{
+        abline(h = 0, col = "cyan", lty = 4)
+        points(STE,0)
+        abline(v = STE, col = "cyan", lty = 4)
+        rect(from, ybottom, STE, ytop, col = "cyan", density = density, angle = angle)
+      }
+    } else{ # on a deux valeurs du STE
+      # recherche du sens de la concavite (bref, signe de "a" dans l'equation "ax^2 + bx + c")
+      # je prends un pont au hazard dans l'intervalle [x1,x2] et je regarde le signe de son image
+      if(f(sum(STE)/2, object = object, var.used = var.used, alpha. = alpha.,
+           pred.int.use = pred.int.use) < 0){ # concavite tournee vers le haut
+        if(type == "HR"){ # log HR
+          abline(h = 1, col = "cyan", lty = 4)
+          points(exp(STE),1)
+          abline(v = exp(STE), col = "cyan", lty = 4)
+          rect(exp(STE[1]), ybottom, exp(STE[2]), ytop, col = "cyan", density = density, angle = angle)
+        }
+        else{
+          abline(h = 0, col = "cyan", lty = 4)
+          points(STE,0)
+          abline(v = STE, col = "cyan", lty = 4)
+          rect(STE[1], ybottom, STE[2], ytop, col = "cyan", density = density, angle = angle)
+        }
+      }else{ # concavite tournee vers le bas
+        if(type == "HR"){ # log HR
+          abline(h = 1, col = "cyan", lty = 4)
+          points(exp(STE),1)
+          abline(v = exp(STE), col = "cyan", lty = 4)
+          rect(exp(from), ybottom, exp(STE[1]), ytop, col = "cyan", density = density, angle = angle)
+          rect(exp(STE[2]), ybottom, exp(to), ytop, col = "cyan", density = density, angle = angle)
+        }
+        else{
+          abline(h = 0, col = "cyan", lty = 4)
+          points(STE,0)
+          abline(v = STE, col = "cyan", lty = 4)
+          rect(from, ybottom, STE[1], ytop, col = "cyan", density = density, angle = angle)
+          rect(STE[2], ybottom, to, ytop, col = "cyan", density = density, angle = angle)
+        }
+      }
+    }
+  }
 }

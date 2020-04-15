@@ -185,9 +185,15 @@
   if(is.null(betaS.obs)){
     for(i in 1:length(trial)){
       beta  <- object$beta.t
-      dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
-      daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
-      dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
+      #===proble dans l'indexation de la matrice des coefficient. scl: 11/04/2020
+      # dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
+      # daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
+      # dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
+      dab   <- object$Coefficients[rownames(object$Coefficients)=="sigma_sT",1]
+      daa   <- object$Coefficients[rownames(object$Coefficients)=="sigma_s",1]
+      dbb   <- object$Coefficients[rownames(object$Coefficients)=="sigma_t",1]
+      #====
+      
       alpha <- object$beta.s
       alpha0 <- matrixPred$beta.S[i]
       x     <- t(matrix(c(1, -dab/daa),1,2))
@@ -200,7 +206,7 @@
       # VD (bete_T, beta_S). on utilise la hesienne directement car pas de changement de variable
       VD     <- matrix(c(object$varH[nparam,nparam], object$varH[nparam,nparam-1],
                          object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
-      R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1] 
+      R2trial <- object$Coefficients[rownames(object$Coefficients)=="R2trial",1] # scl: 11/04/2020
       matrixPred$beta.T.i[i] <- beta + (dab/daa) * (alpha0 - alpha)
       variance.inf <- dbb * (1 - R2trial) 
       variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) * VD) %*% x
@@ -230,9 +236,14 @@
   }else{# Here, the observe treatment effect on surrogate is provided
       i <- 1
       beta  <- object$beta.t
-      dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
-      daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
-      dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
+      #===proble dans l'indexation de la matrice des coefficient. scl: 11/04/2020
+      # dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
+      # daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
+      # dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
+      dab   <- object$Coefficients[rownames(object$Coefficients)=="sigma_sT",1]
+      daa   <- object$Coefficients[rownames(object$Coefficients)=="sigma_s",1]
+      dbb   <- object$Coefficients[rownames(object$Coefficients)=="sigma_t",1]
+      #====
       alpha <- object$beta.s
       alpha0 <- matrixPred$beta.S[i]
       x     <- t(matrix(c(1, -dab/daa),1,2))
@@ -245,7 +256,7 @@
       # VD (bete_T, beta_S). on utilise la hesienne directement car pas de changement de variable
       VD     <- matrix(c(object$varH[nparam,nparam], object$varH[nparam,nparam-1],
                          object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
-      R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1] 
+      R2trial <- object$Coefficients[rownames(object$Coefficients)=="R2trial",1] # scl: 11/04/2020
       matrixPred$beta.T.i[i] <- beta + (dab/daa) * (alpha0 - alpha)
       variance.inf <- dbb * (1 - R2trial) 
       variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) * VD) %*% x

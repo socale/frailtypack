@@ -30,10 +30,20 @@
 ##' }
 ##' \if{html}{\figure{ste.png}{options: width="60\%"}}
 ##' 
-##' where \if{latex}{\eqn{\vartheta}}\if{html}{\figure{vartheta.png}{options: width="3\%"}}represents the set of estimates for the fixed-effects and the 
+##' where \if{latex}{\eqn{\vartheta}}\if{html}{\figure{vartheta.png}{options: width="3\%"}}
+##' represents the set of estimates for the fixed-effects and the 
 ##' variance-covariance parameters of the random effects obtained from the joint surrogate 
 ##' \code{\link[=jointSurroPenal]{model}} 
 ##' (Sofeu \emph{et al.}, 2018). 
+##' 
+##' If the previous equations gives two solutions, STE can be the 
+##' minimum (resp. the maximum) value or both of them, according to the shape of the function. 
+##' If the concavity of the function is turned upwards, STE is the first value and
+##' the second value represents the maximum (res. the minimum) treament value observable 
+##' on the surrogate that can predict a non zero treatment effect on true endpoint. 
+##' If the concavity of the function is turned down, both the two solutions
+##' represent the STE and the interpretation is such that accepted values of the 
+##' treatment effects on \code{S} predict a no zero treatment effects on \code{T}
 ##' 
 ##' Given that negative values of treatment effect indicate a reduction of the risk 
 ##' of failure and are considered beneficial, STE is recommended to be computed from 
@@ -86,6 +96,7 @@
 ##' @keywords surrogate prediction ste Surrogate threshold effect
 ##' @export
 ##' @importFrom stats optimize
+##' @importFrom rootSolve uniroot.all
 ##' @examples
 ##' 
 ##' 
@@ -158,9 +169,16 @@ ste <- function (object, var.used = "error.estim", alpha. = 0.05, pred.int.use =
   f <- function(x, object, var.used, alpha., pred.int.use){
     beta  <- object$beta.t
     alpha <- object$beta.s
-    dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
-    daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
-    dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
+    
+    #===proble dans l'indexation de la matrice des coefficient. scl: 11/04/2020
+    # dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
+    # daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
+    # dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
+    dab   <- object$Coefficients[rownames(object$Coefficients)=="sigma_sT",1]
+    daa   <- object$Coefficients[rownames(object$Coefficients)=="sigma_s",1]
+    dbb   <- object$Coefficients[rownames(object$Coefficients)=="sigma_t",1]
+    #====
+
     
     #x <- matrixPred$beta.S[i]
     x.     <- t(matrix(c(1, -dab/daa),1,2))
@@ -173,38 +191,92 @@ ste <- function (object, var.used = "error.estim", alpha. = 0.05, pred.int.use =
     # VD (bete_T, beta_S). on utilise la hesienne directement car pas de changement de variable
     VD     <- matrix(c(object$varH[nparam,nparam], object$varH[nparam,nparam-1],
                        object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
-    R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1]
+    R2trial <- object$Coefficients[rownames(object$Coefficients)=="R2trial",1] # scl: 11/04/2020
     
     if(var.used == "error.estim") {
       if(pred.int.use == "lw"){
-        return((beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
-          sqrt(t(x.) %*% (Vmu + (((x - alpha)/daa)**2) * VD) %*% x.
-               + dbb * (1 - R2trial)))^2)
+        return(
+          sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., x., Vmu, VD, R2trial) 
+            beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
+              sqrt(t(x.) %*% (Vmu + (((x - alpha)/daa)**2) * VD) %*% x.
+                   + dbb * (1 - R2trial)), 
+            beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+            x. = x., Vmu = Vmu, VD = VD, R2trial = R2trial
+          )
+        )
        }
       else{
-         return((beta + (dab/daa) * (x - alpha) + qnorm(1-alpha./2) * 
-                   sqrt(t(x.) %*% (Vmu + (((x - alpha)/daa)**2) * VD) %*% x.
-                        + dbb * (1 - R2trial)))^2)
+        return(
+          sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., x., Vmu, VD, R2trial) 
+            beta + (dab/daa) * (x - alpha) + qnorm(1-alpha./2) * sqrt(t(x.) %*% 
+            (Vmu + (((x - alpha)/daa)**2) * VD) %*% x. + dbb * (1 - R2trial)), 
+            beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+            x. = x., Vmu = Vmu, VD = VD, R2trial = R2trial
+            )
+        )
       }
     }
     else{
       if(pred.int.use == "lw"){
-        return((beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
-          sqrt(dbb * (1 - R2trial)))^2)
+        return(
+          sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., R2trial) 
+            beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
+              sqrt(dbb * (1 - R2trial)),
+            beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+            R2trial = R2trial
+          )
+        )
       }
       else{
-        return((beta + (dab/daa) * (x - alpha) + qnorm(1-alpha./2) *
-                  sqrt(dbb * (1 - R2trial)))^2)
+        return(
+          
+          sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., R2trial) 
+            beta + (dab/daa) * (x - alpha) + qnorm(1-alpha./2) *
+              sqrt(dbb * (1 - R2trial)),
+            beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+            R2trial = R2trial
+          )
+        )
       }
     }
     
   }
-  ste <- optimize(f, c(-1e8,1e8), object = object, var.used = var.used, alpha. = alpha.,
+  # ste <- optimize(f, c(-1e8,1e8), object = object, var.used = var.used, alpha. = alpha.,
+  #                 pred.int.use = pred.int.use)
+  ste <- uniroot.all(f, lower = -10, upper = 10, object = object, var.used = var.used, alpha. = alpha.,
                   pred.int.use = pred.int.use)
+  # suivant le nombre de solutions de l'equation, le "STE" peut etre un point ou alors un ensemble de deux points
+  # definissants l'ensemble des valeurs prises par "bateS" pour une prediction significativement differente de 0
+  # de "betaT"
   
-  #cat(c("STE = ", ste$minimum, "objective = ",ste$objective))
-  
-  return(ste$minimum)
+  if(length(ste) == 0){# on est dans le cas Delta = 0, pas de solution entire pour cette equation
+    message("Warning : STE does not exist for this intermediate endpoint. Therefore, 
+            regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
+            surrogate endpoint can not permitted to predict a non zero treatment effect on true endpoint
+            using the considered joint surrogate model and the meta-analysis")
+  }else{
+    if(length(ste) == 2){
+      # recherche du sens de la concavite (bref, signe de "a" dans l'equation "ax^2 + bx + c")
+      # je prends un pont au hazard dans l'intervalle [x1,x2] et je regarde le signe de son image
+      if(f(sum(ste)/2, object = object, var.used = var.used, alpha. = alpha.,
+           pred.int.use = pred.int.use) < 0){ # concavite tournee vers le haut
+        message("The treatement effects on the surrogate (beta_S) that can predict a non zero 
+                treatment effect on true endpoint (beta_T) belong to the intervall: ]",
+                round(ste[1], 3), " ; ", round(ste[2], 3), "[ : HR= ]", round(exp(ste[1]), 3), " ; ", round(exp(ste[2]), 3), "[")
+      }
+      else { # concavite tournee vers le bas
+        message("The treatement effects on the surrogate (beta_S) that can predict a non zero 
+                treatment effect on true endpoint (beta_T) belong to the intervall: ]-Inf ; ",
+                round(ste[1], 3), "[ U ]", round(ste[2], 3), " ; +Inf[ : HR= ]-Inf ; ",
+                round(exp(ste[1]), 3), "[ U ]", round(exp(ste[2]), 3), " ; +Inf[")
+      }
+    } else{ # une seule solution
+      message("The treatement effects on the surrogate (beta_S) that can predict a non zero 
+                treatment effect on true endpoint (beta_T) belong to the intervall: ]-Inf ; ",
+              round(ste, 3), "[ : HR= ]-Inf ; ",round(exp(ste, 3)), "[")
+    }
+  }
+  return(ste)
 }
 
 

@@ -60,10 +60,20 @@ E(\beta + b_0|\alpha_0, \vartheta) + Z_{1-(\gamma/2)} \sqrt(Var(\beta + b_0|\alp
 }
 \if{html}{\figure{ste.png}{options: width="60\%"}}
 
-where \if{latex}{\eqn{\vartheta}}\if{html}{\figure{vartheta.png}{options: width="3\%"}}represents the set of estimates for the fixed-effects and the 
+where \if{latex}{\eqn{\vartheta}}\if{html}{\figure{vartheta.png}{options: width="3\%"}}
+represents the set of estimates for the fixed-effects and the 
 variance-covariance parameters of the random effects obtained from the joint surrogate 
 \code{\link[=jointSurroPenal]{model}} 
 (Sofeu \emph{et al.}, 2018). 
+
+If the previous equations gives two solutions, STE can be the 
+minimum (resp. the maximum) value or both of them, according to the shape of the function. 
+If the concavity of the function is turned upwards, STE is the first value and
+the second value represents the maximum (res. the minimum) treament value observable 
+on the surrogate that can predict a non zero treatment effect on true endpoint. 
+If the concavity of the function is turned down, both the two solutions
+represent the STE and the interpretation is such that accepted values of the 
+treatment effects on \code{S} predict a no zero treatment effects on \code{T}
 
 Given that negative values of treatment effect indicate a reduction of the risk 
 of failure and are considered beneficial, STE is recommended to be computed from 

@@ -7,7 +7,8 @@
 plotTreatPredJointSurro(object, from = -2, to = 2, type = "Coef", 
    var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3, 
    colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict", 
-   pred.int.use = "up")
+   pred.int.use = "up", main = NULL, ybottom = -0.05, ytop = 0.05, 
+   density = 20, angle = 45)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -54,6 +55,23 @@ and confidence intervals. Default of 3 digits is used.}
 to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
 or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
 induces risk factors.}
+
+\item{main}{Title of the graphics}
+
+\item{ybottom}{A scalar of left y position of the rectangle on the x-axis associated with acceptable 
+value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
+non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{-0.05}.}
+
+\item{ytop}{A scalar of right y position of the rectangle on the x-axis associated with acceptable 
+value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
+non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{0.05}.}
+
+\item{density}{The density of shading lines, in lines per inch.  The default 
+value of ‘NULL’ means that no shading lines are drawn.  A 
+zero value of ‘density’ means no shading lines whereas
+negative values (and ‘NA’) suppress shading (and so allow color filling). The default is \code{20}}
+
+\item{angle}{Angle (in degrees) of the shading lines. The default is \code{45}}
 }
 \value{
 For a considered treatment effects on the surrogate enpoint, plot the
@@ -63,8 +81,11 @@ with the prediction interval.
 \description{
 Plot the prediction of the treatment effect on the true endpoint based on the observed treatment effect
 on the surrogate endpoint, with the prediction interval: results from the one-step Joint surrogate model  
-for evaluating a canditate surrogate endpoint. The graphic also includes a vertical line that cut 
-the x axis to the value of \link{ste}.
+for evaluating a canditate surrogate endpoint. The graphic also include vertical lines that cut 
+the x axis to the values of \link{ste}. A hatched rectagle indicated the values of 
+\if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} that predict a non zeto 
+\if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, according to the number of value 
+for \code{STE} and the shape of the upper confidence limit for the prediction model.
 }
 \examples{
 
