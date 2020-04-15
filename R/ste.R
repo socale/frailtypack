@@ -273,7 +273,7 @@ ste <- function (object, var.used = "error.estim", alpha. = 0.05, pred.int.use =
     } else{ # une seule solution
       message("The treatement effects on the surrogate (beta_S) that can predict a non zero 
                 treatment effect on true endpoint (beta_T) belong to the intervall: ]-Inf ; ",
-              round(ste, 3), "[ : HR= ]-Inf ; ",round(exp(ste, 3)), "[")
+              round(ste, 3), "[ : HR= ]-Inf ; ",round(exp(ste), 3), "[")
     }
   }
   return(ste)

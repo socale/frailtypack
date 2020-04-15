@@ -113,7 +113,7 @@
 #' 
 #' }
 #' 
-plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", var.used = "error.estim", 
+plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", var.used = "error.estim", 
                                        alpha. = 0.05, n = 1000, lty = 2, d = 3, colCI = "blue", xlab = "beta.S", 
                                        ylab = "beta.T.predict", pred.int.use = "up", main = NULL,
                                        ybottom = -0.05, ytop = 0.05, density = 20, angle = 45){
@@ -131,7 +131,7 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       stop("With argument 'type' = 'HR', arguments 'to' and 'from' must take positive values")
     }
   }
-    
+  
   beta  <- object$beta.t
   dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
   daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
@@ -166,8 +166,8 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       }else{
         if(length(STE) == 2){
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-                 main = if(is.null(main)) paste("STE = ", round(max(STE), d), 
-                              "(HR = ", round(exp(max(STE)), d), ") and min(beta_S) = ", round(exp(min(STE)), d)) else main)
+               main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
+               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                  main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
@@ -205,19 +205,20 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       
       
       if(length(STE) == 1){
-        curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-               main = if(is.null(main)) paste("STE = ", round(STE, d), 
-                            "(HR = ", round(exp(STE), d), ")") else main)
+        curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
       }else{
         if(length(STE) == 2){
-          curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-                 main = if(is.null(main)) paste("STE = ", round(max(STE), d), 
-                              "(HR = ", round(exp(max(STE)), d), ") and min(beta_S) = ", round(exp(min(STE)), d)) else main)
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
+                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
         }else{ 
-          curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-                 main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model") else main)
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                else main)
         }
       }
+      
       #inf
       expressInf <- function(x){
         x <- log(x) # on suppose que les entrees sont des HR et donc on les converti en log HR
@@ -247,9 +248,22 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       }
       
       expressxVect <- Vectorize(expressx)
-      curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used, pred.int.use = pred.int.use), d), 
-                          "(HR = ", round(exp(ste(object, var.used = var.used, pred.int.use = pred.int.use)), d), ")"))
+      
+      if(length(STE) == 1){
+        curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
+      }else{
+        if(length(STE) == 2){
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
+                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
+        }else{ 
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                else main)
+        }
+      }
+      
       #inf
       expressInf <- function(x){
         beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * sqrt(
@@ -277,9 +291,21 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
       }
       
       expressxVect <- Vectorize(expressx)
-      curve (expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-             main = paste("STE = ", round(ste(object, var.used = var.used, pred.int.use = pred.int.use), d), 
-                          "(HR = ", round(exp(ste(object, var.used = var.used, pred.int.use = pred.int.use)), d), ")"))
+      if(length(STE) == 1){
+        curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
+      }else{
+        if(length(STE) == 2){
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
+                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
+        }else{ 
+          curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
+                main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                else main)
+        }
+      }
+      
       #inf
       expressInf <- function(x){
         x <- log(x) # on suppose que les entrees sont des HR et donc on les converti en log HR
@@ -306,23 +332,23 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
   #ste 
   
   if(length(STE) == 0){ # on est dans le cas Delta = 0, pas de solution entire pour cette equation
-    message("Warning : STE does not exist for this intermediate endpoint. Therefore, 
-            regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
-            surrogate endpoint can not permitted to predict a non zero treatment effect on true endpoint
-            using the considered joint surrogate model and the meta-analysis")
+    # message("Warning : STE does not exist for this intermediate endpoint. Therefore, 
+    #         regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
+    #         surrogate endpoint can not permitted to predict a non zero treatment effect on true endpoint
+    #         using the considered joint surrogate model and the meta-analysis")
   }else{
     if(length(STE) == 1){ # une seule solution de l'equation 
       if(type == "HR"){ # log HR
         abline(h = 1, col = "cyan", lty = 4)
         points(exp(STE),1)
         abline(v = exp(STE), col = "cyan", lty = 4) 
-        rect(exp(from), ybottom, exp(STE), ytop, col = "cyan", density = density, angle = angle)
+        rect(from, ybottom + 1, exp(STE), ytop + 1, col = "red", density = density, angle = angle)
       }
       else{
         abline(h = 0, col = "cyan", lty = 4)
         points(STE,0)
         abline(v = STE, col = "cyan", lty = 4)
-        rect(from, ybottom, STE, ytop, col = "cyan", density = density, angle = angle)
+        rect(from, ybottom, STE, ytop, col = "red", density = density, angle = angle)
       }
     } else{ # on a deux valeurs du STE
       # recherche du sens de la concavite (bref, signe de "a" dans l'equation "ax^2 + bx + c")
@@ -331,30 +357,34 @@ plotTreatPredJointSurro <- function(object, from = -2, to = 2, type = "Coef", va
            pred.int.use = pred.int.use) < 0){ # concavite tournee vers le haut
         if(type == "HR"){ # log HR
           abline(h = 1, col = "cyan", lty = 4)
-          points(exp(STE),1)
+          points(exp(STE[1]),1)
+          points(exp(STE[2]),1)
           abline(v = exp(STE), col = "cyan", lty = 4)
-          rect(exp(STE[1]), ybottom, exp(STE[2]), ytop, col = "cyan", density = density, angle = angle)
+          rect(exp(STE[1]), ybottom + 1, exp(STE[2]), ytop + 1, col = "red", density = density, angle = angle)
         }
         else{
           abline(h = 0, col = "cyan", lty = 4)
-          points(STE,0)
+          points(STE[1],0)
+          points(STE[2],0)
           abline(v = STE, col = "cyan", lty = 4)
-          rect(STE[1], ybottom, STE[2], ytop, col = "cyan", density = density, angle = angle)
+          rect(STE[1], ybottom, STE[2], ytop, col = "red", density = density, angle = angle)
         }
       }else{ # concavite tournee vers le bas
         if(type == "HR"){ # log HR
           abline(h = 1, col = "cyan", lty = 4)
-          points(exp(STE),1)
+          points(exp(STE[1]),1)
+          points(exp(STE[2]),1)
           abline(v = exp(STE), col = "cyan", lty = 4)
-          rect(exp(from), ybottom, exp(STE[1]), ytop, col = "cyan", density = density, angle = angle)
-          rect(exp(STE[2]), ybottom, exp(to), ytop, col = "cyan", density = density, angle = angle)
+          rect(from, ybottom + 1, exp(STE[1]), ytop + 1, col = "cyan", density = density, angle = angle)
+          rect(exp(STE[2]), ybottom + 1, to, ytop + 1, col = "red", density = density, angle = angle)
         }
         else{
           abline(h = 0, col = "cyan", lty = 4)
-          points(STE,0)
+          points(STE[1],0)
+          points(STE[2],0)
           abline(v = STE, col = "cyan", lty = 4)
           rect(from, ybottom, STE[1], ytop, col = "cyan", density = density, angle = angle)
-          rect(STE[2], ybottom, to, ytop, col = "cyan", density = density, angle = angle)
+          rect(STE[2], ybottom, to, ytop, col = "red", density = density, angle = angle)
         }
       }
     }
