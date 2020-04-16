@@ -175,7 +175,18 @@
     cat("Correlation strength: <= 0.49 'Low'; ]0.49 - 0.72[ 'Medium'; >= 0.72 'High' ","\n")
     cat("---","\n")
     
-    cat(c("Surrogate threshold effect (STE) :",round(ste(object),len),"(HR =",round(exp(ste(object)),len),")"),"\n")
+    STE = ste(object)
+    if(length(STE) == 0){
+      cat(c("Surrogate threshold effect (STE) : --"),"\n")
+    }
+    
+    if(length(STE) == 1){
+      cat(c("Surrogate threshold effect (STE) :",round(STE,len),"(HR =",round(exp(STE),len),")"),"\n")
+    }
+    
+    if(length(STE) == 2){
+      cat(c("Surrogate threshold effect (STE) : (",round(STE[1],len), ",", round(STE[2],len),"); HR = (",round(exp(STE[1]),len), ",", round(exp(STE[2]),len),")"),"\n")
+    }
     
     cat(" ", "\n")
     cat("Convergence parameters", "\n")

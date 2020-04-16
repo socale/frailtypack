@@ -252,27 +252,27 @@ ste <- function (object, var.used = "error.estim", alpha. = 0.05, pred.int.use =
   if(length(ste) == 0){# on est dans le cas Delta = 0, pas de solution entire pour cette equation
     message("Warning : STE does not exist for this intermediate endpoint. Therefore, 
             regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
-            surrogate endpoint can not permitted to predict a non zero treatment effect on true endpoint
-            using the considered joint surrogate model and the meta-analysis")
+            surrogate endpoint can not permitted to predict a non zero treatment effect on the true endpoint
+            using this model and the meta-analysis")
   }else{
     if(length(ste) == 2){
       # recherche du sens de la concavite (bref, signe de "a" dans l'equation "ax^2 + bx + c")
       # je prends un pont au hazard dans l'intervalle [x1,x2] et je regarde le signe de son image
       if(f(sum(ste)/2, object = object, var.used = var.used, alpha. = alpha.,
            pred.int.use = pred.int.use) < 0){ # concavite tournee vers le haut
-        message("The treatement effects on the surrogate (beta_S) that can predict a non zero 
-                treatment effect on true endpoint (beta_T) belong to the intervall: ]",
+        message("The treatement effects on the surrogate endpoint (beta_S) that can predict a non zero 
+treatment effect on the true endpoint (beta_T) belongs to the intervall: ]",
                 round(ste[1], 3), " ; ", round(ste[2], 3), "[ : HR= ]", round(exp(ste[1]), 3), " ; ", round(exp(ste[2]), 3), "[")
       }
       else { # concavite tournee vers le bas
-        message("The treatement effects on the surrogate (beta_S) that can predict a non zero 
-                treatment effect on true endpoint (beta_T) belong to the intervall: ]-Inf ; ",
+        message("The treatement effects on the surrogate endpoint (beta_S) that can predict a non zero 
+treatment effect on the true endpoint (beta_T) belongs to the intervall: ]-Inf ; ",
                 round(ste[1], 3), "[ U ]", round(ste[2], 3), " ; +Inf[ : HR= ]-Inf ; ",
                 round(exp(ste[1]), 3), "[ U ]", round(exp(ste[2]), 3), " ; +Inf[")
       }
     } else{ # une seule solution
-      message("The treatement effects on the surrogate (beta_S) that can predict a non zero 
-                treatment effect on true endpoint (beta_T) belong to the intervall: ]-Inf ; ",
+      message("The treatement effects on the surrogate endpoint (beta_S) that can predict a non zero 
+treatment effect on the true endpoint (beta_T) belongs to the intervall: ]-Inf ; ",
               round(ste, 3), "[ : HR= ]-Inf ; ",round(exp(ste), 3), "[")
     }
   }
