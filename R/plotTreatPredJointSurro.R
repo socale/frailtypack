@@ -336,6 +336,12 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
     #         regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
     #         surrogate endpoint can not permitted to predict a non zero treatment effect on true endpoint
     #         using the considered joint surrogate model and the meta-analysis")
+      if(type == "HR"){ # log HR
+        abline(h = 1, col = "cyan", lty = 4)
+      }
+      else{
+        abline(h = 0, col = "cyan", lty = 4)
+      }
   }else{
     if(length(STE) == 1){ # une seule solution de l'equation 
       if(type == "HR"){ # log HR

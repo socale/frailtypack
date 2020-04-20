@@ -37,6 +37,8 @@
 ##' \item{ntrial}{The number of trials in the meta-analysis}
 ##' \item{notconvtrial}{The vector of trials that have not converged}
 ##' \item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} the \code{i-th} trial}
+##' \item{loocv.summary}{A dataframe of the estimates for the \code{G} models excluded for each raw 
+##' all the subjects including in the ongoing trial}
 ##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -67,6 +69,14 @@
 ##'                 
 ##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 26)
 ##' dloocv$result
+##' dloocv$loocv.summary
+##' 
+##' # In order to summaryse all the estimated models during the loocv proccess:
+##' sapply(1:30, function(i){
+##'        cat(paste(" ========== (-)essai : ", i), fill = T)
+##'        summary(dloocv$different.models[[i]])
+##'        }
+##'       )
 ##' 
 ##' }
 ##' 
@@ -212,13 +222,15 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
     lloocv[[i]] <- joint.surro
   }
   
-  
   if(!is.null(d)){
     result <- NULL
     result$result <- d
     result$ntrial <- length(trial)
     result$notconvtrial <- notconvtrial
     result$different.models <- lloocv
+    result$loocv.summary <- loocv.summary(loocv.object = result, 
+                                          nb.parameters = nrow(object$Coefficients),
+                                          names.parameters = rownames(object$Coefficients))
     class(result) <- "jointSurroPenalloocv"
   }
   

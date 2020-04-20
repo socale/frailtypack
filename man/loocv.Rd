@@ -41,6 +41,8 @@ endpoint is included into the prediction interval, the last columns contains "*"
 \item{ntrial}{The number of trials in the meta-analysis}
 \item{notconvtrial}{The vector of trials that have not converged}
 \item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} the \code{i-th} trial}
+\item{loocv.summary}{A dataframe of the estimates for the \code{G} models excluded for each raw 
+all the subjects including in the ongoing trial}
 }
 \description{
 {
@@ -65,6 +67,14 @@ joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2,
                 
 dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 26)
 dloocv$result
+dloocv$loocv.summary
+
+# In order to summaryse all the estimated models during the loocv proccess:
+sapply(1:30, function(i){
+       cat(paste(" ========== (-)essai : ", i), fill = T)
+       summary(dloocv$different.models[[i]])
+       }
+      )
 
 }
 

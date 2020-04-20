@@ -1,6 +1,6 @@
 Changes in Version 3.2.1 April 2020
 o Bugg fixed in the computation of ste. Actually, by solving the equation representing the upper limit of the prediction interval of the treatment effects on T based on the observed treatment effects on S equals to 0 [u(beta_So = 0)], it is possible to find 2 solutions and then two potential values for STE. Depending on the shape of the function, different interpretations of possible values can be considered. We update the R functions ste() and plotTreatPredJointSurro() in order to take into account this remark.
-o Update of the R function loocv in order to return the list of the G models obtained after excuded for the i-th the i-th trial during the loocv process
+o Update of the R function loocv in order to return the list of the G models obtained after excuded for the i-th the i-th trial during the loocv process. In addition we return the dataframe of the estimates for the G models excluding for each raw all the subjects included in the ongoing trial
 
 Changes in Version 3.2.0 March 2020
 o Update of the S3method predict.jointSurroPena(). We have included a plot of the predicted treatment effects on the true endpoint (with the prediction intervals) given the observed treatment effects on the surrogate endpoint and an object from the joint surrogate model. We have included the function plot.predict.jointSurroPenal()
