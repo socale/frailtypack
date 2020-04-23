@@ -38,7 +38,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     double precision,dimension(nsujet1,5+nbrevar(1)), intent(in):: donnees
     double precision,dimension(ng,5+nbrevar(2)), intent(in):: death
     double precision,dimension(2), intent(in):: kappa0
-    double precision,dimension(9), intent(in):: param_init
+    double precision,dimension(13), intent(in):: param_init
     double precision,dimension(23+nbrevar(1) + nbrevar(2)-2), intent(in):: paramSimul
     !double precision,dimension(:), intent(in):: paramSimul
     double precision,dimension(3), intent(inout)::EPS2
@@ -293,6 +293,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     zeta_init = param_init(7)
     betas_init = param_init(8)
     betat_init = param_init(9)
+	shape_initS = param_init(10)
+	scale_initS = param_init(11)
+	shape_initT = param_init(12)
+	scale_initT = param_init(13)
+	
     random_generator = random_generator0
 
     ! parametres de simulation
@@ -1299,7 +1304,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         case(1)
             np = nbintervDC + nbintervR + nva + nparamfrail
         case(2)
-            np = 2*nst + nva + effet + nparamfrail
+            np = 4 + nva + nparamfrail !scl
     end select 
     
     if(rang_proc==0) then
@@ -1427,7 +1432,15 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     endif
 2002 continue
     ! initialisation du vecteur b des parametres a l'aide des parametres de simulation
-    b=0.5d0
+    if(typeof == 2) then ! cas weibull
+	    b=0.5d0
+		b(1) = shape_initS
+		b(2) = scale_initS
+		b(3) = shape_initT
+		b(4) = scale_initT
+	else
+	    b=0.5d0
+	endif
     
     if(nsim_node(8)==0)then !model conjoint surrogate classique
         !if(logNormal==1)then

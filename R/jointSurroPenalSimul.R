@@ -377,6 +377,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
                       nb.iterPGH = 5, nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, 
                       theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, 
                       gamma.init = 0.5, alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5,
+                      shape.initS = 0.25, scale.initS = 0.25, shape.initT = 0.25, scale.initT = 0.25,
                       random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, equi.subj.trt = 1,
                       prop.subj.trt = NULL, theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, betas = -1.25, 
                       betat = -1.25, lambdas = 1.8, nus = 0.0045, lambdat = 3, nut = 0.0025, prop.cens = 0, 
@@ -724,7 +725,7 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   
   if(type.joint.estim == 1){
     param_init <- c(theta.init,sigma.ss.init,sigma.tt.init,sigma.st.init,gamma.init,alpha.init,
-                    zeta.init,betas.init,betat.init)
+                    zeta.init,betas.init,betat.init,shape.initS,scale.initS,shape.initT,scale.initT)
   }
   if(type.joint.estim == 3){
     param_init <- c(thetacopula.init,sigma.ss.init,sigma.tt.init,sigma.st.init,gamma.init,alpha.init,

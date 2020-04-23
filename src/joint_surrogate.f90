@@ -149,7 +149,7 @@
     mt12=mtaille(4)
 
     allocate(vaxdc(nva20),vax(nva10))
-
+    allocate(etaT(2),betaT(2)) ! scale and shape parameters for the two endpoints
     timedep = paratps(1)
     nbinnerknots = paratps(2)
     qorder = paratps(3)
@@ -1266,19 +1266,7 @@
 !                     call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpaj_tps)
 !                 endif
         case(2) ! fonctions de risque de base approchees par Weibull
-!                 if (timedep.eq.0) then
-!                     if (logNormal.eq.0) then
-!                         if (intcens.eq.1) then
-!                             call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_intcens)
-!                         else
-!                            call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib)
-!                         endif
-!                     else
-!                         call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_log)
-!                     endif
-!                 else
-!                     call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpaj_tps)
-!                 endif
+             call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_surrogate)
     end select
         call cpu_time(tp2)
 !     end if
@@ -1313,21 +1301,17 @@
             Call distanceJweib(b,np,mt1,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out)
     end select
 !!print*,"covar========================2"
-    if (nst == 1) then
-        scaleweib(1) = etaR !betaR
-        shapeweib(1) = betaR !etaR
-        scaleweib(2) = 0.d0
-        shapeweib(2) = 0.d0
-    else
-        scaleweib(1) = etaR !betaR
-        shapeweib(1) = betaR !etaR
-        scaleweib(2) = etaD !betaD
-        shapeweib(2) = betaD !etaD
-    end if
-    paraweib(1) = shapeweib(1)
-    paraweib(2) = shapeweib(2)
-    paraweib(3) = scaleweib(1)
-    paraweib(4) = scaleweib(2)
+    
+	shapeweib(1) = dexp(b(1)) !gamma_S
+    scaleweib(1) = dexp(b(2)) !rho_S
+    shapeweib(2) = dexp(b(3)) !gamma_T
+    scaleweib(2) = dexp(b(4)) !rho_T
+    
+
+    paraweib(1) = shapeweib(1) ! gamma_S
+    paraweib(2) = shapeweib(2) ! gamma_T
+    paraweib(3) = scaleweib(1) ! rho_S
+    paraweib(4) = scaleweib(2) ! rho_T
 
     do ss=1,npmax
         do sss=1,npmax
@@ -1774,7 +1758,7 @@ deallocate(res2s_sujet,res2_dcs_sujet)
     deallocate(delta,deltastar)
     deallocate(const_res4,const_res5)
     deallocate(xx1)
-    deallocate(ww1,chol)
+    deallocate(ww1,chol, etaT,betaT)
     if(nsim_nodes(3).ne.0) then
         deallocate(ui_chap,invBi_cholDet,invBi_chol,invBi_cholDet_Essai,invBi_chol_Essai,invBi_chol_Individuel,&
                     ui_chap_Essai)

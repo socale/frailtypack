@@ -511,7 +511,8 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                       nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, nb.iterPGH = 5, 
                       nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, theta.init = 1, 
                       sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, gamma.init = 0.5, 
-                      alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
+                      alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5, shape.initS = 0.25,
+                      scale.initS = 0.25, shape.initT = 0.25, scale.initT = 0.25, scale = 1, 
                       random.generator = 1, kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, 
                       init.kappa = NULL, ckappa = c(0,0), nb.decimal = 4, print.times = TRUE, 
                       print.iter = FALSE){
@@ -896,7 +897,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   }
     
   param_init <- c(theta.init,sigma.ss.init,sigma.tt.init,sigma.st.init,gamma.init,alpha.init,
-                  zeta.init,betas.init,betat.init)
+                  zeta.init,betas.init,betat.init,shape.initS,scale.initS,shape.initT,scale.initT)
   
   revision_echelle <- scale # coefficient pour la division des temps de suivi. permet de reduire l'echelle des temps pour eviter les problemes numeriques en cas d'un nombre eleve de sujet pour certains cluster
   # random.generator <- # generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
