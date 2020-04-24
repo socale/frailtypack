@@ -1,5 +1,5 @@
 ##' Leave-one-out crossvalidation for the one-step Joint surrogate model for evaluating a 
-##' canditate surrogate endpoint.
+##' canditate surrogate endpoint. 
 ##' 
 ##' @description{
 ##' Leave-one-out crossvalidation for evaluating the joint surrogate model 
