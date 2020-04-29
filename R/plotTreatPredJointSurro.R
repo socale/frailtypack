@@ -193,7 +193,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
                ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-                 main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                 main = if(is.null(main)) paste("No possible value for STE")
                 else main, ...)
         }
       }
@@ -237,7 +237,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
                                                ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-                main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                main = if(is.null(main)) paste("No possible value for STE")
                 else main, ...)
         }
       }
@@ -282,7 +282,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
                                                ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-                main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                main = if(is.null(main)) paste("No possible value for STE")
                 else main, ...)
         }
       }
@@ -324,7 +324,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
                                                ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-                main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
+                main = if(is.null(main)) paste("No possible value for STE")
                 else main, ...)
         }
       }
@@ -354,6 +354,9 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
   
   #ste 
   
+  leg.col = c("black", colCI, "red", "black")
+  if(is.null(leg.x)) leg.x = from
+  
   if(length(STE) == 0){ # on est dans le cas Delta = 0, pas de solution entire pour cette equation
     # message("Warning : STE does not exist for this intermediate endpoint. Therefore, 
     #         regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
@@ -361,10 +364,17 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
     #         using the considered joint surrogate model and the meta-analysis")
       if(type == "HR"){ # log HR
         abline(h = 1, col = "cyan", lty = 3)
+        
       }
       else{
         abline(h = 0, col = "cyan", lty = 3)
       }
+    if(legend.show == TRUE){
+      legend(x = leg.x, y = leg.y, legend = legend[c(1,2)], col = leg.col[c(1,2)], text.col = leg.text.col, 
+             lty = leg.lty[c(1,2)], pch = leg.pch[c(1,2)], bg = leg.bg, border = leg.border, cex = leg.cex, 
+             bty = leg.bty)
+      
+    }
   }else{
     if(length(STE) == 1){ # une seule solution de l'equation 
       if(type == "HR"){ # log HR
@@ -435,15 +445,17 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
         }
       }
     }
-  }
-  
-  if(legend.show == TRUE){
-    leg.col = c("black", colCI, "red", "black")
-    if(is.null(leg.x)) leg.x = from
-    legend(x = leg.x, y = leg.y, legend = legend, col = leg.col, text.col = leg.text.col, 
-           lty = leg.lty, pch = leg.pch, bg = leg.bg, border = leg.border, cex = leg.cex, 
-           bty = leg.bty)
-
+    if(legend.show == TRUE){
+      if(add.accept.area.betaS == TRUE)
+        legend(x = leg.x, y = leg.y, legend = legend, col = leg.col, text.col = leg.text.col, 
+               lty = leg.lty, pch = leg.pch, bg = leg.bg, border = leg.border, cex = leg.cex, 
+               bty = leg.bty)
+      else
+        legend(x = leg.x, y = leg.y, legend = legend[c(1, 2, 4)], col = leg.col[c(1, 2, 4)], text.col = leg.text.col, 
+               lty = leg.lty[c(1, 2, 4)], pch = leg.pch[c(1, 2, 4)], bg = leg.bg, border = leg.border, cex = leg.cex, 
+               bty = leg.bty)
+      
+    }
   }
   
 }
