@@ -9,14 +9,20 @@
 ##' @usage 
 ##' 
 ##' \method{plot}{jointSurroPenalloocv}(x, unusedtrial = NULL, xleg = "bottomleft", 
-##' yleg = NULL, main = NULL, ...)
+##' yleg = NULL, main = NULL, xlab = "Trials", 
+##' ylab = "Log Hazard ratio of the true endpoint", 
+##' legend = c("Beta observed", "Beta predict"), ...)
+
 ##' @param x An object inherent from the \code{jointSurroPenalloocv} Class
 ##' @param unusedtrial Vector of unconsidered trials, may be due to the fact that the 
 ##' predicted treatment effects on true endpoint have an outlier. In this case, 
 ##' one can drop from the data the trials with very hight absolute predicted value 
-##' @param xleg X-coordinate for the location of the legend
+##' @param xleg X-coordinate for the location of the legend.
 ##' @param yleg Y-coordinate for the location of the legend, the default is \code{NULL}
-##' @param main The desired main
+##' @param main An overall title for the plot: see \link{title}.
+##' @param xlab A title for the x axis: see \link{title}.
+##' @param ylab A title for the y axis: see \link{title}.
+##' @param legend A character or expression vector of length >= 1 to appear in the legend
 ##' @param ... other unused arguments.
 ##' 
 ##' @return This function displays the boxplots corresponding to the number of trials in the 
@@ -58,7 +64,9 @@
 ##' }
 ##' 
 "plot.jointSurroPenalloocv" <- function(x, unusedtrial = NULL, xleg = "bottomleft", 
-                                        yleg = NULL, main = NULL, ...){
+                                        yleg = NULL, main = NULL, xlab = "Trials", 
+                                        ylab = "Log Hazard ratio of the true endpoint", 
+                                        legend = c("Beta observed", "Beta predict"), ...){
     object <- x
     data.gumbel <- object$result
     data.gumbel <- data.gumbel[!(data.gumbel$trialID %in% unusedtrial),]
@@ -117,21 +125,21 @@
     
     if(is.null(main)){
       if(length(mainlabel) > 0){ # to avoid to display the main in cases where all trials have been used
-        boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 
-                ylab = "Log Hazard ratio of the true endpoint",
+        boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = xlab, 
+                ylab = ylab,
                 main = paste("Unused trials = ", mainlabel, sep = ""))
       }
       else{
-        boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials",
-                ylab = "Log Hazard ratio of the true endpoint")
+        boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = xlab,
+                ylab = ylab)
       }
     }else{
-      boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = "Trials", 
-              ylab = "Log Hazard ratio of the true endpoint",
+      boxplot(data.plot2$beta ~ data.plot2$trialID, xlab = xlab, 
+              ylab = ylab,
               main = main)
     }
     points(data.plot2$trialID[!(data.plot2$trialID %in% unusedtrial)],data.plot2$beta.T[!(data.plot2$trialID %in% unusedtrial)])
-    legend(x = xleg, y = yleg, c("Beta observed", "Beta predict"), cex = 1, pch= c(1,15))
+    legend(x = xleg, y = yleg, legend = legend, cex = 1, pch= c(1,15))
     abline(h = 0)
     return(paste("Unused trials = ", mainlabel, sep = ""))
   }

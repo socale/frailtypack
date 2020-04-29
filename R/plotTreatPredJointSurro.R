@@ -10,13 +10,7 @@
 #'
 #'
 #' @aliases plotTreatPredJointSurro
-#' @usage
-#' plotTreatPredJointSurro(object, from = -2, to = 2, type = "Coef", 
-#'    var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3, 
-#'    colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict", 
-#'    pred.int.use = "up", main = NULL, ybottom = -0.05, ytop = 0.05, 
-#'    density = 20, angle = 45)
-#' 
+# 
 #' @param object An object inheriting from \code{jointSurroPenal} class
 ##' (output from calling the function \code{jointSurroPenal} ).
 #' @param from The range (with \code{to}) over which the function will be plotted. The default is 
@@ -50,6 +44,9 @@
 #' or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
 #' induces risk factors.
 #' @param main Title of the graphics
+#' @param add.accept.area.betaS A boolean that indicates if the plot should add acceptance area for 
+#' \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}
+#' that predict a nonzero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is TRUE
 #' @param ybottom A scalar of left y position of the rectangle on the x-axis associated with acceptable 
 #' value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
 #' non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{-0.05}.
@@ -61,6 +58,21 @@
 #' zero value of ‘density’ means no shading lines whereas
 #' negative values (and ‘NA’) suppress shading (and so allow color filling). The default is \code{20}
 #' @param angle Angle (in degrees) of the shading lines. The default is \code{45}
+#' @param legend.show A boolean that indicates if the legend should be displayed
+#' @param leg.x The x co-ordinate to be used to position the legend.
+#' @param leg.y The y co-ordinate to be used to position the legend. The default is \code{4}
+#' @param legend A character or expression vector of length >= 1 to appear in the legend
+#' @param leg.text.col The color used for the legend text. The default is \code{black}.
+#' @param leg.lty The line type, width and color for the legend box (if bty = "o").
+#' @param leg.pch = The plotting symbols appearing in the legend, as numeric vector or a 
+#' vector of 1-character strings (see \link{points}). Unlike \code{points}, this can all be 
+#' specified as a single multi-character string. Must be specified for symbol drawing.
+#' @param leg.bg The background color for the legend box. (Note that this is only used if bty \code{!= "n"}.)
+#' @param leg.bty The type of box to be drawn around the legend. The allowed values are \code{"o"} 
+#' (the default) and \code{"n"}.
+#' @param leg.border The border color for the boxes (used only if fill is specified). 
+#' @param leg.cex Character expansion factor relative to current par(\code{"cex"}). Used 
+#' for text as defined in \link{legend}.
 #' @param \dots other unused arguments
 #' 
 #' @return For a considered treatment effects on the surrogate enpoint, plot the
@@ -99,7 +111,12 @@
 #' 
 #' ## "HR"
 #' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
-#'                 type = "HR", var.used = "error.estim", lty = 2)
+#'                 type = "HR", var.used = "error.estim", lty = 2,)
+#'                 
+#' ## or without acceptance area for betaS:
+#' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
+#'                 type = "HR", var.used = "error.estim", lty = 2, 
+#'                 add.accept.area.betaS = FALSE)
 #'              
 #' ## "log HR"
 #' plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
@@ -115,9 +132,14 @@
 #' }
 #' 
 plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", var.used = "error.estim", 
-                                       alpha. = 0.05, n = 1000, lty = 2, d = 3, colCI = "blue", xlab = "beta.S", 
-                                       ylab = "beta.T.predict", pred.int.use = "up", main = NULL,
-                                       ybottom = -0.05, ytop = 0.05, density = 20, angle = 45, ...){
+                                    alpha. = 0.05, n = 1000, lty = 2, d = 3, colCI = "blue", xlab = "beta.S", 
+                                    ylab = "beta.T.predict", pred.int.use = "up", main = NULL, 
+                                    add.accept.area.betaS = TRUE, ybottom = -0.05, ytop = 0.05, 
+                                    density = 20, angle = 45, legend.show = TRUE, leg.x = NULL, leg.y = 4, 
+                                    legend = c("Prediction model", "95% prediction Interval", "Beta.S for nonzero beta.T", "STE"), 
+                                    leg.text.col = "black", leg.lty = c(1, 2, 4, NA), 
+                                    leg.pch = c(NA, NA, 7, 1), leg.bg = "white", leg.bty = "o", leg.border = "black", 
+                                    leg.cex = 0.85, ...){
   # type  = "coef" or "HR"
   # n = number of points for the curve
   # colCI = color Confidence interval
@@ -338,24 +360,28 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
     #         surrogate endpoint can not permitted to predict a non zero treatment effect on true endpoint
     #         using the considered joint surrogate model and the meta-analysis")
       if(type == "HR"){ # log HR
-        abline(h = 1, col = "cyan", lty = 4)
+        abline(h = 1, col = "cyan", lty = 3)
       }
       else{
-        abline(h = 0, col = "cyan", lty = 4)
+        abline(h = 0, col = "cyan", lty = 3)
       }
   }else{
     if(length(STE) == 1){ # une seule solution de l'equation 
       if(type == "HR"){ # log HR
-        abline(h = 1, col = "cyan", lty = 4)
+        abline(h = 1, col = "cyan", lty = 3)
         points(exp(STE),1)
-        abline(v = exp(STE), col = "cyan", lty = 4) 
-        rect(from, ybottom + 1, exp(STE), ytop + 1, col = "red", density = density, angle = angle)
+        #abline(v = exp(STE), col = "cyan", lty = 4) 
+        segments(x0 = exp(STE), y0 = 0, x1 = exp(STE), y1 = 1, col = "cyan", lty = 4)
+        if(add.accept.area.betaS == TRUE)
+          rect(from, ybottom + 1, exp(STE), ytop + 1, col = "red", density = density, angle = angle)
       }
       else{
-        abline(h = 0, col = "cyan", lty = 4)
+        abline(h = 0, col = "cyan", lty = 3)
         points(STE,0)
-        abline(v = STE, col = "cyan", lty = 4)
-        rect(from, ybottom, STE, ytop, col = "red", density = density, angle = angle)
+        #abline(v = STE, col = "cyan", lty = 4)
+        segments(x0 = STE, y0 = -6, x1 = STE, y1 = 0, col = "cyan", lty = 4)
+        if(add.accept.area.betaS == TRUE)
+          rect(from, ybottom, STE, ytop, col = "red", density = density, angle = angle)
       }
     } else{ # on a deux valeurs du STE
       # recherche du sens de la concavite (bref, signe de "a" dans l'equation "ax^2 + bx + c")
@@ -363,37 +389,61 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       if(f(sum(STE)/2, object = object, var.used = var.used, alpha. = alpha.,
            pred.int.use = pred.int.use) < 0){ # concavite tournee vers le haut
         if(type == "HR"){ # log HR
-          abline(h = 1, col = "cyan", lty = 4)
+          abline(h = 1, col = "cyan", lty = 3)
           points(exp(STE[1]),1)
           points(exp(STE[2]),1)
-          abline(v = exp(STE), col = "cyan", lty = 4)
-          rect(exp(STE[1]), ybottom + 1, exp(STE[2]), ytop + 1, col = "red", density = density, angle = angle)
+          # abline(v = exp(STE), col = "cyan", lty = 4)
+          segments(x0 = exp(STE[1]), y0 = 0, x1 = exp(STE[1]), y1 = 1, col = "cyan", lty = 4)
+          segments(x0 = exp(STE[2]), y0 = 0, x1 = exp(STE[2]), y1 = 1, col = "cyan", lty = 4)
+          if(add.accept.area.betaS == TRUE)
+            rect(exp(STE[1]), ybottom + 1, exp(STE[2]), ytop + 1, col = "red", density = density, angle = angle)
         }
         else{
-          abline(h = 0, col = "cyan", lty = 4)
+          abline(h = 0, col = "cyan", lty = 3)
           points(STE[1],0)
           points(STE[2],0)
-          abline(v = STE, col = "cyan", lty = 4)
-          rect(STE[1], ybottom, STE[2], ytop, col = "red", density = density, angle = angle)
+          # abline(v = STE, col = "cyan", lty = 4)
+          segments(x0 = STE[1], y0 = -6, x1 = STE[1], y1 = 0, col = "cyan", lty = 4)
+          segments(x0 = STE[2], y0 = -6, x1 = STE[2], y1 = 0, col = "cyan", lty = 4)
+          if(add.accept.area.betaS == TRUE)
+            rect(STE[1], ybottom, STE[2], ytop, col = "red", density = density, angle = angle)
         }
       }else{ # concavite tournee vers le bas
         if(type == "HR"){ # log HR
-          abline(h = 1, col = "cyan", lty = 4)
+          abline(h = 1, col = "cyan", lty = 3)
           points(exp(STE[1]),1)
           points(exp(STE[2]),1)
-          abline(v = exp(STE), col = "cyan", lty = 4)
-          rect(from, ybottom + 1, exp(STE[1]), ytop + 1, col = "cyan", density = density, angle = angle)
-          rect(exp(STE[2]), ybottom + 1, to, ytop + 1, col = "red", density = density, angle = angle)
+          # abline(v = exp(STE), col = "cyan", lty = 4)
+          segments(x0 = exp(STE[1]), y0 = 0, x1 = exp(STE[1]), y1 = 1, col = "cyan", lty = 4)
+          segments(x0 = exp(STE[2]), y0 = 0, x1 = exp(STE[2]), y1 = 1, col = "cyan", lty = 4)
+          if(add.accept.area.betaS == TRUE){
+            rect(from, ybottom + 1, exp(STE[1]), ytop + 1, col = "cyan", density = density, angle = angle)
+            rect(exp(STE[2]), ybottom + 1, to, ytop + 1, col = "red", density = density, angle = angle)
+          }
         }
         else{
-          abline(h = 0, col = "cyan", lty = 4)
+          abline(h = 0, col = "cyan", lty = 3)
           points(STE[1],0)
           points(STE[2],0)
-          abline(v = STE, col = "cyan", lty = 4)
-          rect(from, ybottom, STE[1], ytop, col = "cyan", density = density, angle = angle)
-          rect(STE[2], ybottom, to, ytop, col = "red", density = density, angle = angle)
+          # abline(v = STE, col = "cyan", lty = 4)
+          segments(x0 = STE[1], y0 = -6, x1 = STE[1], y1 = 0, col = "cyan", lty = 4)
+          segments(x0 = STE[2], y0 = -6, x1 = STE[2], y1 = 0, col = "cyan", lty = 4)
+          if(add.accept.area.betaS == TRUE){
+            rect(from, ybottom, STE[1], ytop, col = "cyan", density = density, angle = angle)
+            rect(STE[2], ybottom, to, ytop, col = "red", density = density, angle = angle)
+          }
         }
       }
     }
   }
+  
+  if(legend.show == TRUE){
+    leg.col = c("black", colCI, "red", "black")
+    if(is.null(leg.x)) leg.x = from
+    legend(x = leg.x, y = leg.y, legend = legend, col = leg.col, text.col = leg.text.col, 
+           lty = leg.lty, pch = leg.pch, bg = leg.bg, border = leg.border, cex = leg.cex, 
+           bty = leg.bty)
+
+  }
+  
 }

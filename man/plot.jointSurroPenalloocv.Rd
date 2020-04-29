@@ -6,7 +6,9 @@
 canditate surrogate endpoint.}
 \usage{
 \method{plot}{jointSurroPenalloocv}(x, unusedtrial = NULL, xleg = "bottomleft", 
-yleg = NULL, main = NULL, ...)
+yleg = NULL, main = NULL, xlab = "Trials", 
+ylab = "Log Hazard ratio of the true endpoint", 
+legend = c("Beta observed", "Beta predict"), ...)
 }
 \arguments{
 \item{x}{An object inherent from the \code{jointSurroPenalloocv} Class}
@@ -15,11 +17,17 @@ yleg = NULL, main = NULL, ...)
 predicted treatment effects on true endpoint have an outlier. In this case, 
 one can drop from the data the trials with very hight absolute predicted value}
 
-\item{xleg}{X-coordinate for the location of the legend}
+\item{xleg}{X-coordinate for the location of the legend.}
 
 \item{yleg}{Y-coordinate for the location of the legend, the default is \code{NULL}}
 
-\item{main}{The desired main}
+\item{main}{An overall title for the plot: see \link{title}.}
+
+\item{xlab}{A title for the x axis: see \link{title}.}
+
+\item{ylab}{A title for the y axis: see \link{title}.}
+
+\item{legend}{A character or expression vector of length >= 1 to appear in the legend}
 
 \item{...}{other unused arguments.}
 }
