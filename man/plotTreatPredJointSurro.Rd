@@ -72,6 +72,8 @@ zero value of ‘density’ means no shading lines whereas
 negative values (and ‘NA’) suppress shading (and so allow color filling). The default is \code{20}}
 
 \item{angle}{Angle (in degrees) of the shading lines. The default is \code{45}}
+
+\item{\dots}{other unused arguments}
 }
 \value{
 For a considered treatment effects on the surrogate enpoint, plot the
