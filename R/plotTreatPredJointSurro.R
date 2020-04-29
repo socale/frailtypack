@@ -61,7 +61,8 @@
 #' zero value of ‘density’ means no shading lines whereas
 #' negative values (and ‘NA’) suppress shading (and so allow color filling). The default is \code{20}
 #' @param angle Angle (in degrees) of the shading lines. The default is \code{45}
-#'
+#' @param \dots other unused arguments
+#' 
 #' @return For a considered treatment effects on the surrogate enpoint, plot the
 #' associated treatment effects on the true endpoint predicted from the joint surrogate model
 #' with the prediction interval.
@@ -116,7 +117,7 @@
 plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", var.used = "error.estim", 
                                        alpha. = 0.05, n = 1000, lty = 2, d = 3, colCI = "blue", xlab = "beta.S", 
                                        ylab = "beta.T.predict", pred.int.use = "up", main = NULL,
-                                       ybottom = -0.05, ytop = 0.05, density = 20, angle = 45){
+                                       ybottom = -0.05, ytop = 0.05, density = 20, angle = 45, ...){
   # type  = "coef" or "HR"
   # n = number of points for the curve
   # colCI = color Confidence interval
@@ -162,16 +163,16 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       expressxVect <- Vectorize(expressx)
       if(length(STE) == 1){
         curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-               main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
+               main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main, ...)
       }else{
         if(length(STE) == 2){
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
-               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
+               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                  main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
-                else main)
+                else main, ...)
         }
       }
       
@@ -183,7 +184,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       }
       
       expressInfVect <- Vectorize(expressInf)
-      curve (expr = expressInfVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+      curve (expr = expressInfVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
       #sup
       expressSup <- function(x){
         beta + (dab/daa) * (x - alpha) + qnorm(1-alpha./2) * 
@@ -192,7 +193,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       }
       
       expressSupVect <- Vectorize(expressSup)
-      curve (expr = expressSupVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+      curve (expr = expressSupVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
     }
     else{ # HR
       
@@ -206,16 +207,16 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       
       if(length(STE) == 1){
         curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
+              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main, ...)
       }else{
         if(length(STE) == 2){
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                 main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
-                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
+                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                 main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
-                else main)
+                else main, ...)
         }
       }
       
@@ -228,7 +229,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       }
       
       expressInfVect <- Vectorize(expressInf)
-      curve (expr = expressInfVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+      curve (expr = expressInfVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
       #sup
       expressSup <- function(x){
         x <- log(x) # on suppose que les entrees sont des HR et donc on les converti en log HR
@@ -238,7 +239,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       }
       
       expressSupVect <- Vectorize(expressSup)
-      curve (expr = expressSupVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+      curve (expr = expressSupVect, from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
     }
   }
   else{
@@ -251,16 +252,16 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       
       if(length(STE) == 1){
         curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
+              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main, ...)
       }else{
         if(length(STE) == 2){
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                 main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
-                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
+                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                 main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
-                else main)
+                else main, ...)
         }
       }
       
@@ -272,7 +273,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       
       expressInfVect <- Vectorize(expressInf)
       curve (expr = expressInfVect,
-        from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+        from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
       
       #sup
       expressSup <- function(x){
@@ -282,7 +283,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       
       expressSupVect <- Vectorize(expressSup)
       curve (expr = expressSupVect,
-        from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+        from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
     }
     else{ # HR
       expressx <- function(x){
@@ -293,16 +294,16 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       expressxVect <- Vectorize(expressx)
       if(length(STE) == 1){
         curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
-              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main)
+              main = if(is.null(main)) paste("STE = ", round(STE, d), "(HR = ", round(exp(STE), d), ")") else main, ...)
       }else{
         if(length(STE) == 2){
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                 main = if(is.null(main)) paste("STE = ", round(max(STE), d), "(HR = ", round(exp(max(STE)), d), 
-                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main)
+                                               ") and min(beta_S) = ", round(min(STE), d), "(HR = ", round(exp(min(STE)), d), ")") else main, ...)
         }else{ 
           curve(expr = expressxVect, from = from, to = to, n = n, xlab = xlab, ylab = ylab, 
                 main = if(is.null(main)) paste("STE doesn't exist for based on this datatet and the estimated joint surrogate model")
-                else main)
+                else main, ...)
         }
       }
       
@@ -315,7 +316,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       
       expressInfVect <- Vectorize(expressInf)
       curve (expr = expressInfVect,
-        from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+        from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
       #sup
       expressSup <- function(x){
         x <- log(x) # on suppose que les entrees sont des HR et donc on les converti en log HR
@@ -325,7 +326,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       
       expressSupVect <- Vectorize(expressSup)
       curve (expr = expressSupVect,
-        from = from, to = to, add = T, col = colCI, n = n, lty = lty)
+        from = from, to = to, add = T, col = colCI, n = n, lty = lty, ...)
     }
   }
   
