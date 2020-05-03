@@ -40,6 +40,7 @@ true enpoint with the associated prediction intervals. If the observed treatment
 endpoint is included into the prediction interval, the last columns contains "*".} 
 \item{ntrial}{The number of trials in the meta-analysis}
 \item{notconvtrial}{The vector of trials that have not converged}
+\item{pred.error}{The prediction error, corresponding to the number of cases where the prediction interval does not included the observed treatment effect on T}
 \item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} the \code{i-th} trial}
 \item{loocv.summary}{A dataframe of the estimates for the \code{G} models excluded for each raw 
 all the subjects including in the ongoing trial}

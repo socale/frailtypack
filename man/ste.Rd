@@ -100,9 +100,10 @@ joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8,
                 nb.mc = 200, scale = 1/365)
 
 # ======STE=====
-# ste(joint.surro.ovar, var.used = "error.estim")
+# Assuming errors on the estimates
+ste(joint.surro.ovar, var.used = "error.estim")
 # Assuming no errors on the estimates
-# ste(joint.surro.ovar, var.used = "No.error", pred.int.use = "up")
+ste(joint.surro.ovar, var.used = "No.error", pred.int.use = "up")
 
 }
 

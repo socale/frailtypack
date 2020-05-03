@@ -36,6 +36,7 @@
 ##' endpoint is included into the prediction interval, the last columns contains "*".} 
 ##' \item{ntrial}{The number of trials in the meta-analysis}
 ##' \item{notconvtrial}{The vector of trials that have not converged}
+##' \item{pred.error}{The prediction error, corresponding to the number of cases where the prediction interval does not included the observed treatment effect on T}
 ##' \item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} the \code{i-th} trial}
 ##' \item{loocv.summary}{A dataframe of the estimates for the \code{G} models excluded for each raw 
 ##' all the subjects including in the ongoing trial}
@@ -227,6 +228,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
     result$result <- d
     result$ntrial <- length(trial)
     result$notconvtrial <- notconvtrial
+    result$pred.error <- round(prop.table(table(result[,ncol(result)]))[1],dec)
     result$different.models <- lloocv
     result$loocv.summary <- loocv.summary(loocv.object = result, 
                                           nb.parameters = nrow(object$Coefficients),

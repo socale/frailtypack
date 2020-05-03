@@ -54,9 +54,9 @@
 #' value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
 #' non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{0.05}.
 #' @param density The density of shading lines, in lines per inch.  The default 
-#' value of ‘NULL’ means that no shading lines are drawn.  A 
-#' zero value of ‘density’ means no shading lines whereas
-#' negative values (and ‘NA’) suppress shading (and so allow color filling). The default is \code{20}
+#' value of 'NULL' means that no shading lines are drawn.  A 
+#' zero value of 'density' means no shading lines whereas
+#' negative values (and 'NA') suppress shading (and so allow color filling). The default is \code{20}
 #' @param angle Angle (in degrees) of the shading lines. The default is \code{45}
 #' @param legend.show A boolean that indicates if the legend should be displayed
 #' @param leg.x The x co-ordinate to be used to position the legend.
@@ -111,22 +111,22 @@
 #' 
 #' ## "HR"
 #' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
-#'                 type = "HR", var.used = "error.estim", lty = 2,)
+#'                 type = "HR", lty = 2,)
 #'                 
 #' ## or without acceptance area for betaS:
 #' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
-#'                 type = "HR", var.used = "error.estim", lty = 2, 
+#'                 type = "HR", lty = 2, 
 #'                 add.accept.area.betaS = FALSE)
 #'              
 #' ## "log HR"
 #' plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
-#'                 type = "Coef", var.used = "error.estim", lty = 2)
+#'                 type = "Coef", lty = 2)
 #'                 
 #' ### For a value of ste greater than 0 (HR > 1), which induces deleterious
 #' ### treatment effet, argument "pred.int.use" can be set to "lw"  
 #' 
 #' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 2, 
-#'                 type = "HR", var.used = "error.estim", lty = 2,
+#'                 type = "HR", lty = 2,
 #'                 pred.int.use = "lw")
 #' 
 #' }

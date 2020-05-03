@@ -112,9 +112,10 @@
 ##'                 nb.mc = 200, scale = 1/365)
 ##' 
 ##' # ======STE=====
-##' # ste(joint.surro.ovar, var.used = "error.estim")
+##' # Assuming errors on the estimates
+##' ste(joint.surro.ovar, var.used = "error.estim")
 ##' # Assuming no errors on the estimates
-##' # ste(joint.surro.ovar, var.used = "No.error", pred.int.use = "up")
+##' ste(joint.surro.ovar, var.used = "No.error", pred.int.use = "up")
 ##' 
 ##' }
 ##' 
@@ -129,42 +130,6 @@ ste <- function (object, var.used = "error.estim", alpha. = 0.05, pred.int.use =
   
   if(! pred.int.use %in% c("up","lw"))
     stop("Argument 'pred.int.use' must be specified to 'up' or 'lw' ")
-  
-  # beta  <- object$beta.t
-  # alpha <- object$beta.s
-  # dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
-  # daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
-  # dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
-  # 
-  # #alpha0 <- matrixPred$beta.S[i]
-  # x     <- t(matrix(c(1, -dab/daa),1,2))
-  # 
-  # # Vmu (sigma_ST, sigma_SS). on utilise la matrice obtenu par delta methode a partir de la hessienne
-  # Vmu   <- matrix(c(object$varcov.Sigma[3,3], object$varcov.Sigma[3,1],
-  #                   object$varcov.Sigma[3,1], object$varcov.Sigma[1,1]),2,2)
-  # nparam <- nrow(object$varH)
-  # 
-  # # VD (bete_T, beta_S). on utilise la hesienne directement car pas de changement de variable
-  # VD     <- matrix(c(object$varH[nparam,nparam], object$varH[nparam,nparam-1],
-  #                    object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
-  # R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1]
-
-  # moyenne conditionnelle de beta + b_0
-  # beta.T.i <- beta + (dab/daa) * (alpha0 - alpha)
-  # variance.inf <- dbb * (1 - R2trial) 
-  # variance.N <- t(x) %*% (Vmu + (((alpha0 - alpha)/daa)**2) * VD) %*% x
-  # + variance.inf
-  
-  # if(var.used == "error.estim") 
-  #   variance <- variance.N
-  # else 
-  #   variance <- variance.inf
-  # 
-  # l.alpha0 <- beta.T.i - qnorm(1-alpha./2) * sqrt(variance) # borne inferieure
-  # u.alpha0 <- beta.T.i + qnorm(1-alpha./2) * sqrt(variance) # borne superieure
-  
-  # resolution de l'equation l.alpha0 =0 a l'aide de la fonction optimize. cette fonction retourne
-  # la solution minimale de l'equation a resoudre
   
   f <- function(x, object, var.used, alpha., pred.int.use){
     beta  <- object$beta.t
@@ -252,8 +217,8 @@ ste <- function (object, var.used = "error.estim", alpha. = 0.05, pred.int.use =
   if(length(ste) == 0){# on est dans le cas Delta = 0, pas de solution entire pour cette equation
     message("Warning : STE does not exist for this intermediate endpoint. Therefore, 
             regarding the values of R2trial and Kendall tau, the observed treatment effect on the candidate 
-            surrogate endpoint can not permitted to predict a non zero treatment effect on the true endpoint
-            using this model and the meta-analysis")
+            surrogate endpoint is not able to predict a non zero treatment effect on the true endpoint
+            using this model and this dataset")
   }else{
     if(length(ste) == 2){
       # recherche du sens de la concavite (bref, signe de "a" dans l'equation "ax^2 + bx + c")

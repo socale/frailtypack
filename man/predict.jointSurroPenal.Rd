@@ -7,7 +7,7 @@ canditate surrogate endpoint.}
 \usage{
 \method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, 
 betaT.obs = NULL, ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, 
-dec = 3, colCI = "red", from = -2, to = 2, ...)
+dec = 3, colCI = "red", from = -2, to = 2, type = "Coef", ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -48,7 +48,11 @@ and confidence intervals. Default of 3 digits is used.}
 \item{to}{The range (with \code{from}) over which the function will be plotted. The default is 
 \code{from -2 to 2}}
 
-\item{...}{other unused arguments.}
+\item{type}{The type of graphic, \code{"Coef"} for the \code{log HR} or \code{"HR"} for hazard ratio.
+If set to \code{HR}, the arguments \code{from} and \code{to} must take positive values.
+The default is \code{"Coef"}.}
+
+\item{...}{other unused arguments. See the function (\link{plotTreatPredJointSurro})}
 }
 \value{
 Returns and display a dataframe including for each trial the number of included subjects 
@@ -94,7 +98,16 @@ predict(joint.surro.ovar)
 
 # prediction of the treatment effect on the true endpoint from an observed 
 # treatment effect on the surrogate endpoint in a given trial
+
+# in log HR
 predict(joint.surro.ovar, betaS.obs = -0.797, betaT.obs = -1.018)
+predict(joint.surro.ovar, type = "Coef", betaS.obs = -1, leg.y = 0, leg.x = 0.3, to = 2.3)
+predict(joint.surro.ovar, type = "Coef", leg.y = 3.5, add.accept.area.betaS = F, to = 2.3)
+
+# in HR
+predict(joint.surro.ovar, betaS.obs = exp(-0.797), betaT.obs = exp(-1.018))
+predict(joint.surro.ovar, type = "HR", betaS.obs = log(0.65), leg.y = 5, to = 2.3)
+predict(v, type = "HR", leg.y = 5, add.accept.area.betaS = F, to = 2.3)
 }
 
 

@@ -1,7 +1,7 @@
 Changes in Version 3.2.1 May 2020
 o Bugg fixed in the computation of ste. Actually, by solving the equation representing the upper limit of the prediction interval of the treatment effects on T based on the observed treatment effects on S equals to 0 [u(beta_So = 0)], it is possible to find 2 solutions and then two potential values for STE. Depending on the shape of the function, different interpretations of possible values can be considered. We update the R functions ste(), plotTreatPredJointSurro() and the S3method summary.jointSurroPenal() in order to take into account this remark.
 o Update of the R function loocv() in order to return the list of the G models obtained after excuded for the i-th the i-th trial during the loocv process. In addition we return the dataframe of the estimates for the G models excluding for each raw all the subjects included in the ongoing trial.
-o Update of the arguments of the S3method plot.jointSurroPenalloocv().
+o Update of the arguments of the S3methods plot.jointSurroPenalloocv() and predict.jointSurroPenal()
 
 Changes in Version 3.2.0 March 2020
 o Update of the S3method predict.jointSurroPena(). We have included a plot of the predicted treatment effects on the true endpoint (with the prediction intervals) given the observed treatment effects on the surrogate endpoint and an object from the joint surrogate model. We have included the function plot.predict.jointSurroPenal()
@@ -19,7 +19,7 @@ o Rename of the argument "rsqrt" in the jointSurrSimul() function by "cor".
 Changes in Version 3.1.0 december 2019
 o New model added:  two-part joint model (part of longiPenal function) for a longitudinal semicontinuous marker and a terminal event.
 o Add Monte-Carlo integration method for joint models longitudinal/terminal event (longiPenal function)
-o Bug fixed in the S3method plot() associated with the object of class additivePenal. In the prevous version it was not passible to call the S3method plot() on this object.
+o Bug fixed in the S3method plot() associated with the object of class additivePenal. In the previous version it was not possible to call the S3method plot() on this object.
 
 
 Changes in Version 3.0.3.3 august 2019
