@@ -1,8 +1,8 @@
-##' Leave-one-out crossvalidation for the one-step Joint surrogate model for evaluating a 
+##' The trials leave-one-out crossvalidation for the one-step Joint surrogate model for evaluating a 
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' Leave-one-out crossvalidation for evaluating the joint surrogate model 
+##' The trials leave-one-out crossvalidation for evaluating the joint surrogate model 
 ##' }
 ##' 
 ##' @aliases loocv 
@@ -37,9 +37,9 @@
 ##' \item{ntrial}{The number of trials in the meta-analysis}
 ##' \item{notconvtrial}{The vector of trials that have not converged}
 ##' \item{pred.error}{The prediction error, corresponding to the number of cases where the prediction interval does not included the observed treatment effect on T}
-##' \item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} the \code{i-th} trial}
-##' \item{loocv.summary}{A dataframe of the estimates for the \code{G} models excluded for each raw 
-##' all the subjects including in the ongoing trial}
+##' \item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} trial}
+##' \item{loocv.summary}{A dataframe of the estimates for the \code{G} models; each raw including the results
+##'  without the subjects of the given trial}
 ##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
@@ -72,7 +72,7 @@
 ##' dloocv$result
 ##' dloocv$loocv.summary
 ##' 
-##' # In order to summaryse all the estimated models during the loocv proccess:
+##' # In order to summarize all the estimated models during the loocv proccess:
 ##' sapply(1:30, function(i){
 ##'        cat(paste(" ========== (-)essai : ", i), fill = T)
 ##'        summary(dloocv$different.models[[i]])

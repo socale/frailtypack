@@ -1,8 +1,8 @@
-##' Plot of leave-one-out crossvalidation Outputs from the one-step Joint surrogate model for evaluating a 
+##' Plot of trials leave-one-out crossvalidation Outputs from the one-step Joint surrogate model for evaluating a 
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
-##' Plot of leave-one-out crossvalidation Outputs for evaluating the joint surrogate model 
+##' Plot of trials leave-one-out crossvalidation Outputs for evaluating the joint surrogate model 
 ##' }
 ##' 
 ##' @aliases plot.jointSurroPenalloocv
@@ -22,14 +22,14 @@
 ##' @param main An overall title for the plot: see \link{title}.
 ##' @param xlab A title for the x axis: see \link{title}.
 ##' @param ylab A title for the y axis: see \link{title}.
-##' @param legend A character or expression vector of length >= 1 to appear in the legend
+##' @param legend A vector of characters string of length >= 1 to appear in the legend
 ##' @param ... other unused arguments.
 ##' 
 ##' @return This function displays the boxplots corresponding to the number of trials in the 
-##' dataset. Each boxplot includes 3 elements correnponding to the predicted treatment effect on true endpoint
-##' with the prediction interval. The circle inside or outside the boxplot represents the observed
-##' treatment effect on true endpoint. For all trials with convergence issues or outliers, the boxplot is just represented
-##' by a dash. In the last case, we display in the main of the figure a vector of these trials, if argument \code{main} 
+##' dataset. Each boxplot includes 3 elements corresponding to the predicted treatment effect on true endpoint
+##' with the prediction interval. The circles inside or outside the boxplot represent the observed
+##' treatment effects on true endpoint. For each trial with convergence issues or outliers, the boxplot is replaced
+##' by a dash. In this case, we display in the title of the figure a vector of these trials, if argument \code{main} 
 ##' is set to \code{NULL}. The function returns the list of unused trials.
 ##' @seealso \code{\link{loocv}}
 ##' 

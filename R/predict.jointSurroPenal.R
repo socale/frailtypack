@@ -1,4 +1,4 @@
-##' Predict Method for the one-step Joint surrogate models for the evaluation of a 
+##' S3method predict for the one-step Joint surrogate models for the evaluation of a 
 ##' canditate surrogate endpoint.
 ##' 
 ##' @description{
@@ -21,10 +21,11 @@
 ##' (output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).
 ##' @param datapred Dataset to use for the prediction. If this argument is specified,
 ##' the data structure must be the same as the parameter \code{data} in the 
-##' function \link{jointSurroPenal} or \link{jointSurroCopPenal}. However, if observation on te true endpoint are
-##' not available, columns timeT and \code{statusT} can be absent.
+##' function \link{jointSurroPenal} or \link{jointSurroCopPenal}. However, if observation on the true endpoint are
+##' not available, columns timeT and \code{statusT} can be absent. In this case, the \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}
+##' are calculated using Cox proportional hazards models.
 ##' @param betaS.obs Observed treatment effect on the surrogate endpoint, to use for the prediction of
-##' the treatment effect on the true endpoint. If not null, this value is used for prediction insted of
+##' the treatment effect on the true endpoint. If not null, this value is used for prediction instead of
 ##' \code{datapred}. The default is \code{NULL}.
 ##' @param betaT.obs Observed treatment effect on the true endpoint. Used to assess the prediction if not null.
 ##' The defaut is \code{NULL}.
@@ -33,7 +34,7 @@
 ##' the estimation error of the estimates of the parameters. If the estimates 
 ##' are supposed to be known or if the dataset includes a high number of trials with 
 ##' a high number of subject per trial, value \code{No.error} can be used. 
-##' The default is \code{error.estim}.
+##' The default is \code{error.estim} (highly recommended).
 ##' @param ntrial0 Number of subjects include in the new trial. Required if \code{betaS.obs} is not null.
 ##' The default is \code{NULL}.
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
