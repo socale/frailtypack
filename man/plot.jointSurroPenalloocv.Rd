@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.jointSurroPenalloocv.R
 \name{plot.jointSurroPenalloocv}
 \alias{plot.jointSurroPenalloocv}
-\title{Plot of leave-one-out crossvalidation Outputs from the one-step Joint surrogate model for evaluating a 
+\title{Plot of trials leave-one-out crossvalidation Outputs from the one-step Joint surrogate model for evaluating a 
 canditate surrogate endpoint.}
 \usage{
 \method{plot}{jointSurroPenalloocv}(x, unusedtrial = NULL, xleg = "bottomleft", 
@@ -27,21 +27,21 @@ one can drop from the data the trials with very hight absolute predicted value}
 
 \item{ylab}{A title for the y axis: see \link{title}.}
 
-\item{legend}{A character or expression vector of length >= 1 to appear in the legend}
+\item{legend}{A vector of characters string of length >= 1 to appear in the legend}
 
 \item{...}{other unused arguments.}
 }
 \value{
 This function displays the boxplots corresponding to the number of trials in the 
-dataset. Each boxplot includes 3 elements correnponding to the predicted treatment effect on true endpoint
-with the prediction interval. The circle inside or outside the boxplot represents the observed
-treatment effect on true endpoint. For all trials with convergence issues or outliers, the boxplot is just represented
-by a dash. In the last case, we display in the main of the figure a vector of these trials, if argument \code{main} 
+dataset. Each boxplot includes 3 elements corresponding to the predicted treatment effect on true endpoint
+with the prediction interval. The circles inside or outside the boxplot represent the observed
+treatment effects on true endpoint. For each trial with convergence issues or outliers, the boxplot is replaced
+by a dash. In this case, we display in the title of the figure a vector of these trials, if argument \code{main} 
 is set to \code{NULL}. The function returns the list of unused trials.
 }
 \description{
 {
-Plot of leave-one-out crossvalidation Outputs for evaluating the joint surrogate model 
+Plot of trials leave-one-out crossvalidation Outputs for evaluating the joint surrogate model 
 }
 }
 \examples{

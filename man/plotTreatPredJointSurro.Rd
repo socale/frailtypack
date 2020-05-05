@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotTreatPredJointSurro.R
 \name{plotTreatPredJointSurro}
 \alias{plotTreatPredJointSurro}
-\title{Plot of the prediction of the treatment effect on the true endpoint}
+\title{Plot of the prediction of the treatment effect on the true endpoint and the STE}
 \usage{
 plotTreatPredJointSurro(object, from = -3, to = 2, type = "Coef",
   var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3,
@@ -34,12 +34,11 @@ and indicates if the prediction error take into account
 the estimation error of the estimates of the parameters. If the estimates 
 are supposed to be known or if the dataset includes a high number of trials with 
 a high number of subject per trial, value \code{No.error} can be used. 
-The default is \code{error.estim}.}
+The default is \code{error.estim} (highly recommended).}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
 
-\item{n}{Integer; the number of \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} 
-values at which to evaluate. The default is \code{1000}.}
+\item{n}{An integer that indicates the number of values for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}. The default is \code{1000}.}
 
 \item{lty}{The line type. Line types can either be specified as an integer 
 (0=blank, 1=solid (default), 2=dashed, 3=dotted, 4=dotdash, 5=longdash, 6=twodash) or as one 
@@ -58,8 +57,8 @@ and confidence intervals. Default of 3 digits is used.}
 
 \item{pred.int.use}{A character string that indicates the bound of the prediction interval 
 to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
-or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
-induces risk factors.}
+or \code{lw} for the lower bound. \code{up} when we have a protective treatment effect and \ode{lw} 
+when we have a deleterious treatment effect.}
 
 \item{main}{Title of the graphics}
 
@@ -67,11 +66,11 @@ induces risk factors.}
 \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}
 that predict a nonzero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is TRUE}
 
-\item{ybottom}{A scalar of left y position of the rectangle on the x-axis associated with acceptable 
+\item{ybottom}{A scalar for the left y bottom position of the rectangle on the x-axis associated with acceptable 
 value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
 non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{-0.05}.}
 
-\item{ytop}{A scalar of right y position of the rectangle on the x-axis associated with acceptable 
+\item{ytop}{A scalar for the top right y position of the rectangle on the x-axis associated with acceptable 
 value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} to predict a 
 non zero \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. The default is \code{0.05}.}
 
@@ -118,8 +117,8 @@ with the prediction interval.
 \description{
 Plot the prediction of the treatment effect on the true endpoint based on the observed treatment effect
 on the surrogate endpoint, with the prediction interval: results from the one-step Joint surrogate model  
-for evaluating a canditate surrogate endpoint. The graphic also include vertical lines that cut 
-the x axis to the values of \link{ste}. A hatched rectagle indicated the values of 
+for evaluating a canditate surrogate endpoint. The graphic also includes vertical lines that cut 
+the x axis to the values of \link{ste}. A hatched rectagle/zone indicates the values of 
 \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}} that predict a non zeto 
 \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, according to the number of value 
 for \code{STE} and the shape of the upper confidence limit for the prediction model.

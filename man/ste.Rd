@@ -13,18 +13,18 @@ ste(object, var.used = "error.estim", alpha. = 0.05,
 (output from calling the \code{jointSurroPenal} or \code{jointSurroCopPenal} function ).}
 
 \item{var.used}{This argument takes two values. The first one is \code{"error.estim"}
-and indicates if the prediction error take into account
+and indicates if the prediction error takes into account
 the estimation error of the estimates of the parameters. If the estimates 
 are supposed to be known or if the dataset includes a high number of trials with 
 a high number of subject per trial, value \code{No.error} can be used. 
-The default is \code{error.estim}.}
+The default is \code{error.estim}, which is highly recommended in practice.}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
 
 \item{pred.int.use}{A character string that indicates the bound of the prediction interval 
 to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
-or \code{lw} for the lower bound. \code{up} induces protective treatment effects and \code{lw}
-induces risk factors.}
+or \code{lw} for the lower bound. \code{up} when we have a protective treatment effect and \ode{lw} 
+when we have a deleterious treatment effect (see details).}
 }
 \value{
 Returns and displays the STE.
@@ -64,16 +64,16 @@ where \if{latex}{\eqn{\vartheta}}\if{html}{\figure{vartheta.png}{options: width=
 represents the set of estimates for the fixed-effects and the 
 variance-covariance parameters of the random effects obtained from the joint surrogate 
 \code{\link[=jointSurroPenal]{model}} 
-(Sofeu \emph{et al.}, 2018). 
+(Sofeu \emph{et al.}, 2019). 
 
 If the previous equations gives two solutions, STE can be the 
 minimum (resp. the maximum) value or both of them, according to the shape of the function. 
 If the concavity of the function is turned upwards, STE is the first value and
 the second value represents the maximum (res. the minimum) treament value observable 
-on the surrogate that can predict a non zero treatment effect on true endpoint. 
-If the concavity of the function is turned down, both the two solutions
+on the surrogate that can predict a nonzero treatment effect on true endpoint. 
+If the concavity of the function is turned down, both of the solutions
 represent the STE and the interpretation is such that accepted values of the 
-treatment effects on \code{S} predict a no zero treatment effects on \code{T}
+treatment effects on \code{S} predict a nonzero treatment effects on \code{T}
 
 Given that negative values of treatment effect indicate a reduction of the risk 
 of failure and are considered beneficial, STE is recommended to be computed from 
@@ -81,7 +81,7 @@ the upper prediction
 limit  \if{latex}{\eqn{u(\alpha_0)}} 
 \if{html}{\code{u}(\eqn{\alpha}\out{<sub>0</sub>})}.
 
-The details on the computation of STE is describes in 
+The details on the computation of STE are described in 
 Burzykowski \emph{et al.} (2006).
 }
 }
