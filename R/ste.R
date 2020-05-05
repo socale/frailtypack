@@ -71,7 +71,7 @@
 ##' @param alpha. The confidence level for the prediction interval. The default is \code{0.05}
 ##' @param pred.int.use A character string that indicates the bound of the prediction interval 
 ##' to use to compute the STE. Possible values are \code{up} for the upper bound (the default)
-##' or \code{lw} for the lower bound. \code{up} when we have a protective treatment effect and \ode{lw} 
+##' or \code{lw} for the lower bound. \code{up} when we have a protective treatment effect and \code{lw} 
 ##' when we have a deleterious treatment effect (see details).
 ##' 
 ##' @return Returns and displays the STE.
