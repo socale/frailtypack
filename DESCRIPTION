@@ -7,8 +7,8 @@ Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
         Agnieszka Krol, Casimir L. Sofeu, Julien Dumerc, Denis Rustand
 Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
-Depends: R (>= 2.10.0), survival, boot, MASS, survC1, doBy, rootSolve
-Imports: statmod, nlme, shiny, shinyjs,shinyBS,shinydashboard,rhandsontable,shinythemes,jsonlite
+Depends: R (>= 2.10.0), survival, boot, MASS, survC1, doBy
+Imports: statmod, nlme, shiny, shinyjs,shinyBS,shinydashboard,rhandsontable,shinythemes,jsonlite,rootSolve
 LazyLoad: no
 Description: The following several classes of frailty models using a penalized likelihood estimation on the hazard function but also a parametric estimation can be fit using this R package:
         1) A shared frailty model (with gamma or log-normal frailty distribution) and Cox proportional hazard model. Clustered and recurrent survival times can be studied.
