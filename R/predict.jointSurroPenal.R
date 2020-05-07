@@ -302,14 +302,14 @@
   for(k in 1:nrow(matrixPred)){
     if(type == "Coef"){ # log HR
       points(matrixPred$beta.S[k],matrixPred$beta.T.i[k], col = colCI)
-      if(nrow(matrixPred)==1){ # si on a un seul point à prédire, on met l'intervalle de confiance et le segment
+      if(nrow(matrixPred)==1){ # si on a un seul point a predire, on met l'intervalle de confiance et le segment
         points(matrixPred$beta.S[k],matrixPred$Inf.95.CI[k], col = colCI)
         points(matrixPred$beta.S[k],matrixPred$Sup.95.CI[k], col = colCI)
         segments(x0 = matrixPred$beta.S, y0 = -6, x1 = matrixPred$beta.S, y1 = matrixPred$Sup.95.CI[k], col = "red", lty = 4)
       }
     }else{ # HR
       points(exp(matrixPred$beta.S[k]),exp(matrixPred$beta.T.i[k]), col = colCI)
-      if(nrow(matrixPred)==1){  # si on a un seul point à prédire, on met l'intervalle de confiance et le segment
+      if(nrow(matrixPred)==1){  # si on a un seul point a predire, on met l'intervalle de confiance et le segment
         points(exp(matrixPred$beta.S[k]),exp(matrixPred$Inf.95.CI[k]), col = colCI)
         points(exp(matrixPred$beta.S[k]),exp(matrixPred$Sup.95.CI[k]), col = colCI)
         segments(x0 = exp(matrixPred$beta.S), y0 = -6, x1 = exp(matrixPred$beta.S), y1 = exp(matrixPred$Sup.95.CI[k]), col = "red", lty = 4)

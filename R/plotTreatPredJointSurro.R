@@ -91,7 +91,7 @@
 #' Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
 #' endpoints using individual patient data from meta-analyses of randomized controlled trials. 
 #' PLOS ONE; 15, 1-25.
-#' @importFrom graphics points curve
+#' @importFrom graphics points curve rect segments
 #' @keywords surrogate prediction
 #' @export
 #'
@@ -170,11 +170,11 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
                      object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
   R2trial <- object$Coefficients$Estimate[nrow(object$Coefficients)-1] 
   
-  #ste : il est obtenu à partir de la resolution d'une equation de scond degre 
+  #ste : il est obtenu a partir de la resolution d'une equation de scond degre 
   # de la forme "ax^2 + bx + c = 0"
   
   if((xlab == "beta.S") & (type == "HR")) xlab = "Exp(beta.S)"
-  if((ylab = "beta.T.predict") & (type == "HR")) ylab = "Exp(beta.T.predict)"
+  if((ylab == "beta.T.predict") & (type == "HR")) ylab = "Exp(beta.T.predict)"
   
   STE <- ste(object, var.used = var.used, pred.int.use = pred.int.use)
   
