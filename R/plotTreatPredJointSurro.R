@@ -173,6 +173,9 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
   #ste : il est obtenu à partir de la resolution d'une equation de scond degre 
   # de la forme "ax^2 + bx + c = 0"
   
+  if((xlab == "beta.S") & (type == "HR")) xlab = "Exp(beta.S)"
+  if((ylab = "beta.T.predict") & (type == "HR")) ylab = "Exp(beta.T.predict)"
+  
   STE <- ste(object, var.used = var.used, pred.int.use = pred.int.use)
   
   if(var.used == "error.estim"){

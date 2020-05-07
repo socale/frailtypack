@@ -115,6 +115,7 @@
       k <- k+1
     }
     
+    mainlabel = NULL
     doBy::orderBy(~ trialID+ordre,data.plot2)
     trialnotused <- sort(c(unusedtrial, object$notconvtrial))
     if(length(trialnotused)>=1) mainlabel <- trialnotused[1]
