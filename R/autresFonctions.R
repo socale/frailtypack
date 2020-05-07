@@ -113,3 +113,81 @@ param.empirique = function(nsim = 100, ver = 2, dec = 2, variatio.seed = 0,
 }
 
 
+# calcul de l'image de l'effet du traitement sur T sachant l'effet du traitement sur S (x)
+f <- function(x, object, var.used, alpha., pred.int.use){
+  beta  <- object$beta.t
+  alpha <- object$beta.s
+  
+  #===proble dans l'indexation de la matrice des coefficient. scl: 11/04/2020
+  # dab   <- object$Coefficients$Estimate[nrow(object$Coefficients)-4]
+  # daa   <- object$Coefficients$Estimate[nrow(object$Coefficients)-6]
+  # dbb   <- object$Coefficients$Estimate[nrow(object$Coefficients)-5]
+  dab   <- object$Coefficients[rownames(object$Coefficients)=="sigma_sT",1]
+  daa   <- object$Coefficients[rownames(object$Coefficients)=="sigma_s",1]
+  dbb   <- object$Coefficients[rownames(object$Coefficients)=="sigma_t",1]
+  #====
+  
+  
+  #x <- matrixPred$beta.S[i]
+  x.     <- t(matrix(c(1, -dab/daa),1,2))
+  
+  # Vmu (sigma_ST, sigma_SS). on utilise la matrice obtenu par delta methode a partir de la hessienne
+  Vmu   <- matrix(c(object$varcov.Sigma[3,3], object$varcov.Sigma[3,1],
+                    object$varcov.Sigma[3,1], object$varcov.Sigma[1,1]),2,2)
+  nparam <- nrow(object$varH)
+  
+  # VD (bete_T, beta_S). on utilise la hesienne directement car pas de changement de variable
+  VD     <- matrix(c(object$varH[nparam,nparam], object$varH[nparam,nparam-1],
+                     object$varH[nparam-1,nparam], object$varH[nparam -1,nparam - 1]),2,2)
+  R2trial <- object$Coefficients[rownames(object$Coefficients)=="R2trial",1] # scl: 11/04/2020
+  
+  if(var.used == "error.estim") {
+    if(pred.int.use == "lw"){
+      return(
+        sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., x., Vmu, VD, R2trial) 
+          beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
+            sqrt(t(x.) %*% (Vmu + (((x - alpha)/daa)**2) * VD) %*% x.
+                 + dbb * (1 - R2trial)), 
+          beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+          x. = x., Vmu = Vmu, VD = VD, R2trial = R2trial
+        )
+      )
+    }
+    else{
+      return(
+        sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., x., Vmu, VD, R2trial) 
+          beta + (dab/daa) * (x - alpha) + qnorm(1-alpha./2) * sqrt(t(x.) %*% 
+                                                                      (Vmu + (((x - alpha)/daa)**2) * VD) %*% x. + dbb * (1 - R2trial)), 
+          beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+          x. = x., Vmu = Vmu, VD = VD, R2trial = R2trial
+        )
+      )
+    }
+  }
+  else{
+    if(pred.int.use == "lw"){
+      return(
+        sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., R2trial) 
+          beta + (dab/daa) * (x - alpha) - qnorm(1-alpha./2) * 
+            sqrt(dbb * (1 - R2trial)),
+          beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+          R2trial = R2trial
+        )
+      )
+    }
+    else{
+      return(
+        
+        sapply(x, function(x, beta, dab, daa, dbb, alpha, alpha., R2trial) 
+          beta + (dab/daa) * (x - alpha) + qnorm(1-alpha./2) *
+            sqrt(dbb * (1 - R2trial)),
+          beta = beta, dab = dab, daa = daa, dbb = dbb, alpha = alpha, alpha. = alpha., 
+          R2trial = R2trial
+        )
+      )
+    }
+  }
+  
+}
+
+
