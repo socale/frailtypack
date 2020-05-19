@@ -917,7 +917,7 @@
 
 !    !write(*,*)'typeof',typeof
 
-    if (typeof == 2) then
+    if ((typeof == 2) & (aaa == 1)) then
         b(1:4)=1.d-1!0.8d0
 !        b(np-nva-indic_alpha)=5.d-1 ! pour theta
 !        b(np-nva-indic_alpha)=1.d0 ! pour theta

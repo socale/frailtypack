@@ -262,13 +262,15 @@
 #' 
 #' @aliases jointSurroCopPenal
 #' @usage 
-#' jointSurroCopPenal(data, maxit = 40, indicator.alpha = 1, 
-#'    frail.base = 1, n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, 
-#'    LIMderiv = 0.001, nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, 
-#'    adaptatif = 0, int.method = 0, nb.iterPGH = 5, true.init.val = 0, 
+#' jointSurroCopPenal(data, maxit = 40, hazard = "Splines", 
+#'    indicator.alpha = 1, frail.base = 1, n.knots = 6, 
+#'    LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, 
+#'    nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, adaptatif = 0, 
+#'    int.method = 0, nb.iterPGH = 5, true.init.val = 0, 
 #'    thetacopula.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
-#'    betas.init = 0.5, betat.init = 0.5, scale = 1, 
+#'    betas.init = 0.5, betat.init = 0.5, shape.initS = 0.25,
+#'    scale.initS = 0.25, shape.initT = 0.25, scale.initT = 0.25, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
 #'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa = c(0,0),
 #'    typecopula = 1, nb.decimal = 4, print.times = TRUE, print.iter = FALSE)
@@ -287,6 +289,9 @@
 #'    }
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' The default being \code{40}. 
+#' @param hazard Type of hazard functions: "Splines" for semiparametric hazard functions using equidistant 
+#' intervals with the penalized likelihood estimation, "Weibull" for parametric Weibull functions. 
+#' Default is "Splines".
 #' @param indicator.alpha A binary, indicating whether the power's parameter \eqn{\alpha} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
@@ -358,6 +363,14 @@
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param betat.init Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
+#' @param shape.initS Initial value for the shape parameter (\if{latex}{\eqn{\gamma_S}} \if{html}{\eqn{\gamma}\out{<sub>S</sub>}}) 
+#' of the weibull model associated with the surrogate endpoint. The default is \code{0.25}
+#' @param scale.initS Initial value for the scale parameter (\if{latex}{\eqn{\rho_S}} \if{html}{\eqn{\rho}\out{<sub>S</sub>}}) 
+#' of the weibull model associated with the surrogate endpoint. The default is \code{0.25}
+#' @param shape.initT Initial value for the shape parameter (\if{latex}{\eqn{\gamma_T}} \if{html}{\eqn{\gamma}\out{<sub>T</sub>}}) 
+#' of the weibull model associated with the true endpoint. The default is \code{0.25}
+#' @param scale.initT Initial value for the scale parameter (\if{latex}{\eqn{\rho_T}} \if{html}{\eqn{\rho}\out{<sub>T</sub>}}) 
+#' of the weibull model associated with the surrogate endpoint. The default is \code{0.25}. The default is \code{0.25}
 #' @param scale A numeric that allows to rescale (by multiplication) the survival times, to avoid numerical 
 #' problems in the event of some convergence issues. If no change is needed the argument is set to 1, the default value. 
 #' eg: \code{1/365} aims to convert days to years ".
@@ -508,7 +521,7 @@
 #' summary(joint.surro.Clayton)
 #' }
 #' 
-jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base = 1, 
+jointSurroCopPenal = function(data, maxit = 40, hazard = "Splines", indicator.alpha = 1, frail.base = 1, 
                       n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 1000, 
                       nb.gh = 20, nb.gh2 = 32, adaptatif = 0, int.method = 0, nb.iterPGH = 5, 
                       true.init.val = 0, thetacopula.init = 1, 
@@ -530,17 +543,35 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nboot.kendall <- 1000 # really, I don't need it here
   pfs <- 1 # pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 1. In this case, death is included in the surrogate endpoint. 
   
- # list of models parameters:
-  parameter <- c(maxit = maxit,indicator.zeta = 0, indicator.alpha = indicator.alpha,
-                 frail.base = frail.base, n.knots = n.knots, LIMparam = LIMparam, LIMlogl = LIMlogl, 
-                 LIMderiv = LIMderiv, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif, 
-                 int.method = int.method, nb.iterPGH = nb.iterPGH, nb.MC.kendall = nb.MC.kendall, 
-                 nboot.kendall = nboot.kendall, true.init.val = true.init.val, theta.init = theta.init, 
-                 sigma.ss.init = sigma.ss.init, sigma.tt.init = sigma.tt.init, sigma.st.init = sigma.st.init, 
-                 gamma.init = gamma.init, alpha.init = alpha.init, zeta.init = zeta.init, betas.init = betas.init, 
-                 betat.init = betat.init, scale = scale, random.generator = random.generator, kappa.use = kappa.use, 
-                 random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, typecopula = typecopula, 
-                 nb.decimal = nb.decimal, print.times = print.times, print.iter = print.iter)
+  if(!(hazard %in% c("Splines","Weibull"))){
+    stop("model options hazard must be set to Splines or Weibull")
+  }
+  
+  # list of models parameters:
+  if(hazard == "Splines"){
+    parameter <- c(maxit = maxit, hazard = hazard,indicator.zeta = 0, indicator.alpha = indicator.alpha,
+                   frail.base = frail.base, n.knots = n.knots, LIMparam = LIMparam, LIMlogl = LIMlogl, 
+                   LIMderiv = LIMderiv, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif, 
+                   int.method = int.method, nb.iterPGH = nb.iterPGH, nb.MC.kendall = nb.MC.kendall, 
+                   nboot.kendall = nboot.kendall, true.init.val = true.init.val, theta.init = theta.init, 
+                   sigma.ss.init = sigma.ss.init, sigma.tt.init = sigma.tt.init, sigma.st.init = sigma.st.init, 
+                   gamma.init = gamma.init, alpha.init = alpha.init, zeta.init = zeta.init, betas.init = betas.init, 
+                   betat.init = betat.init, scale = scale, random.generator = random.generator, kappa.use = kappa.use, 
+                   random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, typecopula = typecopula, 
+                   nb.decimal = nb.decimal, print.times = print.times, print.iter = print.iter)
+  }else{
+    parameter <- c(maxit = maxit, hazard = hazard,indicator.zeta = 0, indicator.alpha = indicator.alpha,
+                   frail.base = frail.base, LIMparam = LIMparam, LIMlogl = LIMlogl, 
+                   LIMderiv = LIMderiv, nb.mc = nb.mc, nb.gh = nb.gh, nb.gh2 = nb.gh2, adaptatif = adaptatif, 
+                   int.method = int.method, nb.iterPGH = nb.iterPGH, nb.MC.kendall = nb.MC.kendall, 
+                   nboot.kendall = nboot.kendall, true.init.val = true.init.val, theta.init = theta.init, 
+                   sigma.ss.init = sigma.ss.init, sigma.tt.init = sigma.tt.init, sigma.st.init = sigma.st.init, 
+                   gamma.init = gamma.init, alpha.init = alpha.init, zeta.init = zeta.init, betas.init = betas.init, 
+                   betat.init = betat.init, shape.initS = shape.initS, scale.initS = scale.initS, shape.initT = shape.initT, 
+                   scale.initT = scale.initT, scale = scale, random.generator = random.generator, kappa.use = kappa.use, 
+                   random = random, random.nb.sim = random.nb.sim, seed = seed, init.kappa = init.kappa, typecopula = typecopula, 
+                   nb.decimal = nb.decimal, print.times = print.times, print.iter = print.iter)
+  }
   
  # some initializations: for all these parameters, refers to the function jointSurroPenalSimulfor help (or descriptions)
   nb.dataset <- 1
@@ -698,7 +729,11 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   # parametre fonction de risque de base
   gamma1 <- 2 # paramertre de la loi gamma
   gamma2 <- 2 # paramertre de la loi gamma
-  typeof <- 0 # type de function de risque  0:Splines,  1:Cpm  2:weib
+  # type de function de risque  0:Splines,  1:Cpm  2:weib
+  if(hazard == "Splines")
+    typeof <- 0 
+  else
+    typeof <- 2
   nbintervR <- 12 # nb interv surrogate
   nbintervDC <- 12 # nb interv true
   equidistant <- 0 # 1=equidist, 0=percentile
@@ -745,7 +780,7 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
     for(i in 1:ncol(death)){
       death[,i] <- as.double(death[,i])
     }
-    if(is.null(kappa0)){
+    if(is.null(kappa0) & (typeof == 0)){
       if(print.iter) cat("+++++++++++estimation of Kappas by cross-validation +++++++++++")
       # kappas obtenus par validation croisee correspondant sur le jeu de donnees reelles
       #kappa0 <- frailtypack:::kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0)
@@ -787,6 +822,8 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   nsim_node[12] <- typecopula # the copula function: 1 = clayton, 2=Gumbel
   # on adapte le nombre de colonne des paramteres estimes au type de modele
   ncol_param_estim <- 25 + ves + vet -2
+  if(typeof == 2) ncol_param_estim <- ncol_param_estim + 8 # on ajoute les param de weibull
+  
   nsim_node[13] <- ncol_param_estim # nobre de colenne de la matrice des parametres estimes: depend du type de modele
   
   
@@ -1102,14 +1139,26 @@ jointSurroCopPenal = function(data, maxit = 40, indicator.alpha = 1, frail.base 
   
   ans$param_estim <- data.frame(ans$param_estim)[,-c(21:23)]
   
-  names(ans$param_estim) <- c("theta","SE_theta","zeta","SE_zeta","beta_S","SE_beta_S","beta_T","SE_beta_T","sigma_s",
-                              "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","gamma","SE_gamma",
-                              "alpha","SE_alpha","R2trial","SE_R2trial","Ktau", "SE_Ktau")
-  # reorganisation des donnees
-  param.estim <- ans$param_estim[,c("theta","SE_theta","zeta","SE_zeta","gamma","SE_gamma","alpha","SE_alpha","sigma_s",
-                                    "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","beta_S","SE_beta_S",
-                                    "beta_T","SE_beta_T", "R2trial","SE_R2trial","Ktau", "SE_Ktau")]
-  
+  if(typeof == 0){ # spline
+    names(ans$param_estim) <- c("theta","SE_theta","zeta","SE_zeta","beta_S","SE_beta_S","beta_T","SE_beta_T","sigma_s",
+                                "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","gamma","SE_gamma",
+                                "alpha","SE_alpha","R2trial","SE_R2trial","Ktau", "SE_Ktau")
+    # reorganisation des donnees
+    param.estim <- ans$param_estim[,c("theta","SE_theta","zeta","SE_zeta","gamma","SE_gamma","alpha","SE_alpha","sigma_s",
+                                      "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","beta_S","SE_beta_S",
+                                      "beta_T","SE_beta_T", "R2trial","SE_R2trial","Ktau", "SE_Ktau")]
+  }else{# weibull
+    names(ans$param_estim) <- c("theta","SE_theta","zeta","SE_zeta","beta_S","SE_beta_S","beta_T","SE_beta_T","sigma_s",
+                                "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","gamma","SE_gamma",
+                                "alpha","SE_alpha","R2trial","SE_R2trial","Ktau", "SE_Ktau", "shape.S", "SE_shape.S",
+                                "scale.S", "SE_scale.S","shape.T", "SE_shape.T", "scale.T", "SE_scale.T")
+    # reorganisation des donnees
+    param.estim <- ans$param_estim[,c("theta","SE_theta","zeta","SE_zeta","gamma","SE_gamma","alpha","SE_alpha","sigma_s",
+                                      "SE_sigma_s","sigma_t","SE_sigma.t","sigma_sT","SE_sigma_sT","beta_S","SE_beta_S",
+                                      "beta_T","SE_beta_T", "R2trial","SE_R2trial","Ktau", "SE_Ktau", "shape.S", "SE_shape.S",
+                                      "scale.S", "SE_scale.S","shape.T", "SE_shape.T", "scale.T", "SE_scale.T")]
+    
+    }
    #param.estim$SE_Ktau <- NA
   
   if(n_sim1==1){

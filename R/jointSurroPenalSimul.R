@@ -53,7 +53,7 @@
 #' 
 #' @aliases jointSurroPenalSimul
 #' @usage 
-#' jointSurroPenalSimul(maxit=40, indicator.zeta = 1, 
+#' jointSurroPenalSimul(maxit=40, hazard = "Splines", indicator.zeta = 1, 
 #'    indicator.alpha = 1, frail.base = 1, n.knots = 6, nb.dataset = 1, 
 #'    nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, 
 #'    LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, 
@@ -62,8 +62,9 @@
 #'    theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
 #'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, 
-#'    random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, 
-#'    equi.subj.trt = 1, prop.subj.trt = NULL, 
+#'    shape.initS = 0.25, scale.initS = 0.25, shape.initT = 0.25, 
+#'    scale.initT = 0.25, random.generator = 1, equi.subj.trial = 1, 
+#'    prop.subj.trial = NULL, equi.subj.trt = 1, prop.subj.trt = NULL, 
 #'    theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, 
 #'    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
 #'    lambdat = 3, nut = 0.0025, prop.cens = 0, time.cens = 549, R2 = 0.81,
@@ -76,6 +77,9 @@
 #'
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
 #' Default is \code{40}. 
+#' @param hazard Type of hazard functions: "Splines" for semiparametric hazard functions using equidistant 
+#' intervals with the penalized likelihood estimation, "Weibull" for parametric Weibull functions. 
+#' Default is "Splines".
 #' @param indicator.zeta A binary, indicates whether the power's parameter \eqn{\zeta} should 
 #' be estimated (1) or not (0). It is required if \code{type.joint.estim = 1}. 
 #' If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
@@ -167,6 +171,14 @@
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
 #' @param betat.init Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
+#' @param shape.initS Initial value for the shape parameter (\if{latex}{\eqn{\gamma_S}} \if{html}{\eqn{\gamma}\out{<sub>S</sub>}}) 
+#' of the weibull model associated with the surrogate endpoint. The default is \code{0.25}
+#' @param scale.initS Initial value for the scale parameter (\if{latex}{\eqn{\rho_S}} \if{html}{\eqn{\rho}\out{<sub>S</sub>}}) 
+#' of the weibull model associated with the surrogate endpoint. The default is \code{0.25}
+#' @param shape.initT Initial value for the shape parameter (\if{latex}{\eqn{\gamma_T}} \if{html}{\eqn{\gamma}\out{<sub>T</sub>}}) 
+#' of the weibull model associated with the true endpoint. The default is \code{0.25}
+#' @param scale.initT Initial value for the scale parameter (\if{latex}{\eqn{\rho_T}} \if{html}{\eqn{\rho}\out{<sub>T</sub>}}) 
+#' of the weibull model associated with the surrogate endpoint. The default is \code{0.25}. The default is \code{0.25}
 #' @param random.generator Random number generator used by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 #' subroutine \code{uniran()}. The default is \code{1}. 
@@ -371,7 +383,7 @@
 #' }
 #' 
 
-jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, n.knots = 6,
+jointSurroPenalSimul = function(maxit = 40, hazard = "Splines", indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, n.knots = 6,
                       nb.dataset = 1, nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, LIMlogl = 0.001,
                       LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, int.method = 2, 
                       nb.iterPGH = 5, nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, 
@@ -544,7 +556,11 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   # parametre fonction de risque de base
   gamma1 <- 2 # paramertre de la loi gamma
   gamma2 <- 2 # paramertre de la loi gamma
-  typeof <- 0 # type de function de risque  0:Splines,  1:Cpm  2:weib
+  # type de function de risque  0:Splines,  1:Cpm  2:weib
+  if(hazard == "Splines")
+    typeof <- 0 
+  else
+    typeof <- 2
   nbintervR <- 12 # nb interv surrogate
   nbintervDC <- 12 # nb interv true
   equidistant <- 0 # 1=equidist, 0=percentile
@@ -581,85 +597,87 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
       nb.reject.data2 <- 0
     }
     
-    for(j in 1:n_sim1){
-      if(type.joint.simul == 1){ # joint surrogate model
-        data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
-                        alpha = alpha.ui, theta = theta2, gamma = gamma.ui, zeta = zeta, sigma.s = sigma.s, 
-                        sigma.t = sigma.t, cor = sqrt(R2), betas = betas[1], betat = betat[1], lambda.S = lambdas, 
-                        nu.S = nus, lambda.T = lambdat, nu.T = nut, ver = ver,
-                        equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
-                        prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt, full.data = 0, 
-                        random.generator = random.generator, random = random, 
-                        random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1, 
-                        pfs = pfs)
-      }else{ # joint frailty copula model
-         data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul, prop.cens = prop.cens,
-                       cens.adm = time.cens, alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
-                       sigma.t = sigma.t, cor = sqrt(R2), betas = mbetast[,1], betat = mbetast[,2],
-                       lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
-                       equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
-                       prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
-                       full.data = 0, random.generator = random.generator, random = random, 
-                       random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1,
-                       thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
-                       covar.names = nomvarl, pfs = pfs)
-                                        
+    if(typeof == 0){ ! #cas spline
+      for(j in 1:n_sim1){
+        if(type.joint.simul == 1){ # joint surrogate model
+          data.sim <- jointSurrSimul(n.obs=nbSubSimul, n.trial = ntrialSimul,cens.adm=time.cens, 
+                          alpha = alpha.ui, theta = theta2, gamma = gamma.ui, zeta = zeta, sigma.s = sigma.s, 
+                          sigma.t = sigma.t, cor = sqrt(R2), betas = betas[1], betat = betat[1], lambda.S = lambdas, 
+                          nu.S = nus, lambda.T = lambdat, nu.T = nut, ver = ver,
+                          equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
+                          prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt, full.data = 0, 
+                          random.generator = random.generator, random = random, 
+                          random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1, 
+                          pfs = pfs)
+        }else{ # joint frailty copula model
+           data.sim <- jointSurrCopSimul(n.obs=nbSubSimul, n.trial = ntrialSimul, prop.cens = prop.cens,
+                         cens.adm = time.cens, alpha = alpha.ui, gamma = gamma.ui, sigma.s = sigma.s, 
+                         sigma.t = sigma.t, cor = sqrt(R2), betas = mbetast[,1], betat = mbetast[,2],
+                         lambda.S = lambdas, nu.S = nus,lambda.T = lambdat, nu.T = nut, ver = ver,
+                         equi.subj.trial = equi.subj.trial ,equi.subj.trt = equi.subj.trt, 
+                         prop.subj.trial = prop.subj.trial, prop.subj.trt = prop.subj.trt,
+                         full.data = 0, random.generator = random.generator, random = random, 
+                         random.nb.sim = random.nb.sim, seed = seed, nb.reject.data = nb.reject.data2 + j-1,
+                         thetacopule = theta.copula, filter.surr = filtre, filter.true = filtre2, 
+                         covar.names = nomvarl, pfs = pfs)
+                                          
+        }
+        
+        # print(nbSubSimul )
+        # print(ntrialSimul )
+        # print(time.cens )
+        # print(alpha.ui )
+        # print(gamma.ui )
+        # print(sigma.s )
+        # print(sigma.t )
+        # print(sqrt(R2) )
+        # print(mbetast[,1] )
+        # print(mbetast[,2] )
+        # print(lambdas )
+        # print(nus )
+        # print(lambdat )
+        # print(nut )
+        # print(ver )
+        # print(equi.subj.trial )
+        # print(equi.subj.trt )
+        # print(prop.subj.trial )
+        # print(prop.subj.trt )
+        # print(0 )
+        # print(random.generator )
+        # print(random )
+        # print(random.nb.sim )
+        # print(seed )
+        # print(nb.reject.data2 + j-1 )
+        # print(theta.copula )
+        # print(filtre )
+        # print(filtre2 )
+        # print(nomvarl )
+        # print(pfs)
+        # print(table(data.sim$statusS, data.sim$trialID))
+        # 
+        data.sim$initTime <- 0
+        donnees <- data.sim[,c("trialID","patientID","trt","initTime","timeS","statusS")]
+        death   <- data.sim[,c("trialID","patientID","trt","initTime","timeT","statusT")]
+        # conversion en double des jeux de donneees. je le fais separemment pour distinguer 
+        # les cas ou j'aurai plus de variables explicatives pour un des jeux de donnees que pour l'autre
+        for(i in 1:ncol(donnees)){
+          donnees[,i] <- as.double(donnees[,i])
+        }
+        for(i in 1:ncol(death)){
+          death[,i] <- as.double(death[,i])
+        }
+        
+        if(print.iter) cat("+++++++++++estimation of Kappas by cross-validation +++++++++++")
+        vect_kappa[j,] <- kappa_val_croisee(don_S = donnees, don_T = death, njeu = 1, n_obs = nsujet1,
+                                       n_node = n.knots, adjust_S = 1, adjust_T = 1, kapp_0 = 0,
+                                       print.times = print.iter)
+        # I deleate the created text file
+        file.remove(dir(pattern="kappa_valid_crois.txt"))
       }
-      
-      # print(nbSubSimul )
-      # print(ntrialSimul )
-      # print(time.cens )
-      # print(alpha.ui )
-      # print(gamma.ui )
-      # print(sigma.s )
-      # print(sigma.t )
-      # print(sqrt(R2) )
-      # print(mbetast[,1] )
-      # print(mbetast[,2] )
-      # print(lambdas )
-      # print(nus )
-      # print(lambdat )
-      # print(nut )
-      # print(ver )
-      # print(equi.subj.trial )
-      # print(equi.subj.trt )
-      # print(prop.subj.trial )
-      # print(prop.subj.trt )
-      # print(0 )
-      # print(random.generator )
-      # print(random )
-      # print(random.nb.sim )
-      # print(seed )
-      # print(nb.reject.data2 + j-1 )
-      # print(theta.copula )
-      # print(filtre )
-      # print(filtre2 )
-      # print(nomvarl )
-      # print(pfs)
-      # print(table(data.sim$statusS, data.sim$trialID))
-      # 
-      data.sim$initTime <- 0
-      donnees <- data.sim[,c("trialID","patientID","trt","initTime","timeS","statusS")]
-      death   <- data.sim[,c("trialID","patientID","trt","initTime","timeT","statusT")]
-      # conversion en double des jeux de donneees. je le fais separemment pour distinguer 
-      # les cas ou j'aurai plus de variables explicatives pour un des jeux de donnees que pour l'autre
-      for(i in 1:ncol(donnees)){
-        donnees[,i] <- as.double(donnees[,i])
-      }
-      for(i in 1:ncol(death)){
-        death[,i] <- as.double(death[,i])
-      }
-      
-      if(print.iter) cat("+++++++++++estimation of Kappas by cross-validation +++++++++++")
-      vect_kappa[j,] <- kappa_val_croisee(don_S = donnees, don_T = death, njeu = 1, n_obs = nsujet1,
-                                     n_node = n.knots, adjust_S = 1, adjust_T = 1, kapp_0 = 0,
-                                     print.times = print.iter)
-      # I deleate the created text file
-      file.remove(dir(pattern="kappa_valid_crois.txt"))
-    }
     
-    if(!is.null(kappa0) & (n_sim1 == 1)){
-      vect_kappa = kappa0
+      if(!is.null(kappa0) & (n_sim1 == 1)){
+        vect_kappa = kappa0
+      }
     }
 
    # utils::write.table(vect_kappa,"kappa_valid_crois.txt",sep=" ",row.names = F,col.names = F)
@@ -689,6 +707,9 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     ncol_param_estim <- 25 + ves + vet -2
   else
     ncol_param_estim <- 24
+  
+  if(typeof == 2) ncol_param_estim <- ncol_param_estim + 8 # on ajoute les param de weibull
+  
   nsim_node[13] <- ncol_param_estim # nobre de colenne de la matrice des parametres estimes: depend du type de modele
     
   # Parametres associes au taux de kendall et au bootstrap
@@ -969,16 +990,23 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
   result$typecopula <- typecopula
   if(!(type.joint==3)){
     result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
-    names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
-                                      "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
-                                      "R2trial","SE.R2trial","tau")
+    
+    if(typeof == 0){ # spline
+      names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
+                                        "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
+                                        "R2trial","SE.R2trial","tau")
+    }else{#weibull
+      names(result$dataParamEstim) <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
+                                        "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
+                                        "R2trial","SE.R2trial","tau", "shape.S", "SE_shape.S",
+                                        "scale.S", "SE_scale.S","shape.T", "SE_shape.T", "scale.T", "SE_scale.T")}
   }else{
     if(ves > 1 | vet > 1) result$dataParamEstim <- data.frame(ans$param_estimes)[,-21] # on fait sauter les autres taux de kendall
     if(ves == 1 | vet == 1) result$dataParamEstim <- data.frame(ans$param_estimes)[,-c(21:23)] # on fait sauter les autres taux de kendall
     
     entete <- c("theta","SE.theta","zeta","SE.zeta","beta.S","SE.beta.S","beta.T","SE.beta_T","sigma.S",
-                 "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
-                 "R2trial","SE.R2trial","tau","SE.KendTau")
+                  "SE.sigma.S","sigma.T","SE.sigma.T","sigma.ST","SE.sigma.ST","gamma","SE.gamma","alpha","SE.alpha",
+                  "R2trial","SE.R2trial","tau","SE.KendTau")
     if(ves>1){
       for(h in 2:ves){
         entete <- c(entete, paste("beta_S_", h, sep = ""))
@@ -994,6 +1022,10 @@ jointSurroPenalSimul = function(maxit = 40, indicator.zeta = 1, indicator.alpha 
     # cat(names(result$dataParamEstim),fill = T)
     # cat(entete,fill = T)
     # print(result$dataParamEstim[1,])
+    if(typeof == 2){#weibull
+      entete <- c(entete,"shape.S", "SE_shape.S", "scale.S", "SE_scale.S","shape.T", 
+                  "SE_shape.T", "scale.T", "SE_scale.T")
+    }
     names(result$dataParamEstim) <- entete
   }
   names(result$dataTkendall) <- c("Ktau","inf.95%CI","sup.95%CI")

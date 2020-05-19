@@ -665,7 +665,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     if(nsim_node(8)==2)then
         n_col=15 + nbrevar(3)-1 ! j'ajoute le surplus des covariables, -1 pour le traitement qui est deja pris en compte
     else
-        n_col=13 + nbrevar(3)-1 ! j'ajoute le surplus des covariables
+        n_col = 13 + nbrevar(3)-1 ! j'ajoute le surplus des covariables
     endif
     alpha = eta    ! alpha associe a u_i chez les deces
     
@@ -796,9 +796,15 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             allocate(parametre_estimes(n_sim,24)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall)
             allocate(parametre_estimes_MPI(n_sim,24))! contient les parametres estimes par chaque processus dans MPI
             allocate(parametre_estimes_MPI_T(n_sim,24)) ! contient tous les parametres, de tous les processus
+			if(typeof == 2) then ! weibull
+				allocate(parametre_estimes(n_sim,32)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall, shapeS + sd, scaleS + sd, shapeT + sd, scaleT + sd)
+				allocate(parametre_estimes_MPI(n_sim,32))! contient les parametres estimes par chaque processus dans MPI
+				allocate(parametre_estimes_MPI_T(n_sim,32)) ! contient tous les parametres, de tous les processus
+			endif
         endif
         
         if(nsim_node(8)==2)then ! modele complet avec les effets correles. on a 11 parametre a estimer dans le pire des cas avec leur SE
+		    ! ===== N'est pas a jour car plus d'actualite=======================
             allocate(parametre_estimes(n_sim,32)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall)
             allocate(parametre_estimes_MPI(n_sim,32))! contient les parametres estimes par chaque processus dans MPI
             allocate(parametre_estimes_MPI_T(n_sim,32)) ! contient tous les parametres, de tous les processus
@@ -808,6 +814,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             allocate(parametre_estimes(n_sim,25 + nva -2)) !parametres estimes: contient les parametres estimes(theta_copula+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall + sd) + variables explicative supplementaires
             allocate(parametre_estimes_MPI(n_sim,25 + nva -2))! contient les parametres estimes par chaque processus dans MPI
             allocate(parametre_estimes_MPI_T(n_sim,25 + nva -2)) ! contient tous les parametres, de tous les processus
+			if(typeof == 2) then
+				allocate(parametre_estimes(n_sim,25 + nva -2 + 8)) !parametres estimes: contient les parametres estimes(theta_copula+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall + sd) + variables explicative supplementaires + shapeS + sd, scaleS + sd, shapeT + sd, scaleT + sd
+				allocate(parametre_estimes_MPI(n_sim,25 + nva -2 + 8))! contient les parametres estimes par chaque processus dans MPI
+				allocate(parametre_estimes_MPI_T(n_sim,25 + nva -2 + 8)) ! contient tous les parametres, de tous les processus
+			endif
         endif
         
         !allocate(param_estimes(n_sim,size(parametre_estimes,2)))
@@ -1403,33 +1414,35 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     !!print*,"kappa=",k0
 2000 continue
 2003 continue
-    if (((Rech_kappa==1).and.((kapa_use.eq.2).or.(kapa_use.eq.3).or.(kapa_use.eq.4))) .or.(controlgoto==1)) then ! on recherhce parmi les kappas deja utilise s'il ya un ki permet la convergence
-        if(((kapa_use.eq.2).or.(kapa_use.eq.4)).and.(controlgoto==0))then
-            k0(1)=kappa(ind_rech-1,1)
-            k0(2)=kappa(ind_rech-1,2)
-        else
-            controlgoto=0 ! ceci me permet de mieux gerer le goto 2003
-            if((k0(1)-k0(2))>=1000)then
-                k0(1)=k0(1)/10.d0
-            else if((k0(1)-k0(2))<=-1000)then
-                k0(2)=k0(2)/10.d0
-            else
-                k0(1)=k0(1)/10.d0
-                k0(2)=k0(2)/10.d0
-            endif
-            !if(rang_proc==0) !print*,"division par 10 de kappa"
-            goto 2002
-        endif
-        ! initialisation du vecteur b des parametres a l'aide des parametres de simulation
-        !b=0.5d0
-        !b(np-1)=1.0d0 !b_s
-        !b(np)=0.7d0   !b_t
-        !if(logNormal==1)then
-        !    b(np-2)=0.5d0 !theta2
-        !else
-        !    b(np-2)=dsqrt(0.5d0) !theta
-        !endif
-    endif
+    if(typeof == 0) then ! cas splines
+		if (((Rech_kappa==1).and.((kapa_use.eq.2).or.(kapa_use.eq.3).or.(kapa_use.eq.4))) .or.(controlgoto==1)) then ! on recherhce parmi les kappas deja utilise s'il ya un ki permet la convergence
+			if(((kapa_use.eq.2).or.(kapa_use.eq.4)).and.(controlgoto==0))then
+				k0(1)=kappa(ind_rech-1,1)
+				k0(2)=kappa(ind_rech-1,2)
+			else
+				controlgoto=0 ! ceci me permet de mieux gerer le goto 2003
+				if((k0(1)-k0(2))>=1000)then
+					k0(1)=k0(1)/10.d0
+				else if((k0(1)-k0(2))<=-1000)then
+					k0(2)=k0(2)/10.d0
+				else
+					k0(1)=k0(1)/10.d0
+					k0(2)=k0(2)/10.d0
+				endif
+				!if(rang_proc==0) !print*,"division par 10 de kappa"
+				goto 2002
+			endif
+			! initialisation du vecteur b des parametres a l'aide des parametres de simulation
+			!b=0.5d0
+			!b(np-1)=1.0d0 !b_s
+			!b(np)=0.7d0   !b_t
+			!if(logNormal==1)then
+			!    b(np-2)=0.5d0 !theta2
+			!else
+			!    b(np-2)=dsqrt(0.5d0) !theta
+			!endif
+		endif
+	endif
 2002 continue
     ! initialisation du vecteur b des parametres a l'aide des parametres de simulation
     if(typeof == 2) then ! cas weibull
@@ -1715,15 +1728,20 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         EPS,nsim_node,indice_esti,indice_covST,0.d0,param_weibull)
     ! call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
-        call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
+		if(affiche_itteration == 1)
+			call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
     endif
-!122     continue
-    !if(s_i<5) nsim_node(2)=32 ! on fait ceci juste pour debugger le programme
-    !nsim_node(2)=32 ! on fait ceci juste pour debugger le programme
-    !!print*,"covar========================"
+
     if (istop.ne.1) then
         !call intpr("je suis la :", -1, ni, 1)
         ! if(nsim_node(3).ne.1) then ! cas ou on ne fait pas de l'adaptative
+		if(typeof == 2) then ! cas weibull, dans ce cas on change les points de quadratures et rien de plus, car pas de kappa
+			if((nsim_node(2).eq.np_save))then ! on change le nombre de point de quadrature avant de continuer
+				if(np_save==npoint1) nsim_node(2)=npoint2
+				if(np_save==npoint2) nsim_node(2)=npoint1
+				goto 2002 ! apres changement du nbre de point on relance l'estimation 
+			endif
+		else ! cas spline
             if((nsim_node(4).ne.0) .and.(nsim_node(4).ne.3) .and. (kapa_use.eq.4))then !cas quadrature
                 if ((control_kappa==3) .or. (control_kappa==4)) then ! on emet les vraies valeurs
                     if(np_save==npoint1) nsim_node(2)=npoint2
@@ -1757,6 +1775,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                                 !goto 2003
                             endif 
                         endif
+						
                     else !on a deja changer aussi bien le nbre de point que le kappa et xa ne marche toujours pas, on va donc changer les deux
                         if(control_kappa==4)then !dans ce cas on change les kappa et les points de quadrature
                             if(np_save==npoint1) nsim_node(2)=npoint2
@@ -1808,10 +1827,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                 
                 if(controlgoto==1) goto 2003
                 
-               ! if(rang_proc==0) !print*,"suis en fin la, aucune des deux combinaisons n'a marche"
+				! if(rang_proc==0) !print*,"suis en fin la, aucune des deux combinaisons n'a marche"
                 ! si j'arrive ici c'est qu'aucune methode n'a converge alors je change les valeurs initiales avec les dernieres estimees et je reprends le premier kappa qui marche s'il y en a ou simplement le premier kappa
 
-    !101 continue    !pour le debuggaga        
+				!101 continue    !pour le debuggaga        
                 !!print*,"k0 avant vaut",k0
                 if(ind_rech==1)then
                     if(incre_kappa>=2) then ! on a aumoins un kappa qui marche on recupere le tout premier
@@ -1843,99 +1862,100 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                      endif
                 endif
             endif
-        ! endif
-        
-        if((nsim_node(4).eq.3 .or. nsim_node(4).eq.0 .or. ((nsim_node(4).eq.1 .or. nsim_node(4).eq.2).and.&
-            nsim_node(3).eq.1)) .and. (kapa_use.eq.4))then !cas Monte carlo et Laplace ou alors pseudo adaptative
-        
-                if(control_kappa<2)then ! on vient de changer le nombre de point alors on revient
-                
-                    if(control_kappa<2)then ! on va aller divise les kappas par 10, en maintenant change le nbre de point
-                      !  if(rang_proc==0) !print*,"division du kappa par 10 ou par 100"
-                        control_kappa=control_kappa+1
-                        controlgoto=1
-                        !goto 2003
-                    else
-                        if(control_kappa==2)then ! on remet les valeurs de kappa pour la suite
-                            k0=k0_save
-                        endif
-                    endif                
-                else !on a deja changer le kappa et xa ne marche toujours pas
-                    if(control_kappa==2)then !dans ce cas on change les kappa et les points de quadrature                        
-                        if(s_i>1) then
-                            if(control2==1)then ! on considere dans ce cas le premier kappa qui marche ou le premier kappa avec les points de quadrature de depart
-                                control2=2 
-                                ! if(rang_proc==0) !print*,"changement du kappa (premier kappa qui marche ou tout premier si ",&
-                                    ! "aucun n'a marché jusqu'ici)"
-                                if(incre_kappa>=2) then ! on a aumoins un kappa qui marche on recupere le tout premier
-                                    k0(1)=kappa(1,1)
-                                    k0(2)=kappa(1,2)
-                                else ! sinon on recupere le tout premier kappa
-                                    k0=k01_save
-                                endif
-                                goto 2002 ! apres changement du kappa on relance l'estimation une seule fois
-                            endif
-                        endif
-                    endif
-                endif
-            if(controlgoto==1) goto 2003
-            ! if(rang_proc==0) !print*,"suis en fin là, control_kappa vaut",control_kappa            
-            ! if(rang_proc==0) !print*,"suis en fin la, aucune des kappas n'a marche"
-            ! si j'arrive ici c'est qu'aucune methode n'a converge alors je change les valeurs initiales avec les dernieres estimees et je reprends le premier kappa qui marche s'il y en a ou simplement le premier kappa
+			! endif
+			
+			if((nsim_node(4).eq.3 .or. nsim_node(4).eq.0 .or. ((nsim_node(4).eq.1 .or. nsim_node(4).eq.2).and.&
+				nsim_node(3).eq.1)) .and. (kapa_use.eq.4))then !cas Monte carlo et Laplace ou alors pseudo adaptative
+			
+					if(control_kappa<2)then ! on vient de changer le nombre de point alors on revient
+					
+						if(control_kappa<2)then ! on va aller divise les kappas par 10, en maintenant change le nbre de point
+						  !  if(rang_proc==0) !print*,"division du kappa par 10 ou par 100"
+							control_kappa=control_kappa+1
+							controlgoto=1
+							!goto 2003
+						else
+							if(control_kappa==2)then ! on remet les valeurs de kappa pour la suite
+								k0=k0_save
+							endif
+						endif                
+					else !on a deja changer le kappa et xa ne marche toujours pas
+						if(control_kappa==2)then !dans ce cas on change les kappa et les points de quadrature                        
+							if(s_i>1) then
+								if(control2==1)then ! on considere dans ce cas le premier kappa qui marche ou le premier kappa avec les points de quadrature de depart
+									control2=2 
+									! if(rang_proc==0) !print*,"changement du kappa (premier kappa qui marche ou tout premier si ",&
+										! "aucun n'a marché jusqu'ici)"
+									if(incre_kappa>=2) then ! on a aumoins un kappa qui marche on recupere le tout premier
+										k0(1)=kappa(1,1)
+										k0(2)=kappa(1,2)
+									else ! sinon on recupere le tout premier kappa
+										k0=k01_save
+									endif
+									goto 2002 ! apres changement du kappa on relance l'estimation une seule fois
+								endif
+							endif
+						endif
+					endif
+				if(controlgoto==1) goto 2003
+				! if(rang_proc==0) !print*,"suis en fin là, control_kappa vaut",control_kappa            
+				! if(rang_proc==0) !print*,"suis en fin la, aucune des kappas n'a marche"
+				! si j'arrive ici c'est qu'aucune methode n'a converge alors je change les valeurs initiales avec les dernieres estimees et je reprends le premier kappa qui marche s'il y en a ou simplement le premier kappa
 
-!101 continue    !pour le debuggaga        
-            !!print*,"k0 avant vaut",k0
-            if(ind_rech==1)then
-                if(incre_kappa>=2) then ! on a aumoins un kappa qui marche on recupere le tout premier
-                    k0(1)=kappa(1,1)
-                    k0(2)=kappa(1,2)
-                    ind_rech=2    ! vu que j'ai utilise le premier kappa qui a permis la convergence alors je passe au suivant
-                else ! sinon on recupere le tout premier kappa
-                    k0=k01_save
-                endif
-                !!print*,"k0 pour cette nouvelle relance vaut",k0
-            endif
-            
-            if(control==0) then ! on relance le modèle avec le premier kappa (converge ou pas) en changent les valeurs initiales aux dernieres estimations qui n'ont pas permises la convergence
-                ! control=1
-                ! !print*,"suis dans controle 1"
-                ! goto 2002    ! les parametres sont initialises avec les vraies valeurs
-                ! if(rang_proc==0) !print*,"changement simultane du nbre de point et kappa (premier kappa", &
-                    ! "qui marche ou tout premier si aucun n'a marche jusqu'ici) ainsi que des valeurs ",&
-                    ! "initiales des parametres"
-                control=1
-                goto 2005    ! les parametres sont initialises avec les dernieres estimations n'ayant pas permis la convergence
-            endif
-        endif
-        
-        ! if(rang_proc==0) !print*,"je vais a la recherche des kappas qui on converges pour n'avoir rien trouver"
-        ! if(rang_proc==0) !print*,"ind_rech=",ind_rech,"incre_kappa=",incre_kappa
-        if((ind_rech<incre_kappa).and.((kapa_use.eq.2).or.(kapa_use.eq.3).or.(kapa_use.eq.4))) then ! on recherhce parmi les kappas deja utilise s'il ya un qui permet la convergence
-            ! if(rang_proc==0) !print*,"test du kappa numero",ind_rech-1,"qui a deja eu à converger" 
-            Rech_kappa=1
-            ind_rech=ind_rech+1            
-            statut_kappa=1 ! evite qu'on enregistre le kappa trouve s'il permet la convergence
-            
-            if(ind_rech==4)then ! on s'arrete et passe a la suivante simulation
-                goto 1000
-            endif
-            goto 2000
-        endif
-        
-        ! si le tout premier kappa ne converge pas
-        !if((s_i==1).and.(n_sim.ne.1).and.((kapa_use.eq.2).or.(kapa_use.eq.3).or.(kapa_use.eq.4))) then 
-        if((s_i==1).and.(ind_premier_kappa==4))then
-            ! if(rang_proc==0) !print*, "Deja 5 kappas testes pour le premier jeu de donnees et pas toujouts", &
-                ! "convergence, plus la peine de continuer"
-        endif
-        
-        if((s_i==1).and.(n_sim.ne.1) .and.(ind_premier_kappa<4)) then 
-            ! if(rang_proc==0) !print*,"suis la pour recherche kappa: on utilise le suivant"
-            ind_premier_kappa=ind_premier_kappa+1
-            statut_kappa1=1
-            goto 2001 ! on utilise le kappa suivant
-        endif
-
+				!101 continue    !pour le debuggaga        
+				!!print*,"k0 avant vaut",k0
+				if(ind_rech==1)then
+					if(incre_kappa>=2) then ! on a aumoins un kappa qui marche on recupere le tout premier
+						k0(1)=kappa(1,1)
+						k0(2)=kappa(1,2)
+						ind_rech=2    ! vu que j'ai utilise le premier kappa qui a permis la convergence alors je passe au suivant
+					else ! sinon on recupere le tout premier kappa
+						k0=k01_save
+					endif
+					!!print*,"k0 pour cette nouvelle relance vaut",k0
+				endif
+				
+				if(control==0) then ! on relance le modèle avec le premier kappa (converge ou pas) en changent les valeurs initiales aux dernieres estimations qui n'ont pas permises la convergence
+					! control=1
+					! !print*,"suis dans controle 1"
+					! goto 2002    ! les parametres sont initialises avec les vraies valeurs
+					! if(rang_proc==0) !print*,"changement simultane du nbre de point et kappa (premier kappa", &
+						! "qui marche ou tout premier si aucun n'a marche jusqu'ici) ainsi que des valeurs ",&
+						! "initiales des parametres"
+					control=1
+					goto 2005    ! les parametres sont initialises avec les dernieres estimations n'ayant pas permis la convergence
+				endif
+			endif
+			
+			! if(rang_proc==0) !print*,"je vais a la recherche des kappas qui on converges pour n'avoir rien trouver"
+			! if(rang_proc==0) !print*,"ind_rech=",ind_rech,"incre_kappa=",incre_kappa
+			if((ind_rech<incre_kappa).and.((kapa_use.eq.2).or.(kapa_use.eq.3).or.(kapa_use.eq.4))) then ! on recherhce parmi les kappas deja utilise s'il ya un qui permet la convergence
+				! if(rang_proc==0) !print*,"test du kappa numero",ind_rech-1,"qui a deja eu à converger" 
+				Rech_kappa=1
+				ind_rech=ind_rech+1            
+				statut_kappa=1 ! evite qu'on enregistre le kappa trouve s'il permet la convergence
+				
+				if(ind_rech==4)then ! on s'arrete et passe a la suivante simulation
+					goto 1000
+				endif
+				goto 2000
+			endif
+			
+			! si le tout premier kappa ne converge pas
+			!if((s_i==1).and.(n_sim.ne.1).and.((kapa_use.eq.2).or.(kapa_use.eq.3).or.(kapa_use.eq.4))) then 
+			if((s_i==1).and.(ind_premier_kappa==4))then
+				! if(rang_proc==0) !print*, "Deja 5 kappas testes pour le premier jeu de donnees et pas toujouts", &
+					! "convergence, plus la peine de continuer"
+			endif
+			
+			if((s_i==1).and.(n_sim.ne.1) .and.(ind_premier_kappa<4)) then 
+				! if(rang_proc==0) !print*,"suis la pour recherche kappa: on utilise le suivant"
+				ind_premier_kappa=ind_premier_kappa+1
+				statut_kappa1=1
+				goto 2001 ! on utilise le kappa suivant
+			endif
+		endif
+		
     else 
         if(kapa_use==0)then ! si c'est un seul kappa qu'il faut utiliser alors on le maintient et on continu
             statut_kappa1=1
@@ -2483,9 +2503,15 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     parametre_estimes(s_i-nbre_rejet,5)=b(rangparam) !beta_s_chap
                     parametre_estimes(s_i-nbre_rejet,6)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_s_chap
                 else ! sauvegarde des autres covariables
-                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+1)=b(rangparam) 
-                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2)=&
-                    dsqrt(H_hessOut(rangparam,rangparam)) 
+					if(typeof == 0) then ! spline
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+1)=b(rangparam) 
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2)=&
+						dsqrt(H_hessOut(rangparam,rangparam)) 
+					else ! weibull
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+1-8)=b(rangparam) 
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*(nva2-1)-2*nva1+2*(i-1)+2-8)=&
+						dsqrt(H_hessOut(rangparam,rangparam)) 
+					endif
                 endif
                 if(betas>=bi2 .and. betas<=bs2)then ! taux de couverture
                     taux_couvertureS(i)=taux_couvertureS(i)+1.d0
@@ -2505,9 +2531,15 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                     parametre_estimes(s_i-nbre_rejet,7)=b(rangparam) !beta_t_chap
                     parametre_estimes(s_i-nbre_rejet,8)=dsqrt(H_hessOut(rangparam,rangparam)) !sd beta_t_chap
                 else ! sauvegarde des autres covariables
-                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+1)=b(rangparam) 
-                    parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+2)=&
-                    dsqrt(H_hessOut(rangparam,rangparam)) 
+					if(typeof == 0) then ! spline
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+1)=b(rangparam) 
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+2)=&
+						dsqrt(H_hessOut(rangparam,rangparam)) 
+					else !weibull
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+1-8)=b(rangparam) 
+						parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-2*nva2+2*(i-1)+2-8)=&
+						dsqrt(H_hessOut(rangparam,rangparam)) 
+					endif
                 endif    
                 if(betat>=bi2 .and. betat<=bs2)then ! taux de couverture
                     taux_couvertureT(i)=taux_couvertureT(i)+1.d0
@@ -2978,6 +3010,20 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
             endif
             
         endif
+		
+		if(typeof == 2) then
+			! sauvegarde des parametres de weibull (shape S + sd, scale S + sd, shape T + sd, scale T + sd)
+			! avec la transformation des variable, on estime sd par la delta-methode
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 1) = dexp(b(1)) ! shape S
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 2) = dexp(b(1)) * dsqrt(H_hessOut(1,1))! sd
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 3) = dexp(b(2)) !scale_S
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 4) = dexp(b(2)) * dsqrt(H_hessOut(2,2))! sd
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 5) = dexp(b(3)) ! shape T
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 6) = dexp(b(3)) * dsqrt(H_hessOut(3,3))! sd
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 7) = dexp(b(4))   ! scale T
+			parametre_estimes(s_i-nbre_rejet,size(parametre_estimes,2)-8 + 8) = dexp(b(4)) * dsqrt(H_hessOut(4,4))! sd
+		endif
+		
         
         ! !print*," Attention!!! sauvegarde des resultats, nb_processus=",nb_processus,"rang=",rang
         erreur_fichier=0

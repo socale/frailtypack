@@ -1,3 +1,6 @@
+Changes in Version 3.2.2 May 2020
+o Add the possibility of estimating the baseline hazard functions in the joint frailty and joint frailty copula surrogate models based on the Weibull models
+
 Changes in Version 3.2.1 April 2020
 o Bugg fixed in the computation of ste. Actually, by solving the equation representing the upper limit of the prediction interval of the treatment effects on T based on the observed treatment effects on S equals to 0 [u(beta_So = 0)], it is possible to find 2 solutions and then two potential values for STE. Depending on the shape of the function, different interpretations of possible values can be considered. We update the R functions ste() and plotTreatPredJointSurro() in order to take into account this remark.
 o Update of the R function loocv in order to return the list of the G models obtained after excuded for the i-th the i-th trial during the loocv process. In addition we return the dataframe of the estimates for the G models excluding for each raw all the subjects included in the ongoing trial
