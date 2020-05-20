@@ -76,7 +76,7 @@
 !AD: add for new marq
     double precision::ca,cb,dd !result_
     double precision,external::funcpajsplines_surrogate,funcpajsplines_surrogate_1,funcpajcpm,funcpajweib
-    double precision,external::funcpajsplines_intcens,funcpajweib_intcens
+    double precision,external::funcpajweib_surrogate,funcpajsplines_intcens,funcpajweib_intcens
     double precision,external::funcpajsplines_log,funcpajcpm_log,funcpajweib_log
     double precision,external::funcpaGsplines,funcpaGcpm,funcpaGweib
     double precision,external::funcpaGsplines_intcens,funcpaGcpm_intcens,funcpaGweib_intcens
@@ -917,7 +917,7 @@
 
 !    !write(*,*)'typeof',typeof
 
-    if ((typeof == 2) & (aaa == 1)) then
+    if ((typeof == 2).and.(aaa == 1)) then
         b(1:4)=1.d-1!0.8d0
 !        b(np-nva-indic_alpha)=5.d-1 ! pour theta
 !        b(np-nva-indic_alpha)=1.d0 ! pour theta
@@ -1266,7 +1266,7 @@
 !                     call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpaj_tps)
 !                 endif
         case(2) ! fonctions de risque de base approchees par Weibull
-             call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_surrogate)
+             call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_surrogate)
     end select
         call cpu_time(tp2)
 !     end if

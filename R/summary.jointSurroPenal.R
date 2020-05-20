@@ -11,7 +11,7 @@
 ##' @aliases summary.jointSurroPenal print.summary.jointSurroPenal
 ##' @usage \method{summary}{jointSurroPenal}(object, d = 4, len = 3, int.method.kt = 0, 
 ##' nb.gh = 32, ...)
-##' 
+##'  
 ##' @param object An object inheriting from \code{jointSurroPenal} class.
 ##' @param d The desired number of digits after the decimal point for parameters. 
 ##' The maximum of 4 digits is required for the estimates. Default of 3 digits is used.

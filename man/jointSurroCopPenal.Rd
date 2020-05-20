@@ -4,13 +4,15 @@
 \alias{jointSurroCopPenal}
 \title{Fit the one-step Joint frailty-copula model for evaluating a canditate surrogate endpoint}
 \usage{
-jointSurroCopPenal(data, maxit = 40, indicator.alpha = 1, 
-   frail.base = 1, n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, 
-   LIMderiv = 0.001, nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, 
-   adaptatif = 0, int.method = 0, nb.iterPGH = 5, true.init.val = 0, 
+jointSurroCopPenal(data, maxit = 40, hazard = "Splines", 
+   indicator.alpha = 1, frail.base = 1, n.knots = 6, 
+   LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, 
+   nb.mc = 1000, nb.gh = 20, nb.gh2 = 32, adaptatif = 0, 
+   int.method = 0, nb.iterPGH = 5, true.init.val = 0, 
    thetacopula.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
-   betas.init = 0.5, betat.init = 0.5, scale = 1, 
+   betas.init = 0.5, betat.init = 0.5, shape.initS = 0.25,
+   scale.initS = 0.25, shape.initT = 0.25, scale.initT = 0.25, scale = 1, 
    random.generator = 1, kappa.use = 4, random = 0, 
    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa = c(0,0),
    typecopula = 1, nb.decimal = 4, print.times = TRUE, print.iter = FALSE)
@@ -31,6 +33,10 @@ jointSurroCopPenal(data, maxit = 40, indicator.alpha = 1,
 
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
 The default being \code{40}.}
+
+\item{hazard}{Type of hazard functions: "Splines" for semiparametric hazard functions using equidistant 
+intervals with the penalized likelihood estimation, "Weibull" for parametric Weibull functions. 
+Default is "Splines".}
 
 \item{indicator.alpha}{A binary, indicating whether the power's parameter \eqn{\alpha} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
@@ -123,6 +129,18 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
 \item{betat.init}{Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
+
+\item{shape.initS}{Initial value for the shape parameter (\if{latex}{\eqn{\gamma_S}} \if{html}{\eqn{\gamma}\out{<sub>S</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}}
+
+\item{scale.initS}{Initial value for the scale parameter (\if{latex}{\eqn{\rho_S}} \if{html}{\eqn{\rho}\out{<sub>S</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}}
+
+\item{shape.initT}{Initial value for the shape parameter (\if{latex}{\eqn{\gamma_T}} \if{html}{\eqn{\gamma}\out{<sub>T</sub>}}) 
+of the weibull model associated with the true endpoint. The default is \code{0.25}}
+
+\item{scale.initT}{Initial value for the scale parameter (\if{latex}{\eqn{\rho_T}} \if{html}{\eqn{\rho}\out{<sub>T</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}. The default is \code{0.25}}
 
 \item{scale}{A numeric that allows to rescale (by multiplication) the survival times, to avoid numerical 
 problems in the event of some convergence issues. If no change is needed the argument is set to 1, the default value. 

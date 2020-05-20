@@ -4,15 +4,16 @@
 \alias{jointSurroPenal}
 \title{Fit the one-step Joint surrogate model for evaluating a canditate surrogate endpoint}
 \usage{
-jointSurroPenal(data, maxit=40, indicator.zeta = 1, 
-   indicator.alpha = 1, frail.base = 1, n.knots = 6, 
-   LIMparam = 0.001, LIMlogl = 0.001, LIMderiv = 0.001, 
-   nb.mc = 300, nb.gh = 32, nb.gh2 = 20, adaptatif = 0, 
-   int.method = 2, nb.iterPGH = 5, nb.MC.kendall = 10000, 
-   nboot.kendall = 1000, true.init.val = 0, 
+jointSurroPenal(data, maxit=40, hazard = "Splines", 
+   indicator.zeta = 1, indicator.alpha = 1, frail.base = 1, 
+   n.knots = 6, LIMparam = 0.001, LIMlogl = 0.001, 
+   LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, nb.gh2 = 20, 
+   adaptatif = 0, int.method = 2, nb.iterPGH = 5, 
+   nb.MC.kendall = 10000, nboot.kendall = 1000, true.init.val = 0, 
    theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
-   zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
+   zeta.init = 1, betas.init = 0.5, betat.init = 0.5, shape.initS = 0.25,
+   scale.initS = 0.25, shape.initT = 0.25, scale.initT = 0.25, scale = 1, 
    random.generator = 1, kappa.use = 4, random = 0, 
    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa = c(0,0), 
    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
@@ -33,6 +34,10 @@ jointSurroPenal(data, maxit=40, indicator.zeta = 1,
 
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
 The default being \code{40}.}
+
+\item{hazard}{Type of hazard functions: "Splines" for semiparametric hazard functions using equidistant 
+intervals with the penalized likelihood estimation, "Weibull" for parametric Weibull functions. 
+Default is "Splines".}
 
 \item{indicator.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
 be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
@@ -141,6 +146,18 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
 \item{betat.init}{Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
+
+\item{shape.initS}{Initial value for the shape parameter (\if{latex}{\eqn{\gamma_S}} \if{html}{\eqn{\gamma}\out{<sub>S</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}}
+
+\item{scale.initS}{Initial value for the scale parameter (\if{latex}{\eqn{\rho_S}} \if{html}{\eqn{\rho}\out{<sub>S</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}}
+
+\item{shape.initT}{Initial value for the shape parameter (\if{latex}{\eqn{\gamma_T}} \if{html}{\eqn{\gamma}\out{<sub>T</sub>}}) 
+of the weibull model associated with the true endpoint. The default is \code{0.25}}
+
+\item{scale.initT}{Initial value for the scale parameter (\if{latex}{\eqn{\rho_T}} \if{html}{\eqn{\rho}\out{<sub>T</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}. The default is \code{0.25}}
 
 \item{scale}{A numeric that allows to rescale (multiplication) the survival times, to avoid numerical 
 problems in the event of some convergence issues. If no change is needed the argument is set to 1, the default value. 

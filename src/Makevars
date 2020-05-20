@@ -110,6 +110,7 @@ Integrale_mult_scl.o: Aparameters.o autres_fonctions.o aaOptim_New_scl2.o funcpa
 funcpajsplines_surrogate_scl_1.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o
 funcpajsplines_surrogate_scl_2.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o
 funcpajsplines_copule_surrogate_scl_2.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o
+funcpajweib_surrogate_scl.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o 
 Pour_Adaptative.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o
 joint_surrogate.o: Aparameters.o aaOptim_SCL_0.o Adonnees.o
 jointSurrogate.o: Aparameters.o autres_fonctions.o

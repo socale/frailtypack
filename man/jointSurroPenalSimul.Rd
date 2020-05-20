@@ -5,7 +5,7 @@
 \title{Simulation studies based on the one-step Joint surrogate models for the evaluation of a canditate 
 surrogate endpoint}
 \usage{
-jointSurroPenalSimul(maxit=40, indicator.zeta = 1, 
+jointSurroPenalSimul(maxit=40, hazard = "Splines", indicator.zeta = 1, 
    indicator.alpha = 1, frail.base = 1, n.knots = 6, nb.dataset = 1, 
    nbSubSimul=1000, ntrialSimul=30, LIMparam = 0.001, 
    LIMlogl = 0.001, LIMderiv = 0.001, nb.mc = 300, nb.gh = 32, 
@@ -14,8 +14,9 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
    theta.init = 1, sigma.ss.init = 0.5, sigma.tt.init = 0.5, 
    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, 
-   random.generator = 1, equi.subj.trial = 1, prop.subj.trial = NULL, 
-   equi.subj.trt = 1, prop.subj.trt = NULL, 
+   shape.initS = 0.25, scale.initS = 0.25, shape.initT = 0.25, 
+   scale.initT = 0.25, random.generator = 1, equi.subj.trial = 1, 
+   prop.subj.trial = NULL, equi.subj.trt = 1, prop.subj.trt = NULL, 
    theta2 = 3.5, zeta = 1, gamma.ui = 2.5, alpha.ui = 1, 
    betas = -1.25, betat = -1.25, lambdas = 1.8, nus = 0.0045, 
    lambdat = 3, nut = 0.0025, prop.cens = 0, time.cens = 549, R2 = 0.81,
@@ -29,6 +30,10 @@ jointSurroPenalSimul(maxit=40, indicator.zeta = 1,
 \arguments{
 \item{maxit}{maximum number of iterations for the Marquardt algorithm.
 Default is \code{40}.}
+
+\item{hazard}{Type of hazard functions: "Splines" for semiparametric hazard functions using equidistant 
+intervals with the penalized likelihood estimation, "Weibull" for parametric Weibull functions. 
+Default is "Splines".}
 
 \item{indicator.zeta}{A binary, indicates whether the power's parameter \eqn{\zeta} should 
 be estimated (1) or not (0). It is required if \code{type.joint.estim = 1}. 
@@ -148,6 +153,18 @@ is set to \code{0} or \code{2}. The default is \code{0.5}.}
 
 \item{betat.init}{Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 is set to \code{0} or \code{2}. The default is \code{0.5}.}
+
+\item{shape.initS}{Initial value for the shape parameter (\if{latex}{\eqn{\gamma_S}} \if{html}{\eqn{\gamma}\out{<sub>S</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}}
+
+\item{scale.initS}{Initial value for the scale parameter (\if{latex}{\eqn{\rho_S}} \if{html}{\eqn{\rho}\out{<sub>S</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}}
+
+\item{shape.initT}{Initial value for the shape parameter (\if{latex}{\eqn{\gamma_T}} \if{html}{\eqn{\gamma}\out{<sub>T</sub>}}) 
+of the weibull model associated with the true endpoint. The default is \code{0.25}}
+
+\item{scale.initT}{Initial value for the scale parameter (\if{latex}{\eqn{\rho_T}} \if{html}{\eqn{\rho}\out{<sub>T</sub>}}) 
+of the weibull model associated with the surrogate endpoint. The default is \code{0.25}. The default is \code{0.25}}
 
 \item{random.generator}{Random number generator used by the Fortran compiler, 
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 

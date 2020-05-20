@@ -163,7 +163,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         se_kendal_01,se_kendal_00,moy_tau_boots,IC_Inf,IC_sup,zeta_init,moy_R2_boots,IC_Inf_R2,IC_sup_R2,&
                         CP_R2_boot,CP_ktau_boot,moy_R2_boots_test,se_sigmas_est_0,taux_couverture_thetast_0,se_kendal_10,&
                         bi_R2_trial,bs_R2_trial,thetacopule, thetacopula_init, printnbre, moy_param_cop, moy_se_param_cop,&
-                        bi_param_cop, bs_param_cop, pour_ic, taux_couverture_param_cop,taux_couverture_tauk, vrai_tau_copula
+                        bi_param_cop, bs_param_cop, pour_ic, taux_couverture_param_cop,taux_couverture_tauk, vrai_tau_copula,&
+						shape_initS, scale_initS, shape_initT, scale_initT
                         
     double precision, dimension(:,:),allocatable::don_simul,don_simulS, don_simultamp,don_simulStamp,don_simulS1,&
                         parametre_empirique, parametre_estimes,parametre_empirique_NC,parametre_estimes_MPI,&
@@ -293,7 +294,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     zeta_init = param_init(7)
     betas_init = param_init(8)
     betat_init = param_init(9)
-	shape_initS = param_init(10)
+	shape_initS = param_init(10) 
 	scale_initS = param_init(11)
 	shape_initT = param_init(12)
 	scale_initT = param_init(13)
@@ -1728,8 +1729,9 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         EPS,nsim_node,indice_esti,indice_covST,0.d0,param_weibull)
     ! call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
-		if(affiche_itteration == 1)
+		if(affiche_itteration == 1)then
 			call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
+		endif
     endif
 
     if (istop.ne.1) then
