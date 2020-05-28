@@ -11,107 +11,103 @@ PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)
 #PKG_FCFLAGS = $(SHLIB_OPENMP_FCFLAGS) # openmp falg /windows
 
 # Setup dependencies for parallel make
-prediction.o: Aparameters.o
-predictionfam.o: Aparameters.o
-prediction_log.o: Aparameters.o
-prediction_sha_logn.o: aaOptim.o aaOptimres.o Aparameters.o
-prediction_Recurr_Sha.o: aaOptim.o aaOptimres.o Aparameters.o
-prediction_biv.o: aaOptim.o aaOptimres.o Aparameters.o
-prediction_tri.o: aaOptim.o aaOptimres.o Aparameters.o
-prediction_tri_nl.o: aaOptim.o aaOptimres.o Aparameters.o
-aamarq98o.o: aaOptim.o aaOptimres.o Aparameters.o
-aaOptim.o: Aparameters.o 
-afuncpasres.o: aaOptim.o aaOptimres.o Aparameters.o
-aresidusMartingale.o: aaOptim.o aaOptimres.o Aparameters.o
-aaUseFunction.o: aaOptim.o aaOptimres.o Aparameters.o
-aaUseFunctionG.o: aaOptim.o aaOptimres.o Aparameters.o
-aaOptimres.o: Aparameters.o
-distance.o: aaOptim.o aaOptimres.o Aparameters.o
-
-additive.o : aaOptim.o aaOptimres.o
-funcpaasplines.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaacpm.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaaweib.o: aaOptim.o aaOptimres.o Aparameters.o
-
-frailtypack.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpassplines.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpascpm.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpasweib.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpassplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpascpm_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpasweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpassplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpascpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpasweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpas_tps.o: aaOptim.o aaOptimres.o Aparameters.o
-
-joint.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajgeneral.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajsplines.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajsplines_fam.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajcpm.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajweib.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajweib_fam.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajsplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajsplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajsplines_logIndiv.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajcpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaj_tps.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGsplines.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGcpm.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGweib.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGsplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGcpm_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGsplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGcpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaGweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaG_tps.o: aaOptim.o aaOptimres.o Aparameters.o
-
-nested.o: aaOptim.o aaOptimres.o
-funcpancpm.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpanweib.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpansplines.o: aaOptim.o aaOptimres.o Aparameters.o
-
-multiveJoint.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpaMultivSplines.o: aaOptim.o aaOptimres.o AparamMultive.o
-funcpaMultivCpm.o: aaOptim.o aaOptimres.o AparamMultive.o
-funcpaMultivWeib.o: aaOptim.o aaOptimres.o AparamMultive.o
-
-joint_longi.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajlongisplines.o: aaOptim.o aaOptimres.o Aparameters.o ahrmsym.o
-funcpajlongiweib.o: aaOptim.o aaOptimres.o Aparameters.o ahrmsym.o
-
-joint_longi_nl.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajlongisplines_nl.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpajlongiweib_nl.o: aaOptim.o aaOptimres.o Aparameters.o
-
-longi_uni_nl.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpalongi_uni.o: aaOptim.o aaOptimres.o Aparameters.o
-
-epoce_log.o: aaOptim.o aaOptimres.o Aparameters.o
-epoce.o: aaOptim.o aaOptimres.o Aparameters.o
-epoce_long.o: aaOptim.o aaOptimres.o Aparameters.o
-epoce_long_nl.o: aaOptim.o aaOptimres.o Aparameters.o
-survival.o: aaOptim.o aaOptimres.o Aparameters.o
-
-# Nouvel ajout pour la surrogacy
-
-aaOptim_SCL_0.o: Aparameters.o
-aaOptim_New_scl.o: Aparameters.o
-aaOptim_New_scl2.o: Aparameters.o
-autres_fonctions.o: Adonnees.o Aparameters.o
-Integrant_scl.o: Aparameters.o Adonnees.o autres_fonctions.o
-funcpa_adaptative.o: Aparameters.o aaOptim_New_scl.o Integrant_scl.o
-funcpa_laplace.o: Aparameters.o aaOptim_New_scl.o Integrant_scl.o
-Integrale_mult_scl.o: Aparameters.o autres_fonctions.o aaOptim_New_scl2.o funcpa_laplace.o funcpa_adaptative.o Adonnees.o Integrant_scl.o
-funcpajsplines_surrogate_scl_1.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o
-funcpajsplines_surrogate_scl_2.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o
-funcpajsplines_copule_surrogate_scl_2.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o
-Pour_Adaptative.o: Aparameters.o Integrant_scl.o Integrale_mult_scl.o
-joint_surrogate.o: Aparameters.o aaOptim_SCL_0.o Adonnees.o
-jointSurrogate.o: Aparameters.o autres_fonctions.o
-surrosim.o: Aparameters.o autres_fonctions.o
-jointsurrokendall.o: Integrant_scl.o
+ aamarq98o.o : Aparameters.o Aparameters.o Aparameters.o aaOptim.o Aparameters.o 
+ aaOptim.o : AparamMultive.o AparamMultive.o Aparameters.o Aparameters.o 
+ aaOptim_New_scl2.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ aaOptim_New_scl.o : Aparameters.o Aparameters.o Aparameters.o 
+ aaOptimres.o : Aparameters.o 
+ aaOptim_SCL_0.o : Aparameters.o Aparameters.o Aparameters.o 
+ aaUseFunction.o : Aparameters.o Aparameters.o 
+ aaUseFunctionG.o : Adonnees.o Aparameters.o Aparameters.o Aparameters.o 
+ additive.o : Aparameters.o aaOptim.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ Adonnees.o : 
+ afuncpasres.o : Aparameters.o aaOptim.o AparamMultive.o AparamMultive.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ aGhermite.o : 
+ ahrmsym.o : 
+ Aparameters.o : 
+ AparamMultive.o : 
+ aresidusMartingale.o : aaOptim.o Aparameters.o AparamMultive.o AparamMultive.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o aaOptimres.o Aparameters.o 
+ autres_fonctions.o : Aparameters.o Adonnees.o 
+ distance.o : AparamMultive.o AparamMultive.o aaOptim.o Aparameters.o Aparameters.o 
+ epoce.o : Adonnees.o Aparameters.o 
+ epoce_log.o : Adonnees.o Aparameters.o Aparameters.o 
+ epoce_long.o : Adonnees.o Aparameters.o aaOptim.o Aparameters.o Aparameters.o ahrmsym.o Aparameters.o Aparameters.o 
+ epoce_long_nl.o : Aparameters.o aaOptim.o Aparameters.o Aparameters.o ahrmsym.o Aparameters.o Aparameters.o 
+ frailtypack.o : Adonnees.o Aparameters.o Aparameters.o aaOptim.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaacpm.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpa_adaptative.o : aaOptim_New_scl.o Integrant_scl.o Aparameters.o Aparameters.o 
+ funcpaasplines.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaaweib.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGcpm.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGcpm_intcens.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGcpm_log.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGsplines.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGsplines_intcens.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGsplines_log.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaG_tps.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGweib.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGweib_intcens.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaGweib_log.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajcpm.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajcpm_log.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajgeneral.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpajlongisplines.o : Aparameters.o Aparameters.o aaOptim.o Aparameters.o Aparameters.o autres_fonctions.o Aparameters.o Aparameters.o ahrmsym.o Aparameters.o Adonnees.o 
+ funcpajlongisplines_nl.o : aaOptim.o Aparameters.o Aparameters.o Aparameters.o ahrmsym.o Aparameters.o 
+ funcpajlongiweib.o : Aparameters.o aaOptim.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o ahrmsym.o 
+ funcpajlongiweib_nl.o : aaOptim.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o ahrmsym.o 
+ funcpajsplines_copule_surrogate_scl_2.o : funcpa_laplace.o Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl.o aaOptim_New_scl2.o Aparameters.o funcpa_adaptative.o autres_fonctions.o Integrale_mult_scl.o Integrale_mult_scl.o Integrant_scl.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplines.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplines_fam.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplinesIndiv.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplines_intcens.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplines_log.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplines_logIndiv.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplines_surrogate_scl_1.o : Integrale_mult_scl.o Integrale_mult_scl.o Integrant_scl.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajsplines_surrogate_scl_2.o : Integrale_mult_scl.o autres_fonctions.o aaOptim_New_scl2.o Aparameters.o funcpa_adaptative.o autres_fonctions.o Integrale_mult_scl.o Integrale_mult_scl.o Integrant_scl.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpaj_tps.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajweib.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajweib_fam.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajweib_intcens.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpajweib_log.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpa_laplace.o : Integrant_scl.o aaOptim_New_scl.o Aparameters.o Aparameters.o 
+ funcpalongi_uni.o : aaOptim.o Aparameters.o Aparameters.o Aparameters.o ahrmsym.o Aparameters.o 
+ funcpaMultivCpm.o : AparamMultive.o AparamMultive.o AparamMultive.o 
+ funcpaMultivSplines.o : AparamMultive.o AparamMultive.o AparamMultive.o 
+ funcpaMultivWeib.o : AparamMultive.o AparamMultive.o AparamMultive.o 
+ funcpancpm.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpansplines.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpanweib.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpascpm.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpascpm_intcens.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpascpm_log.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpassplines.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpassplines_intcens.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpassplines_log.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpas_tps.o : Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ funcpasweib.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpasweib_intcens.o : Aparameters.o Aparameters.o Aparameters.o 
+ funcpasweib_log.o : Aparameters.o Aparameters.o Aparameters.o 
+ Integrale_mult_scl.o : Integrant_scl.o aaOptim_New_scl.o funcpa_adaptative.o Aparameters.o Adonnees.o funcpa_laplace.o aaOptim_New_scl2.o autres_fonctions.o Aparameters.o Aparameters.o 
+ Integrant_scl.o : Aparameters.o Adonnees.o autres_fonctions.o Aparameters.o Aparameters.o 
+ joint.o : Adonnees.o Aparameters.o Aparameters.o Aparameters.o Adonnees.o aaOptim.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ joint_longi.o : Aparameters.o Adonnees.o Aparameters.o Aparameters.o Aparameters.o Adonnees.o Aparameters.o aaOptim.o ahrmsym.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ joint_longi_nl.o : Adonnees.o Aparameters.o Aparameters.o Aparameters.o Adonnees.o aaOptim.o ahrmsym.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ joint_surrogate.o : Adonnees.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o Adonnees.o aaOptim_SCL_0.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ jointSurrogate.o : Aparameters.o Aparameters.o autres_fonctions.o Adonnees.o 
+ jointsurrokendall.o : Aparameters.o autres_fonctions.o Integrant_scl.o 
+ longi_uni_nl.o : Adonnees.o Aparameters.o Aparameters.o Aparameters.o Adonnees.o aaOptim.o ahrmsym.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ multiveJoint.o : AparamMultive.o aaOptim.o Aparameters.o AparamMultive.o AparamMultive.o AparamMultive.o AparamMultive.o 
+ nested.o : Adonnees.o Aparameters.o Aparameters.o Aparameters.o aaOptim.o Aparameters.o Aparameters.o 
+ Pour_Adaptative.o : autres_fonctions.o Integrale_mult_scl.o Integrale_mult_scl.o Integrant_scl.o Aparameters.o Aparameters.o Aparameters.o Aparameters.o 
+ prediction_biv.o : Aparameters.o aaOptim.o Adonnees.o Aparameters.o Aparameters.o ahrmsym.o Aparameters.o Aparameters.o 
+ prediction.o : Adonnees.o Aparameters.o 
+ predictionfam.o : Aparameters.o Adonnees.o 
+ prediction_Recurr_Sha.o : Adonnees.o 
+ prediction_sha_logn.o : Aparameters.o aaOptimres.o Adonnees.o 
+ prediction_tri.o : Aparameters.o Aparameters.o aaOptim.o Adonnees.o Aparameters.o Aparameters.o ahrmsym.o Aparameters.o Aparameters.o 
+ prediction_tri_nl.o : Adonnees.o Aparameters.o aaOptim.o Aparameters.o ahrmsym.o Aparameters.o Aparameters.o 
+ risque.o : 
+ somme.o : 
+ surrosim.o : autres_fonctions.o Aparameters.o 
+ survival.o : aaOptim.o 
+ test.o : 
