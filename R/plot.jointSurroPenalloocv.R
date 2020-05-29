@@ -140,7 +140,7 @@
               main = main)
     }
     points(data.plot2$trialID[!(data.plot2$trialID %in% unusedtrial)],data.plot2$beta.T[!(data.plot2$trialID %in% unusedtrial)])
-    legend(x = xleg, y = yleg, legend = legend, cex = 1, pch= c(1,15))
+    legend(x = xleg, y = yleg, legend = legend, cex = 1, pch= c(1,15), ...)
     abline(h = 0)
     return(paste("Unused trials = ", mainlabel, sep = ""))
   }

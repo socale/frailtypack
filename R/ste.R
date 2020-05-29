@@ -158,13 +158,13 @@ treatment effect on the true endpoint (beta_T) belongs to the interval: ]",
       else { # concavite tournee vers le bas
         message("The treatment effects on the surrogate endpoint (beta_S) that can predict a nonzero 
 treatment effect on the true endpoint (beta_T) belongs to the interval: ]-Inf ; ",
-                round(ste[1], 3), "[ U ]", round(ste[2], 3), " ; +Inf[ : HR= ]-Inf ; ",
+                round(ste[1], 3), "[ U ]", round(ste[2], 3), " ; +Inf[ : HR= ]0 ; ",
                 round(exp(ste[1]), 3), "[ U ]", round(exp(ste[2]), 3), " ; +Inf[")
       }
     } else{ # une seule solution
       message("The treatment effects on the surrogate endpoint (beta_S) that can predict a nonzero 
 treatment effect on the true endpoint (beta_T) belongs to the interval: ]-Inf ; ",
-              round(ste, 3), "[ : HR= ]-Inf ; ",round(exp(ste), 3), "[")
+              round(ste, 3), "[ : HR= ]0 ; ",round(exp(ste), 3), "[")
     }
   }
   return(ste)
