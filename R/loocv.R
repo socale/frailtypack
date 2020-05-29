@@ -229,7 +229,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
     result$result <- d
     result$ntrial <- length(trial)
     result$notconvtrial <- notconvtrial
-    result$pred.error <- round(prop.table(table(result[,ncol(result)]))[1],dec)
+    result$pred.error <- round(prop.table(table(result$result[,ncol(result$result)]))[1],dec)
     result$different.models <- lloocv
     result$loocv.summary <- loocv.summary(loocv.object = result, 
                                           nb.parameters = nrow(object$Coefficients),
