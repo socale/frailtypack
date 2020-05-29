@@ -77,7 +77,7 @@ kappa_val_croisee <- function(don_S, don_T, njeu, n_obs, n_node = 6, adjust_S = 
     }
     
     k=j+1
-    cat(i,"k=", kapa[i,1]*adjust_S, kapa[i,2]*adjust_T, fill=T)
+    #cat(i,"k=", kapa[i,1]*adjust_S, kapa[i,2]*adjust_T, fill=T)
   }
   kapa[,1] <- kapa[,1]*adjust_S
   kapa[,2] <- kapa[,2]*adjust_T

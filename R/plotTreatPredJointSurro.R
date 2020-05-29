@@ -69,7 +69,6 @@
 #' @param leg.bg The background color for the legend box. (Note that this is only used if bty \code{!= "n"}.)
 #' @param leg.bty The type of box to be drawn around the legend. The allowed values are \code{"o"} 
 #' (the default) and \code{"n"}.
-#' @param leg.border The border color for the boxes (used only if fill is specified). 
 #' @param leg.cex Character expansion factor relative to current par(\code{"cex"}). Used 
 #' for text as defined in \link{legend}.
 #' @param \dots other unused arguments
@@ -110,22 +109,22 @@
 #' 
 #' ## "HR"
 #' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
-#'                 type = "HR", lty = 2,)
+#'                 type = "HR", lty = 2, leg.y = 13)
 #'                 
 #' ## or without acceptance area for betaS:
 #' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
-#'                 type = "HR", lty = 2, 
+#'                 type = "HR", lty = 2, leg.y = 13, 
 #'                 add.accept.area.betaS = FALSE)
 #'              
 #' ## "log HR"
 #' plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
-#'                 type = "Coef", lty = 2)
+#'                 type = "Coef", lty = 2, leg.y = 3.5)
 #'                 
 #' ### For a value of ste greater than 0 (HR > 1), which induces deleterious
 #' ### treatment effet, argument "pred.int.use" can be set to "lw"  
 #' 
 #' plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 2, 
-#'                 type = "HR", lty = 2,
+#'                 type = "HR", lty = 2, leg.y = 4,
 #'                 pred.int.use = "lw")
 #' 
 #' }
@@ -137,12 +136,12 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
                                     density = 20, angle = 45, legend.show = TRUE, leg.x = NULL, leg.y = 2, 
                                     legend = c("Prediction model", "95% prediction Interval", "Beta.S for nonzero beta.T", "STE"), 
                                     leg.text.col = "black", leg.lty = c(1, 2, 4, NA), 
-                                    leg.pch = c(NA, NA, 7, 1), leg.bg = "white", leg.bty = "o", leg.border = "black", 
+                                    leg.pch = c(NA, NA, 7, 1), leg.bg = "white", leg.bty = "n", 
                                     leg.cex = 0.85, ...){
   # type  = "coef" or "HR"
   # n = number of points for the curve
   # colCI = color Confidence interval
-  
+
   # data control
   if((type == "HR") & (to < 0 | from < 0) ){
     if(to > 0) {
@@ -173,8 +172,8 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
   #ste : il est obtenu a partir de la resolution d'une equation de scond degre 
   # de la forme "ax^2 + bx + c = 0"
   
-  if((xlab == "beta.S") & (type == "HR")) xlab = "Exp(beta.S)"
-  if((ylab == "beta.T.predict") & (type == "HR")) ylab = "Exp(beta.T.predict)"
+  if((xlab == "beta.S") & (type == "HR")) xlab = "HR.S (Cox model)"
+  if((ylab == "beta.T.predict") & (type == "HR")) ylab = "Predicted HR.T (Joint model)"
   
   STE <- ste(object, var.used = var.used, pred.int.use = pred.int.use)
   
@@ -373,7 +372,7 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
       }
     if(legend.show == TRUE){
       legend(x = leg.x, y = leg.y, legend = legend[c(1,2)], col = leg.col[c(1,2)], text.col = leg.text.col, 
-             lty = leg.lty[c(1,2)], pch = leg.pch[c(1,2)], bg = leg.bg, border = leg.border, cex = leg.cex, 
+             lty = leg.lty[c(1,2)], pch = leg.pch[c(1,2)], bg = leg.bg, cex = leg.cex, 
              bty = leg.bty)
       
     }
@@ -450,11 +449,11 @@ plotTreatPredJointSurro <- function(object, from = -3, to = 2, type = "Coef", va
     if(legend.show == TRUE){
       if(add.accept.area.betaS == TRUE)
         legend(x = leg.x, y = leg.y, legend = legend, col = leg.col, text.col = leg.text.col, 
-               lty = leg.lty, pch = leg.pch, bg = leg.bg, border = leg.border, cex = leg.cex, 
+               lty = leg.lty, pch = leg.pch, bg = leg.bg, cex = leg.cex, 
                bty = leg.bty)
       else
         legend(x = leg.x, y = leg.y, legend = legend[c(1, 2, 4)], col = leg.col[c(1, 2, 4)], text.col = leg.text.col, 
-               lty = leg.lty[c(1, 2, 4)], pch = leg.pch[c(1, 2, 4)], bg = leg.bg, border = leg.border, cex = leg.cex, 
+               lty = leg.lty[c(1, 2, 4)], pch = leg.pch[c(1, 2, 4)], bg = leg.bg, cex = leg.cex, 
                bty = leg.bty)
       
     }

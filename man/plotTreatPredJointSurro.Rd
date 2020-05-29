@@ -13,7 +13,7 @@ plotTreatPredJointSurro(object, from = -3, to = 2, type = "Coef",
   legend = c("Prediction model", "95\% prediction Interval",
   "Beta.S for nonzero beta.T", "STE"), leg.text.col = "black",
   leg.lty = c(1, 2, 4, NA), leg.pch = c(NA, NA, 7, 1), leg.bg = "white",
-  leg.bty = "o", leg.border = "black", leg.cex = 0.85, ...)
+  leg.bty = "n", leg.cex = 0.85, ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
@@ -102,8 +102,6 @@ specified as a single multi-character string. Must be specified for symbol drawi
 \item{leg.bty}{The type of box to be drawn around the legend. The allowed values are \code{"o"} 
 (the default) and \code{"n"}.}
 
-\item{leg.border}{The border color for the boxes (used only if fill is specified).}
-
 \item{leg.cex}{Character expansion factor relative to current par(\code{"cex"}). Used 
 for text as defined in \link{legend}.}
 
@@ -138,22 +136,22 @@ joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8,
 
 ## "HR"
 plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
-                type = "HR", lty = 2,)
+                type = "HR", lty = 2, leg.y = 13)
                 
 ## or without acceptance area for betaS:
 plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 4, 
-                type = "HR", lty = 2, 
+                type = "HR", lty = 2, leg.y = 13, 
                 add.accept.area.betaS = FALSE)
              
 ## "log HR"
 plotTreatPredJointSurro(joint.surro.ovar, from = -2, to = 2, 
-                type = "Coef", lty = 2)
+                type = "Coef", lty = 2, leg.y = 3.5)
                 
 ### For a value of ste greater than 0 (HR > 1), which induces deleterious
 ### treatment effet, argument "pred.int.use" can be set to "lw"  
 
 plotTreatPredJointSurro(joint.surro.ovar, from = 0, to = 2, 
-                type = "HR", lty = 2,
+                type = "HR", lty = 2, leg.y = 4,
                 pred.int.use = "lw")
 
 }

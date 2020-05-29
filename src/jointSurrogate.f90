@@ -37,7 +37,7 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     integer,dimension(nbrevar(3),2), intent(in)::filtre0
     double precision,dimension(nsujet1,5+nbrevar(1)), intent(in):: donnees
     double precision,dimension(ng,5+nbrevar(2)), intent(in):: death
-    double precision,dimension(2), intent(in):: kappa0
+    double precision,dimension(2), intent(inout):: kappa0
     double precision,dimension(9), intent(in):: param_init
     double precision,dimension(23+nbrevar(1) + nbrevar(2)-2), intent(in):: paramSimul
     !double precision,dimension(:), intent(in):: paramSimul
@@ -1702,7 +1702,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
                         EPS,nsim_node,indice_esti,indice_covST,0.d0,param_weibull)
     ! call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
-        call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
+		kappa0 = k0 ! on retourne le kappa ayant permis la convergence
+        ! call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
     endif
 !122     continue
     !if(s_i<5) nsim_node(2)=32 ! on fait ceci juste pour debugger le programme

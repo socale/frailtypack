@@ -1,10 +1,16 @@
 Changes in Version 3.2.1 May 2020
 
-o Bugg fixed in the computation of ste. Actually, by solving the equation representing the upper limit of the prediction interval of the treatment effects on T based on the observed treatment effects on S equals to 0 [u(beta_So = 0)], it is possible to find 2 solutions and then two potential values for STE. Depending on the shape of the function, different interpretations of possible values can be considered. We update the R functions ste(), plotTreatPredJointSurro() and the S3method summary.jointSurroPenal() in order to take into account this remark.
+o Bugg fixed in the computation of ste. Actually, by solving the equation representing the upper limit of the prediction interval of the treatment effects on T based on the observed treatment effects on S equals to 0 [u(beta_So = 0)], it is possible to find 2 solutions and then two potential values for STE. Depending on the shape of the function, different interpretations of possible values can be considered. We update the R functions ste(), plotTreatPredJointSurro() and the S3method summary.jointSurroPenal() in order to take into account this remark. 
+
+o We have limited the display of the S3method summary.jointSurroPenal() to the  estimate of the treatment effects and the surrogacy evaluation crieria. We defined the S3method print.jointSurroPenal() to allow a complete display of the model outputs. The outputs included smoothing parameters and the number of spline nodes used to reach convergence.
 
 o Update of the R function loocv() in order to return the list of the G models obtained after deleting for the i-th trial during the loocv process. In addition we return the dataframe of the estimates of the G models. Each raw include the results without the subjets of the given trial.
 
-o Update of the arguments of the S3methods plot.jointSurroPenalloocv() and predict.jointSurroPenal()
+o Update of the arguments of the S3methods plot.jointSurroPenalloocv() and predict.jointSurroPenal().
+
+o Bugg fixed in the S3method summary.jointSurroPenal(). It is no more possible to change the integration method during the call of the function.
+
+o Bugg fixed in the value of kappa return in the object of class "jointSurroPenal". The current value is that used for the convergence of the model if applicable. 
 
 Changes in Version 3.2.0 March 2020
 o Update of the S3method predict.jointSurroPena(). We have included a plot of the predicted treatment effects on the true endpoint (with the prediction intervals) given the observed treatment effects on the surrogate endpoint and an object from the joint surrogate model. We have included the function plot.predict.jointSurroPenal()

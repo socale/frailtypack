@@ -57,7 +57,7 @@
 ##' 
 ##' \dontrun{
 ##' # Generation of data to use 
-##'  data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
+##'  data.sim <- jointSurrSimul(n.obs=500, n.trial = 5,cens.adm=549.24, 
 ##'          alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, 
 ##'          sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25, 
 ##'          full.data = 0, random.generator = 1, seed = 0, 
@@ -68,12 +68,12 @@
 ##' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
 ##'                    nb.mc = 300, nb.gh = 20)
 ##'                 
-##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 26)
+##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 2)
 ##' dloocv$result
 ##' dloocv$loocv.summary
 ##' 
 ##' # In order to summarize all the estimated models during the loocv proccess:
-##' sapply(1:30, function(i){
+##' sapply(1:5, function(i){
 ##'        cat(paste(" ========== (-)essai : ", i), fill = T)
 ##'        summary(dloocv$different.models[[i]])
 ##'        }
@@ -110,6 +110,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
   lloocv = list()
   for(i in 1:length(trial)){
     if(!(i %in% unusedtrial)){ # one can identifie trials that pose problem when they are removed, and then ignore them
+      message("Trial: ", i)
       dataUseloo <- dataUse[!(dataUse$trialID %in% trial[i]),]
       if(object$type.joint == 1){ # joint surrogate model
         # Estimation

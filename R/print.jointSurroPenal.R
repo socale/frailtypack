@@ -1,13 +1,15 @@
-##' Short summary of the surrogacy evaluation criteria estimated from a joint surrogate model
+##' Summary of the random effects parameters, the fixed treatment 
+##' effects, and the surrogacy evaluation criteria estimated from a joint surrogate model
 ##' 
-##' This function returns the estimate of the coefficient, the hazard ratios (HR) and their 
-##' confidence intervals for the fixed treatment effects. Also, an estimate of the 
-##' surrogacy evaluation criteria (Kendall's \eqn{\tau}, \if{latex}{\eqn{R^2_{trial}}}
-#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}} and STE)
+##' This function returns the estimate of the coefficients and their standard error with p-values 
+##' of the Wald test for the joint surrogate model, also hazard ratios (HR) and their 
+##' confidence intervals for the fixed treatment effects, and finaly an estimate of the 
+##' surrogacy evaluation criterian (Kendall's \eqn{\tau} and \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}})
 ##' 
 ##' 
-##' @aliases summary.jointSurroPenal
-##' @usage \method{summary}{jointSurroPenal}(object, d = 4, len = 3, nb.gh = 32, ...)
+##' @aliases print.jointSurroPenal
+##' @usage \method{print}{jointSurroPenal}(object, d = 4, len = 3, nb.gh = 32, ...)
 ##' 
 ##' @param object An object inheriting from \code{jointSurroPenal} class.
 ##' @param d The desired number of digits after the decimal point for parameters. 
@@ -18,7 +20,9 @@
 ##' \code{1} for Gaussian-Hermite quadrature.
 ##' @param \dots other unused arguments.
 ##' 
-##' @return For the fixed treatment effects, it also prints HR and its confidence
+##' @return For the variances parameters of the random effects, it prints the estimate of
+##' the coefficients with their standard error, Z-statistics and p-values
+##' of the Wald test. For the fixed treatment effects, it also prints HR and its confidence
 ##' intervals for each covariate. For the surrogacy evaluation criteria, its prints the estimated 
 ##' Kendall's \eqn{\tau} with its 95\% Confidence interval obtained by the parametric bootstrap
 ##'  or Delta-method, 
@@ -33,7 +37,9 @@
 ##' the suggestion of the Institute of Quality and Efficiency in Health Care 
 ##' (Prasad \emph{et al.}, 2015). 
 ##' We also display the surrogate threshold effect (\code{\link[=ste]{ste}}) with the associated hazard risk.
-##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}, \link{jointSurroTKendall}, \link{print.jointSurroPenal}}
+##' The rest of parameters concerns the convergence characteristics and 
+##' included: the penalized marginal log-likelihood, the number of iterations, the LCV and the Convergence criteria.
+##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}, \link{jointSurroTKendall}}
 ##' 
 ##' @author Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 
 ##' Virginie Rondeau \email{virginie.rondeau@inserm.fr}
@@ -64,11 +70,14 @@
 ##' joint.surrogate <- jointSurroPenal(data = data.sim, nb.mc = 300, 
 ##'                    nb.gh = 20, indicator.alpha = 1, n.knots = 6)
 ##'                             
-##' summary(joint.surrogate)
+##' print(joint.surrogate)
+##' 
+##' # or
+##' joint.surrogate
 ##' }
 ##' 
 ##' 
-"summary.jointSurroPenal"<-
+"print.jointSurroPenal" <-
   function(object, d = 4, len = 3, nb.gh = 32, ...){
     x <- object
     int.method.kt = 0
@@ -92,16 +101,16 @@
     p <- ifelse(as.numeric(beta$P) < 10^-10, "< e-10", beta$P)
     beta$P <- p
     
-    # cat("Estimates for variances parameters of the random effects", "\n")
+    cat("Estimates for variances parameters of the random effects", "\n")
     rownames(beta)[(nrow(beta) - 4)] <- "sigma2_S"
     rownames(beta)[(nrow(beta) - 3)] <- "sigma2_T"
     rownames(beta)[(nrow(beta) - 2)] <- "sigma_ST"
-    # print(beta[1:(nrow(beta) - 2),])
+    print(beta[1:(nrow(beta) - 2),])
     
     beta2 <- beta[((nrow(beta) - 1) : nrow(beta)),]
     beta2$Estimate <- round(beta2$Estimate,min(4,len))
    
-    # cat(" ", "\n")
+    cat(" ", "\n")
     cat("Estimates for the fixed treatment effects", "\n")
     print(beta2)
     
@@ -179,16 +188,20 @@
       cat(c("Surrogate threshold effect (STE) : (",round(STE[1],len), ",", round(STE[2],len),"); HR = (",round(exp(STE[1]),len), ",", round(exp(STE[2]),len),")"),"\n")
     }
     
-    # cat(" ", "\n")
-    # cat("Convergence parameters", "\n")
-    # cat(c("Penalized marginal log-likelihood = ", round(object$loglikPenal, len)), "\n")
-    # cat(c("Number of iterations = ", object$n.iter),"\n")
-    # cat(c("Smoothing parameters = ", object$kappa),"\n")
-    # cat(c("Number of spline nodes = ", object$parameter["n.knots"]),"\n")
-    # cat("LCV = the approximate likelihood cross-validation criterion", "\n")
-    # cat(c("      in the semi parametrical case     = ", round(object$LCV, len)),"\n")
-    # cat("Convergence criteria:", "\n")
-    # EPS <- formatC(object$EPS, d, format = "g")
-    # cat(c("  parameters = ",EPS[1], "likelihood = ", EPS[2], "gradient = ", EPS[3]), "\n")
+    cat(" ", "\n")
+    cat("Convergence parameters", "\n")
+    cat(c("Penalized marginal log-likelihood = ", round(object$loglikPenal, len)), "\n")
+    cat(c("Number of iterations = ", object$n.iter),"\n")
+    cat(c("Smoothing parameters = ", object$kappa),"\n")
+    cat(c("Number of spline nodes = ", object$parameter["n.knots"]),"\n")
+    cat("LCV = the approximate likelihood cross-validation criterion", "\n")
+    cat(c("      in the semi parametrical case     = ", round(object$LCV, len)),"\n")
+    cat("Convergence criteria:", "\n")
+    EPS <- formatC(object$EPS, d, format = "g")
+    cat(c("  Parameters = ",EPS[1], "Likelihood = ", EPS[2], "Gradient = ", EPS[3]), "\n")
+    if(object$parameter["int.method"] == 0) cat(c("Estimation based on the Monte Carlo integration\n"))
+    if(object$parameter["int.method"] == 1) cat(c("Estimation based on Gaussian-Hermite quadrature integration\n"))
+    if(object$parameter["int.method"] %in% c(2,4)) cat(c("Estimation based on a combination of both Gaussian-Hermite quadrature and Monte Carlo integration\n"))
+    if(object$parameter["int.method"] == 3) cat(c("Estimation based on the Laplace approximation integration\n"))
   }
 

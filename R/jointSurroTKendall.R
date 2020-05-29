@@ -123,8 +123,8 @@ jointSurroTKendall <- function(object = NULL, theta, gamma, alpha = 1, zeta = 1,
     alpha <- object$alpha
     zeta <- object$zeta
     ui <- object$ui
-    sigma.v[1,] <- c(object$sigma.s,object$sigma.st)
-    sigma.v[2,] <- c(object$sigma.st,object$sigma.t)
+    sigma.v[1,] <- c(object$Coefficients["sigma_s",1],object$Coefficients["sigma_sT",1])
+    sigma.v[2,] <- c(object$Coefficients["sigma_sT",1],object$Coefficients["sigma_t",1])
   }
   
   # recherche des points et poids de quadrature
