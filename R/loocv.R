@@ -221,9 +221,8 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
         cost<-(proc.time()-ptm)/60
         cat("The program took", round(cost[3],2), "minutes \n")
       }
+      lloocv[[i]] <- joint.surro
     }
-    
-    lloocv[[i]] <- joint.surro
   }
   
   if(!is.null(d)){
