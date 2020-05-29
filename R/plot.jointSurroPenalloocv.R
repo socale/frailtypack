@@ -60,7 +60,7 @@
 ##' loocv.result
 ##' 
 ##' plot(x = loocv.result, unusedtrial = c(22, 30, 33, 38, 42, 47, 49), 
-##'                           xleg = "bottomleft", y = NULL)
+##'                           xleg = "bottomleft", y = NULL, bty = "n")
 ##' }
 ##' 
 "plot.jointSurroPenalloocv" <- function(x, unusedtrial = NULL, xleg = "bottomleft", 
