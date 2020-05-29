@@ -107,6 +107,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
   d <- data.frame(matrix(rep(NA,8), nrow = 1, ncol = 8))[-1,]
   names(d) <- c("trialID","ntrial","beta.S", "beta.T", "beta.T.i", "Inf.95.CI", "Sup.95.CI","" )
   notconvtrial = unusedtrial
+  trialused = NULL
   lloocv = list()
   for(i in 1:length(trial)){
     if(!(i %in% unusedtrial)){ # one can identifie trials that pose problem when they are removed, and then ignore them
@@ -211,6 +212,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
         notconvtrial[length(notconvtrial)+1] <- i
       }
     }else{
+      trialused[length(trialused)+1] <- i
       d1 <- predict.jointSurroPenal(joint.surro,datapred = dataUse[dataUse$trialID %in% trial[i],], dec = dec)
       # Merger of the results
       d <- rbind(d,d1)
