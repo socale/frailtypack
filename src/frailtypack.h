@@ -273,15 +273,19 @@ F77_SUB(jointsurrogate)(int *nsujet1, int *ng, int *ntrials1, int *maxiter, int 
              double *vbetast, double *vbetastinit);
 
 void
-F77_SUB(surrosim)(double *don_simul, double *don_simulS1, int *n_obs, int *n_col,
-              int *lognormal, int *affiche_stat,double *vrai_theta, int *ng, int *ver,
-              double *truealpha, double *propC, double *cens_A, double *gamma1, double *gamma2,
-              double *theta2, double *lambda_S, double *nu_S, double *lambda_T, double *nu_T,
-              double *betas, double *betat, int *n_essai, double *rsqrt, double *sigma_s,
-              double *sigma_t, double *p, double *prop_i, double *gamma, double *alpha,
-              int *frailt_base, int *random_generator0, int *aleatoire, int *nbre_sim , 
-              int *graine, int *nbre_don_non_cons, int *param_weibull, int *thetacopule, int *filtre, 
-              int *filtre2, int *type_joint_simul, int *pfs);
+F77_SUB(surrosim) (double *don_simul, double *don_simulS1, int *n_obs, 
+		  int *n_col, int *lognormal, int *affiche_stat,
+		  double *vrai_theta, int *ng, int *ver, double *truealpha, 
+		  double *propC, double *cens_A, double *gamma1, 
+		  double *gamma2, double *theta2, double *lambda_S, 
+		  double *nu_S, double *lambda_T, double *nu_T,
+          double *betas, double *betat, int *n_essai, 
+		  double *rsqrt, double *sigma_s, double *sigma_t, 
+		  double *p, double *prop_i, double *gamma, double *alpha,
+          int *frailt_base, int *random_generator0, int *aleatoire, 
+		  int *nbre_sim, int *graine, int *nbre_don_non_cons, 
+		  int *param_weibull, int *thetacopule, int *filtre, 
+          int *filtre2, int *type_joint_simul, int *pfs);
 
 void
 F77_SUB(jointsurrokendall)(
