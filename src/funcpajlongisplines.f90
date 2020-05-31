@@ -1,7 +1,4 @@
-    
-    
-    
-    !========================          FUNCPAJ_SPLINES         ====================
+!========================          FUNCPAJ_SPLINES         ====================
         double precision function funcpajlongisplines(b,np,id,thi,jd,thj,k0)
     
         use donnees, only:MC1,MC2,MC3,MC4,MC5,MC6,MC7,MC8,MC9,MC10,MC11,MC12,MC13,&
@@ -88,9 +85,9 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
         if (jd.ne.0) bh(jd)=bh(jd)+thj
     
             b1 = bh
-    
+
         n = (np-nva-effet-indic_ALPHA-1-nb_re - netadc - netar)/(effet+1) !nst        !to znaczy ze dzielimy lliczbe wezlow na 2
-    
+ 
         the1 = 0.d0
             the2 = 0.d0
         if(typeJoint.ne.2) then
@@ -402,8 +399,7 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
             Chol(5,5)=bh(np-nva-nb_re+15)
             end if  
 
-            do ig=1,ng
-    
+            do ig=1,ng    
                 ycurrent  = 0.d0
                 auxig=ig
                 choix = 4
@@ -420,7 +416,7 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 allocate(mat_sigmaB(nmescurB,nmescurB))
                 end if
                     allocate(mat_sigma(nmescur,nmescur))
-    
+
                 x2 = 0.d0
                 x2cur = 0.d0
                 z1cur = 0.d0
@@ -439,7 +435,6 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                             nmes_o(ig) = nmescur
                         end if
                     end do
-    
     ! add TwoPart
     if(TwoPart.eq.1) then
         if(nmescurB.gt.0) then
@@ -453,7 +448,6 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 res1cur = 0.d0
                 res2cur = 0.d0
                 res3cur = 0.d0
-    
                 if(typeJoint.eq.3) then
                 do i= 0,nmescurr-1
     
@@ -462,7 +456,6 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 res2cur(i+1) = dut1(nt1(it_rec+i))
                 end do
             end if
-    
     ! creation de Zi
     
                 Z1=0.d0
@@ -483,14 +476,12 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
     
                 l = 0
                 X2 = 0.d0
-    
                 do k=1,nva3
                     l = l + 1
                     do j=1,nmescur
                         X2(j,l) = dble(vey(it+j,k))
                     end do
                 end do
-    
     
        ! add TwoPart  
     if(TwoPart.eq.1) then
@@ -517,17 +508,14 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
             end do
         end do
     end if          
-    
             varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nby), &
                     MATMUL(Ut(1:nby,1:nby),Utt(1:nby,1:nby))),transpose(ziy((it+1):(it+nmescur),1:nby)))+ &
                     mat_sigma
-    
                 !add TwoPart
             if(TwoPart.eq.1)then
                 varcov_margB((itB+1):(itB+nmescurB),1:nmescurB) =Matmul( MATMUL(ziB((itB+1):(itB+nmescurB),1:nbB), &
                 MATMUL(Ut(nby+1:nb1,nby+1:nb1),Utt(nby+1:nb1,nby+1:nb1))),transpose(ziB((itB+1):(itB+nmescurB),1:nbB)))
             end if
-    
             allocate(matv(nmescur*(nmescur+1)/2),varcov_marg_inv(nmescur,nmescur))
             matv = 0.d0
         do j=1,nmescur
@@ -541,7 +529,29 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
         eps = 1.d-10
 
     
-    
+!     open(2,file='/users/dr/debug.txt')  
+!     write(2,*)'nmescur',nmescur
+!     write(2,*)'nmescurB',nmescurB
+!     write(2,*)'nvaB',nvaB
+!     write(2,*)'nva',nva
+!     write(2,*)'Z1B(:,1)',Z1B(:,1)
+!     write(2,*)'Z1B(1,:)',Z1B(1,:)
+!     write(2,*)'ziB(1,:)',ziB(1,:)
+!     write(2,*)'ziB(:,1)',ziB(:,1)
+!     write(2,*)'XB(:,1)',XB(:,1)
+!     write(2,*)'XB(:,2)',XB(:,2)
+!     write(2,*)'XB(1,:)',XB(1,:)
+!     write(2,*)'Z1(:,1)',Z1(:,1)
+!     write(2,*)'Z1(:,2)',Z1(:,2)
+!     write(2,*)'Z1(1,:)',Z1(1,:)
+!     write(2,*)'X2(:,1)',X2(:,1)
+!     write(2,*)'X2(:,2)',X2(:,2)
+!     write(2,*)'X2(1,:)',X2(1,:)
+!     write(2,*)'Bcurrent(:)',Bcurrent(:)
+!     write(2,*)'bb(:)',bb(:)
+!     write(2,*)'ycurrent',ycurrent(:)
+!        close(2)
+!   stop
             call dsinvj(matv,nmescur,eps,ier)
     
         varcov_marg_inv=0.d0
@@ -577,7 +587,6 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3-nvaB+1):(np-nvaB)))
             end if
             xea = 0.d0
-            
 
 
 
@@ -614,7 +623,29 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
 
         
         muB = 0.d0
-        muB(1:nmescurB,1) = matmul(XB(1:nmescurB,1:(nvaB)),bh((np-nvaB+1):np))
+        muB(1:nmescurB,1) = fixed_Binary+matmul(XB(1:nmescurB,1:(nvaB)),bh((np-nvaB+1):np)) !modif linBin
+		
+!     open(2,file='/users/dr/debug.txt')  
+! write(2,*)'muB',muB(:,1)
+! write(2,*)'nmescurB',nmescurB
+! write(2,*)'mu',mu(:,1)
+!write(2,*)'nmescur',nmescur
+! write(2,*)'np',np
+! write(2,*)'bh(:)',bh(:)
+! write(2,*)'nvaB',nvaB
+! write(2,*)'nva3',nva3
+! write(2,*)'XB(:,1)',XB(:,1)
+! write(2,*)'XB(:,2)',XB(:,2)
+! write(2,*)'XB(:,3)',XB(:,3)
+! write(2,*)'XB(1,:)',XB(1,:)
+!  write(2,*)'X2(:,1)',X2(:,1)
+! write(2,*)'X2(:,2)',X2(:,2)
+! write(2,*)'X2(:,3)',X2(:,3)
+! write(2,*)'X2(1,:)',X2(1,:)
+! 
+!         close(2)
+!    stop
+		
         deallocate(matvB,varcov_marg_invB)
     end if    
 
@@ -696,11 +727,11 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 do while(l.le.nbre_sim)
                     SX=1.d0
                     xMC=0.d0
-                    Vect_sim_MC(l,1)=MC((graine-1)+l) ! random gaussian number N(0,1)
+                    Vect_sim_MC(l,1)=MC(l) ! random gaussian number N(0,1)
                 if(nb1.gt.1) then
                     do m=2,nb1
                     SX=1.d0
-                         Vect_sim_MC(l,m)=MC((graine-1)+(m-1)*nbre_sim+l) ! random gaussian number N(0,1)
+                         Vect_sim_MC(l,m)=MC((m-1)*nbre_sim+l) ! random gaussian number N(0,1)
                      end do
                 endif
                     l=l+1
@@ -774,7 +805,7 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 integrale4(ig) = 1.E+30
             end if
     
-        else
+       else
         do k=1,nb1
         Z1 (k,1)=0.d0
             end do    
@@ -1175,3 +1206,4 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
     
     
     
+
