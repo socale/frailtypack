@@ -4456,7 +4456,7 @@ end if
             double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY,cmGtemp ! add TwoPart
     integer::counter, counter2
             double precision, dimension(1,nvaB)::x2BcurG
-    double precision::resultf1, resultf2,f1,f2 !add TwoPart
+    double precision::resultf1,resultf2,f1,f2 !add TwoPart
 
 resultf1=0.d0
 resultf2=0.d0
@@ -4663,6 +4663,9 @@ if(TwoPart.eq.1) then
 !stop                         
     Bcurrentvalue=0.d0
     Bcv=0.d0
+	if(fixed_Binary.eq.99) then
+	fixed_Binary=0.d0
+	end if
     Bcv=fixed_Binary+dot_product(X2BcurG(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1BcurG(1,1:nb1),frail(1:nb1))
     Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
       
@@ -4803,7 +4806,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,external::survdcCM
         double precision :: resultdc,abserr,resabs,resasc,Xea,vet2
         double precision,parameter::pi=3.141592653589793d0
-        double precision :: resultf1, resultf2, f1, f2 ! add TwoPart
+        double precision :: resultf1, resultf2, f1, f2, logNormCum ! add TwoPart
         double precision,dimension(1) :: Bscalar,Bscal,Bcv,Bcurrentvalue, cmY,cmGtemp
         integer :: counter, counter2 ! add for current-level interaction
         upper = .false.
@@ -4823,6 +4826,7 @@ mu1G=0.d0
 mu1BG=0.d0
 auxG=0.d0
 resultdc=0.d0
+logNormCum=0.d0
 
 resultf1=0.d0
 resultf2=0.d0
@@ -5164,7 +5168,11 @@ else if(nb1.eq.3) then
     z1YcurG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 1.d0
+		if(interceptBin.eq.1) then
+        z1BcurG(1,3) = 1.d0
+		else
+        z1BcurG(1,3) = t1dc(i)
+		end if
 else if(nb1.eq.4) then
     if(nbY.eq.2) then ! random intercept and slope in each model
         z1YcurG(1,1) = 1.d0 !
@@ -5207,16 +5215,15 @@ end if
 
                         Bcurrentvalue=0.d0
                         Bcv=0.d0
-
+	if(fixed_Binary.eq.99) then
+	fixed_Binary=0.d0
+	end if
                         Bcv=fixed_Binary+MATMUL(X2BcurG,b1((npp-nvaB+1):npp))+Matmul(z1BcurG,Xea22)
                         Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
 
 cmY=0.d0
         cmY = (MATMUL(x2curG,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1YcurG,Xea22))
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'boxcoxlambda',boxcoxlambda
-!     close(2)
-     
+   
     if(GLMloglink0.eq.0) then
             current_meanG = cmY*Bcurrentvalue
     else if(GLMloglink0.eq.1) then
@@ -5266,7 +5273,12 @@ end if
             do k = 1,nmescur
     
                 if(ycurrent(k).le.s_cag) then
+                    if(GLMloglink0.eq.0) then
                     prod_cag = prod_cag*(1.d0-alnorm((mu1G(k,1)-s_cag)/sqrt(sigmae),upper))
+					else if(GLMloglink0.eq.1) then
+					call log_normal_cdf(s_cag,mu1G(k,1), sqrt(sigmae), logNormCum)
+                    prod_cag = prod_cag*(logNormCum)
+					end if
                     !(0.5d0*(1.d0-erf((mu1G(k)-s_cag)/(sigmae*dsqrt(2.d0)))))
                 else
                     if(GLMloglink0.eq.0) then
@@ -5303,22 +5315,6 @@ end if
 		yscalarlog = yscalarlog - dlog(ycurrent(k))
                             else if (MTP0.eq.1) then ! marginal two-part model
 yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
-!if(numpat.eq.2606) then
-!     open(2,file='/users/dr/debug.txt')  
-!     write(2,*)'mu1G(:,1)',mu1G(:,1)
-!     write(2,*)'mu1BG(:,1)',mu1BG(:,1)
-!     write(2,*)'ycurrent(:)',ycurrent(:)
-! write(2,*)'sigmae',sigmae
-! write(2,*)'numpat',numpat
-! write(2,*)'mu(:,1)',mu(:,1)
-! write(2,*)'muB(:,1)',muB(:,1)
-!write(2,*)'yscalar',yscalar
-!write(2,*)'k',k
-! write(2,*)'nmesy(:)',nmesy(:)
-! write(2,*)'nmesB(:)',nmesB(:)
-!         close(2)
-!    stop
-!	end if
     yscalarlog = yscalarlog - dlog(ycurrent(k))
                             end if
               !          end if
@@ -5344,7 +5340,17 @@ Bscal(1)=0.d0
             end if
         end do
     end if
-
+	
+!	if(numpat.eq.2) then
+!     open(2,file='/users/dr/debug.txt')  
+!     write(2,*)'mu1G(:,1)',mu1G(:,1)
+!     write(2,*)'s_cag',s_cag
+!     write(2,*)'prod_cag',prod_cag
+!     write(2,*)'sigmae',sigmae
+!     write(2,*)'logNormCum',logNormCum
+!         close(2)
+!    stop
+!	end if
 funcG=0.d0
        if (method_GH.ne.3) then ! loglikelihood
     if(nb1.eq.1) then

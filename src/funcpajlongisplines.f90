@@ -623,6 +623,9 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
 
         
         muB = 0.d0
+	if(fixed_Binary.eq.99) then
+	fixed_Binary=0.d0
+	end if
         muB(1:nmescurB,1) = fixed_Binary+matmul(XB(1:nmescurB,1:(nvaB)),bh((np-nvaB+1):np)) !modif linBin
 		
 !     open(2,file='/users/dr/debug.txt')  
@@ -727,11 +730,11 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 do while(l.le.nbre_sim)
                     SX=1.d0
                     xMC=0.d0
-                    Vect_sim_MC(l,1)=MC(l) ! random gaussian number N(0,1)
+                    Vect_sim_MC(l,1)=MC((graine-1)+l) ! random gaussian number N(0,1)
                 if(nb1.gt.1) then
                     do m=2,nb1
                     SX=1.d0
-                         Vect_sim_MC(l,m)=MC((m-1)*nbre_sim+l) ! random gaussian number N(0,1)
+                         Vect_sim_MC(l,m)=MC((graine-1)+(m-1)*nbre_sim+l) ! random gaussian number N(0,1)
                      end do
                 endif
                     l=l+1

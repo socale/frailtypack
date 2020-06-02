@@ -462,7 +462,6 @@
     if (!(all(random.Binary %in% c(1,names(data.Longi))))) {
     stop("Random effects (binary part) can be only related to variables from the longitudinal data or the intercept (1)") }
 }
-	if(fixed.Binary==FALSE) fixed.Binary=99 # binary intercept not fixed if 99
 	
     if(MTP & (!TwoPart | !GLMlog)){
     stop("Marginal two-part model requires activation of two-part and GLMlog")}
@@ -603,6 +602,8 @@ m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m
     if(TwoPart){
         data.Binary=data.Longi # all data for binary part / add TwoPart
     }
+	if(fixed.Binary==FALSE) fixed.Binary=99 # binary intercept not fixed if 99
+
 
     TermsY <- if (missing(data.Longi)){
       terms(formula.LongitudinalData, special)
@@ -1314,13 +1315,14 @@ for(i in 1:length(llB.fin)){
  # if(dim(X_B)[2]!=length(llB.fin))stop("The variables in the longitudinal part must be in the data.Binary")
    X_B <- as.data.frame(X_B)
    names(X_B) <- llB.fin
+if(fixed.Binary==99){
+Intercept.Binary <- rep(1,dim(X_B)[1])# modif LinBin
 
-#Intercept.Binary <- rep(1,dim(X_B)[1])# modif LinBin
-
-#  if(intercept){
-#    X_B <- cbind(Intercept.Binary,X_B)
-#    ind.placeB <- ind.placeB+1
-#  }
+  if(intercept){
+    X_B <- cbind(Intercept.Binary,X_B)
+    ind.placeB <- ind.placeB+1
+  }
+}
 
   X_Ball<- X_B
   "%+%"<- function(x,y) paste(x,y,sep="")
@@ -1448,7 +1450,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
     varY <- as.matrix(sapply(X_L, as.numeric))
 
     nsujety<-nrow(X_L)
-    if(TwoPart) X_B <- X_B
     if(TwoPart) nvarB<-ncol(X_B)
     if(TwoPart) varB <- as.matrix(sapply(X_B, as.numeric))
     if(TwoPart) nsujetB <- nrow(X_B)
