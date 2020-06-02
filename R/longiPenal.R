@@ -40,8 +40,10 @@
 #'
 #' Alternatively, a two-part model is proposed to fit a semicontinuous biomarker.
 #' The two-part model decomposes the biomarker's distribution into a binary
-#' outcome (zero vs. positive values) and a continuous outcome (positive values).
-#' A logistic mixed effects model fits the binary outcome and a linear mixed effects
+#' outcome (zero vs. positive values) and a continuous outcome (positive values). In the
+#' conditional form, the continuous part is conditional on a positive value while in the 
+#' marginal form, the continuous part corresponds to the marginal mean of the biomarker.
+#' A logistic mixed effects model fits the binary outcome and a linear or a lognormal mixed effects
 #' model fits the continuous outcome.
 #' }
 #' \if{latex}{Fit a joint model for longitudinal data and a terminal event using a
@@ -135,6 +137,11 @@
 #' @param random.Binary Names of variables for the random effects of the binary
 #' part of the two-part model fitting the longitudinal semicontinuous outcome.
 #' The random intercept is chosen using \code{"1"}.
+#' @param fixed.Binary Fix the value of the intercept in the binary part of a two-part model.
+#' @param GLMlog Logical value. Use a lognormal distribution for the biomarker 
+#' (instead of the default normal distribution).
+#' @param MTP Logical value. Marginal two-part joint model instead of 
+#' conditional two-part joint model (only with two-part models).
 #' @param id Name of the variable representing the individuals.
 #' @param intercept Logical value. Is the fixed intercept of the biomarker
 #'   included in the mixed-effects model? The default is \code{TRUE}.
@@ -144,7 +151,7 @@
 #'   via the true current level of the biomarker.  The option
 #'   \code{"Current-level"} can be chosen only if the biomarker random effects
 #'   are associated with the intercept and time (following this order).
-#'   \code{"Two-part"}, this structure is only applicable with two-part models,
+#'   \code{"Two-part"}, this structure is only applicable with conditional two-part models,
 #'   the effect of the current probability of positive value and the effect of
 #'   the expected value among positive values on the risk of event is evaluated
 #'   separately. The default is \code{"Random-effects"}.
@@ -343,10 +350,10 @@
 #' multiple integrals over infinite regions with Gaussian weight. \emph{Journal
 #' of Computational and Applied Mathematics} \bold{71}, 299-309.
 #'
-#' D. Rustand, L. Briollais, C. Tournigand and V. Rondeau. Two-part joint model for a
-#' longitudinal semicontinuous marker and a terminal event with application
-#' to metastatic colorectal cancer data. \emph{Under
-#' revision}.
+#' D. Rustand, L. Briollais, C. Tournigand and V. Rondeau (2020). 
+#' Two-part joint model for a longitudinal semicontinuous marker 
+#' and a terminal event with application to metastatic colorectal 
+#' cancer data. \emph{Biostatistics}.
 #' @keywords models
 #' @export
 #' @examples
@@ -391,23 +398,23 @@
 #' colorectalLongi$Yo <- (colorectalLongi$tumor.size*0.3+1)^(1/0.3)
 #' colorectalLongi$Y <- log(colorectalLongi$Y+1) # log transformation with shift=1
 #'
-#' # Two-part joint model - random-effects association structure (~15min)
+#' # Conditional two-part joint model - random-effects association structure (~15min)
 #'
-#' TwoPartJoint_re <-longiPenal(Surv(time1, state)~age + treatment +
+#' CTPJM_re <-longiPenal(Surv(time1, state)~age + treatment +
 #' who.PS+ prev.resection, Y~year*treatment, formula.Binary=Y~year*treatment,
 #' data = colorectalSurv, data.Longi = colorectalLongi, random = c("1"),
 #' random.Binary=c("1"), id = "id", link ="Random-effects", left.censoring = F,
 #' n.knots = 7, kappa = 2, hazard="Splines-per")
 #'
-#' print(TwoPartJoint_re)
+#' print(CTPJM_re)
 #'
-#' # Two-part joint model - current-level association structure (~15min)
+#' # Conditional two-part joint model - current-level association structure (~15min)
 #' # Simulated dataset (github.com/DenisRustand/TPJM_sim)
 #' data(longDat)
 #' data(survDat)
 #' tte <- frailtyPenal(Surv(deathTimes, d)~trt,n.knots=5,kappa=0, data=survDat,cross.validation = T)
 #' kap <- round(tte$kappa,2);kap # smoothing parameter
-#'   TPJM <- longiPenal(Surv(deathTimes, d)~trt, Y~timej*trtY,
+#'   CTPJM_cl <- longiPenal(Surv(deathTimes, d)~trt, Y~timej*trtY,
 #'   data=survDat, data.Longi = longDat,
 #'   random = c("1","timej"), formula.Binary=Y~timej*trtY,
 #'   random.Binary=c("1"), timevar="timej", id = "id",
@@ -415,7 +422,33 @@
 #'   hazard="Splines-per", method.GH="Monte-carlo",
 #'   n.nodes=500, seed.MC=1)
 #'
-#'   print(TPJM)
+#'   print(CTPJM_cl)
+#'   
+#'   
+#' # Marginal two-part joint model - random-effects association structure (~10min)
+#' longDat$Yex <- exp(longDat$Y)-1
+#' MTPJM_re <- longiPenal(Surv(deathTimes, d)~trt, Yex~timej*trtY,
+#'                   data=survDat, data.Longi = longDat,MTP=T,GLMlog = T,
+#'                   random = c("1","timej"), formula.Binary=Y~timej*trtY,
+#'                   random.Binary=c("1"), timevar="timej", id = "id",
+#'                   link = "Random-effects", n.knots = 5, kappa = kap,
+#'                   hazard="Splines-per", method.GH="Monte-carlo",
+#'                   n.nodes=500, seed.MC=1)
+#'
+#' print(MTPJM_re)
+#'
+#' # Marginal two-part joint model - current-level association structure (~30min)
+#'  MTPJM_cl <- longiPenal(Surv(deathTimes, d)~trt, Yex~timej*trtY,
+#'                   data=survDat, data.Longi = longDat,MTP=T,GLMlog = T,
+#'                   random = c("1","timej"), formula.Binary=Y~timej*trtY,
+#'                   random.Binary=c("1"), timevar="timej", id = "id",
+#'                   link = "Current-level", n.knots = 5, kappa = kap,
+#'                   hazard="Splines-per", method.GH="Monte-carlo",
+#'                   n.nodes=500, seed.MC=1)
+#'
+#' print(MTPJM_cl)
+#'
+#'   
 #' }
 "longiPenal" <-
   function (formula, formula.LongitudinalData, data,  data.Longi, formula.Binary=FALSE, random, random.Binary=FALSE, fixed.Binary=FALSE, GLMlog=FALSE, MTP=FALSE, id, intercept = TRUE,link="Random-effects",timevar=FALSE,left.censoring=FALSE,n.knots, kappa,
