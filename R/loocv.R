@@ -221,7 +221,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
         cost<-(proc.time()-ptm)/60
         cat("The program took", round(cost[3],2), "minutes \n")
       }
-      lloocv[[i]] <- joint.surro
+      lloocv[[length(lloocv)+1]] <- joint.surro
     }
   }
   
@@ -231,7 +231,7 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
     result$ntrial <- length(trial)
     result$notconvtrial <- notconvtrial
     result$pred.error <- round(prop.table(table(result$result[,ncol(result$result)]))[1],dec)
-    result$different.models <- lloocv[!is.na(lloocv)]
+    result$different.models <- lloocv
     result$loocv.summary <- loocv.summary(loocv.object = result, trialused = trialused, 
                                           nb.parameters = nrow(object$Coefficients),
                                           names.parameters = rownames(object$Coefficients))
