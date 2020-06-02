@@ -232,8 +232,8 @@ loocv <- function (object, unusedtrial = NULL, var.used = "error.estim", alpha. 
     result$notconvtrial <- notconvtrial
     result$pred.error <- round(prop.table(table(result$result[,ncol(result$result)]))[1],dec)
     result$different.models <- lloocv
-    #result$loocv.summary <- loocv.summary(loocv.object = result, trialused = trialused,
-    result$loocv.summary <- loocv.summary(loocv.object = result,
+    result$loocv.summary <- loocv.summary(loocv.object = result, trialused = trialused,
+    #result$loocv.summary <- loocv.summary(loocv.object = result,
                                           nb.parameters = nrow(object$Coefficients),
                                           names.parameters = rownames(object$Coefficients))
     class(result) <- "jointSurroPenalloocv"
