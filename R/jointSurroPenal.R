@@ -1168,7 +1168,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   result$type.joint <- type.joint
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
-  message("les parametres = ", parameter)
+  
   if(is.na(result$n.iter)) {
     result <- NULL # model did not converge 
     print("===Model did not converge===")
