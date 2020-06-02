@@ -1,8 +1,9 @@
 # function permettant de presenter les sorties des modeles issus du loocv. pour chaque essai,
 # le modele est estime sur l'ensemble des essais exclut ce dernier
 
-loocv.summary <- function(loocv.object, nb.parameters, trialused, names.parameters){
-  n <- length(trialused)
+loocv.summary <- function(loocv.object, nb.parameters, names.parameters){
+  #n <- length(trialused)
+  n <- length(loocv.object$different.models)
   result <- data.frame(matrix(0, n, nb.parameters))
   names(result) <- names.parameters
   coef <- sapply(trialused, function(i){
