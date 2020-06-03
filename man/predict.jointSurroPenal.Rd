@@ -108,7 +108,7 @@ predict(joint.surro.ovar, type = "Coef", leg.y = 3.5, add.accept.area.betaS = F,
 # in HR
 predict(joint.surro.ovar, betaS.obs = exp(-0.797), betaT.obs = exp(-1.018))
 predict(joint.surro.ovar, type = "HR", betaS.obs = log(0.65), leg.y = 5, to = 2.3)
-predict(v, type = "HR", leg.y = 5, add.accept.area.betaS = F, to = 2.3)
+predict(joint.surro.ovar, type = "HR", leg.y = 5, add.accept.area.betaS = F, to = 2.3)
 }
 
 

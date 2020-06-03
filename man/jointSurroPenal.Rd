@@ -509,6 +509,8 @@ joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8,
 # results
 summary(joint.surro.ovar)
 
+print(joint.surro.ovar)
+
 # data from the adjuvant chemotherapy and resectable gastric cancer 
 # meta-analyses :
 # Joint surrogate model with initial values for the parameters and the 
@@ -522,7 +524,7 @@ joint.surro.gast <- jointSurroPenal(data = gastadj, nb.mc = 100, nb.gh = 20,
                 random.generator = 2, init.kappa = c(367700100,10025184521))
 
 # results
-summary(joint.surro.gast)
+print(joint.surro.gast)
 
 }
 

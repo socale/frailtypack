@@ -48,19 +48,23 @@
 ##' 
 ##' 
 ##' \dontrun{
-##' library(frailtypack)
-##' data(dataOvarian)
+##' # Generation of data to use 
+##'  data.sim <- jointSurrSimul(n.obs=300, n.trial = 10,cens.adm=549.24,
+##'              alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7,
+##'              sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25,
+##'              full.data = 0, random.generator = 1, seed = 0,
+##'              nb.reject.data = 0)
 ##' 
-##' joint.surro.Gumbel <- jointSurroCopPenal(data = dataOvarian, int.method = 0, 
-##'                       n.knots = 8, maxit=50, kappa.use = 4, nb.mc = 1000, 
-##'                       typecopula = 2, print.iter = T, scale = 1/365)
-##' summary(joint.surro.Gumbel)
+##' ###--- Joint surrogate model ---###
+##'  
+##' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2,
+##'                         nb.mc = 300, nb.gh = 20, print.iter = T)
+##'         
+##' # Example of loocv taking into accountn ony trial 2 trials (1 and 3)
+##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = c(2,4:10))
 ##' 
-##' loocv.result <- loocv(joint.surro.Gumbel)
-##' loocv.result
+##' plot(x = dloocv, xleg = "topright", bty = "n")
 ##' 
-##' plot(x = loocv.result, unusedtrial = c(22, 30, 33, 38, 42, 47, 49), 
-##'                           xleg = "bottomleft", y = NULL, bty = "n")
 ##' }
 ##' 
 "plot.jointSurroPenalloocv" <- function(x, unusedtrial = NULL, xleg = "bottomleft", 
