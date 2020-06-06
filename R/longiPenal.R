@@ -437,7 +437,7 @@
 #'
 #' print(MTPJM_re)
 #'
-#' # Marginal two-part joint model - current-level association structure (~30min)
+#' # Marginal two-part joint model - current-level association structure (~45min)
 #'  MTPJM_cl <- longiPenal(Surv(deathTimes, d)~trt, Yex~timej*trtY,
 #'                   data=survDat, data.Longi = longDat,MTP=T,GLMlog = T,
 #'                   random = c("1","timej"), formula.Binary=Y~timej*trtY,
