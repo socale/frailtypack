@@ -1794,6 +1794,7 @@
                   groupey0 = as.integer(clusterY),
                   groupeB0 = as.integer(clusterB),
                   Vectnb0 = as.integer(c(nRE, nREB)),
+				  fixed_Binary0 = as.double(99),
                   matzy0 =as.double(matzy),
                   matzB0 =as.double(matzB),
                   cag0 = as.double(cag),
