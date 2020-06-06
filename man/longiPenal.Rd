@@ -5,7 +5,8 @@
 \title{Fit a Joint Model for Longitudinal Data and a Terminal Event}
 \usage{
 longiPenal(formula, formula.LongitudinalData, data, data.Longi,
-  formula.Binary=FALSE, random, random.Binary=FALSE, id, intercept = TRUE,
+  formula.Binary=FALSE, random, random.Binary=FALSE, fixed.Binary=FALSE, 
+  GLMlog=FALSE, MTP=FALSE, id, intercept = TRUE,
   link = "Random-effects", timevar=FALSE, left.censoring =
   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
   init.Random, init.Eta, method.GH = "Standard", seed.MC=FALSE, n.nodes, LIMparam = 1e-3,
