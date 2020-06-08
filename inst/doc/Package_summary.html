@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -83,7 +83,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -145,6 +144,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -156,18 +156,6 @@ summary {
   display: none;
 }
 </style>
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
 
 <!-- code folding -->
 
@@ -700,6 +688,8 @@ prediction(joint.fit,datapred,t=100,window=seq(50,1500,50),event=&quot;Recurrent
 <div id="reference" class="section level4">
 <h4>Reference</h4>
 <p>Agnieszka Krol, Audrey Mauguen, Yassin Mazroui, Alexandre Laurent, Stefan Michiels, Virginie Rondeau (2017), <a href="https://www.jstatsoft.org/article/view/v081i03">Tutorial in Joint Modeling and Prediction: A Statistical Software for Correlated Longitudinal Outcomes, Recurrent Events and a Terminal Event.</a> <em>Journal of Statistical Software</em>, <strong>81</strong>.</p>
+<p>Casimir Ledoux Sofeu and Virginie Rondeau (2020). [How to use frailtypack for validating failure-time surrogate endpoints using individual patient data from meta-analyses of randomized controlled trials.] (<a href="https://doi.org/10.1371/journal.pone.0228098" class="uri">https://doi.org/10.1371/journal.pone.0228098</a>) <em>PLOS ONE</em>, <strong>15</strong>, 1-25.</p>
+<p>Denis Rustand, Laurent Briollais, Christophe Tournigand and Virginie Rondeau (2020). [Two-part joint model for a longitudinal semicontinuous marker and a terminal event with application to metastatic colorectal cancer data.] (<a href="https://doi.org/10.1093/biostatistics/kxaa012" class="uri">https://doi.org/10.1093/biostatistics/kxaa012</a>) <em>Biostatistics</em>.</p>
 </div>
 <div id="shiny" class="section level4">
 <h4>Shiny</h4>
@@ -727,6 +717,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
