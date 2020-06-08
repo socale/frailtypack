@@ -5,10 +5,10 @@
 \title{Summary of the random effects parameters, the fixed treatment 
 effects, and the surrogacy evaluation criteria estimated from a joint surrogate model}
 \usage{
-\method{print}{jointSurroPenal}(object, d = 4, len = 3, nb.gh = 32, ...)
+\method{print}{jointSurroPenal}(x, d = 4, len = 3, nb.gh = 32, ...)
 }
 \arguments{
-\item{object}{An object inheriting from \code{jointSurroPenal} class.}
+\item{x}{An object inheriting from \code{jointSurroPenal} class.}
 
 \item{d}{The desired number of digits after the decimal point for parameters. 
 The maximum of 4 digits is required for the estimates. Default of 3 digits is used.}

@@ -9,9 +9,9 @@
 ##' 
 ##' 
 ##' @aliases print.jointSurroPenal
-##' @usage \method{print}{jointSurroPenal}(object, d = 4, len = 3, nb.gh = 32, ...)
+##' @usage \method{print}{jointSurroPenal}(x, d = 4, len = 3, nb.gh = 32, ...)
 ##' 
-##' @param object An object inheriting from \code{jointSurroPenal} class.
+##' @param x An object inheriting from \code{jointSurroPenal} class.
 ##' @param d The desired number of digits after the decimal point for parameters. 
 ##' The maximum of 4 digits is required for the estimates. Default of 3 digits is used.
 ##' @param len The desired number of digits after the decimal point for p-value and convergence 
@@ -78,8 +78,8 @@
 ##' 
 ##' 
 "print.jointSurroPenal" <-
-  function(object, d = 4, len = 3, nb.gh = 32, ...){
-    x <- object
+  function(x, d = 4, len = 3, nb.gh = 32, ...){
+    object <- x
     int.method.kt = 0
     if (!inherits(x, "jointSurroPenal"))
       stop("Object must be of class 'jointSurroPenal'")
