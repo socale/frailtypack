@@ -40,8 +40,10 @@
 #'
 #' Alternatively, a two-part model is proposed to fit a semicontinuous biomarker.
 #' The two-part model decomposes the biomarker's distribution into a binary
-#' outcome (zero vs. positive values) and a continuous outcome (positive values).
-#' A logistic mixed effects model fits the binary outcome and a linear mixed effects
+#' outcome (zero vs. positive values) and a continuous outcome (positive values). In the
+#' conditional form, the continuous part is conditional on a positive value while in the 
+#' marginal form, the continuous part corresponds to the marginal mean of the biomarker.
+#' A logistic mixed effects model fits the binary outcome and a linear or a lognormal mixed effects
 #' model fits the continuous outcome.
 #' }
 #' \if{latex}{Fit a joint model for longitudinal data and a terminal event using a
@@ -108,7 +110,8 @@
 #' and identification of individuals. }
 #'
 #' @usage longiPenal(formula, formula.LongitudinalData, data, data.Longi,
-#'   formula.Binary=FALSE, random, random.Binary=FALSE, id, intercept = TRUE,
+#'   formula.Binary=FALSE, random, random.Binary=FALSE, fixed.Binary=FALSE, 
+#'   GLMlog=FALSE, MTP=FALSE, id, intercept = TRUE,
 #'   link = "Random-effects", timevar=FALSE, left.censoring =
 #'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
 #'   init.Random, init.Eta, method.GH = "Standard", seed.MC=FALSE, n.nodes, LIMparam = 1e-3,
@@ -135,6 +138,11 @@
 #' @param random.Binary Names of variables for the random effects of the binary
 #' part of the two-part model fitting the longitudinal semicontinuous outcome.
 #' The random intercept is chosen using \code{"1"}.
+#' @param fixed.Binary Fix the value of the intercept in the binary part of a two-part model.
+#' @param GLMlog Logical value. Use a lognormal distribution for the biomarker 
+#' (instead of the default normal distribution).
+#' @param MTP Logical value. Marginal two-part joint model instead of 
+#' conditional two-part joint model (only with two-part models).
 #' @param id Name of the variable representing the individuals.
 #' @param intercept Logical value. Is the fixed intercept of the biomarker
 #'   included in the mixed-effects model? The default is \code{TRUE}.
@@ -144,7 +152,7 @@
 #'   via the true current level of the biomarker.  The option
 #'   \code{"Current-level"} can be chosen only if the biomarker random effects
 #'   are associated with the intercept and time (following this order).
-#'   \code{"Two-part"}, this structure is only applicable with two-part models,
+#'   \code{"Two-part"}, this structure is only applicable with conditional two-part models,
 #'   the effect of the current probability of positive value and the effect of
 #'   the expected value among positive values on the risk of event is evaluated
 #'   separately. The default is \code{"Random-effects"}.
@@ -343,10 +351,10 @@
 #' multiple integrals over infinite regions with Gaussian weight. \emph{Journal
 #' of Computational and Applied Mathematics} \bold{71}, 299-309.
 #'
-#' D. Rustand, L. Briollais, C. Tournigand and V. Rondeau. Two-part joint model for a
-#' longitudinal semicontinuous marker and a terminal event with application
-#' to metastatic colorectal cancer data. \emph{Under
-#' revision}.
+#' D. Rustand, L. Briollais, C. Tournigand and V. Rondeau (2020). 
+#' Two-part joint model for a longitudinal semicontinuous marker 
+#' and a terminal event with application to metastatic colorectal 
+#' cancer data. \emph{Biostatistics}.
 #' @keywords models
 #' @export
 #' @examples
@@ -391,23 +399,23 @@
 #' colorectalLongi$Yo <- (colorectalLongi$tumor.size*0.3+1)^(1/0.3)
 #' colorectalLongi$Y <- log(colorectalLongi$Y+1) # log transformation with shift=1
 #'
-#' # Two-part joint model - random-effects association structure (~15min)
+#' # Conditional two-part joint model - random-effects association structure (~15min)
 #'
-#' TwoPartJoint_re <-longiPenal(Surv(time1, state)~age + treatment +
+#' CTPJM_re <-longiPenal(Surv(time1, state)~age + treatment +
 #' who.PS+ prev.resection, Y~year*treatment, formula.Binary=Y~year*treatment,
 #' data = colorectalSurv, data.Longi = colorectalLongi, random = c("1"),
 #' random.Binary=c("1"), id = "id", link ="Random-effects", left.censoring = F,
 #' n.knots = 7, kappa = 2, hazard="Splines-per")
 #'
-#' print(TwoPartJoint_re)
+#' print(CTPJM_re)
 #'
-#' # Two-part joint model - current-level association structure (~15min)
+#' # Conditional two-part joint model - current-level association structure (~15min)
 #' # Simulated dataset (github.com/DenisRustand/TPJM_sim)
 #' data(longDat)
 #' data(survDat)
 #' tte <- frailtyPenal(Surv(deathTimes, d)~trt,n.knots=5,kappa=0, data=survDat,cross.validation = T)
 #' kap <- round(tte$kappa,2);kap # smoothing parameter
-#'   TPJM <- longiPenal(Surv(deathTimes, d)~trt, Y~timej*trtY,
+#'   CTPJM_cl <- longiPenal(Surv(deathTimes, d)~trt, Y~timej*trtY,
 #'   data=survDat, data.Longi = longDat,
 #'   random = c("1","timej"), formula.Binary=Y~timej*trtY,
 #'   random.Binary=c("1"), timevar="timej", id = "id",
@@ -415,11 +423,37 @@
 #'   hazard="Splines-per", method.GH="Monte-carlo",
 #'   n.nodes=500, seed.MC=1)
 #'
-#'   print(TPJM)
+#'   print(CTPJM_cl)
+#'   
+#'   
+#' # Marginal two-part joint model - random-effects association structure (~10min)
+#' longDat$Yex <- exp(longDat$Y)-1
+#' MTPJM_re <- longiPenal(Surv(deathTimes, d)~trt, Yex~timej*trtY,
+#'                   data=survDat, data.Longi = longDat,MTP=T,GLMlog = T,
+#'                   random = c("1","timej"), formula.Binary=Y~timej*trtY,
+#'                   random.Binary=c("1"), timevar="timej", id = "id",
+#'                   link = "Random-effects", n.knots = 5, kappa = kap,
+#'                   hazard="Splines-per", method.GH="Monte-carlo",
+#'                   n.nodes=500, seed.MC=1)
+#'
+#' print(MTPJM_re)
+#'
+#' # Marginal two-part joint model - current-level association structure (~45min)
+#'  MTPJM_cl <- longiPenal(Surv(deathTimes, d)~trt, Yex~timej*trtY,
+#'                   data=survDat, data.Longi = longDat,MTP=T,GLMlog = T,
+#'                   random = c("1","timej"), formula.Binary=Y~timej*trtY,
+#'                   random.Binary=c("1"), timevar="timej", id = "id",
+#'                   link = "Current-level", n.knots = 5, kappa = kap,
+#'                   hazard="Splines-per", method.GH="Monte-carlo",
+#'                   n.nodes=500, seed.MC=1)
+#'
+#' print(MTPJM_cl)
+#'
+#'   
 #' }
 "longiPenal" <-
-  function (formula, formula.LongitudinalData, data,  data.Longi, formula.Binary=FALSE, random, random.Binary=FALSE, id, intercept = TRUE, link="Random-effects",timevar=FALSE,left.censoring=FALSE,n.knots, kappa,
-            maxit=350, hazard="Splines",   init.B,
+  function (formula, formula.LongitudinalData, data,  data.Longi, formula.Binary=FALSE, random, random.Binary=FALSE, fixed.Binary=FALSE, GLMlog=FALSE, MTP=FALSE, id, intercept = TRUE,link="Random-effects",timevar=FALSE,left.censoring=FALSE,n.knots, kappa,
+            maxit=350, hazard="Splines", init.B, 
             init.Random, init.Eta, method.GH = "Standard",seed.MC=FALSE, n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {
 
@@ -436,13 +470,12 @@
         else x[1]
       }
     }
-GLMlog=FALSE
-MTP=FALSE
+
     OrderLong <- data.Longi[,id]
     OrderDat <- data[,id]
 
     m2 <- match.call()
-    m2$formula <-  m2$data <- m2$random <- m2$random.Binary <- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$GLMlog <- m2$MTP <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$seed.MC<- m2$intercept <- m2$n.nodes <- m2$... <- NULL
+    m2$formula <-  m2$data <- m2$random <- m2$random.Binary <- m2$fixed.Binary<- m2$id <- m2$link <-m2$timevar <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard  <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$left.censoring <- m2$GLMlog <- m2$MTP <- m2$init.Random <- m2$init.Eta <- m2$method.GH <- m2$seed.MC<- m2$intercept <- m2$n.nodes <- m2$... <- NULL
     Names.data.Longi <- m2$data.Longi
 
     # TWO-PART indicator
@@ -463,6 +496,7 @@ MTP=FALSE
     if (!(all(random.Binary %in% c(1,names(data.Longi))))) {
     stop("Random effects (binary part) can be only related to variables from the longitudinal data or the intercept (1)") }
 }
+	
     if(MTP & (!TwoPart | !GLMlog)){
     stop("Marginal two-part model requires activation of two-part and GLMlog")}
 
@@ -593,7 +627,7 @@ MTP=FALSE
 
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur
 
-m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$GLMlog <- m$MTP <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$seed.MC <- m$intercept <- m$n.nodes <- NULL
+m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m$random <- m$random.Binary <- m$fixed.Binary <- m$link <- m$timevar <- m$id <- m$kappa <- m$maxit <- m$hazard  <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <- m$left.censoring <- m$GLMlog <- m$MTP <- m$print.times <- m$init.Random <- m$init.Eta <- m$method.GH <- m$seed.MC <- m$intercept <- m$n.nodes <- NULL
 
 
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep")
@@ -602,6 +636,8 @@ m$formula.LongitudinalData <- m$formula.Binary <- m$data.Longi <- m$n.knots <- m
     if(TwoPart){
         data.Binary=data.Longi # all data for binary part / add TwoPart
     }
+	if(fixed.Binary==FALSE) fixed.Binary=99 # binary intercept not fixed if 99
+
 
     TermsY <- if (missing(data.Longi)){
       terms(formula.LongitudinalData, special)
@@ -1313,13 +1349,14 @@ for(i in 1:length(llB.fin)){
  # if(dim(X_B)[2]!=length(llB.fin))stop("The variables in the longitudinal part must be in the data.Binary")
    X_B <- as.data.frame(X_B)
    names(X_B) <- llB.fin
-
-Intercept.Binary <- rep(1,dim(X_B)[1])
+if(fixed.Binary==99){
+Intercept.Binary <- rep(1,dim(X_B)[1])# modif LinBin
 
   if(intercept){
     X_B <- cbind(Intercept.Binary,X_B)
     ind.placeB <- ind.placeB+1
   }
+}
 
   X_Ball<- X_B
   "%+%"<- function(x,y) paste(x,y,sep="")
@@ -1447,7 +1484,6 @@ if(TwoPart) max_repB <- max(table(clusterB))
     varY <- as.matrix(sapply(X_L, as.numeric))
 
     nsujety<-nrow(X_L)
-
     if(TwoPart) nvarB<-ncol(X_B)
     if(TwoPart) varB <- as.matrix(sapply(X_B, as.numeric))
     if(TwoPart) nsujetB <- nrow(X_B)
@@ -1509,10 +1545,13 @@ if(TwoPart) max_repB <- max(table(clusterB))
 
     matzy <- data.matrix(X_L[,which(names(X_L)%in%names.matzy)])
 
-    if(TwoPart){
+    if(TwoPart){ #modif linBin (set variable intercept=FIXED to include random intercept anyway
+	if(length(which(names(X_B)%in%names.matzB))==0){
+        matzB <- data.matrix(rep(1,dim(X_B)[1])) # random intercept but fixed value
+	}else{
         matzB <- data.matrix(X_B[,which(names(X_B)%in%names.matzB)])
     }
-
+	}
     if(!intercept && 1%in%random) matzy <- as.matrix(cbind(rep(1,nsujety),matzy))
 
 
@@ -2075,6 +2114,8 @@ seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspe
     if(GLMlog==F) GLMloglink=0 else GLMloglink=1
     if(MTP==F) Mtwopart=0 else Mtwopart=1
 
+	if(TwoPart) interceptBin=ifelse("Intercept.Binary"%in%names.matzB,1,2) #modif linBin
+	
   if(!TwoPart){ # initialize TwoPart variables if not activated to avoid memory allocation problems
     Binary <- rep(0, length(nsujety))
     nsujetB=0
@@ -2085,6 +2126,7 @@ seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspe
     nREB <- 0
     noVarB <- 1
     numInteracB=0
+	interceptBin=0
   }
     flush.console()
     if (print.times){
@@ -2092,7 +2134,6 @@ seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspe
       cat("\n")
       cat("Be patient. The program is computing ... \n")
     }
-
     # call joint_longi.f90
         ans <- .Fortran(C_joint_longi,
 			VectNsujet = as.integer(c(1,nsujety, nsujetB)),
@@ -2112,7 +2153,8 @@ seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspe
             bb0 = as.double(Binary),
 		    groupey0 = as.integer(clusterY),
             groupeB0 = as.integer(clusterB),
-		    Vectnb0 = as.integer(c(nRE, nREB)),
+		    Vectnb0 = as.integer(c(nRE, nREB,interceptBin)),
+			fixed_Binary0=as.double(fixed.Binary),
 		    matzy0 =as.double(matzy),
             matzB0 =as.double(matzB),
 		    cag0 = as.double(cag),
@@ -2169,7 +2211,6 @@ seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspe
 			paGH = data.matrix(cbind(b_lme,invBi_cholDet,as.data.frame(invBi_chol)))
 			)#,
     #PACKAGE = "frailtypack") #62 arguments
-
     MartinGale <- matrix(ans$MartinGale,nrow=ng,ncol=3+nRE)
     Residuals <- matrix(ans$ResLongi,nrow=nsujety,ncol=4)
 
@@ -2243,8 +2284,6 @@ seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspe
       #          }
       # }
       names(fit$coef) <- noms
-
-
     }
 
   if(TwoPart==1){
@@ -2326,7 +2365,7 @@ seed.MC=ifelse(seed.MC==F,0,seed.MC) # seed for Monte-carlo (0 if random / unspe
 
     fit$nvarEnd <- nvarT
     fit$nvarY <- nvarY
-    fit$nvarB <- nvarB # add TwoPart
+    fit$nvarB <- nvarB-1 # add TwoPart
     fit$istop <- ans$ier_istop[2]
 
     fit$shape.weib <- ans$paraweib[2]#ans$shape.weib

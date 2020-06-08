@@ -10,7 +10,7 @@
     
     !--entC*te pour fortran
         subroutine joint_longi(VectNsujet,ngnzag,k0,tt00,tt10,ic0,groupe0      &
-        ,tt0dc0,tt1dc0,icdc0,link0,yy0,bb0,groupey0,groupeB0,Vectnb0,matzy0,matzB0 &
+        ,tt0dc0,tt1dc0,icdc0,link0,yy0,bb0,groupey0,groupeB0,Vectnb0,fixed_Binary0,matzy0,matzB0 &
         ,cag0,VectNvar,vax0,vaxdc0,vaxy0,vaxB0,noVar,maxit0   &
         ,np,neta0,b,H_hessOut,HIHOut,resOut,LCV,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out &
         ,typeof0,equidistant,mtaille &
@@ -44,7 +44,8 @@
         integer::maxit0,npinit,nvatmp,indic_alphatmp,mt1,mt2,mt11,mt12 !nn
         integer,dimension(4),intent(in)::mtaille
         integer,dimension(4),intent(in)::ngnzag
-        integer,dimension(2),intent(in)::Vectnb0
+        integer,dimension(3),intent(in)::Vectnb0
+		double precision::fixed_Binary0
         integer,dimension(2),intent(in)::link0
     double precision,dimension(ngnzag(2)+6),intent(out)::ziOut
     integer, intent(in)::equidistant
@@ -166,7 +167,8 @@
             
     nb0=Vectnb0(1)
     nbB0=Vectnb0(2)
-        
+	interceptBin=Vectnb0(3)
+	fixed_Binary=fixed_Binary0
 
     nva10=VectNvar(1)        
     nva20=VectNvar(2)
@@ -411,7 +413,7 @@
                     end if
                 end if
         end do
-    
+
         maxmesy=0
     
         do i=1,ng
@@ -433,11 +435,11 @@
         i = 1
         do j=1,nsujetB
         if(groupeeB(j).eq.i) then
-            nmesB(i)=nmesB(i)+1
-        else
-        i=i+1
+			nmesB(i)=nmesB(i)+1
+		else
+		i=i+1
             if(groupeeB(j).eq.i) then
-            nmesB(i)=nmesB(i)+1
+			nmesB(i)=nmesB(i)+1
             end if
         end if
         end do
@@ -451,7 +453,7 @@
             end if
         end do
     end if
-    
+
         if(TwoPart.eq.1) allocate(mu1_resB(maxmesB), varcov_margB(nsujetB,maxmesB))
 
 
@@ -775,8 +777,8 @@
         end do
     end if
     
-
-        deallocate(filtre,filtre2,filtre3)
+     
+	deallocate(filtre,filtre2,filtre3)
 
         ! nsujet=i-1
     
@@ -1227,7 +1229,6 @@
         allocate(chol(nb1,nb1)) ! Monte-carlo
 
      !       a_deja_simul=0 ! add Monte-carlo
-
         if(typeJoint.ge.2) then
             select case(typeof)
                 case(0)
@@ -1236,6 +1237,7 @@
     !                         if (intcens.eq.1) then
     !                             call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_intcens)
     !                         else
+	
                            call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajlongisplines)
     !                         endif
     !                     else
@@ -1249,9 +1251,7 @@
     !                     if (logNormal.eq.0) then
     !                         if (intcens.eq.1) then
     !                             call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_intcens)
-    !                         else
-    
-    
+    !                         else  
                                 call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajlongiweib)
     
     !                         endif
@@ -2443,7 +2443,7 @@ end if
         use tailles
         use comongroup,only:vet2!vet
         use optim
-        use comon,only:aux1,cdc,sigmae,nmesy,nb1,&
+        use comon,only:aux1,cdc,sigmae,nmesy,&
             nva2,npp,nva3,vedc,betaD,etaD,t1dc,etaydc,link,t0dc,&
             vey,typeof,s_cag_id,s_cag,ut,method_GH,b_lme,invBi_chol
             !auxig,alpha,sig2,res1,res3,nb1,nea,nig,utt,
@@ -2455,18 +2455,17 @@ end if
         integer :: j,i,k
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc
-        double precision, dimension(nb1)::Xea
+        double precision :: resultdc,abserr,resabs,resasc,Xea
         double precision,parameter::pi=3.141592653589793d0
     
         upper = .false.
         i = numpat
     
             if(method_GH.eq.1) then
-            Xea(1) = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
+            Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
             else
-            Xea(1) = frail!*sqrt(2.d0)*ut(1,1)
-            !Xea(1) = frail*sqrt(2.d0)
+            Xea = frail!*sqrt(2.d0)*ut(1,1)
+            !Xea = frail*sqrt(2.d0)
             end if
     
     
@@ -2477,7 +2476,7 @@ end if
 !        end if
     
         if(nmescur.gt.0) then
-            mu1(1:nmescur,1) = mu(1:nmescur,1) +Xea(1)*Z1(1:nmescur,1)
+            mu1(1:nmescur,1) = mu(1:nmescur,1) +Xea*Z1(1:nmescur,1)
         else
             mu1(1:nmescur,1)  = mu(1:nmescur,1)
         end if
@@ -2521,7 +2520,7 @@ end if
         call integrationdc(survdcCM,t0dc(numpat),t1dc(numpat),resultdc,abserr,resabs,resasc,numpat,b1,npp,Xea)
     
         aux1(i) = resultdc
-    !         if(aux1(i).ge.1.d0) write(*,*)i,aux1(i),Xea(1)
+    !         if(aux1(i).ge.1.d0) write(*,*)i,aux1(i),Xea
     
         !    else if(typeof.eq.0) then
         !        aux1(i)=ut2cur*vet2*dexp(etaydc1*current_mean(1))
@@ -2537,7 +2536,7 @@ end if
             Z1cur(1,1) = 1.d0
             current_mean = 0.d0
     
-            current_mean(1) =dot_product(X2cur(1,1:nva3),b1((npp-nva3+1):npp))+Z1cur(1,1)*Xea(1)
+            current_mean(1) =dot_product(X2cur(1,1:nva3),b1((npp-nva3+1):npp))+Z1cur(1,1)*Xea
     
     
         end if
@@ -2576,12 +2575,12 @@ end if
     
             if(link.eq.1) then
         func6JL =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                    - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2) &
+                    - (Xea**2.d0)/(2.d0*ut(1,1)**2) &
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
-                        -aux1(numpat)*dexp(etaydc(1)*Xea(1))  + cdc(numpat)*etaydc(1)*Xea(1)
+                        -aux1(numpat)*dexp(etaydc(1)*Xea)  + cdc(numpat)*etaydc(1)*Xea
         else
         func6JL =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)&
-                        - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2)&
+                        - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -aux1(numpat) &
                         + cdc(numpat)*etaydc(1)*current_mean(1)
@@ -4457,7 +4456,7 @@ end if
             double precision,dimension(1) :: Bcv,Bcurrentvalue, cmY,cmGtemp ! add TwoPart
     integer::counter, counter2
             double precision, dimension(1,nvaB)::x2BcurG
-    double precision::resultf1, resultf2,f1,f2 !add TwoPart
+    double precision::resultf1,resultf2,f1,f2 !add TwoPart
 
 resultf1=0.d0
 resultf2=0.d0
@@ -4536,11 +4535,11 @@ if(numInter.ge.1)then
     
     if(TwoPart.eq.1) then
     X2BcurG=0.d0
-    if((nvaB-1).gt.0) then
-    X2BcurG(1,1) = 1.d0
-    do k=2,nvaB
+    !if((nvaB-1).gt.0) then !modif linBin
+    !X2BcurG(1,1) = 1.d0
+    do k=1,nvaB
     X2BcurG(1,k) = dble(veB(it_curB+1,k))
-    end do
+    end do 
     if(numInterB.ge.1) then
         do counter = 1,numInterB ! compute time and interactions at tps
         if(positionVarT(counter2+3).eq.0) then !linear
@@ -4574,10 +4573,23 @@ if(numInter.ge.1)then
         counter2=counter2+4  
         end do
     end if
+!end if
 end if
-end if
-
-
+!                open(2,file='/users/dr/debug.txt')  
+!       write(2,*)'positionVarT',positionVarT(:)
+!       write(2,*)'numInterB',numInterB
+!       write(2,*)'numInter',numInter
+!       write(2,*)'X2curG',X2curG(1,:)
+!       write(2,*)'X2BcurG',X2BcurG(1,:)
+!      write(2,*)'cmY',cmY
+!       write(2,*)'current_meanG',current_meanG
+!       write(2,*)'funcG',funcG
+!       write(2,*)'Bscal',Bscal(1)
+!       write(2,*)'Bscalar(1)',Bscalar(1)
+!       write(2,*)'yscalarlog',yscalarlog
+!       write(2,*)'yscalar',yscalar
+!     close(2)
+!stop   
         z1curG(1,1) = 1.d0
         if(nb1.eq.2)  z1curG(1,2) =tps
      
@@ -4594,7 +4606,11 @@ if(TwoPart.eq.1) then
         z1curG(1,3) = 0.d0
         z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
         z1BcurG(1,2) = 0.d0
+		if(interceptBin.eq.1) then
         z1BcurG(1,3) = 1.d0
+		else
+        z1BcurG(1,3) = tps
+		end if
     else if(nb1.eq.4) then
         if(nbY.eq.2) then ! intercept + linear slope in each model
         z1curG(1,1) = 1.d0 !
@@ -4630,12 +4646,29 @@ if(TwoPart.eq.1) then
         z1BcurG(1,5) = tps
 
     end if
-                            
+!open(2,file='/users/dr/debug.txt')  
+!       write(2,*)'fixed_Binary',fixed_Binary
+!       write(2,*)'Bcv',Bcv
+!       write(2,*)'Bcurrentvalue',Bcurrentvalue
+!       write(2,*)'z1BcurG',z1BcurG(1,:)
+!       write(2,*)'z1curG',z1curG(1,:)
+!       write(2,*)'cmY',cmY
+!       write(2,*)'current_meanG',current_meanG
+!       write(2,*)'funcG',funcG
+!       write(2,*)'Bscal',Bscal(1)
+!       write(2,*)'Bscalar(1)',Bscalar(1)
+!       write(2,*)'yscalarlog',yscalarlog
+!       write(2,*)'yscalar',yscalar
+!     close(2)
+!stop                         
     Bcurrentvalue=0.d0
     Bcv=0.d0
-    Bcv=dot_product(X2BcurG(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1BcurG(1,1:nb1),frail(1:nb1))
+	if(fixed_Binary.eq.99) then
+	fixed_Binary=0.d0
+	end if
+    Bcv=fixed_Binary+dot_product(X2BcurG(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1BcurG(1,1:nb1),frail(1:nb1))
     Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
-                        
+      
     cmY = (dot_product(x2curG(1,1:nva3),bh((np-nva3-nvaB+1):(np-nvaB)))+dot_product(z1curG(1, 1:nb1),frail(1:nb1)))
 
     if(GLMloglink0.eq.0) then
@@ -4763,7 +4796,7 @@ double precision, dimension(nmesy(numpat),1):: mu1G
 double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
-        double precision,dimension(nb1):: uii, Xea22,XeaG,Xea
+        double precision,dimension(nb1):: uii, Xea22,XeaG
         double precision,dimension(1)::uiiui
         double precision,dimension(nb1,nb1)::mat,matb_chol
         double precision, dimension(1)::current_meanG
@@ -4771,9 +4804,9 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
         integer :: j,jj,i,k,ier
         logical :: upper
         double precision,external::survdcCM
-        double precision :: resultdc,abserr,resabs,resasc,vet2
+        double precision :: resultdc,abserr,resabs,resasc,Xea,vet2
         double precision,parameter::pi=3.141592653589793d0
-        double precision :: resultf1, resultf2, f1, f2 ! add TwoPart
+        double precision :: resultf1, resultf2, f1, f2, logNormCum ! add TwoPart
         double precision,dimension(1) :: Bscalar,Bscal,Bcv,Bcurrentvalue, cmY,cmGtemp
         integer :: counter, counter2 ! add for current-level interaction
         upper = .false.
@@ -4784,7 +4817,7 @@ double precision, dimension(nmesB(numpat),1):: mu1BG
  current_meanG = 0.d0
  cmGtemp=0.d0
  det=0.d0
-Xea(1)=0.d0
+Xea=0.d0
 Xea2=0.d0
 Xea22=0.d0
 XeaG=0.d0
@@ -4793,6 +4826,7 @@ mu1G=0.d0
 mu1BG=0.d0
 auxG=0.d0
 resultdc=0.d0
+logNormCum=0.d0
 
 resultf1=0.d0
 resultf2=0.d0
@@ -4803,9 +4837,9 @@ resultf2=0.d0
 
     if(nb1.eq.1) then
             if(method_GH.eq.1) then
-            Xea(1) = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
+            Xea = b_lme(i,1) +invBi_chol(i,1)*frail*sqrt(2.d0)
             else
-            Xea(1) = frail!*sqrt(2.d0)*ut(1,1)
+            Xea = frail!*sqrt(2.d0)*ut(1,1)
             end if
 else if(nb1.gt.1) then
 if(nb1.eq.2) then
@@ -4959,7 +4993,7 @@ else if(nb1.eq.5) then
 
         if(nmescur.gt.0) then
         if(nb1.eq.1) then
-            mu1G(1:nmescur,1) = mu(1:nmescur,1) +Xea(1)*Z1(1:nmescur,1)
+            mu1G(1:nmescur,1) = mu(1:nmescur,1) +Xea*Z1(1:nmescur,1)
             else if(nb1.gt.1) then
             mu1G(1:nmescur,1) = mu(1:nmescur,1) +MATMUL(Z1(1:nmescur,1:nby),Xea2(1:nby,1))
             end if
@@ -5023,7 +5057,6 @@ x2curG=0.d0
             resultf1=f1(t1dc(i)) ! maybe remove this calculus if not needed (non-linear slopes)
             resultf2=f2(t1dc(i))
 if(numInter.ge.1)then
-
             do counter = 1,numInter !in case of multiple interactions
             if(positionVarT(counter2+3).eq.0) then ! linear
                 x2curG(1,positionVarT(counter2+1)) =t1dc(i)
@@ -5056,21 +5089,20 @@ if(numInter.ge.1)then
                 counter2=counter2+4
             end do
         end if
-    end if
-
+end if
     
     
     if(TwoPart.eq.1) then
     X2BcurG=0.d0
-    if((nvaB-1).gt.0) then
-    X2BcurG(1,1) = 1.d0
-    do k=2,nvaB
+    !if((nvaB-1).gt.0) then !modif linBin
+    !X2BcurG(1,1) = 1.d0
+    do k=1,nvaB
     X2BcurG(1,k) = dble(veB(it_curB+1,k))
     end do
     if(numInterB.ge.1) then
-    do counter = 1,numInterB ! compute time and interactions at t1dc(i)
+        do counter = 1,numInterB ! compute time and interactions at tps
         if(positionVarT(counter2+3).eq.0) then !linear
-            X2BcurG(1,positionVarT(counter2+1)) =t1dc(i) ! time effect
+        X2BcurG(1,positionVarT(counter2+1)) =t1dc(i) ! time effect
             if(positionVarT(counter2+2).ne.0) then
                 if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                 X2BcurG(1,positionVarT(counter2+2)) =t1dc(i)*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
@@ -5079,7 +5111,7 @@ if(numInter.ge.1)then
                 end if
             end if
         else if(positionVarT(counter2+3).eq.1) then !f1
-            X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
+        X2BcurG(1,positionVarT(counter2+1)) =resultf1 ! time effect
             if(positionVarT(counter2+2).ne.0) then
                 if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                 X2BcurG(1,positionVarT(counter2+2)) =resultf1*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
@@ -5088,7 +5120,7 @@ if(numInter.ge.1)then
                 end if
             end if
         else if(positionVarT(counter2+3).eq.2) then !f2
-            X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
+        X2BcurG(1,positionVarT(counter2+1)) =resultf2 ! time effect
             if(positionVarT(counter2+2).ne.0) then
                 if(positionVarT(counter2).le.100) then ! if interaction terms not included 
                 X2BcurG(1,positionVarT(counter2+2)) =resultf2*dble(veB(it_curB+1,positionVarT(counter2)))! interaction
@@ -5098,11 +5130,17 @@ if(numInter.ge.1)then
             end if
         end if
         counter2=counter2+4  
-    end do
+        end do
     end if
+!end if
 end if
-end if    
 
+!	    open(2,file='/users/dr/debug.txt')  
+! write(2,*)'X2BcurG(1,:)',X2BcurG(1,:)
+! write(2,*)'veB(it_curB+1,:)',veB(it_curB+1,:)
+! write(2,*)'positionVarT(:)',positionVarT(:)
+!         close(2)
+!    stop 
 z1YcurG=0.d0
 z1BcurG=0.d0
 
@@ -5115,7 +5153,7 @@ z1BcurG=0.d0
             
 
     if(nb1.eq.1) then
-            current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1YcurG(1,1)*Xea(1)
+            current_meanG(1) =dot_product(x2curG(1,1:nva3),b1((npp-nva3+1):npp))+z1YcurG(1,1)*Xea
     else if(nb1.gt.1) then
     
     if(TwoPart.eq.1) then
@@ -5130,7 +5168,11 @@ else if(nb1.eq.3) then
     z1YcurG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
-    z1BcurG(1,3) = 1.d0
+		if(interceptBin.eq.1) then
+        z1BcurG(1,3) = 1.d0
+		else
+        z1BcurG(1,3) = t1dc(i)
+		end if
 else if(nb1.eq.4) then
     if(nbY.eq.2) then ! random intercept and slope in each model
         z1YcurG(1,1) = 1.d0 !
@@ -5173,16 +5215,15 @@ end if
 
                         Bcurrentvalue=0.d0
                         Bcv=0.d0
-
-                        Bcv=MATMUL(X2BcurG,b1((npp-nvaB+1):npp))+Matmul(z1BcurG,Xea22)
+	if(fixed_Binary.eq.99) then
+	fixed_Binary=0.d0
+	end if
+                        Bcv=fixed_Binary+MATMUL(X2BcurG,b1((npp-nvaB+1):npp))+Matmul(z1BcurG,Xea22)
                         Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
-                    
+
 cmY=0.d0
         cmY = (MATMUL(x2curG,b1((npp-nva3-nvaB+1):(npp-nvaB)))+Matmul(z1YcurG,Xea22))
-!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
-!       write(2,*)'boxcoxlambda',boxcoxlambda
-!     close(2)
-     
+   
     if(GLMloglink0.eq.0) then
             current_meanG = cmY*Bcurrentvalue
     else if(GLMloglink0.eq.1) then
@@ -5232,24 +5273,29 @@ end if
             do k = 1,nmescur
     
                 if(ycurrent(k).le.s_cag) then
+                    if(GLMloglink0.eq.0) then
                     prod_cag = prod_cag*(1.d0-alnorm((mu1G(k,1)-s_cag)/sqrt(sigmae),upper))
+					else if(GLMloglink0.eq.1) then
+					call log_normal_cdf(s_cag,mu1G(k,1), sqrt(sigmae), logNormCum)
+                    prod_cag = prod_cag*(logNormCum)
+					end if
                     !(0.5d0*(1.d0-erf((mu1G(k)-s_cag)/(sigmae*dsqrt(2.d0)))))
                 else
                     if(GLMloglink0.eq.0) then
-                        yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
+        yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                     else if(GLMloglink0.eq.1) then
                         if(TwoPart.eq.0) then
-                            yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
-                            yscalarlog = yscalarlog - dlog(ycurrent(k))
+		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+        yscalarlog = yscalarlog - dlog(ycurrent(k))
                         else if(TwoPart.eq.1) then
-                            if(ycurrent(k).ne.0) then
+                            !if(ycurrent(k).ne.0) then
                                 if(MTP0.eq.0) then
-                                    yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
-                                    yscalarlog = yscalarlog - dlog(ycurrent(k))
+		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+		yscalarlog = yscalarlog - dlog(ycurrent(k))
                                 else if (MTP0.eq.1) then
-
+! NO censoring with Marginal Two-Part model (MTP)
                                 end if
-                            end if
+                           ! end if
                         end if
                     end if
                 end if
@@ -5257,21 +5303,21 @@ end if
         else ! no left censoring
             do k=1,nmescur
                 if(GLMloglink0.eq.0) then ! original scale (no transformation of the longi outcome)
-                        yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
+        yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                 else if(GLMloglink0.eq.1) then ! lognormal density
                     if(TwoPart.eq.0) then
-                        yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
-                        yscalarlog = yscalarlog - dlog(ycurrent(k)) 
+		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+		yscalarlog = yscalarlog - dlog(ycurrent(k)) 
                     else if(TwoPart.eq.1) then ! two-part model for the longitudinal outcome
-                        if(ycurrent(k).ne.0) then
+            !            if(ycurrent(k).ne.0) then
                             if(MTP0.eq.0) then
-                                yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-(sigmae/2)))**2
-                                yscalarlog = yscalarlog - dlog(ycurrent(k))
+		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+		yscalarlog = yscalarlog - dlog(ycurrent(k))
                             else if (MTP0.eq.1) then ! marginal two-part model
-yscalar = yscalar + (dlog(ycurrent(k))-(mu1G(k,1)-dlog(Bcurrentvalue(1))-(sigmae/2)))**2
+yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
     yscalarlog = yscalarlog - dlog(ycurrent(k))
                             end if
-                        end if
+              !          end if
                     end if
                end if
             end do
@@ -5285,25 +5331,37 @@ Bscal(1)=0.d0
     if(TwoPart.eq.1) then ! binary part contribution
         do k=1,nmescurB
             if(MTP0.eq.0) then
-            Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1+dexp(mu1BG(k,1)))))
-            Bscalar(1) = Bscalar(1) + Bscal(1)       
-            else if(MTP0.eq.1) then
-Bscalar(1) = Bscalar(1) - dlog(1.d0+dexp(mu1BG(k,1)))
+             Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1.d0+dexp(mu1BG(k,1)))))
+             Bscalar(1) = Bscalar(1) + Bscal(1)       
+			else if(MTP0.eq.1) then
+			 Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1.d0+dexp(mu1BG(k,1)))))
+             Bscalar(1) = Bscalar(1) + Bscal(1)  
+!Bscalar(1) = Bscalar(1) - dlog(1.d0+dexp(mu1BG(k,1)))
             end if
         end do
     end if
-     
+	
+!	if(numpat.eq.2) then
+!     open(2,file='/users/dr/debug.txt')  
+!     write(2,*)'mu1G(:,1)',mu1G(:,1)
+!     write(2,*)'s_cag',s_cag
+!     write(2,*)'prod_cag',prod_cag
+!     write(2,*)'sigmae',sigmae
+!     write(2,*)'logNormCum',logNormCum
+!         close(2)
+!    stop
+!	end if
 funcG=0.d0
        if (method_GH.ne.3) then ! loglikelihood
     if(nb1.eq.1) then
             if(link.eq.1) then
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog& !longi part
-                    - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
+                    - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
-                        -auxG(i)*dexp(etaydc(1)*Xea(1))  + cdc(i)*etaydc(1)*Xea(1) ! survival part
+                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
         else
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
-                        - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2)&
+                        - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
                     - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
                         + cdc(i)*etaydc(1)*current_meanG(1)
@@ -5360,12 +5418,12 @@ funcG=0.d0
             if(nb1.eq.1) then
             if(link.eq.1) then
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog& !longi part
-                   ! - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
+                   ! - (Xea**2.d0)/(2.d0*ut(1,1)**2) & ! random effects density
                    ! - dlog(ut(1,1))-dlog(2.d0*pi)/2.d0& ! random effects density
-                        -auxG(i)*dexp(etaydc(1)*Xea(1))  + cdc(i)*etaydc(1)*Xea(1) ! survival part
+                        -auxG(i)*dexp(etaydc(1)*Xea)  + cdc(i)*etaydc(1)*Xea ! survival part
         else
         funcG =   dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
-                    !    - (Xea(1)**2.d0)/(2.d0*ut(1,1)**2)&
+                    !    - (Xea**2.d0)/(2.d0*ut(1,1)**2)&
                     !- dlog(ut(1,1))-dlog(2.d0*pi)/2.d0&
                         -auxG(i) &
                         + cdc(i)*etaydc(1)*current_meanG(1)
@@ -5392,7 +5450,7 @@ funcG=0.d0
                         !-dlog(2.d0*pi)&
                         +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
-                        + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
+                        + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*dexp(cmY(1)))
         end if
         else if(nb1.gt.2) then
         if(link.eq.1) then
@@ -5406,16 +5464,37 @@ funcG=0.d0
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*current_meanG(1))
         else if(link.eq.3) then
+        if(GLMloglink0.eq.0) then
         funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
                         +Bscalar(1)& ! add TwoPart
                         -auxG(i)&
                         + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*cmY(1))
+        else if(GLMloglink0.eq.1) then
+        funcG =  dlog(prod_cag)-(yscalar**2.d0)/(2.d0*sigmae)+yscalarlog&
+                        +Bscalar(1)& ! add TwoPart
+                        -auxG(i)&
+                        + cdc(i)*(etaydc(1)*Bcurrentvalue(1)+etaydc(2)*dexp(cmY(1)))
+        end if
         end if
         end if
         end if
         
     funcG = dexp(funcG)
-
+!                open(2,file='/users/dr/debug.txt')  
+!       write(2,*)'positionVarT',positionVarT(:)
+!       write(2,*)'Bcv',Bcv
+!       write(2,*)'Bcurrentvalue',Bcurrentvalue
+!       write(2,*)'X2curG',X2curG(1,:)
+!       write(2,*)'X2BcurG',X2BcurG(1,:)
+!       write(2,*)'cmY',cmY
+!       write(2,*)'current_meanG',current_meanG
+!       write(2,*)'funcG',funcG
+!       write(2,*)'Bscal',Bscal(1)
+!       write(2,*)'Bscalar(1)',Bscalar(1)
+!       write(2,*)'yscalarlog',yscalarlog
+!       write(2,*)'yscalar',yscalar
+!     close(2)
+!stop   
         return
     
         end function funcG
