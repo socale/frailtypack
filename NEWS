@@ -3,7 +3,7 @@ o New model added:  marginal two-part joint model (part of longiPenal function) 
 o Lognormal distribution is now available for the continuous part of the conditional two-part joint model (semicontinuous biomarker) and the standard one-part joint model (continuous biomarker). 
 o Add the possibility to fix the intercept in the binary part of the two-part joint models.
 
-o Bugg fixed in the computation of ste. Actually, by solving the equation representing the upper limit of the prediction interval of the treatment effects on T based on the observed treatment effects on S equals to 0 [u(beta_So = 0)], it is possible to find 2 solutions and then two potential values for STE. Depending on the shape of the function, different interpretations of possible values can be considered. We update the R functions ste(), plotTreatPredJointSurro() and the S3method summary.jointSurroPenal() in order to take into account this remark. 
+o Bug fixed in the computation of ste. Actually, by solving the equation representing the upper limit of the prediction interval of the treatment effects on T based on the observed treatment effects on S equals to 0 [u(beta_So = 0)], it is possible to find 2 solutions and then two potential values for STE. Depending on the shape of the function, different interpretations of possible values can be considered. We update the R functions ste(), plotTreatPredJointSurro() and the S3method summary.jointSurroPenal() in order to take into account this remark. 
 
 o We have limited the display of the S3method summary.jointSurroPenal() to the  estimate of the treatment effects and the surrogacy evaluation crieria. We defined the S3method print.jointSurroPenal() to allow a complete display of the model outputs. The outputs included smoothing parameters and the number of spline nodes used to reach convergence.
 
@@ -11,9 +11,9 @@ o Update of the R function loocv() in order to return the list of the G models o
 
 o Update of the arguments of the S3methods plot.jointSurroPenalloocv() and predict.jointSurroPenal().
 
-o Bugg fixed in the S3method summary.jointSurroPenal(). It is no more possible to change the integration method during the call of the function.
+o Bug fixed in the S3method summary.jointSurroPenal(). It is no more possible to change the integration method during the call of the function.
 
-o Bugg fixed in the value of kappa return in the object of class "jointSurroPenal". The current value is that used for the convergence of the model if applicable. 
+o Bug fixed in the value of kappa return in the object of class "jointSurroPenal". The current value is that used for the convergence of the model if applicable. 
 
 Changes in Version 3.2.0 March 2020
 o Update of the S3method predict.jointSurroPena(). We have included a plot of the predicted treatment effects on the true endpoint (with the prediction intervals) given the observed treatment effects on the surrogate endpoint and an object from the joint surrogate model. We have included the function plot.predict.jointSurroPenal()
@@ -24,7 +24,7 @@ o Update of the threshold for the classification of R2_trial. the previous class
 o Added the possibility when summarizing the results of the simulation studies, to display the bias and the MSE for kendall Tau and R2 
 o Inclusion of the nb.reject.dataset argument in the jointSurroPenalSimul() R function to allow simulations to be performed by considering multiple data packets. 
 o Add of the argument printResult in the S3 method summary.jointSurroPenal.simul() to manage the display of the results after the summary. This function currently returns a dataframe of the simulations results
-o Bugg fixed in the jointSurroPenalSimul() R function for the parameters of the jointSurrSimul() function, when one generate data to estimate kappas by cross validation. Some parameters were taken let fixed by default. Argument "cor" is set to "sqrt(R2)" 
+o Bug fixed in the jointSurroPenalSimul() R function for the parameters of the jointSurrSimul() function, when one generate data to estimate kappas by cross validation. Some parameters were taken let fixed by default. Argument "cor" is set to "sqrt(R2)" 
 o New model added: Joint frailty-copula models for the validation of surrogate endpoints in multiple randomized clinical trials with failure-time endpoints (vignettes file updated)
 o Rename of the argument "rsqrt" in the jointSurrSimul() function by "cor".
 
