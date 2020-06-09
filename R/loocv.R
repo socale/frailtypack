@@ -66,7 +66,7 @@
 ##' ###--- Joint surrogate model ---###
 ##'  
 ##' joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2,
-##'                         nb.mc = 300, nb.gh = 20, print.iter = T)
+##'                         nb.mc = 300, nb.gh = 20, print.iter = F)
 ##' 
 ##' # Example of loocv taking into accountn ony trial 2 trials (1 and 3)
 ##' dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = c(2,4:10))

@@ -497,13 +497,13 @@
 #' data(dataOvarian)
 #' joint.surro.Gumbel <- jointSurroCopPenal(data = dataOvarian, int.method = 0, 
 #'       n.knots = 8, maxit = 50, kappa.use = 4, nb.mc = 1000, typecopula = 2, 
-#'       print.iter = T, scale = 1/365)
+#'       print.iter = F, scale = 1/365)
 #'       
 #' print(joint.surro.Gumbel)
 #'
 #' joint.surro.Clayton <- jointSurroCopPenal(data = dataOvarian, int.method = 0, 
 #'       n.knots = 8, maxit = 50, kappa.use = 4, nb.mc = 1000, typecopula = 1, 
-#'       print.iter = T, scale = 1/365) 
+#'       print.iter = F, scale = 1/365) 
 #' 
 #' print(joint.surro.Clayton)
 #' }
