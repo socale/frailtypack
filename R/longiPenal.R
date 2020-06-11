@@ -421,7 +421,7 @@
 #'   random.Binary=c("1"), timevar="timej", id = "id",
 #'   link = "Current-level", n.knots = 5, kappa = kap,
 #'   hazard="Splines-per", method.GH="Monte-carlo",
-#'   n.nodes=500, seed.MC=1)
+#'   n.nodes=500)
 #'
 #'   print(CTPJM_cl)
 #'   
@@ -434,7 +434,7 @@
 #'                   random.Binary=c("1"), timevar="timej", id = "id",
 #'                   link = "Random-effects", n.knots = 5, kappa = kap,
 #'                   hazard="Splines-per", method.GH="Monte-carlo",
-#'                   n.nodes=500, seed.MC=1)
+#'                   n.nodes=500)
 #'
 #' print(MTPJM_re)
 #'
@@ -445,7 +445,7 @@
 #'                   random.Binary=c("1"), timevar="timej", id = "id",
 #'                   link = "Current-level", n.knots = 5, kappa = kap,
 #'                   hazard="Splines-per", method.GH="Monte-carlo",
-#'                   n.nodes=500, seed.MC=1)
+#'                   n.nodes=500)
 #'
 #' print(MTPJM_cl)
 #'
@@ -454,7 +454,7 @@
 "longiPenal" <-
   function (formula, formula.LongitudinalData, data,  data.Longi, formula.Binary=FALSE, random, random.Binary=FALSE, fixed.Binary=FALSE, GLMlog=FALSE, MTP=FALSE, id, intercept = TRUE,link="Random-effects",timevar=FALSE,left.censoring=FALSE,n.knots, kappa,
             maxit=350, hazard="Splines", init.B, 
-            init.Random, init.Eta, method.GH = "Standard",seed.MC=FALSE, n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
+            init.Random, init.Eta, method.GH = "Standard",seed.MC=1, n.nodes, LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE)
   {
 
     # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane

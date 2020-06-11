@@ -426,7 +426,7 @@ kap <- round(tte$kappa,2);kap # smoothing parameter
   random.Binary=c("1"), timevar="timej", id = "id",
   link = "Current-level", n.knots = 5, kappa = kap,
   hazard="Splines-per", method.GH="Monte-carlo",
-  n.nodes=500, seed.MC=1)
+  n.nodes=500)
 
   print(CTPJM_cl)
   
@@ -439,7 +439,7 @@ MTPJM_re <- longiPenal(Surv(deathTimes, d)~trt, Yex~timej*trtY,
                   random.Binary=c("1"), timevar="timej", id = "id",
                   link = "Random-effects", n.knots = 5, kappa = kap,
                   hazard="Splines-per", method.GH="Monte-carlo",
-                  n.nodes=500, seed.MC=1)
+                  n.nodes=500)
 
 print(MTPJM_re)
 
@@ -450,7 +450,7 @@ print(MTPJM_re)
                   random.Binary=c("1"), timevar="timej", id = "id",
                   link = "Current-level", n.knots = 5, kappa = kap,
                   hazard="Splines-per", method.GH="Monte-carlo",
-                  n.nodes=500, seed.MC=1)
+                  n.nodes=500)
 
 print(MTPJM_cl)
 
