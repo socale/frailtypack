@@ -45,7 +45,7 @@
         integer,dimension(4),intent(in)::mtaille
         integer,dimension(4),intent(in)::ngnzag
         integer,dimension(3),intent(in)::Vectnb0
-		double precision::fixed_Binary0
+        double precision::fixed_Binary0
         integer,dimension(2),intent(in)::link0
     double precision,dimension(ngnzag(2)+6),intent(out)::ziOut
     integer, intent(in)::equidistant
@@ -167,8 +167,8 @@
             
     nb0=Vectnb0(1)
     nbB0=Vectnb0(2)
-	interceptBin=Vectnb0(3)
-	fixed_Binary=fixed_Binary0
+    interceptBin=Vectnb0(3)
+    fixed_Binary=fixed_Binary0
 
     nva10=VectNvar(1)        
     nva20=VectNvar(2)
@@ -435,11 +435,11 @@
         i = 1
         do j=1,nsujetB
         if(groupeeB(j).eq.i) then
-			nmesB(i)=nmesB(i)+1
-		else
-		i=i+1
+            nmesB(i)=nmesB(i)+1
+        else
+        i=i+1
             if(groupeeB(j).eq.i) then
-			nmesB(i)=nmesB(i)+1
+            nmesB(i)=nmesB(i)+1
             end if
         end if
         end do
@@ -778,7 +778,7 @@
     end if
     
      
-	deallocate(filtre,filtre2,filtre3)
+    deallocate(filtre,filtre2,filtre3)
 
         ! nsujet=i-1
     
@@ -1237,7 +1237,7 @@
     !                         if (intcens.eq.1) then
     !                             call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_intcens)
     !                         else
-	
+    
                            call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajlongisplines)
     !                         endif
     !                     else
@@ -4606,11 +4606,11 @@ if(TwoPart.eq.1) then
         z1curG(1,3) = 0.d0
         z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
         z1BcurG(1,2) = 0.d0
-		if(interceptBin.eq.1) then
+        if(interceptBin.eq.1) then
         z1BcurG(1,3) = 1.d0
-		else
+        else
         z1BcurG(1,3) = tps
-		end if
+        end if
     else if(nb1.eq.4) then
         if(nbY.eq.2) then ! intercept + linear slope in each model
         z1curG(1,1) = 1.d0 !
@@ -4663,9 +4663,9 @@ if(TwoPart.eq.1) then
 !stop                         
     Bcurrentvalue=0.d0
     Bcv=0.d0
-	if(fixed_Binary.eq.99) then
-	fixed_Binary=0.d0
-	end if
+    if(fixed_Binary.eq.99) then
+    fixed_Binary=0.d0
+    end if
     Bcv=fixed_Binary+dot_product(X2BcurG(1,1:nvaB),bh((np-nvaB+1):np))+dot_product(z1BcurG(1,1:nb1),frail(1:nb1))
     Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
       
@@ -5135,7 +5135,7 @@ end if
 !end if
 end if
 
-!	    open(2,file='/users/dr/debug.txt')  
+!        open(2,file='/users/dr/debug.txt')  
 ! write(2,*)'X2BcurG(1,:)',X2BcurG(1,:)
 ! write(2,*)'veB(it_curB+1,:)',veB(it_curB+1,:)
 ! write(2,*)'positionVarT(:)',positionVarT(:)
@@ -5168,11 +5168,11 @@ else if(nb1.eq.3) then
     z1YcurG(1,3) = 0.d0
     z1BcurG(1,1) = 0.d0 ! need to decide intercept / time here !
     z1BcurG(1,2) = 0.d0
-		if(interceptBin.eq.1) then
+        if(interceptBin.eq.1) then
         z1BcurG(1,3) = 1.d0
-		else
+        else
         z1BcurG(1,3) = t1dc(i)
-		end if
+        end if
 else if(nb1.eq.4) then
     if(nbY.eq.2) then ! random intercept and slope in each model
         z1YcurG(1,1) = 1.d0 !
@@ -5215,9 +5215,9 @@ end if
 
                         Bcurrentvalue=0.d0
                         Bcv=0.d0
-	if(fixed_Binary.eq.99) then
-	fixed_Binary=0.d0
-	end if
+    if(fixed_Binary.eq.99) then
+    fixed_Binary=0.d0
+    end if
                         Bcv=fixed_Binary+MATMUL(X2BcurG,b1((npp-nvaB+1):npp))+Matmul(z1BcurG,Xea22)
                         Bcurrentvalue=dexp(Bcv)/(1+dexp(Bcv))
 
@@ -5275,23 +5275,23 @@ end if
                 if(ycurrent(k).le.s_cag) then
                     if(GLMloglink0.eq.0) then
                     prod_cag = prod_cag*(1.d0-alnorm((mu1G(k,1)-s_cag)/sqrt(sigmae),upper))
-					else if(GLMloglink0.eq.1) then
-					call log_normal_cdf(s_cag,mu1G(k,1), sqrt(sigmae), logNormCum)
+                    else if(GLMloglink0.eq.1) then
+                    call log_normal_cdf(s_cag,mu1G(k,1), sqrt(sigmae), logNormCum)
                     prod_cag = prod_cag*(logNormCum)
-					end if
+                    end if
                     !(0.5d0*(1.d0-erf((mu1G(k)-s_cag)/(sigmae*dsqrt(2.d0)))))
                 else
                     if(GLMloglink0.eq.0) then
         yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                     else if(GLMloglink0.eq.1) then
                         if(TwoPart.eq.0) then
-		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
         yscalarlog = yscalarlog - dlog(ycurrent(k))
                         else if(TwoPart.eq.1) then
                             !if(ycurrent(k).ne.0) then
                                 if(MTP0.eq.0) then
-		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
-		yscalarlog = yscalarlog - dlog(ycurrent(k))
+        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+        yscalarlog = yscalarlog - dlog(ycurrent(k))
                                 else if (MTP0.eq.1) then
 ! NO censoring with Marginal Two-Part model (MTP)
                                 end if
@@ -5306,13 +5306,13 @@ end if
         yscalar = yscalar + (ycurrent(k)-mu1G(k,1))**2
                 else if(GLMloglink0.eq.1) then ! lognormal density
                     if(TwoPart.eq.0) then
-		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
-		yscalarlog = yscalarlog - dlog(ycurrent(k)) 
+        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+        yscalarlog = yscalarlog - dlog(ycurrent(k)) 
                     else if(TwoPart.eq.1) then ! two-part model for the longitudinal outcome
             !            if(ycurrent(k).ne.0) then
                             if(MTP0.eq.0) then
-		yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
-		yscalarlog = yscalarlog - dlog(ycurrent(k))
+        yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
+        yscalarlog = yscalarlog - dlog(ycurrent(k))
                             else if (MTP0.eq.1) then ! marginal two-part model
 yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
     yscalarlog = yscalarlog - dlog(ycurrent(k))
@@ -5333,15 +5333,15 @@ Bscal(1)=0.d0
             if(MTP0.eq.0) then
              Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1.d0+dexp(mu1BG(k,1)))))
              Bscalar(1) = Bscalar(1) + Bscal(1)       
-			else if(MTP0.eq.1) then
-			 Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1.d0+dexp(mu1BG(k,1)))))
+            else if(MTP0.eq.1) then
+             Bscal(1)=(Bcurrent(k)*mu1BG(k,1))+dlog(1.d0-(dexp(mu1BG(k,1))/(1.d0+dexp(mu1BG(k,1)))))
              Bscalar(1) = Bscalar(1) + Bscal(1)  
 !Bscalar(1) = Bscalar(1) - dlog(1.d0+dexp(mu1BG(k,1)))
             end if
         end do
     end if
-	
-!	if(numpat.eq.2) then
+    
+!    if(numpat.eq.2) then
 !     open(2,file='/users/dr/debug.txt')  
 !     write(2,*)'mu1G(:,1)',mu1G(:,1)
 !     write(2,*)'s_cag',s_cag
@@ -5350,7 +5350,7 @@ Bscal(1)=0.d0
 !     write(2,*)'logNormCum',logNormCum
 !         close(2)
 !    stop
-!	end if
+!    end if
 funcG=0.d0
        if (method_GH.ne.3) then ! loglikelihood
     if(nb1.eq.1) then

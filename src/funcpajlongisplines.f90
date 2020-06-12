@@ -623,11 +623,11 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
 
         
         muB = 0.d0
-	if(fixed_Binary.eq.99) then
-	fixed_Binary=0.d0
-	end if
+    if(fixed_Binary.eq.99) then
+    fixed_Binary=0.d0
+    end if
         muB(1:nmescurB,1) = fixed_Binary+matmul(XB(1:nmescurB,1:(nvaB)),bh((np-nvaB+1):np)) !modif linBin
-		
+        
 !     open(2,file='/users/dr/debug.txt')  
 ! write(2,*)'muB',muB(:,1)
 ! write(2,*)'nmescurB',nmescurB
@@ -648,7 +648,7 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
 ! 
 !         close(2)
 !    stop
-		
+        
         deallocate(matvB,varcov_marg_invB)
     end if    
 

@@ -114,7 +114,7 @@
 #'   GLMlog=FALSE, MTP=FALSE, id, intercept = TRUE,
 #'   link = "Random-effects", timevar=FALSE, left.censoring =
 #'   FALSE, n.knots, kappa, maxit = 350, hazard = "Splines", init.B,
-#'   init.Random, init.Eta, method.GH = "Standard", seed.MC=FALSE, n.nodes, LIMparam = 1e-3,
+#'   init.Random, init.Eta, method.GH = "Standard", seed.MC=1, n.nodes, LIMparam = 1e-3,
 #'   LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE)
 #' @param formula a formula object, with the response on the left of a
 #'   \eqn{\sim} operator, and the terms on the right. The response must be a
