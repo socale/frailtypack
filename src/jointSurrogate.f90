@@ -794,9 +794,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !allocate(param_estimes(n_sim,24))
     else
         if(nsim_node(8)==1)then ! modele avec les effets aleatoires partages
-            allocate(parametre_estimes(n_sim,24)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall)
-            allocate(parametre_estimes_MPI(n_sim,24))! contient les parametres estimes par chaque processus dans MPI
-            allocate(parametre_estimes_MPI_T(n_sim,24)) ! contient tous les parametres, de tous les processus
+            if(typeof == 0) then ! spline
+				allocate(parametre_estimes(n_sim,24)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall)
+				allocate(parametre_estimes_MPI(n_sim,24))! contient les parametres estimes par chaque processus dans MPI
+				allocate(parametre_estimes_MPI_T(n_sim,24)) ! contient tous les parametres, de tous les processus
+			endif
 			if(typeof == 2) then ! weibull
 				allocate(parametre_estimes(n_sim,32)) !parametres estimes: contient les parametres estimes(theta_chap+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall, shapeS + sd, scaleS + sd, shapeT + sd, scaleT + sd)
 				allocate(parametre_estimes_MPI(n_sim,32))! contient les parametres estimes par chaque processus dans MPI
@@ -812,9 +814,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         endif
         
         if(nsim_node(8)==3)then ! joint frailty-copula model
-            allocate(parametre_estimes(n_sim,25 + nva -2)) !parametres estimes: contient les parametres estimes(theta_copula+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall + sd) + variables explicative supplementaires
-            allocate(parametre_estimes_MPI(n_sim,25 + nva -2))! contient les parametres estimes par chaque processus dans MPI
-            allocate(parametre_estimes_MPI_T(n_sim,25 + nva -2)) ! contient tous les parametres, de tous les processus
+			if(typeof == 0) then ! spline
+				allocate(parametre_estimes(n_sim,25 + nva -2)) !parametres estimes: contient les parametres estimes(theta_copula+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall + sd) + variables explicative supplementaires
+				allocate(parametre_estimes_MPI(n_sim,25 + nva -2))! contient les parametres estimes par chaque processus dans MPI
+				allocate(parametre_estimes_MPI_T(n_sim,25 + nva -2)) ! contient tous les parametres, de tous les processus
+			endif
 			if(typeof == 2) then
 				allocate(parametre_estimes(n_sim,25 + nva -2 + 8)) !parametres estimes: contient les parametres estimes(theta_copula+sd,zeta+sd,beta_s+sd,beta8t+sd,sigma_s+sd,sigma_t+sd,sigmast+sd,gamma_ui+sd,alpha_ui+sd, R2 reduit et sd, taux de kendall + sd) + variables explicative supplementaires + shapeS + sd, scaleS + sd, shapeT + sd, scaleT + sd
 				allocate(parametre_estimes_MPI(n_sim,25 + nva -2 + 8))! contient les parametres estimes par chaque processus dans MPI
