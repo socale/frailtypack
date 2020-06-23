@@ -405,6 +405,11 @@ jointSurroPenalSimul = function(maxit = 40, hazard = "Splines", indicator.zeta =
   real.data <- 0
   gener.only <- 0
   param.weibull <- 0
+  
+  if (nb.gh == nb.gh2){ # pour eviter de boucler dans le programme en cas de non covergence, on doit modifier la valeur de nb.gh2
+    if(nb.gh2 == 20) nb.gh2 = 32
+    else nb.gh2 = 20
+  }
 
   
   if(type.joint.estim == 3) indicator.zeta = 0
