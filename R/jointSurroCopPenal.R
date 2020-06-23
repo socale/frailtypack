@@ -548,6 +548,11 @@ jointSurroCopPenal = function(data, maxit = 40, hazard = "Splines", indicator.al
   }
   
   # list of models parameters:
+  if (nb.gh == nb.gh2){ # pour eviter de boucler dans le programme en cas de non covergence, on doit modifier la valeur de nb.gh2
+    if(nb.gh2 == 20) nb.gh2 = 32
+    else nb.gh2 = 20
+  }
+  
   if(hazard == "Splines"){
     parameter <- c(maxit = maxit, hazard = hazard,indicator.zeta = 0, indicator.alpha = indicator.alpha,
                    frail.base = frail.base, n.knots = n.knots, LIMparam = LIMparam, LIMlogl = LIMlogl, 
