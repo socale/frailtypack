@@ -81,7 +81,8 @@
     double precision,external::funcpaGsplines,funcpaGcpm,funcpaGweib
     double precision,external::funcpaGsplines_intcens,funcpaGcpm_intcens,funcpaGweib_intcens
     double precision,external::funcpaGsplines_log,funcpaGcpm_log,funcpaGweib_log
-    double precision,external::funcpaj_tps,funcpaG_tps,funcpajsplines_copule_surrogate
+    double precision,external::funcpaj_tps,funcpaG_tps,funcpajsplines_copule_surrogate, &
+	funcpajweib_copule_surrogate
     double precision,dimension(100)::xSu1,xSu2
 !cpm
     integer::indd,ent,entdc,typeof0,nbintervR0,nbintervDC0, np_2
@@ -171,7 +172,11 @@
     ag = ag0
     typeof = typeof0
     !model = 1  !indique le type de modele utilise
-    model = 8 !scl pour le model surrogate
+	if(typeof == 2) then
+		model = 11
+	else
+		model = 8 !scl pour le model surrogate
+	endif
     indic_alpha = 0
     type_joint=nsim_nodes(8)
     !!print*,"type_mod_surr=",type_mod_surr
@@ -1266,7 +1271,12 @@
 !                     call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpaj_tps)
 !                 endif
         case(2) ! fonctions de risque de base approchees par Weibull
-             call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_surrogate)
+			select case(type_joint)
+				case(1) ! modele a effet aleatoire partage (joint surrogate)
+					call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_surrogate)
+				case(3) ! the joint frailty-copula model
+                    call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_copule_surrogate)    
+            endselect
     end select
         call cpu_time(tp2)
 !     end if
