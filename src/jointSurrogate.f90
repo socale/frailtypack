@@ -1672,14 +1672,14 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     k0(2) = k0(2) + ckappa(2)
     
     if(affiche_itteration == 1) then
-        !call dblepr("avant appel joint:ckappa", -1,ckappa , 2)
+        ! call dblepr("avant appel joint:ckappa", -1,ckappa , 2)
         ! call dblepr("avant appel joint:k0", -1,k0 , 2)
         ! call intpr("avant appel joint:nsujet", -1, nsujet, 1)
         ! call intpr("avant appel joint:ng", -1, ng, 1)
         ! call intpr("avant appel joint:ntrials", -1, ntrials, 1)
         ! call intpr("avant appel joint:nz", -1,nz , 1)
         ! call intpr("avant appel joint:nst", -1,nst, 1)
-        !call intpr("avant appel joint:pourtrial", -1, pourtrial, nsujet)
+        ! call intpr("avant appel joint:pourtrial", -1, pourtrial, nsujet)
         ! call intpr("avant appel joint:trials", -1,trials , ntrials)
         ! call intpr("personnes avec progression:nig_Ts(:,1)", -1, nig_Ts(:,1), ntrials)
         ! call intpr("personnes avec progression traitees:nig_Ts(:,2)", -1,nig_Ts(:,2) , ntrials)
@@ -1703,10 +1703,10 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         ! call intpr("avant appel joint:ic(1:10)", -1,ic(1:10) , 10)
         ! call intpr("avant appel joint:groupe", -1,groupe , ntrials)
 
-        !call dblepr("avant appel joint:tt0dc", -1,tt0dc , nsujet)
+        ! call dblepr("avant appel joint:tt0dc", -1,tt0dc , nsujet)
         ! call dblepr("avant appel joint:tt1dc(1:10)", -1,tt1dc(1:10) , 10)
-        !call dblepr("avant appel joint:vax(:,1)", -1,vax(:,1) , nsujet)
-        !call dblepr("avant appel joint:vaxdc(:,1)", -1,vaxdc(:,1) , nsujet)
+        ! call dblepr("avant appel joint:vax(:,1)", -1,vax(:,1) , nsujet)
+        ! call dblepr("avant appel joint:vaxdc(:,1)", -1,vaxdc(:,1) , nsujet)
         ! call dblepr("avant appel joint:paraweib", -1,paraweib , 4)
         ! call dblepr("avant appel joint:ziOut", -1, ziOut, nz+6)
         ! call dblepr("avant appel joint:EPS", -1,EPS , 3)
@@ -1722,7 +1722,8 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         ! call intpr("avant appel joint:nsim_node", -1,nsim_node , 13)
         ! call intpr("avant appel joint:indice_esti", -1, indice_esti, 4)
         ! call intpr("avant appel joint:indice_covST", -1,indice_covST , 1)
-        ! call intpr("==============avant appel joint:param_weibull======", -1,param_weibull , 1)
+        ! call intpr("avant appel joint:param_weibull", -1,param_weibull , 1)
+		! call dblepr("avant appel joint: b initialisation", -1,b , np)
     endif
                         
     Call joint_surrogate(nsujet,ng,ntrials,0,nz,nst,k0,tt0,tt1,ic,groupe,trials,pourtrial,nig_Ts,cdc_Ts,0, &
@@ -1734,7 +1735,11 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
     ! call intpr("Nombre itteration:", -1, ni, 1)
     if (istop.eq.1) then
 		if(affiche_itteration == 1)then
-			call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
+			if(typeof == 0) then
+				call dblepr("voila le vecteur b des parametres", -1, b(2*(nz+2)+1:np), nva + nparamfrail)
+			else
+				call dblepr("voila le vecteur b des parametres", -1, b, np)
+			endif
 		endif
     endif
 
@@ -1742,10 +1747,12 @@ subroutine jointsurrogate(nsujet1,ng,ntrials1,maxiter,nst,nparamfrail,indice_a_e
         !call intpr("je suis la :", -1, ni, 1)
         ! if(nsim_node(3).ne.1) then ! cas ou on ne fait pas de l'adaptative
 		if(typeof == 2) then ! cas weibull, dans ce cas on change les points de quadratures et rien de plus, car pas de kappa
-			if((nsim_node(2).eq.np_save))then ! on change le nombre de point de quadrature avant de continuer
-				if(np_save==npoint1) nsim_node(2)=npoint2
-				if(np_save==npoint2) nsim_node(2)=npoint1
-				goto 2002 ! apres changement du nbre de point on relance l'estimation 
+			if((nsim_node(4).ne.0) .and.(nsim_node(4).ne.3))then !cas quadrature
+				if((nsim_node(2).eq.np_save))then ! on change le nombre de point de quadrature avant de continuer
+					if(np_save==npoint1) nsim_node(2)=npoint2
+					if(np_save==npoint2) nsim_node(2)=npoint1
+					goto 2002 ! apres changement du nbre de point on relance l'estimation 
+				endif
 			endif
 		else ! cas spline
             if((nsim_node(4).ne.0) .and.(nsim_node(4).ne.3) .and. (kapa_use.eq.4))then !cas quadrature
