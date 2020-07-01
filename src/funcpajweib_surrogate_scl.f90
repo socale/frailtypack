@@ -91,10 +91,15 @@
     n = (np-nva-nparamfrail)/nst ! pour les parametres de weibull
     
     ! reparametrisation des parametres de weibull (>=0) pour être sur d'avoir une fonction des risquer de base positive
-    gamma_S = dexp(b(1)) ! shape S
-	rho_S =  dexp(b(2)) !scale_S
-	gamma_T = dexp(b(3)) ! shape T
-	rho_T = dexp(b(4))   ! scale T
+    gamma_S = dexp(bh(1)) ! shape S
+	rho_S =  dexp(bh(2)) !scale_S
+	gamma_T = dexp(bh(3)) ! shape T
+	rho_T = dexp(bh(4))   ! scale T
+	
+	! gamma_S = bh(1)**2.d0 ! shape S
+	! rho_S =  bh(2)**2.d0 !scale_S
+	! gamma_T = bh(3)**2.d0 ! shape T
+	! rho_T = bh(4)**2.d0  ! scale T
 	
 	
 	!variable de module utilisees dans le joint
