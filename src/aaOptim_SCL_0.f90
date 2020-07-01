@@ -198,12 +198,21 @@
         istop=4
         goto 110
     end if
+	
+	! call intpr("typeof", -1, typeof,1)
+	! call intpr("size(b)", -1, size(b),1)
+	
     if(model.ne.9) then ! on ne fait pas d'affichage pour l'estimation des frailties individuelles
         if(rang==0)then ! on affiche que pour le processus maître
             !write(*,*)'iteration***',ni,'vrais',rl 
             if(affiche_itteration==1) then 
-              call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
-              call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
+				 if (typeof == 0)then ! spline
+					call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
+					call dblepr("b: nparamfrail + betas + betat", -1, b((m-nparamfrail-nva+1):m), nparamfrail+nva)
+				 else ! weibull
+					call dblepr("convergence parameters: ni, log-likelihood, coef (ca), log_lik (cb),grad (dd)", -1, convcrit, 5)
+					call dblepr("b: nparamfrail + betas + betat", -1, b, size(b))
+				 endif
             endif
         endif
     endif
@@ -407,10 +416,12 @@
             m1=m-nva-nparamfrail !surrogate
         case(9)
             m1=0 !estimation des wij_chap
+		case(11)
+            m1=0 !model joint surrogate avec les fonctions de weibull
     end select
 
     kkk=m1*(m1+1)/2
-    if(model.ne.9) then !scl_22-09-2017: ici on se rassure que l'on n'est pas dans l'estimation des wij_chap avant de faire ces calculs, car dans ce model, plus de paramètres associés au risque de base
+    if((model.ne.9) .and. (model.ne.11)) then !scl_22-09-2017: ici on se rassure que l'on n'est pas dans l'estimation des wij_chap avant de faire ces calculs, car dans ce model, plus de paramètres associés au risque de base
         do i=1,m1
             kkk=kkk+1
             do j=i,m1
@@ -545,6 +556,8 @@
         th=1.d-3 !surrogate
     case(10)
         th=1.d-3 !surrogate
+	case(11)
+        th=1.d-3 !weibull
     end select
 
     ! !print*,"suis dans derivaJ, model=",model,"th=",th
