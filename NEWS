@@ -1,3 +1,9 @@
+Changes in Version 3.3.1 August 2020
+o Fixed an important error in the new marginal two-part joint model.
+o Fixed an issue with the Cholesky matrix for the Monte-Carlo integration.
+o Fixed a rank mismatch for the random variable 'Xea'.
+o Default value for the seed of the Monte-Carlo integration is now 1.
+
 Changes in Version 3.3.0 June 2020
 o New model added:  marginal two-part joint model (part of longiPenal function) for a longitudinal semicontinuous marker and a terminal event.
 o Lognormal distribution is now available for the continuous part of the conditional two-part joint model (semicontinuous biomarker) and the standard one-part joint model (continuous biomarker). 
