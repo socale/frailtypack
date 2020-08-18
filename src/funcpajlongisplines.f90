@@ -364,37 +364,37 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
             Chol=0.d0 
             Chol(1,1)=bh(np-nva-nb_re+1)
             Chol(2,1)=bh(np-nva-nb_re+2)
-            Chol(3,1)=bh(np-nva-nb_re+3)
-            Chol(2,2)=bh(np-nva-nb_re+4)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            Chol(3,1)=bh(np-nva-nb_re+4)
             Chol(3,2)=bh(np-nva-nb_re+5)
             Chol(3,3)=bh(np-nva-nb_re+6)
             else if(nb1.eq.4) then
             Chol=0.d0 
             Chol(1,1)=bh(np-nva-nb_re+1)
             Chol(2,1)=bh(np-nva-nb_re+2)
-            Chol(3,1)=bh(np-nva-nb_re+3)
-            Chol(4,1)=bh(np-nva-nb_re+4)
-            Chol(2,2)=bh(np-nva-nb_re+5)
-            Chol(3,2)=bh(np-nva-nb_re+6)
-            Chol(4,2)=bh(np-nva-nb_re+7)
-            Chol(3,3)=bh(np-nva-nb_re+8)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            Chol(3,1)=bh(np-nva-nb_re+4)
+            Chol(3,2)=bh(np-nva-nb_re+5)
+            Chol(3,3)=bh(np-nva-nb_re+6)
+            Chol(4,1)=bh(np-nva-nb_re+7)
+            Chol(4,2)=bh(np-nva-nb_re+8)
             Chol(4,3)=bh(np-nva-nb_re+9)
             Chol(4,4)=bh(np-nva-nb_re+10)
             else if(nb1.eq.5) then
             Chol=0.d0 
             Chol(1,1)=bh(np-nva-nb_re+1)
             Chol(2,1)=bh(np-nva-nb_re+2)
-            Chol(3,1)=bh(np-nva-nb_re+3)
-            Chol(4,1)=bh(np-nva-nb_re+4)
-            Chol(5,1)=bh(np-nva-nb_re+5)
-            Chol(2,2)=bh(np-nva-nb_re+6)
-            Chol(3,2)=bh(np-nva-nb_re+7)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            Chol(3,1)=bh(np-nva-nb_re+4)
+            Chol(3,2)=bh(np-nva-nb_re+5)
+            Chol(3,3)=bh(np-nva-nb_re+6)
+            Chol(4,1)=bh(np-nva-nb_re+7)
             Chol(4,2)=bh(np-nva-nb_re+8)
-            Chol(5,2)=bh(np-nva-nb_re+9)
-            Chol(3,3)=bh(np-nva-nb_re+10)
-            Chol(4,3)=bh(np-nva-nb_re+11)
-            Chol(5,3)=bh(np-nva-nb_re+12)
-            Chol(4,4)=bh(np-nva-nb_re+13)
+            Chol(4,3)=bh(np-nva-nb_re+9)
+            Chol(4,4)=bh(np-nva-nb_re+10)
+            Chol(5,1)=bh(np-nva-nb_re+11)
+            Chol(5,2)=bh(np-nva-nb_re+12)
+            Chol(5,3)=bh(np-nva-nb_re+13)
             Chol(5,4)=bh(np-nva-nb_re+14)
             Chol(5,5)=bh(np-nva-nb_re+15)
             end if  
@@ -435,6 +435,9 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                             nmes_o(ig) = nmescur
                         end if
                     end do
+				else
+                    nmes_o(ig) = nmescur
+				end if
     ! add TwoPart
     if(TwoPart.eq.1) then
         if(nmescurB.gt.0) then
@@ -476,13 +479,14 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
     
                 l = 0
                 X2 = 0.d0
+            if(nmescur.gt.0) then
                 do k=1,nva3
                     l = l + 1
                     do j=1,nmescur
                         X2(j,l) = dble(vey(it+j,k))
                     end do
                 end do
-    
+            end if
        ! add TwoPart  
     if(TwoPart.eq.1) then
         Z1B=0.d0
@@ -507,15 +511,20 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 XB(j,l) = dble(veB(itB+j,k)) ! fixed effects covariates
             end do
         end do
-    end if          
+    end if     
+
+if(nmescur.gt.0) then	
             varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nby), &
                     MATMUL(Ut(1:nby,1:nby),Utt(1:nby,1:nby))),transpose(ziy((it+1):(it+nmescur),1:nby)))+ &
                     mat_sigma
+end if
                 !add TwoPart
             if(TwoPart.eq.1)then
                 varcov_margB((itB+1):(itB+nmescurB),1:nmescurB) =Matmul( MATMUL(ziB((itB+1):(itB+nmescurB),1:nbB), &
                 MATMUL(Ut(nby+1:nb1,nby+1:nb1),Utt(nby+1:nb1,nby+1:nb1))),transpose(ziB((itB+1):(itB+nmescurB),1:nbB)))
             end if
+			
+if(nmescur.gt.0) then
             allocate(matv(nmescur*(nmescur+1)/2),varcov_marg_inv(nmescur,nmescur))
             matv = 0.d0
         do j=1,nmescur
@@ -565,7 +574,7 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
             end do
                 end do
     
-    
+    element=0.d0
             element =  Matmul(Matmul(Transpose(vey(it+1:it+nmescur,1:nva3)), &
                                                             varcov_marg_inv(1:nmescur,1:nmescur)), vey(it+1:it+nmescur,1:nva3))
     
@@ -587,7 +596,12 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3-nvaB+1):(np-nvaB)))
             end if
             xea = 0.d0
-
+else
+    mu = 0.d0
+	        do k=1,nb1
+        Z1 (:,k)=0.d0
+            end do 
+end if
 
 
     if(TwoPart.eq.1) then
@@ -808,7 +822,7 @@ MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
                 integrale4(ig) = 1.E+30
             end if
     
-       else
+if(nmescur.eq.(-1)) then ! this is for the case where we have no repeated measurements of the biomarker (not programmed yet)
         do k=1,nb1
         Z1 (k,1)=0.d0
             end do    

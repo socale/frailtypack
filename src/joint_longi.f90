@@ -305,7 +305,13 @@
         shapeweib = 0.d0
         scaleweib = 0.d0
         nsujetmax=nsujet0
-        if(nsujetmax.eq.1) nsujetmax = nsujety0
+        if(nsujetmax.eq.1) then
+			if(TwoPart.eq.0) then
+			nsujetmax = nsujety0
+			else
+			nsujetmax = nsujetB0
+			end if
+		end if
         nsujet=nsujet0
         nsujetymax = nsujety0
         nsujety = nsujety0
@@ -337,15 +343,22 @@
 
             ! Parametres pour GH pseudo-adaptative
             allocate(etaydc(netadc),etayr(netar),b_lme(ng,nb1),invBi_cholDet(ng),invBi_chol(ng,nb_re))
+			    
+            method_GH = GH(1)
+            nodes_number = GH(2)
+    
+			if(method_GH.eq.1) then
                     do i=1,ng
                             b_lme(i,1:nb1) = paGH(i,1:nb1)
                             invBi_cholDet(i) = paGH(i,nb1+1)
                             invBi_chol(i,1:nb_re) = paGH(1,(nb1+2):(nb1+1+nb_re))
                     end do
-    
-            method_GH = GH(1)
-            nodes_number = GH(2)
-    
+	        else
+			 b_lme = 0.d0
+           !  invBi_cholDet = 0.d0
+           !  invBi_chol= 0.d0
+			end if
+
         if(typeJoint.eq.3) then
             effet = 1
         else
@@ -410,7 +423,10 @@
                     i = i+1
                     if(groupeey(j).eq.i) then
                         nmesy(i)=nmesy(i)+1
-                    end if
+                    else if(groupeey(j).gt.i) then
+                        nmesy(i+(groupeey(j)-i))=nmesy(i+(groupeey(j)-i))+1
+						i=i+(groupeey(j)-i)
+					end if
                 end if
         end do
 
@@ -459,8 +475,8 @@
 
         allocate(mu1_res(maxmesy))
         allocate(varcov_marg(nsujety,maxmesy))
-    
-    
+    varcov_marg=0.d0
+    if(TwoPart.eq.1)  varcov_margB=0.d0
         ndatemaxdc=2*ng0
         if (typeof == 0) then
             allocate(nt0dc(ngtemp),nt1dc(ngtemp),nt0(nsujetmax),nt1(nsujetmax))!! rajout
@@ -799,8 +815,12 @@
         end if
     
         if(typeJoint.eq.2) then
-            ndatemax = 2*nsujety
-        else
+			if(TwoPart.eq.0) then 
+			    ndatemax = 2*nsujety
+			else
+			    ndatemax = 2*nsujetB
+			end if
+		else
             ndatemax=2*nsujet+sum(ic0) !! rajout
         end if
     
@@ -4793,7 +4813,7 @@ else if(link.eq.3) then
     !    double precision, dimension(1,nb1)::z1curG
         double precision, dimension(1,nb1)::z1YcurG
         double precision, dimension(1,nb1)::z1BcurG
-double precision, dimension(nmesy(numpat),1):: mu1G
+double precision, dimension(nmesy(numpat),1):: mu1G, mu1GB
 double precision, dimension(nmesB(numpat),1):: mu1BG
         double precision,dimension(nb1*(nb1+1)/2)::matv
         double precision,dimension(nb1,1)::  Xea2
@@ -4825,6 +4845,7 @@ XeaG=0.d0
 uii=0.d0
 mu1G=0.d0
 mu1BG=0.d0
+mu1GB=0.d0
 auxG=0.d0
 resultdc=0.d0
 logNormCum=0.d0
@@ -5012,7 +5033,17 @@ else if(nb1.eq.5) then
             end if
         end if
 
-
+			!need to create a vector for binary part with only values of the linear predictor when positive
+			! in order to compute the location parameter involving the binary part linear predictor
+			if(nmescur.gt.0.and.MTP0.eq.1) then
+			k=1
+			do j=1,nmescurB
+				if(Bcurrent(j).eq.1) then
+					mu1GB(k,1)=mu1BG(j,1)
+					k=k+1
+				end if
+			end do
+			end if
     !ccccccccccccccccccccccccccccccccccccccccc
     ! pour le deces
     !ccccccccccccccccccccccccccccccccccccccccc
@@ -5268,7 +5299,7 @@ end if
         yscalarlog = 0.d0
         !********* Left-censoring ***********
             prod_cag = 1.d0
-    
+        if(nmescur.gt.0) then
         if(s_cag_id.eq.1)then
     
             do k = 1,nmescur
@@ -5315,7 +5346,7 @@ end if
         yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+(sigmae/2))**2
         yscalarlog = yscalarlog - dlog(ycurrent(k))
                             else if (MTP0.eq.1) then ! marginal two-part model
-yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)-dlog(1.d0+dexp(mu1BG(k,1)))+(sigmae/2))**2
+yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+mu1GB(k,1)-dlog(1.d0+dexp(mu1GB(k,1)))+(sigmae/2))**2
     yscalarlog = yscalarlog - dlog(ycurrent(k))
                             end if
               !          end if
@@ -5326,7 +5357,7 @@ yscalar = yscalar + (dlog(ycurrent(k))-mu1G(k,1)+mu1BG(k,1)-dlog(1.d0+dexp(mu1BG
 
         yscalar = dsqrt(yscalar)    
         if(prod_cag.lt.0.1d-321)prod_cag= 0.1d-321
-
+end if
 Bscal(1)=0.d0
     Bscalar(1)=0.d0
     if(TwoPart.eq.1) then ! binary part contribution
