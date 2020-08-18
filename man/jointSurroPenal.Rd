@@ -471,13 +471,14 @@ with about a 23\% rejection rate.
 }
 \examples{
 
+\dontrun{
 # Generation of data to use 
 data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
          alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, 
          sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25, 
          full.data = 0, random.generator = 1, seed = 0, nb.reject.data = 0)
 
-\dontrun{
+
 #Surrogacy evaluation based on ganerated data with a combination of Monte Carlo 
 #and classical Gaussian Hermite integration.*
 # (Computation takes around 5 minutes)

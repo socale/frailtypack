@@ -152,6 +152,7 @@ The desired individual level correlation (Kendall's \eqn{\tau}) depend on the va
 }
 \examples{
 
+\dontrun{
 # dataset with 2 covariates and fixed censorship
 data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30, prop.cens = 0, cens.adm=549, 
             alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, 
@@ -168,7 +169,8 @@ data.sim2 <- jointSurrCopSimul(n.obs=600, n.trial = 30, prop.cens = 0.75,
             betat = c(-1.25, 0.5), full.data = 0, random.generator = 1,
             ver = 2, covar.names = "trt", nb.reject.data = 0, thetacopule = 6, 
             filter.surr = c(1,1), filter.true = c(1,1), seed = 0)
-
+            
+}
 }
 \references{
 Rondeau V., Mathoulin-Pelissier S., Jacqmin-Gadda H., Brouste V. and Soubeyran P. (2007).

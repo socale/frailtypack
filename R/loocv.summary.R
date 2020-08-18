@@ -13,7 +13,7 @@ loocv.summary <- function(loocv.object, trialused, nb.parameters, names.paramete
 
   for(i in 1:n) 
     if (!is.null(coef[[i]])) 
-      result[i,] <- as.numeric(coef[[i]])
+      result[i,] <- as.numeric(coef[,i])
   result$trial <- trialused
   return(result[sapply(1:n, function(i) sum(result[i,-ncol(result)])) != 0, ])
 }
