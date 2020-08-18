@@ -58,6 +58,7 @@
 ##' @examples
 ##' 
 ##' 
+##' \dontrun{
 ##' 
 ##' ###---Data generation---###
 ##' data.sim <-jointSurrSimul(n.obs=400, n.trial = 20,cens.adm=549, 
@@ -65,7 +66,7 @@
 ##'           sigma.s = 0.7, sigma.t = 0.7, cor = 0.8, betas = -1.25, 
 ##'           betat = -1.25, full.data = 0, random.generator = 1, 
 ##'           seed = 0, nb.reject.data = 0)
-##' \dontrun{
+##' 
 ##' ###---Estimation---###
 ##' joint.surrogate <- jointSurroPenal(data = data.sim, nb.mc = 300, 
 ##'                    nb.gh = 20, indicator.alpha = 1, n.knots = 6)

@@ -124,6 +124,7 @@
 #'
 #' @examples
 #' 
+#' \dontrun{
 #' # dataset with 2 covariates and fixed censorship
 #' data.sim <- jointSurrCopSimul(n.obs=600, n.trial = 30, prop.cens = 0, cens.adm=549, 
 #'             alpha = 1.5, gamma = 2.5, sigma.s = 0.7, sigma.t = 0.7, 
@@ -140,7 +141,8 @@
 #'             betat = c(-1.25, 0.5), full.data = 0, random.generator = 1,
 #'             ver = 2, covar.names = "trt", nb.reject.data = 0, thetacopule = 6, 
 #'             filter.surr = c(1,1), filter.true = c(1,1), seed = 0)
-#' 
+#'             
+#' }
 jointSurrCopSimul <- function(n.obs = 600, n.trial = 30, prop.cens = 0, cens.adm = 549, alpha = 1.5, gamma = 2.5, 
                            sigma.s = 0.7, sigma.t = 0.7,cor = 0.9, betas = c(-1.25, 0.5), betat = c(-1.25, 0.5), 
                            frailt.base = 1, lambda.S = 1.3, nu.S = 0.0025,lambda.T = 1.1, nu.T = 0.0025, ver = 2, typeOf = 1,
