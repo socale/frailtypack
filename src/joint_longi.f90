@@ -1402,7 +1402,11 @@ end if
                     if(TwoPart.ne.1) then
                         LCV(1) = (LCV(1) - resnonpen) /(ng+nsujety)
                     else if(TwoPart.eq.1) then
-                        LCV(1) = (LCV(1) - resnonpen) /(ng+nsujetB) ! add TwoPart
+					if(MTP0.eq.0) then
+                        LCV(1) = (LCV(1) - resnonpen) /(ng+nsujetB+nsujety) ! add TwoPart
+						else if(MTP0.eq.1) then
+                        LCV(1) = (LCV(1) - resnonpen) /(ng+nsujetB+nsujetB) ! add TwoPart
+						end if
                     end if
                 else
                     LCV(1) = (LCV(1) - resnonpen) /(nsujet+nsujety)
@@ -1415,7 +1419,11 @@ end if
                     if(TwoPart.ne.1) then
                         LCV(2) = (1.d0 /( nsujety+ng)) *(np - resOut)
                     else if(TwoPart.eq.1) then
-                        LCV(2) = (1.d0 /( nsujetB+ng)) *(np - resOut)
+						if(MTP0.eq.0) then
+                        LCV(2) = (1.d0 /( nsujetB+nsujety+ng)) *(np - resOut)
+						else if(MTP0.eq.1) then
+                        LCV(2) = (1.d0 /( nsujetB+nsujetB+ng)) *(np - resOut)
+						end if
                     end if
             else
                 LCV(2) = (1.d0 / (nsujet+nsujety)) *(np - resOut)
