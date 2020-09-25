@@ -1,4 +1,4 @@
-Changes in Version 3.3.2 September 2020
+Changes in Version 3.3.1 September 2020
 o Fixed an important error in the new marginal two-part joint model.
 o Fixed an issue with the Cholesky matrix for the Monte-Carlo integration.
 o Fixed a rank mismatch for the random variable 'Xea'.
