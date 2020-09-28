@@ -1,12 +1,12 @@
 Package: frailtypack
 Version: 3.3.2
-Date: 2020-09-25
+Date: 2020-09-28
 Title: General Frailty Models: Shared, Joint and Nested Frailty Models
         with Prediction; Evaluation of Failure-Time Surrogate Endpoints
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
         Agnieszka Krol, Casimir L. Sofeu, Julien Dumerc, Denis Rustand
-Maintainer: Virginie Rondeau <Virginie.Rondeau@inserm.fr>
+Maintainer: Virginie Rondeau <virginie.rondeau@u-bordeaux.fr>
 Depends: R (>= 2.10.0), survival, boot, MASS, survC1, doBy
 Imports: statmod, nlme,rootSolve, shiny
 LazyLoad: no
@@ -32,7 +32,7 @@ URL:
 Suggests: knitr, rmarkdown, testthat
 VignetteBuilder: knitr
 Repository: CRAN
-Date/Publication: 2020-09-25 13:22:03 UTC
-Packaged: 2020-09-25 13:22:26 UTC; Casimir
+Date/Publication: 2020-09-28 13:22:03 UTC
+Packaged: 2020-09-28 13:22:26 UTC; Casimir
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
