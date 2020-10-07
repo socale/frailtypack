@@ -19,7 +19,7 @@ subroutine surrosim(don_simul,don_simulS1,n_obs,n_col,lognormal,affiche_stat,vra
 
       integer, intent(in)::n_essai,frailt_base,affiche_stat,n_obs,n_col,lognormal,ng,ver,&
                             random_generator0, aleatoire,nbre_sim , graine, param_weibull0,&
-                            type_joint_simul,pfs
+                            type_joint_simul,pfs, nbre_don_non_cons
       double precision, intent(in)::truealpha,propC,cens_A,gamma1,gamma2,theta2,gamma,alpha,&
                                     lambda_S,nu_S,lambda_T,nu_T,rsqrt,sigma_s,sigma_t,&
                                     thetacopule
