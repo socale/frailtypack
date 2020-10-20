@@ -10,17 +10,10 @@
 #' @return return the value of hazard function in t.
 #' @export
 #' @examples
-#' 
+#'  
 #' 
 #' \dontrun{
 #' 
-#' #-- a fit Shared
-#' data(readmission)
-#' fit.shared <- frailtyPenal(Surv(time,event)~dukes+cluster(id)+
-#' strata(sex),n.knots=10,kappa=c(10000,10000),data=readmission)
-#' 
-#' #-- calling survival
-#' hazard(20,fit.shared)
 #' 
 #' }
 #' 
