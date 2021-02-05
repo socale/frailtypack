@@ -5,7 +5,7 @@
     xTOut,lamTOut,xSuT,suTOut,typeof0,equidistant,nbintervR0,mt, &
     ni,cpt,ier,k0,ddl,istop,shapeweib,scaleweib,mt1,ziOut,Resmartingale,martingaleCox,&
     frailtypred,frailtyvar,frailtysd,linearpred,time,intcensAux,ttUAux,logNormal0, &
-    timedep0,nbinnerknots0,qorder0,filtretps0,BetaTpsMat,EPS,nbgh) ! rajout
+    timedep0,nbinnerknots0,qorder0,filtretps0,BetaTpsMat,EPS,nbgh,familyrisk) ! rajout
 
 
 !
@@ -59,7 +59,10 @@
 !AD:add
     double precision,dimension(2),intent(out)::LCV
     double precision::ca,cb,dd
-    double precision,external::funcpassplines,funcpascpm,funcpasweib, funcpasweibgen
+    double precision,external::funcpassplines,funcpascpm,funcpasweib
+	double precision,external::funcpasgenweib,funcpasgenloglogistic,funcpasgenlognormal
+	double precision,external::funcpasgenadditif,funcpasgenadditif_tps,funcpasgenadditif_param,funcpasgenadditif_pen
+	double precision,external::funcpasgenadditif_alternatif,funcpasgenadditifalternatif_tps
     double precision,external::funcpascpm_intcens,funcpassplines_intcens,funcpasweib_intcens
     double precision,external::funcpassplines_log,funcpasweib_log,funcpascpm_log
     double precision,external::funcpas_tps
@@ -82,9 +85,11 @@
     double precision,dimension(0:100,0:4*sum(filtretps0))::BetaTpsMat ! matrice des effets depedants du temps (4 colonnes par effet dep du tps)
     double precision,dimension(nbinnerknots0+qorder0)::basis
     double precision,dimension(3),intent(inout)::EPS ! seuils de convergence
+	
+	integer::familyrisk
 
-call dblepr("SUBROUTINE FRAILPENAL : appel marq98j (def dans aaOptim.f90)", -1, 0.d0, 1)
-call dblepr("SUBROUTINE FRAILPENAL, NB : marq98j necessite vrais (dans funcpassplines.f90)", -1, 0.d0, 1)	
+
+!call dblepr("Je suis dans la subroutine FRAILPENALGEN", -1, 0.d0, 1)
 !verification
     !print*,nsujetAux,ngAux,icenAux,nstAux,effetAux,nzAux,ax1,ax2,nvaAux
     !do i =1,5
@@ -943,16 +948,27 @@ call dblepr("SUBROUTINE FRAILPENAL, NB : marq98j necessite vrais (dans funcpassp
                 if (logNormal.eq.0) then
                     if (intcens.eq.1) then
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpassplines_intcens)
-                    else
-					    call dblepr("SUBROUTINE FRAILPENAL : appel marq98j (def dans aaOptim.f90)", -1, 0.d0, 1)
-                        call dblepr("SUBROUTINE FRAILPENAL, NB : marq98j necessite vrais (dans funcpassplines.f90)", -1, 0.d0, 1)	
+                    else 
+                        call dblepr("subroutine FRAILPENALGEN : appel marq98j (def dans aaOptim.f90)", -1, 0.d0, 1)
+                        call dblepr("NB : marq98j necessite vraisemblance def dans funcpassplines.f90", -1, 0.d0, 1)	
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpassplines)
                     endif
                 else
                     call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpassplines_log)
                 endif
             else
-                call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpas_tps)
+			    if (familyrisk.eq.0) then
+				    call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpas_tps)
+				endif
+			    if (familyrisk.eq.3) then
+                    call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpasgenadditif_tps", -1, 0.d0, 1)
+                    call marq98j_modadd(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_tps)
+				endif
+				if (familyrisk.eq.4) then
+                    call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditifalternatif_tps", -1, 0.d0, 1)
+                    call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditifalternatif_tps)
+				endif
+                !call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpas_tps)
             endif
         case(1)
             allocate(betacoef(nst*nbintervR))
@@ -976,10 +992,30 @@ call dblepr("SUBROUTINE FRAILPENAL, NB : marq98j necessite vrais (dans funcpassp
                     if (intcens.eq.1) then
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasweib_intcens)
                     else
-                        call dblepr("subroutine FRAILPENALGEN --- appel marq98j (def dans aaOptim.f90)", -1, 0.d0, 1)
-                        call dblepr("subroutine FRAILPENALGEN --- NB : marq98j necessite vrais (dans funcpasweibgen.f90)",&
-						-1, 0.d0, 1)
-                        call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasweibgen)
+					    if (familyrisk.eq.0) then
+                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenweib", -1, 0.d0, 1)
+                            call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenweib)
+						endif
+						if (familyrisk.eq.1) then
+                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenloglogistic", -1, 0.d0, 1)
+                            call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenloglogistic)
+						endif
+						if (familyrisk.eq.2) then
+                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenlognormal", -1, 0.d0, 1)
+                            call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenlognormal)
+						endif
+						if (familyrisk.eq.3) then
+						    call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpasgenadditif_pen", -1, 0.d0, 1)
+                            call marq98j_modadd(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_pen)
+                            !call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditif", -1, 0.d0, 1)
+                            !call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif)
+							!call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditif_param", -1, 0.d0, 1)
+							!call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_param)
+						endif
+						if (familyrisk.eq.4) then
+                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditif_alternatif", -1, 0.d0, 1)
+                            call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_alternatif)
+						endif
                     endif
                 else
                     call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasweib_log)
@@ -1046,7 +1082,16 @@ call dblepr("SUBROUTINE FRAILPENAL, NB : marq98j necessite vrais (dans funcpassp
         case(2)
             typeof2 = 1            
 !             Call distanceweib(b,np,mt,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out)
-            Call distanceSweib(b,np,mt,xTOut,lamTOut,xSuT,suTOut)!en plus strates A.Laf 05/2014            
+            if ((familyrisk.eq.0).or.(familyrisk.eq.3).or.(familyrisk.eq.4)) then
+                Call distanceSweib(b,np,mt,xTOut,lamTOut,xSuT,suTOut)!en plus strates A.Laf 05/2014   
+            endif
+            if (familyrisk.eq.1) then
+			    !call dblepr("Appel distanceSloglogistic", -1, 0.d0, 1)
+                Call distanceSloglogistic(b,np,mt,xTOut,lamTOut,xSuT,suTOut)!en plus strates A.Laf 05/2014   
+            endif
+            if (familyrisk.eq.2) then
+                Call distanceSlognormal(b,np,mt,xTOut,lamTOut,xSuT,suTOut)!en plus strates A.Laf 05/2014   
+            endif		
     end select
 
     resOut=res

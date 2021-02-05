@@ -958,7 +958,7 @@
 "GenfrailtyPenal" <-
   function (formula, formula.terminalEvent, data, recurrentAG=FALSE, cross.validation=FALSE, jointGeneral, n.knots, kappa,maxit=300,
             hazard="Splines", nb.int, RandDist="Gamma", nb.gh, nb.gl, betaknots=1,betaorder=3, initialize=TRUE, init.B, init.Theta, init.Alpha, Alpha, init.Ksi, Ksi, init.Eta,
-            LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE){
+            LIMparam=1e-3, LIMlogl=1e-3, LIMderiv=1e-3, print.times=TRUE, family){
 
     # Ajout de la fonction minmin issue de print.survfit, permettant de calculer la mediane
     minmin <- function(y, x) {
@@ -984,7 +984,7 @@
 
     #ad 15/02/12 :add Audrey
     m2 <- match.call()
-    m2$formula <- m2$formula.terminalEvent <- m2$recurrentAG <- m2$cross.validation <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$... <- NULL
+    m2$formula <- m2$formula.terminalEvent <- m2$recurrentAG <- m2$cross.validation <- m2$n.knots <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$family <- m2$... <- NULL
     Names.data <- m2$data
 
     #### Betaknots et betaorder ####
@@ -1006,14 +1006,14 @@
 
     ### longueur hazard = 1
     if((all.equal(length(hazard),1)==T)==T){
-      if(!(hazard %in% c("Weibull","Piecewise","Splines"))){
-        stop("Only 'Weibull', 'Splines' or 'Piecewise' hazard can be specified in hazard argument.")
+      if(!(hazard %in% c("parametric","Piecewise","Splines"))){
+        stop("Only 'parametric', 'Splines' or 'Piecewise' hazard can be specified in hazard argument.")
       }else{
-        typeof <- switch(hazard,"Splines"=0,"Piecewise"=1,"Weibull"=2)
+        typeof <- switch(hazard,"Splines"=0,"Piecewise"=1,"parametric"=2)
         ### Splines (equidistant par defaut)
         if (typeof == 0){
           if (!missing(nb.int)){
-            stop("When the hazard function equals 'Splines' or 'Weibull', 'nb.int' argument must be deleted.")
+            stop("When the hazard function equals 'Splines' or 'parametric', 'nb.int' argument must be deleted.")
           }
           size1 <- 100
           size2 <- 100
@@ -1024,7 +1024,7 @@
         ### Weibull
         if (typeof == 2){
           if (!missing(nb.int)){
-            stop("When the hazard function equals 'Splines' or 'Weibull', 'nb.int' argument must be deleted.")
+            stop("When the hazard function equals 'Splines' or 'parametric', 'nb.int' argument must be deleted.")
           }
           size1 <- 100
           size2 <- 100
@@ -1113,10 +1113,10 @@
       crossVal <- 0
     }
     call <- match.call()
-
+# browser()
     m <- match.call(expand.dots = FALSE) # recupere l'instruction de l'utilisateur
 
-    m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$jointGeneral <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <-  m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha <- m$init.Ksi <- m$Ksi <- m$init.Eta <- m$Eta <- m$initialize <- m$nb.gh <- m$nb.gl <- m$... <- NULL
+    m$formula.terminalEvent <- m$n.knots <- m$recurrentAG <- m$cross.validation <- m$jointGeneral <- m$kappa <- m$maxit <- m$hazard <- m$nb.int <- m$RandDist <- m$betaorder <- m$betaknots <- m$init.B <- m$LIMparam <- m$LIMlogl <- m$LIMderiv <-  m$print.times <- m$init.Theta <- m$init.Alpha <- m$Alpha <- m$init.Ksi <- m$Ksi <- m$init.Eta <- m$Eta <- m$initialize <- m$nb.gh <- m$nb.gl <- m$family <- m$... <- NULL
     special <- c("strata", "cluster", "subcluster", "terminal","num.id","timedep", "wts") #wts for weights (ncc design) ncc - nested case-control
 
     Terms <- if (missing(data)){
@@ -1691,8 +1691,10 @@
         cat("\n")
         cat("Be patient. The program is computing ... \n")
       }
-
-      cat("fichier GENFRAILTYPENAL.R : appel de la subroutine FRAILPENALGEN (dans frailtypackgen.f90) \n")
+      
+      # typeof <- switch(hazard,"Splines"=0,"Piecewise"=1,"Weibull"=2)
+      familyrisk <- switch(family[1],"PH"=0,"PO"=1,"probit"=2, "AH"=3,"AH2"=4)
+      #cat("fichier GENFRAILTYPENAL.R : appel de la subroutine FRAILPENALGEN (dans frailtypackgen.f90) \n")
       ans <- .Fortran(C_frailpenalgen,
                       as.integer(n),
                       as.integer(length(uni.cluster)),
@@ -1757,9 +1759,10 @@
                       as.integer(filtretps),
                       BetaTpsMat=as.double(matrix(0,nrow=101,ncol=1+4*nvartimedep)),
                       EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
-                      nbgh = as.integer(nb.gh)
+                      nbgh = as.integer(nb.gh), 
+                      as.integer(familyrisk)
       )#,
-      #PACKAGE = "frailtypack") # 58 arguments
+      #PACKAGE = "frailtypack") # 60 arguments
       #AD:
       if (ans$istop == 4){
         warning("Problem in the loglikelihood computation. The program stopped abnormally. Please verify your dataset. \n")
@@ -1914,6 +1917,7 @@
       fit$nvartimedep <- nvartimedep
       fit$Names.vardep <- vardep
       fit$EPS <- ans$EPS
+      fit$family <- familyrisk
       #
       #========================= Test de Wald pour shared
 
@@ -1955,7 +1959,7 @@
       fit$contrasts <- contr.save
       attr(fit,"joint")<-joint
       attr(fit,"subcluster")<-FALSE
-      class(fit) <- "GenfrailtyPenal"
+      class(fit) <- "frailtyPenal"
 
     }  # End SHARED MODEL
 
@@ -2143,9 +2147,9 @@
       m2 <- match.call(expand.dots = FALSE)
       ## AD: modified 20 06 2011, for no covariates on terminal event part
       if (missing(formula.terminalEvent)){
-        m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$... <- NULL
+        m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$family <- m2$... <- NULL
       }else{
-        m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$... <- NULL
+        m2$formula.terminalEvent <- m2$n.knots <- m2$recurrentAG <- m2$cross.validation <- m2$jointGeneral<- m2$kappa <- m2$maxit <- m2$hazard <- m2$nb.int <- m2$RandDist <- m2$betaorder <- m2$betaknots <- m2$init.B <- m2$LIMparam <- m2$LIMlogl <- m2$LIMderiv <- m2$print.times <- m2$init.Theta <- m2$init.Alpha <- m2$Alpha <- m2$init.Ksi <- m2$Ksi <- m2$init.Eta <- m2$Eta <- m2$initialize <- m2$nb.gh <- m2$nb.gl <- m2$family <- m2$... <- NULL
       }
 
       m2$formula <- Terms2
@@ -2476,7 +2480,11 @@
         cat("Be patient. The program is computing ... \n")
       }
 
-      ans <- .Fortran(C_joint,
+      familyriskdc  <- switch(family[1],"PH"=0,"PO"=1,"probit"=2, "AH"=3, "AH2"=4)
+      familyriskrec <- switch(family[2],"PH"=0,"PO"=1,"probit"=2, "AH"=3, "AH2"=4)
+      familyrisk <- as.integer(c(familyriskdc,familyriskrec))
+      
+      ans <- .Fortran(C_jointgen,
                       as.integer(n),
                       as.integer(c(length(uni.cluster),0, uni.strat)), #IJ
                       #as.integer(uni.strat),
@@ -2555,15 +2563,16 @@
                       # censure par intervalle, indic_alpha
                       as.double(ttU),
                       as.integer(ordretmp),
-                      as.integer(initialize),#58
+                      as.integer(c(initialize,logNormal)),#58
 
-                      logNormal=as.integer(logNormal),
+                      #logNormal=as.integer(logNormal),
                       paratps=as.integer(c(timedep,betaknots,betaorder)),
                       as.integer(c(filtretps,filtretps2)),
                       BetaTpsMat=as.double(matrix(0,nrow=101,ncol=1+4*nvartimedep)),
                       BetaTpsMatDc=as.double(matrix(0,nrow=101,ncol=1+4*nvartimedep2)),
                       EPS=as.double(c(LIMparam,LIMlogl,LIMderiv)),
-                      nbgauss = as.integer(c(nb.gh,nb.gl))
+                      nbgauss = as.integer(c(nb.gh,nb.gl)),
+                      as.integer(familyrisk)
       )#,
       #PACKAGE = "frailtypack") # 65 arguments
 
@@ -2757,7 +2766,7 @@
 
       fit$indic_alpha <- indic_alpha
       if(joint.clust==2)fit$indic_alpha <- 0
-      fit$logNormal <- ans$logNormal
+      fit$logNormal <- logNormal#ans$logNormal
       fit$BetaTpsMat <- matrix(ans$BetaTpsMat,nrow=101,ncol=1+4*nvartimedep)
       fit$BetaTpsMatDc <- matrix(ans$BetaTpsMatDc,nrow=101,ncol=1+4*nvartimedep2)
       fit$nvartimedep <- c(nvartimedep,nvartimedep2)
@@ -2766,6 +2775,7 @@
       fit$Names.vardepdc <- vardep2
 
       fit$EPS <- ans$EPS
+      fit$family <- familyrisk
 
       #================================> For the reccurrent
       #========================= Test de Wald

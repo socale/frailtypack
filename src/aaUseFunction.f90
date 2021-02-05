@@ -1168,6 +1168,15 @@
       end function alnorm
 
 
+double precision function PHI(u)
+double precision u, PI
+! Standard Normal Probability Function
+  PI = 4.d0*datan(1.d0)
+  PHI = (1.d0/dsqrt(2.d0 * PI))*dexp(-0.5d0*u*u)
+  return
+  end
+ 
+
 ! ------------------------------------------------
 !     Cholesky decomposition.
      subroutine cholesky_sub(A,n)

@@ -13,6 +13,7 @@ static const R_FortranMethodDef FortEntries[] = {
     {"frailpenal",           (DL_FUNC) &F77_SUB(frailpenal),           59},
     {"frailpred_sha_nor_mc", (DL_FUNC) &F77_SUB(frailpred_sha_nor_mc),  5},
     {"joint",                (DL_FUNC) &F77_SUB(joint),                65},
+	{"jointgen",                (DL_FUNC) &F77_SUB(jointgen),                65},
     {"joint_longi",          (DL_FUNC) &F77_SUB(joint_longi),          64},
 	{"jointlonginl",          (DL_FUNC) &F77_SUB(jointlonginl),	       62},
     {"joint_multiv",         (DL_FUNC) &F77_SUB(joint_multiv),         63},
@@ -36,7 +37,7 @@ static const R_FortranMethodDef FortEntries[] = {
     {"test",                 (DL_FUNC) &F77_SUB(test),       3},
     {"surrosim",             (DL_FUNC) &F77_SUB(surrosim), 36},
     {"jointsurrokendall",    (DL_FUNC) &F77_SUB(jointsurrokendall), 24},
-    {"frailpenalgen",           (DL_FUNC) &F77_SUB(frailpenalgen),           59},
+    {"frailpenalgen",           (DL_FUNC) &F77_SUB(frailpenalgen),           60},
     {NULL, NULL, 0}
 };
 

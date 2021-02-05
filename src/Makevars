@@ -37,7 +37,10 @@ frailtypackgen.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpassplines.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpascpm.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpasweib.o: aaOptim.o aaOptimres.o Aparameters.o
-funcpasweibgen.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenweib.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenloglogistic.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenlognormal.o: aaUseFunction.o aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenadditif.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpassplines_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpascpm_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpasweib_intcens.o: aaOptim.o aaOptimres.o Aparameters.o
@@ -45,8 +48,10 @@ funcpassplines_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpascpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpasweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpas_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenadditif_tps.o: aaOptim.o aaOptimres.o Aparameters.o
 
 joint.o: aaOptim.o aaOptimres.o Aparameters.o
+jointgen.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajgeneral.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajsplines.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajsplines_fam.o: aaOptim.o aaOptimres.o Aparameters.o
