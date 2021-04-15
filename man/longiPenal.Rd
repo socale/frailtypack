@@ -435,7 +435,7 @@ kap <- round(tte$kappa,2);kap # smoothing parameter
 longDat$Yex <- exp(longDat$Y)-1
 MTPJM_re <- longiPenal(Surv(deathTimes, d)~trt, Yex~timej*trtY,
                   data=survDat, data.Longi = longDat,MTP=T,GLMlog = T,
-                  random = c("1","timej"), formula.Binary=Y~timej*trtY,
+                  random = c("1"), formula.Binary=Y~timej*trtY,
                   random.Binary=c("1"), timevar="timej", id = "id",
                   link = "Random-effects", n.knots = 5, kappa = kap,
                   hazard="Splines-per", method.GH="Monte-carlo",
