@@ -1280,7 +1280,7 @@ end if
                         call marq98JAlt(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_log,funcpajsplines_logIndiv)
                      endif
                 else
-				    call dblepr("FRAILPENALGEN : appel marq98j et funcpajgen_tps", -1, 0.d0, 1)
+				    !call dblepr("FRAILPENALGEN : appel marq98j et funcpajgen_tps", -1, 0.d0, 1)
                     call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajgen_tps)
 					!call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpaj_tps)
                 endif
@@ -1301,7 +1301,7 @@ end if
                             call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajweib_intcens)
                         else
                             if (typejoint /= 3) then
-							    call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpajgenparam", -1, 0.d0, 1)
+							    !call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpajgenparam", -1, 0.d0, 1)
 							    call marq98j_modadd(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajgenparam)
 							    !call dblepr("FRAILPENALGEN : appel marq98j et funcpajgenparam", -1, 0.d0, 1)
 							    !call marq98J(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajgenparam)
@@ -1697,8 +1697,8 @@ end if
             Call distanceJcpm(b,nstRec*nbintervR+nbintervDC,mt1,mt2,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out)
         case(2)
             !Call distanceJweib(b,np,mt1,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out)
-			call dblepr("Appel distanceJgenparam", -1, 0.d0, 1)
-			call intpr("nst", -1, nst, 1)
+			!call dblepr("Appel distanceJgenparam", -1, 0.d0, 1)
+			!call intpr("nst", -1, nst, 1)
 			Call distanceJgenparam(b,np,mt1,x1Out,lamOut,xSu1,suOut,x2Out,lam2Out,xSu2,su2Out)
     end select    
 

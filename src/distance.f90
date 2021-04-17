@@ -911,12 +911,6 @@
 !=========================================================================================================
 !=========================================================================================================
 
-
-
-
-
-
-
 !nouvelle fonction remplaçant distanceweib pour le modèle Cox et shared
 !en plus strates A.Lafourcade 05/2014 on remplace les différents tableaux de chaque strate par un unique tableau
 !ayant une dimention de plus pour les strates et on fait des boucles sur les strates
@@ -1564,7 +1558,7 @@
     end subroutine distanceSlognormal
 	
 	
-
+	
 !=========================================================================================================
 !=========================================================================================================
 !=========================================================================================================
@@ -1816,10 +1810,6 @@
     end do ! fin aa strate
 !!!!!!!   FIN SURV     !!!!!!!!!!
     end subroutine distanceScpm
-
-
-
-
 
 !==========================  DISTANCE   =================================
 
@@ -3021,18 +3011,6 @@ subroutine distanceJgenparam(b,m,mt1,x1R,moyLamR,xSu1,moysuR,x2DC,moyLamDC,xSu2,
         moysuDC = 0.d0
     end if
     end subroutine distanceJgenparam
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

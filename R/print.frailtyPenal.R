@@ -440,6 +440,13 @@ else if(x$family == 0){
         }
         if (x$nvartimedep != 0) cat("  and some time-dependant covariates","\n")
         if (x$n.strat>1) cat("  (Stratification structure used) :",x$n.strat,"strata \n")
+        if (x$typeof == 0){
+          cat("\n")
+          cat("  Semi-Parametrical approach ", "\n")
+          cat("  Expression of the hazard function:     'lambda(t) = lambda_0(t) * exp(beta(t)'X)'", "\n")
+          cat("  (Baseline hazard function lambda_0(.) estimated using M-splines)")
+          cat("\n")
+        }
       }else{
         if (x$typeof == 0){
           #cat("  Cox proportional hazards model parameter estimates ","\n")
@@ -456,6 +463,13 @@ else if(x$family == 0){
         }
         if (x$nvartimedep != 0) cat("  and some time-dependant covariates","\n")
         if (x$n.strat>1) cat("  (Stratification structure used) :",x$n.strat,"strata \n")
+        if (x$typeof == 0){
+          cat("\n")
+          cat("  Semi-Parametrical approach ", "\n")
+          cat("  Expression of the hazard function:     'lambda(t) = lambda_0(t) * exp(beta(t)'X)'", "\n")
+          cat("  (Baseline hazard function lambda_0(.) estimated using M-splines)")
+          cat("\n")
+        }
       }
       
       if (x$typeof == 0){
@@ -526,8 +540,11 @@ else if(x$family == 0){
       # 			}
       
       if (x$logNormal == 0){
-        cat("    Frailty parameter, Theta:", frail, "(SE (H):",
-            seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
+        cat("Theta (variance of frailties): ", frail, " (SE(H): ", seH, ")", 
+            ", p = ", ifelse(signif(1-pnorm(frail/seH), digits-1) == 0, " < 1e-16", 
+                          signif(1-pnorm(frail/seH), digits-1)),
+            sep="")
+        cat("\n")
       }else{
         cat("    Frailty parameter, Sigma Square:", frail, "(SE (H):",
             seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
@@ -538,31 +555,38 @@ else if(x$family == 0){
     cat(" \n")
     #AD:	
     if (x$typeof == 0){
-      cat(paste("      penalized marginal log-likelihood =", round(x$logLikPenal,2)))
+      cat(paste("Penalized marginal log-likelihood =", round(x$logLikPenal,2)))
       cat("\n")
       cat("      Convergence criteria: \n")
-      cat("      parameters =",signif(x$EPS[1],3),"likelihood =",signif(x$EPS[2],3),"gradient =",signif(x$EPS[3],3),"\n")
+      cat("      parameters =",signif(x$EPS[1],3),
+          "; likelihood =",signif(x$EPS[2],3),
+          "; gradient =",signif(x$EPS[3],3),"\n")
       cat("\n")
-      cat("      LCV = the approximate likelihood cross-validation criterion\n")
-      cat("            in the semi parametrical case     =",x$LCV,"\n")
+      cat("Likelihood Cross-Validation (LCV) criterion in the semi parametrical case:\n")
+      # cat("")
+      cat("      approximate LCV =", x$LCV,"\n")
+      # cat("      LCV = the approximate likelihood cross-validation criterion\n")
+      # cat("            in the semi parametrical case     =",x$LCV,"\n")
     }else{
-      cat(paste("      marginal log-likelihood =", round(x$logLik,2)))
+      cat(paste("Marginal log-likelihood =", round(x$logLik,2)))
       cat("\n")
       cat("      Convergence criteria: \n")
-      cat("      parameters =",signif(x$EPS[1],3),"likelihood =",signif(x$EPS[2],3),"gradient =",signif(x$EPS[3],3),"\n")
+      cat("      parameters =",signif(x$EPS[1],3),
+          "; likelihood =",signif(x$EPS[2],3),
+          "; gradient =",signif(x$EPS[3],3),"\n")
       cat("\n")
-      cat("      AIC = Aikaike information Criterion     =",x$AIC,"\n")
-      cat("\n")
-      cat("The expression of the Aikaike Criterion is:","\n")
+      cat("AIC (Aikaike Information Criterion) =",x$AIC,"\n")
+      #cat("\n")
+      cat("The expression of the Aikaike Information Criterion is:","\n")
       cat("        'AIC = (1/n)[np - l(.)]'","\n")
       if (x$typeof == 2){
         cat("\n")
         if (x$n.strat == 1){
-          cat("      Scale for the Weibull hazard function is :",round(x$scale.weib[1],2),"\n")
-          cat("      Shape for the Weibull hazard function is :",round(x$shape.weib[1],2),"\n")
+          cat("      Scale for the Weibull hazard function:",round(x$scale.param[1],2),"\n")
+          cat("      Shape for the Weibull hazard function:",round(x$shape.param[1],2),"\n")
         }else{
-          cat("      Scale for the Weibull hazard function is :",round(x$scale.weib[1],2),round(x$scale.weib[2],2),"\n")
-          cat("      Shape for the Weibull hazard function is :",round(x$shape.weib[1],2),round(x$shape.weib[2],2),"\n")
+          cat("      Scale for the Weibull hazard function:",round(x$scale.param[1],2),round(x$scale.param[2],2),"\n")
+          cat("      Shape for the Weibull hazard function:",round(x$shape.param[1],2),round(x$shape.param[2],2),"\n")
         }
         cat("\n")
         cat("The expression of the Weibull hazard function is:","\n")
@@ -574,7 +598,7 @@ else if(x$family == 0){
     }
     #AD:
     cat("\n")
-    cat("      n=", x$n)
+    cat("      n =", x$n)
     
     if (length(x$na.action)){
       cat("  (", length(x$na.action), " observation deleted due to missing) \n")
@@ -582,11 +606,11 @@ else if(x$family == 0){
       cat("\n")
     }
     
-    if (!is.null(frail)) cat("      n events=", x$n.events, " n groups=", x$groups)
-    else cat("      n events=", x$n.events)
+    if (!is.null(frail)) cat("      n.events =", x$n.events, "\n", "     n.groups =", x$groups)
+    else cat("      n.events =", x$n.events)
     
     cat( "\n")
-    cat("      number of iterations: ", x$n.iter,"\n")
+    cat("      number of iterations:", x$n.iter,"\n")
     if ((x$typeof == 1) & (x$indic.nb.int == 1)){
       cat("      Exact number of time intervals used: 20","\n")
     }else{
@@ -594,10 +618,10 @@ else if(x$family == 0){
     }	
     if (x$typeof == 0){ 
       cat("\n")
-      cat("      Exact number of knots used: ", x$n.knots, "\n")
+      cat("      Exact number of knots used:", x$n.knots, "\n")
       
       if (!x$cross.Val){
-        cat("      Value of the smoothing parameter: ", x$kappa, sep=" ")
+        cat("      Value of the smoothing parameter:", x$kappa, sep=" ")
       }
       
       if (x$cross.Val){
@@ -609,7 +633,7 @@ else if(x$family == 0){
           cat("      an approximated Cross validation: ", x$kappa, sep=" ")
         }
       }
-      cat(", DoF: ", formatC(-x$DoF, format="f",digits=2))
+      cat(", DoF:", formatC(-x$DoF, format="f",digits=2))
     }
   }else{
     if (!is.null(frail)){
@@ -752,10 +776,12 @@ else if(x$family == 1){
           seHIH <- sqrt(x$varHIH)
         }
         if (x$typeof == 0){
-          tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour eviter que R n'affiche pval = 0 lorsque celle-ci est tres petite
+          # tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour eviter que R n'affiche pval = 0 lorsque celle-ci est tres petite
+          tmp <- cbind(coef, seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
           if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
         }else{
-          tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+          # tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+          tmp <- cbind(coef, seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
           if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
         }
         
@@ -800,7 +826,7 @@ else if(x$family == 1){
             dimnames(tmpwald) <- list(x$names.factor,c("chisq", "df", "global p"))
             
           }
-          dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
+          dimnames(tmp) <- list(names(coef), c("coef", #"exp(coef)",
                                                "SE coef (H)", "SE coef (HIH)", "z", "p"))
           
         }else{
@@ -808,7 +834,7 @@ else if(x$family == 1){
             dimnames(tmpwald) <- list(x$names.factor,c("chisq", "df", "global p"))
             
           }
-          dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
+          dimnames(tmp) <- list(names(coef), c("coef", #"exp(coef)",
                                                "SE coef (H)", "z", "p"))
           
         }
@@ -817,7 +843,8 @@ else if(x$family == 1){
         if (nvar == 0){
           cat("No constant coefficients, only time-varying effects of the covariates \n")
         }else{
-          prmatrix(tmp[, -2])
+          # prmatrix(tmp[, -2])
+          prmatrix(tmp)
           if(x$global_chisq.test==1){
             cat("\n")
             prmatrix(tmpwald)
@@ -863,8 +890,11 @@ else if(x$family == 1){
         # 			}
         
         if (x$logNormal == 0){
-          cat("    Frailty parameter, Theta:", frail, "(SE (H):",
-              seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
+          cat("Theta (variance of frailties): ", frail, " (SE(H): ", seH, ")", 
+              ", p = ", ifelse(signif(1-pnorm(frail/seH), digits-1) == 0, " < 1e-16", 
+                               signif(1-pnorm(frail/seH), digits-1)),
+              sep="")
+          cat("\n")
         }else{
           cat("    Frailty parameter, Sigma Square:", frail, "(SE (H):",
               seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
@@ -883,23 +913,25 @@ else if(x$family == 1){
         cat("      LCV = the approximate likelihood cross-validation criterion\n")
         cat("            in the semi parametrical case     =",x$LCV,"\n")
       }else{
-        cat(paste("      marginal log-likelihood =", round(x$logLik,2)))
+        cat(paste("Marginal log-likelihood =", round(x$logLik,2)))
         cat("\n")
         cat("      Convergence criteria: \n")
-        cat("      parameters =",signif(x$EPS[1],3),"likelihood =",signif(x$EPS[2],3),"gradient =",signif(x$EPS[3],3),"\n")
+        cat("      parameters =",signif(x$EPS[1],3),
+            "; likelihood =",signif(x$EPS[2],3),
+            "; gradient =",signif(x$EPS[3],3),"\n")
         cat("\n")
-        cat("      AIC = Aikaike information Criterion     =",x$AIC,"\n")
-        cat("\n")
-        cat("The expression of the Aikaike Criterion is:","\n")
+        cat("AIC (Aikaike Information Criterion) =",x$AIC,"\n")
+        #cat("\n")
+        cat("The expression of the Aikaike Information Criterion is:","\n")
         cat("        'AIC = (1/n)[np - l(.)]'","\n")
         if (x$typeof == 2){
           cat("\n")
           if (x$n.strat == 1){
-            cat("      Scale for the log-logistic survival function is :",round(x$scale.weib[1],2),"\n")
-            cat("      Shape for the log-logistic survival function is :",round(x$shape.weib[1],2),"\n")
+            cat("      Scale for the log-logistic survival function:",round(x$scale.param[1],2),"\n")
+            cat("      Shape for the log-logistic survival function:",round(x$shape.param[1],2),"\n")
           }else{
-            cat("      Scale for the log-logistic survival function is :",round(x$scale.weib[1],2),round(x$scale.weib[2],2),"\n")
-            cat("      Shape for the log-logistic survival function is :",round(x$shape.weib[1],2),round(x$shape.weib[2],2),"\n")
+            cat("      Scale for the log-logistic survival function:",round(x$scale.param[1],2),round(x$scale.param[2],2),"\n")
+            cat("      Shape for the log-logistic survival function:",round(x$shape.param[1],2),round(x$shape.param[2],2),"\n")
           }
           cat("\n")
           cat("The expression of the log-logistic survival function is:","\n")
@@ -911,7 +943,7 @@ else if(x$family == 1){
       }
       #AD:
       cat("\n")
-      cat("      n=", x$n)
+      cat("      n =", x$n)
       
       if (length(x$na.action)){
         cat("  (", length(x$na.action), " observation deleted due to missing) \n")
@@ -919,11 +951,11 @@ else if(x$family == 1){
         cat("\n")
       }
       
-      if (!is.null(frail)) cat("      n events=", x$n.events, " n groups=", x$groups)
-      else cat("      n events=", x$n.events)
+      if (!is.null(frail)) cat("      n.events =", x$n.events, "\n", "     n.groups =", x$groups)
+      else cat("      n.events =", x$n.events)
       
       cat( "\n")
-      cat("      number of iterations: ", x$n.iter,"\n")
+      cat("      number of iterations:", x$n.iter,"\n")
       if ((x$typeof == 1) & (x$indic.nb.int == 1)){
         cat("      Exact number of time intervals used: 20","\n")
       }else{
@@ -1083,10 +1115,12 @@ else if(x$family == 2){
         seHIH <- sqrt(x$varHIH)
       }
       if (x$typeof == 0){
-        tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour eviter que R n'affiche pval = 0 lorsque celle-ci est tres petite
+        # tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour eviter que R n'affiche pval = 0 lorsque celle-ci est tres petite
+        tmp <- cbind(coef, seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
         if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
       }else{
-        tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        # tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+        tmp <- cbind(coef, seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
         if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
       }
       
@@ -1131,7 +1165,7 @@ else if(x$family == 2){
           dimnames(tmpwald) <- list(x$names.factor,c("chisq", "df", "global p"))
           
         }
-        dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
+        dimnames(tmp) <- list(names(coef), c("coef", #"exp(coef)",
                                              "SE coef (H)", "SE coef (HIH)", "z", "p"))
         
       }else{
@@ -1139,7 +1173,7 @@ else if(x$family == 2){
           dimnames(tmpwald) <- list(x$names.factor,c("chisq", "df", "global p"))
           
         }
-        dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
+        dimnames(tmp) <- list(names(coef), c("coef", #"exp(coef)",
                                              "SE coef (H)", "z", "p"))
         
       }
@@ -1148,7 +1182,8 @@ else if(x$family == 2){
       if (nvar == 0){
         cat("No constant coefficients, only time-varying effects of the covariates \n")
       }else{
-        prmatrix(tmp[, -2])
+        prmatrix(tmp)
+        # prmatrix(tmp[, -2])
         if(x$global_chisq.test==1){
           cat("\n")
           prmatrix(tmpwald)
@@ -1194,8 +1229,11 @@ else if(x$family == 2){
       # 			}
       
       if (x$logNormal == 0){
-        cat("    Frailty parameter, Theta:", frail, "(SE (H):",
-            seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
+        cat("Theta (variance of frailties): ", frail, " (SE(H): ", seH, ")", 
+            ", p = ", ifelse(signif(1-pnorm(frail/seH), digits-1) == 0, " < 1e-16", 
+                             signif(1-pnorm(frail/seH), digits-1)),
+            sep="")
+        cat("\n")
       }else{
         cat("    Frailty parameter, Sigma Square:", frail, "(SE (H):",
             seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
@@ -1214,23 +1252,23 @@ else if(x$family == 2){
       cat("      LCV = the approximate likelihood cross-validation criterion\n")
       cat("            in the semi parametrical case     =",x$LCV,"\n")
     }else{
-      cat(paste("      marginal log-likelihood =", round(x$logLik,2)))
+      cat(paste("Marginal log-likelihood =", round(x$logLik,2)))
       cat("\n")
       cat("      Convergence criteria: \n")
       cat("      parameters =",signif(x$EPS[1],3),"likelihood =",signif(x$EPS[2],3),"gradient =",signif(x$EPS[3],3),"\n")
       cat("\n")
-      cat("      AIC = Aikaike information Criterion     =",x$AIC,"\n")
-      cat("\n")
-      cat("The expression of the Aikaike Criterion is:","\n")
+      cat("AIC (Aikaike Information Criterion) =",x$AIC,"\n")
+      #cat("\n")
+      cat("The expression of the Aikaike Information Criterion is:","\n")
       cat("        'AIC = (1/n)[np - l(.)]'","\n")
       if (x$typeof == 2){
         cat("\n")
         if (x$n.strat == 1){
-          cat("      Scale for the log-normal survival function is :",round(x$scale.weib[1],2),"\n")
-          cat("      Shape for the log-normal survival function is :",round(x$shape.weib[1],2),"\n")
+          cat("      Scale for the log-normal survival function:",round(x$scale.param[1],2),"\n")
+          cat("      Shape for the log-normal survival function:",round(x$shape.param[1],2),"\n")
         }else{
-          cat("      Scale for the log-normal survival function is :",round(x$scale.weib[1],2),round(x$scale.weib[2],2),"\n")
-          cat("      Shape for the log-normal survival function is :",round(x$shape.weib[1],2),round(x$shape.weib[2],2),"\n")
+          cat("      Scale for the log-normal survival function:",round(x$scale.param[1],2),round(x$scale.param[2],2),"\n")
+          cat("      Shape for the log-normal survival function:",round(x$shape.param[1],2),round(x$shape.param[2],2),"\n")
         }
         cat("\n")
         cat("The expression of the log-normal survival function is:","\n")
@@ -1242,7 +1280,7 @@ else if(x$family == 2){
     }
     #AD:
     cat("\n")
-    cat("      n=", x$n)
+    cat("      n =", x$n)
     
     if (length(x$na.action)){
       cat("  (", length(x$na.action), " observation deleted due to missing) \n")
@@ -1250,11 +1288,11 @@ else if(x$family == 2){
       cat("\n")
     }
     
-    if (!is.null(frail)) cat("      n events=", x$n.events, " n groups=", x$groups)
-    else cat("      n events=", x$n.events)
+    if (!is.null(frail)) cat("      n.events =", x$n.events, "\n", "     n.groups =", x$groups)
+    else cat("      n.events =", x$n.events)
     
     cat( "\n")
-    cat("      number of iterations: ", x$n.iter,"\n")
+    cat("      number of iterations:", x$n.iter,"\n")
     if ((x$typeof == 1) & (x$indic.nb.int == 1)){
       cat("      Exact number of time intervals used: 20","\n")
     }else{
@@ -1448,10 +1486,12 @@ else if(x$family %in% c(3,4)){
           seHIH <- sqrt(x$varHIH)
         }
         if (x$typeof == 0){
-          tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour eviter que R n'affiche pval = 0 lorsque celle-ci est tres petite
+          # tmp <- cbind(coef, exp(coef), seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1))) # ifelse pour eviter que R n'affiche pval = 0 lorsque celle-ci est tres petite
+          tmp <- cbind(coef, seH, seHIH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
           if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
         }else{
-          tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+          # tmp <- cbind(coef, exp(coef), seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
+          tmp <- cbind(coef, seH, coef/seH, ifelse(signif(1 - pchisq((coef/seH)^2, 1), digits - 1) == 0, "< 1e-16", signif(1 - pchisq((coef/seH)^2, 1), digits - 1)))
           if(x$global_chisq.test==1) tmpwald <- cbind(x$global_chisq,x$dof_chisq,ifelse(x$p.global_chisq == 0, "< 1e-16", x$p.global_chisq))
         }
         
@@ -1475,20 +1515,34 @@ else if(x$family %in% c(3,4)){
           }
           if (x$nvartimedep != 0) cat("  and some time-dependant covariates","\n")
           if (x$n.strat>1) cat("  (Stratification structure used) :",x$n.strat,"strata \n")
+          if (x$typeof == 0){
+            cat("\n")
+            cat("  Semi-Parametrical approach ", "\n")
+            cat("  Expression of the hazard function:     'lambda(t) = lambda_0(t) + beta(t)'X'", "\n")
+            cat("  (Baseline hazard function lambda_0(.) estimated using M-splines)")
+            cat("\n")
+          }
         }else{
           if (x$typeof == 0){
-            cat("  Cox proportional hazards model parameter estimates ","\n")
+            cat("  Generalized Survival Model ","\n")
             cat("  using a Penalized Likelihood on the hazard function","\n")
           }else{
             cat("  Generalized Survival Model ","\n")
             cat("  Parametrical approach with link   g() = -log() ", "\n")
-            cat("  g(S(t)) = eta =(t/scale)^shape + t*beta'X ", "\n")
+            cat("  g(S(t)) = eta = (t/scale)^shape + t*beta'X ", "\n")
             cat("  (Additive Hazards Model with a Weibull distribution) ", "\n\n")
             #cat("  Cox proportional hazards model parameter estimates ","\n")
             #cat("  using a Parametrical approach for the hazard function","\n")
           }
           if (x$nvartimedep != 0) cat("  and some time-dependant covariates","\n")
           if (x$n.strat>1) cat("  (Stratification structure used) :",x$n.strat,"strata \n")
+          if (x$typeof == 0){
+            cat("\n")
+            cat("  Semi-Parametrical approach ", "\n")
+            cat("  Expression of the hazard function:     'lambda(t) = lambda_0(t) + beta(t)'X'", "\n")
+            cat("  (Baseline hazard function lambda_0(.) estimated using M-splines)")
+            cat("\n")
+          }
         }
         
         if (x$typeof == 0){
@@ -1496,7 +1550,7 @@ else if(x$family %in% c(3,4)){
             dimnames(tmpwald) <- list(x$names.factor,c("chisq", "df", "global p"))
             
           }
-          dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
+          dimnames(tmp) <- list(names(coef), c("coef", #"exp(coef)",
                                                "SE coef (H)", "SE coef (HIH)", "z", "p"))
           
         }else{
@@ -1504,7 +1558,7 @@ else if(x$family %in% c(3,4)){
             dimnames(tmpwald) <- list(x$names.factor,c("chisq", "df", "global p"))
             
           }
-          dimnames(tmp) <- list(names(coef), c("coef", "exp(coef)",
+          dimnames(tmp) <- list(names(coef), c("coef", #"exp(coef)",
                                                "SE coef (H)", "z", "p"))
           
         }
@@ -1513,7 +1567,8 @@ else if(x$family %in% c(3,4)){
         if (nvar == 0){
           cat("No constant coefficients, only time-varying effects of the covariates \n")
         }else{
-          prmatrix(tmp[, -2])
+          prmatrix(tmp)
+          # prmatrix(tmp[, -2])
           if(x$global_chisq.test==1){
             cat("\n")
             prmatrix(tmpwald)
@@ -1559,8 +1614,11 @@ else if(x$family %in% c(3,4)){
         # 			}
         
         if (x$logNormal == 0){
-          cat("    Frailty parameter, Theta:", frail, "(SE (H):",
-              seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
+          cat("Theta (variance of frailties): ", frail, " (SE(H): ", seH, ")", 
+              ", p = ", ifelse(signif(1-pnorm(frail/seH), digits-1) == 0, " < 1e-16", 
+                               signif(1-pnorm(frail/seH), digits-1)),
+              sep="")
+          cat("\n")
         }else{
           cat("    Frailty parameter, Sigma Square:", frail, "(SE (H):",
               seH, ")", "p =", ifelse(signif(1 - pnorm(frail/seH), digits - 1) == 0, "< 1e-16", signif(1 - pnorm(frail/seH), digits - 1)), "\n")
@@ -1571,31 +1629,36 @@ else if(x$family %in% c(3,4)){
       cat(" \n")
       #AD:	
       if (x$typeof == 0){
-        cat(paste("      penalized marginal log-likelihood =", round(x$logLikPenal,2)))
+        cat(paste("Penalized marginal log-likelihood =", round(x$logLikPenal,2)))
         cat("\n")
         cat("      Convergence criteria: \n")
-        cat("      parameters =",signif(x$EPS[1],3),"likelihood =",signif(x$EPS[2],3),"gradient =",signif(x$EPS[3],3),"\n")
+        cat("      parameters =",signif(x$EPS[1],3),
+            "; likelihood =",signif(x$EPS[2],3),
+            "; gradient =",signif(x$EPS[3],3),"\n")
         cat("\n")
-        cat("      LCV = the approximate likelihood cross-validation criterion\n")
-        cat("            in the semi parametrical case     =",x$LCV,"\n")
+        cat("Likelihood Cross-Validation (LCV) criterion in the semi parametrical case:\n")
+        # cat("")
+        cat("      approximate LCV =", x$LCV,"\n")
       }else{
-        cat(paste("      marginal log-likelihood =", round(x$logLik,2)))
+        cat(paste("Marginal log-likelihood =", round(x$logLik,2)))
         cat("\n")
         cat("      Convergence criteria: \n")
-        cat("      parameters =",signif(x$EPS[1],3),"likelihood =",signif(x$EPS[2],3),"gradient =",signif(x$EPS[3],3),"\n")
+        cat("      parameters =",signif(x$EPS[1],3),
+            "; likelihood =",signif(x$EPS[2],3),
+            "; gradient =",signif(x$EPS[3],3),"\n")
         cat("\n")
-        cat("      AIC = Aikaike information Criterion     =",x$AIC,"\n")
-        cat("\n")
-        cat("The expression of the Aikaike Criterion is:","\n")
+        cat("AIC (Aikaike Information Criterion) =",x$AIC,"\n")
+        #cat("\n")
+        cat("The expression of the Aikaike Information Criterion is:","\n")
         cat("        'AIC = (1/n)[np - l(.)]'","\n")
         if (x$typeof == 2){
           cat("\n")
           if (x$n.strat == 1){
-            cat("      Scale for the Weibull survival function is :",round(x$scale.weib[1],2),"\n")
-            cat("      Shape for the Weibull survival function is :",round(x$shape.weib[1],2),"\n")
+            cat("      Scale for the Weibull survival function:",round(x$scale.param[1],2),"\n")
+            cat("      Shape for the Weibull survival function:",round(x$shape.param[1],2),"\n")
           }else{
-            cat("      Scale for the Weibull survival function is :",round(x$scale.weib[1],2),round(x$scale.weib[2],2),"\n")
-            cat("      Shape for the Weibull survival function is :",round(x$shape.weib[1],2),round(x$shape.weib[2],2),"\n")
+            cat("      Scale for the Weibull survival function:",round(x$scale.param[1],2),round(x$scale.param[2],2),"\n")
+            cat("      Shape for the Weibull survival function:",round(x$shape.param[1],2),round(x$shape.param[2],2),"\n")
           }
           cat("\n")
           cat("The expression of the Weibull survival function is:","\n")
@@ -1607,7 +1670,7 @@ else if(x$family %in% c(3,4)){
       }
       #AD:
       cat("\n")
-      cat("      n=", x$n)
+      cat("      n =", x$n)
       
       if (length(x$na.action)){
         cat("  (", length(x$na.action), " observation deleted due to missing) \n")
@@ -1615,11 +1678,11 @@ else if(x$family %in% c(3,4)){
         cat("\n")
       }
       
-      if (!is.null(frail)) cat("      n events=", x$n.events, " n groups=", x$groups)
-      else cat("      n events=", x$n.events)
+      if (!is.null(frail)) cat("      n.events =", x$n.events, "\n", "     n.groups =", x$groups)
+      else cat("      n.events =", x$n.events)
       
       cat( "\n")
-      cat("      number of iterations: ", x$n.iter,"\n")
+      cat("      number of iterations:", x$n.iter,"\n")
       if ((x$typeof == 1) & (x$indic.nb.int == 1)){
         cat("      Exact number of time intervals used: 20","\n")
       }else{
@@ -1627,10 +1690,10 @@ else if(x$family %in% c(3,4)){
       }	
       if (x$typeof == 0){ 
         cat("\n")
-        cat("      Exact number of knots used: ", x$n.knots, "\n")
+        cat("      Exact number of knots used:", x$n.knots, "\n")
         
         if (!x$cross.Val){
-          cat("      Value of the smoothing parameter: ", x$kappa, sep=" ")
+          cat("      Value of the smoothing parameter:", x$kappa, sep=" ")
         }
         
         if (x$cross.Val){
@@ -1642,7 +1705,7 @@ else if(x$family %in% c(3,4)){
             cat("      an approximated Cross validation: ", x$kappa, sep=" ")
           }
         }
-        cat(", DoF: ", formatC(-x$DoF, format="f",digits=2))
+        cat(", DoF:", formatC(-x$DoF, format="f",digits=2))
       }
     }else{
       if (!is.null(frail)){

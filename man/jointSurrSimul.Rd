@@ -6,12 +6,12 @@
 \usage{
 jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
   alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7,
-  sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25,
+  sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25,
   frailt.base = 1, lambda.S = 1.8, nu.S = 0.0045, lambda.T = 3,
   nu.T = 0.0025, ver = 1, typeOf = 1, equi.subj.trial = 1,
   equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
   full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
-  seed = 0, nb.reject.data = 0)
+  seed = 0, nb.reject.data = 0, pfs = 0)
 }
 \arguments{
 \item{n.obs}{Number of considered  subjects. The default is \code{600}.}
@@ -28,16 +28,25 @@ jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
 
 \item{zeta}{Fixed value for \eqn{\zeta}. The default is \code{1}.}
 
-\item{sigma.s}{Fixed value for \eqn{\sigma^2_S}. The default is \code{0.7}.}
+\item{sigma.s}{Fixed value for \if{latex}{\eqn{\sigma^2_{v_S}}}
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}. 
+The default is \code{0.7}.}
 
-\item{sigma.t}{Fixed value for \eqn{\sigma^2_T}. The default is \code{0.7}.}
+\item{sigma.t}{Fixed value for \if{latex}{\eqn{\sigma^2_{v_T}}}
+\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}. 
+The default is \code{0.7}.}
 
-\item{rsqrt}{Desired level of correlation between \eqn{v_{S_i}} and \eqn{v_{T_i}}. \eqn{R^2_{trial}=rsqrt^2}. 
+\item{cor}{Desired level of correlation between \if{latex}{\eqn{v_{S_i}} and 
+\eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and v\out{<sub>T<sub>i</sub></sub>}}. 
+ \if{latex}{\eqn{R^2_{trial} = cor^2}}
+   \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>} = cor \out{<sup>2</sup>}}. 
 The default is \code{0.8}.}
 
-\item{betas}{Fixed value for \eqn{\beta_S}. The default is \code{-1.25}.}
+\item{betas}{Fixed value for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}.
+The default is \code{-1.25}.}
 
-\item{betat}{Fixed value for \eqn{\beta_T}. The default is \code{-1.25}.}
+\item{betat}{Fixed value for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}. 
+The default is \code{-1.25}.}
 
 \item{frailt.base}{considered the heterogeneity on the baseline risk \code{(1)} or not \code{(0)}. 
 The default is \code{1}.}
@@ -58,8 +67,10 @@ The default is 0.0025.}
 
 \item{typeOf}{Type of joint model used for data generation: 0 = classical joint model 
 with a shared individual frailty effect (Rondeau, 2007), 1 = joint surrogate model with shared frailty 
-effects \eqn{u_i} and \eqn{\omega_{ij}}, and two correlated random effects treatment-by-trial interaction 
-\eqn{(v_{S_i},v_{T_i})} as described in Sofeu et al. (2018).}
+effects \if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}} and \if{latex}{\eqn{\omega_{ij}}} 
+\if{html}{\eqn{\omega}\out{<sub>ij</sub>}}, and two correlated random effects treatment-by-trial interaction 
+(\if{latex}{\eqn{v_{S_i}}, \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>}, v\out{<sub>T<sub>i</sub></sub>}}) 
+as described in Sofeu et al. (2018).}
 
 \item{equi.subj.trial}{A binary variable that indicates if the same proportion of subjects should be included per trial (1) 
 or not (0). If 0, the proportions of subject per trial are required in parameter \code{prop.subj.trial}.}
@@ -71,16 +82,16 @@ or not (0). If 0, the proportions of subject per trial are required in parameter
 
 \item{prop.subj.trt}{The proportions of randomized subject per trial. Requires if \code{equi.subj.trt=0}.}
 
-\item{full.data}{Specified if you wan the function to return the full dataset (1), including the random effects, 
+\item{full.data}{Specified if you want the function to return the full dataset (1), including the random effects, 
 or the restictive dataset (0) with \code{7} columns required for the function \code{\link{jointSurroPenal}}.}
 
-\item{random.generator}{Random number generator to use by the Fortran compiler, 
+\item{random.generator}{Random number generator used by the Fortran compiler, 
 \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
 subroutine \code{uniran()}. The default is \code{1}.}
 
 \item{random}{A binary that says if we reset the random number generation with a different environment 
 at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-as seed. In the last case, it is not possible to reproduce the generated datasets". 
+as seed. In the last case, it is not possible to reproduce the generated datasets. 
 The default is \code{0}. Required if \code{random.generator} is set to 1.}
 
 \item{random.nb.sim}{required if \code{random.generator} is set to 1, and if \code{random} is set to 1.}
@@ -88,14 +99,17 @@ The default is \code{0}. Required if \code{random.generator} is set to 1.}
 \item{seed}{The seed to use for data (or samples) generation. Required if the argument \code{random.generator} is set to 1. 
 Must be a positive value. If negative, the program do not account for seed. The default is \code{0}.}
 
-\item{nb.reject.data}{Number of generation to reject before the considered dataset. this parameter is required
+\item{nb.reject.data}{Number of generation to reject before the considered dataset. This parameter is required
 when data generation is for simulation. With a fixed parameter and \code{random.generator} set to 1,
 all ganerated data are the same. By varying this parameter, different datasets are obtained during data genarations. The default value is 0, 
-in case of one dataset.}
+in the event of one dataset.}
+
+\item{pfs}{Is used to specify if the time to progression should be censored by the death time (0) or not (1). 
+The default is 0. In the event with pfs set to 1, death is included in the surrogate endpoint as in the definition of PFS or DFS.}
 }
 \value{
 This function return if the parameter \code{full.data} is set to 0, a \code{\link{data.frame}} with columns :
-   \item{patienID}{A numeric, that represents the patient's identifier, must be unique;}
+   \item{patientID}{A numeric, that represents the patient's identifier, must be unique;}
    \item{trialID}{A numeric, that represents the trial in which each patient was randomized;}
    \item{trt}{The treatment indicator for each patient, with 1 = treated, 0 = untreated;}
    \item{timeS}{The follow up time associated with the surrogate endpoint;}
@@ -105,8 +119,11 @@ This function return if the parameter \code{full.data} is set to 0, a \code{\lin
    \item{statusT}{The event indicator associated with the true endpoint. Normally 
    0 = no event, 1 = event;}
 If the argument \code{full.data} is set to 1, additionnal colums corresponding to random effects 
-\eqn{\omega_{ij}}, \eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned. Note that
-\eqn{u_i}, \eqn{v_{S_i}} and \eqn{v_{T_i}} are returned if \code{typeOf} is set to \code{1}
+\if{latex}{\eqn{\omega_{ij}}} \if{html}{\eqn{\omega}\out{<sub>ij</sub>}}, 
+\if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}}, \if{latex}{\eqn{v_{S_i}} and \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and
+v\out{<sub>T<sub>i</sub></sub>}} are returned. Note that
+\if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}}, \if{latex}{\eqn{v_{S_i}} and \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>} and
+v\out{<sub>T<sub>i</sub></sub>}} are returned if \code{typeOf} is set to \code{1}
 }
 \description{
 Date are generated from the one-step joint surrogate model (see \code{\link{jointSurroPenal}} for more details)
@@ -119,11 +136,13 @@ the desired individual level correlation (Kendall's \eqn{\tau}) depend on the va
 }
 \examples{
 
+\dontrun{
 data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
             alpha = 1.5, theta = 3.5, gamma = 2.5, sigma.s = 0.7, 
-            zeta = 1, sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, 
+            zeta = 1, sigma.t = 0.7, cor = 0.8, betas = -1.25, 
             betat = -1.25, full.data = 0, random.generator = 1, 
-            seed = 0, nb.reject.data = 0)
+            seed = 0, nb.reject.data = 0, pfs = 0)
+}
 
 }
 \references{
@@ -131,9 +150,9 @@ Rondeau V., Mathoulin-Pelissier S., Jacqmin-Gadda H., Brouste V. and Soubeyran P
 Joint frailty models for recurring events and death using maximum penalized likelihood 
 estimation: application on cancer events. Biostatistics 8(4), 708-721.
 
-Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
-endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-\code{Submitted}
+Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
+endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
+Statistics in Medicine 38, 2928-2942.
 }
 \seealso{
 \code{\link{jointSurrSimul}}

@@ -1,5 +1,5 @@
 
-#' Fit the one-step Joint surrogate model for the evaluation of a canditate surrogate endpoint
+#' Fit the one-step Joint surrogate model for evaluating a canditate surrogate endpoint
 #'
 #'@description{
 #' \if{html}{\bold{Joint Frailty Surrogate model definition} 
@@ -10,7 +10,7 @@
 #' including in the same joint frailty model the individual-level and the trial-level random effects.
 #'  
 #' For the j\out{<sup>th</sup>} subject (j=1,...,n\out{<sub>i</sub>}) of the i\out{<sup>th</sup>} 
-#' trial i (i=1,...,G), the joint surrogate model is defined as follows:
+#' trial (i=1,...,G), the joint surrogate model is defined as follows:
 #' 
 #' {\figure{surromodel1.png}{options: width="100\%"}}
 #' 
@@ -179,8 +179,11 @@
 #' (Marquardt, 1963) which is a combination between a Newton-Raphson algorithm
 #' and a steepest descent algorithm. The iterations are stopped when the
 #' difference between two consecutive log-likelihoods was small
-#' \eqn{(<10^{-3})}, the estimated coefficients were stable (consecutive
-#' values \eqn{(<10^{-3})}, and the gradient small enough \eqn{(<10^{-3})}, by default.
+#' (<
+#' \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}), the estimated 
+#' coefficients were stable (consecutive
+#' values (< \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}})), and the gradient 
+#' small enough (< \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}}), by default.
 #' Cubic M-splines of order 4 are used for the hazard function, and I-splines (integrated M-splines) are
 #' used for the cumulative hazard function.
 #' 
@@ -203,8 +206,9 @@
 #' by the option \code{true.init.val}. When numerical or convergence problems are encountered, 
 #' with \code{kappa.use} set to \code{4}, the model is fitted again using a combination of the following strategies: 
 #' vary the number of quadrature point (\code{nb.gh} to \code{nb.gh2} or \code{nb.gh2} to \code{nb.gh})
-#' in case of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
-#' divided or multiplied the smoothing parameters (\code{k_1}, \code{k_2}) by 10 or 100 according to 
+#' in the event of the use of the Gaussian Hermite quadrature integration (see \code{int.method}); 
+#' divided or multiplied the smoothing parameters (\if{latex}{\code{k_1}} \if{html}{k\out{<sub>1</sub>}}, 
+#' \if{latex}{\code{k_2}} \if{html}{k\out{<sub>2</sub>}}) by 10 or 100 according to 
 #' their preceding values, or used parameter vectors obtained during the last iteration (with a 
 #' modification of the number of quadrature points and smoothing parameters). Using this strategy, 
 #' we usually obtained during simulation the rejection rate less than 3\%. A sensitivity analysis 
@@ -224,32 +228,33 @@
 #'    sigma.st.init = 0.48, gamma.init = 0.5, alpha.init = 1, 
 #'    zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
 #'    random.generator = 1, kappa.use = 4, random = 0, 
-#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, nb.decimal = 4, 
-#'    print.times = TRUE, print.iter=FALSE)
+#'    random.nb.sim = 0, seed = 0, init.kappa = NULL, ckappa = c(0,0), 
+#'    nb.decimal = 4, print.times = TRUE, print.iter=FALSE)
 #'
-#' @param data A \code{\link{data.frame}} containing at least \code{7} variables intitled: 
+#' @param data A \code{\link{data.frame}} containing at least seven variables entitled: 
 #'    \itemize{
-#'    \item{\code{patienID:} A numeric, that represents the patient's identifier, must be unique;}
+#'    \item{\code{patientID:} A numeric, that represents the patient's identifier and must be unique;}
 #'    \item{\code{trialID:} A numeric, that represents the trial in which each patient was randomized;}
-#'    \item{\code{timeS:} The follow up time associated with the surrogate endpoint;}
+#'    \item{\code{timeS:} The follow-up time associated with the surrogate endpoint;}
 #'    \item{\code{statusS:} The event indicator associated with the surrogate endpoint. Normally 
 #'    0 = no event, 1 = event;}
-#'    \item{\code{timeT:} The follow up time associated with the true endpoint;}
+#'    \item{\code{timeT:} The follow-up time associated with the true endpoint;}
 #'    \item{\code{statusT:} The event indicator associated with the true endpoint. Normally 
 #'    0 = no event, 1 = event;}
 #'    \item{\code{trt:} The treatment indicator for each patient, with 1 = treated, 0 = untreated.}
 #'    }
 #' @param maxit maximum number of iterations for the Marquardt algorithm.
-#' Default is \code{40}. 
+#' The default being \code{40}. 
 #' @param indicator.zeta A binary, indicates whether the power's parameter \eqn{\zeta} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\zeta} will be set to \code{1} during estimation. 
-#' The default is \code{1}. This parameter can be seted to \code{0} in case of convergence and 
+#' The default is \code{1}. This parameter can be seted to \code{0} in the event of convergence and 
 #' identification issues. 
-#' @param indicator.alpha A binary, indicates whether the power's parameter \eqn{\alpha} should 
+#' @param indicator.alpha A binary, indicating whether the power's parameter \eqn{\alpha} should 
 #' be estimated (1) or not (0). If \code{0}, \eqn{\alpha} will be set to \code{1} during estimation.
 #' The default is 1.
-#' @param frail.base Considered the heterogeneity between trial on the baseline risk (\code{1}), using 
-#' the shared cluster specific frailties (\eqn{u_i}), or not (\code{0}). The default is \code{1}.
+#' @param frail.base A binary, indicating whether the heterogeneity between trial on the baseline risk 
+#' is  considered (\code{1}) or not (\code{0}), using 
+#' the shared cluster specific frailties \if{html}{u\out{<sub>i</sub>}} \if{latex}{(\eqn{u_i})}. The default is \code{1}.
 #' @param n.knots integer giving the number of knots to use. Value required in
 #' the penalized likelihood estimation.  It corresponds to the (n.knots+2)
 #' splines functions for the approximation of the hazard or the survival
@@ -258,19 +263,19 @@
 #' is (k-2) and the number of splines is (k-2)+order.  Number of knots must be
 #' between 4 and 20. (See \code{\link{frailtyPenal}} for more details).
 #' @param LIMparam Convergence threshold of the Marquardt algorithm for the
-#' parameters, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
+#' parameters, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default (See \code{\link{frailtyPenal}} for more details).
 #' @param LIMlogl Convergence threshold of the Marquardt algorithm for the
-#' log-likelihood, \eqn{10^{-3}} by default (See \code{\link{frailtyPenal}} for more details).
-#' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, \eqn{10^{-3}} by default 
+#' log-likelihood, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default (See \code{\link{frailtyPenal}} for more details).
+#' @param LIMderiv Convergence threshold of the Marquardt algorithm for the gradient, \if{html}{10\out{<sup>-3</sup>}} \if{latex}{\eqn{10^{-3}}} by default 
 #' (See \code{\link{frailtyPenal}} for more details).
-#' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in case 
+#' @param nb.mc Number of samples considered in the Monte-Carlo integration. Required in the event 
 #' \code{int.method} is equals to \code{0}, \code{2} or \code{4}. A value between 100 and 300 most often gives 
 #' good results. However, beyond 300, the program takes a lot of time to estimate the parameters.
 #' The default is \code{300}.
 #' @param nb.gh Number of nodes for the Gaussian-Hermite quadrature. It can
 #' be chosen among 5, 7, 9, 12, 15, 20 and 32. The default is 32.
 #' @param nb.gh2 Number of nodes for the Gauss-Hermite quadrature used to re-estimate the model, 
-#' in case of non-convergence, defined as previously. The default is \code{20}.
+#' in the event of non-convergence, defined as previously. The default is \code{20}.
 #' @param adaptatif A binary, indicates whether the pseudo adaptive Gaussian-Hermite quadrature \code{(1)} or the classical
 #' Gaussian-Hermite quadrature \code{(0)} is used. The default is \code{0}.
 #' @param int.method A numeric, indicates the integration method: \code{0} for Monte carlo, 
@@ -280,7 +285,7 @@
 #' the individual-level random effects and Gaussian-Hermite quadrature to integrate over the trial-level
 #' random effects. The default is \code{2}.
 #' @param nb.iterPGH Number of iterations before the re-estimation of the posterior random effects,
-#' in case of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
+#' in the event of the two-steps pseudo-adaptive Gaussian-hermite quadrature. If set to \code{0} there is no 
 #' re-estimation". The default is \code{5}.
 #' @param nb.MC.kendall Number of generated points used with the Monte-Carlo to estimate
 #' integrals in the Kendall's \eqn{\tau} formulation. Beter to use at least 4000 points for
@@ -289,21 +294,29 @@
 #' interval of the Kendall's \eqn{\tau}. The default is \code{1000}. 
 #' @param true.init.val Numerical value. Indicates if the given initial values to parameters \code{(0)} should be considered. 
 #' If set to \code{2}, \eqn{\alpha} and \eqn{\gamma} are initialised using two separed shared frailty model 
-#' (see \code{\link{frailtyPenal}} for more details); \eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
-#' \eqn{\sigma_{v_{ST}}} are fixed by the user or the default values; \eqn{\zeta}, 
-#' \eqn{\theta}, \eqn{\beta_S} and \eqn{\beta_T} are initialized using a classical joint 
+#' (see \code{\link{frailtyPenal}} for more details); \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}, 
+#' \eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>} and
+#' \eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}} 
+#' \if{latex}{\eqn{\sigma^2_{v_S}}, \eqn{\sigma^2_{v_T}} and
+#' \eqn{\sigma_{v_{ST}}}} are fixed by the user or the default values; \eqn{\zeta}, 
+#' \eqn{\theta}, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+#' \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using a classical joint 
 #' frailty model, considering individual level random effects. If the joint frailty model is 
-#' faced to convergence issues, \eqn{\beta_S} and \eqn{\beta_T} are initialized using 
-#' two shared frailty models.  In all others scenarios, if the simplified model does not converge,
+#' faced to convergence issues, \if{html}{\eqn{\beta}\out{<sub>S</sub>} and \eqn{\beta}\out{<sub>T</sub>}} 
+#' \if{latex}{\eqn{\beta_S} and \eqn{\beta_T}} are initialized using 
+#' two shared frailty models.  In all other scenarios, if the simplified model does not converge,
 #' default given parameters values are used. Initial values for spline's associated parameters 
 #' are fixed to \code{0.5}. The default for this argument is \code{0}.
 #' @param theta.init Initial values for \eqn{\theta}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{1}.
-#' @param sigma.ss.init Initial values for \eqn{\sigma^2_{v_S}}, required if \code{true.init.val} 
+#' @param sigma.ss.init Initial values for \if{latex}{\eqn{\sigma^2_{v_S}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param sigma.tt.init Initial values for \eqn{\sigma^2_{v_T}}, required if \code{true.init.val} 
+#' @param sigma.tt.init Initial values for \if{latex}{\eqn{\sigma^2_{v_T}}} 
+#' \if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param sigma.st.init Initial values for \eqn{\sigma_{v_{ST}}}, required if \code{true.init.val} 
+#' @param sigma.st.init Initial values for\if{latex}{\eqn{\sigma_{v_{ST}}}} 
+#' \if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.48}.
 #' @param gamma.init Initial values for \eqn{\gamma}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
@@ -311,29 +324,29 @@
 #' is set to \code{0} or \code{2}. The default is \code{1}.
 #' @param zeta.init Initial values for \eqn{\zeta}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{1}.
-#' @param betas.init Initial values for \eqn{\beta_S}, required if \code{true.init.val} 
+#' @param betas.init Initial values for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param betat.init Initial values for \eqn{\beta_T}, required if \code{true.init.val} 
+#' @param betat.init Initial values for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}, required if \code{true.init.val} 
 #' is set to \code{0} or \code{2}. The default is \code{0.5}.
-#' @param scale A numeric that allows to rescale the survival times, to avoid numerical 
-#' problems in case of some convergence issues. If no change is need the argument is set to 1, the default value. 
-#' eg: 365 aims to convert days to years ".
-#' @param random.generator Random number generator to use by the Fortran compiler, 
+#' @param scale A numeric that allows to rescale (multiplication) the survival times, to avoid numerical 
+#' problems in the event of some convergence issues. If no change is needed the argument is set to 1, the default value. 
+#' eg: code{1/365} aims to convert days to years ".
+#' @param random.generator Random number generator used by the Fortran compiler, 
 #' \code{1} for the intrinsec subroutine \code{Random_number} and \code{2} for the 
-#' subroutine \code{uniran()}. The default is \code{1}. In case of convergence problem 
+#' subroutine \code{uniran()}. The default is \code{1}. in the event of convergence problem 
 #' with \code{int.method} set to \code{0}, \code{2} or \code{4}, that requires  
 #' integration by Monte-Carlo, user could change the random numbers generator.
-#' @param kappa.use A numeric, that indicates how to manage the smoothing parameters \code{k_1} 
-#' and \code{k_2} in case of convergence issues. If it is set to \code{1}, 
+#' @param kappa.use A numeric, that indicates how to manage the smoothing parameters \if{latex}{\code{k_1}} \if{html}{k\out{<sub>1</sub>}}  
+#' and \if{latex}{\code{k_2}} \if{html}{k\out{<sub>2</sub>}}  in the event of convergence issues. If it is set to \code{1}, 
 #' the given smoothing parameters or those obtained by cross-validation are used. 
 #' If it is set to \code{3}, the associated smoothing parameters are successively divided by 10, 
-#' in case of convergence issues until 5 times. If it is set to \code{4}, the management of the
-#' smoothing parameter is as in case \code{1}, follows by the successive division as described 
-#' in case \code{3} and preceded by the changing of the number of nodes for the Gauss-Hermite quadrature. 
+#' in the event of convergence issues until 5 times. If it is set to \code{4}, the management of the
+#' smoothing parameter is as in the event \code{1}, follows by the successive division as described 
+#' in the event \code{3} and preceded by the changing of the number of nodes for the Gauss-Hermite quadrature. 
 #' The default is \code{4}.
 #' @param random A binary that says if we reset the random number generation with a different environment 
 #' at each call \code{(1)} or not \code{(0)}. If it is set to \code{1}, we use the computer clock 
-#' as seed. In the last case, it is not possible to reproduce the generated datasets". 
+#' as seed. In the last case, it is not possible to reproduce the generated datasets. 
 #' The default is \code{0}. Required if \code{random.generator} is set to 1.
 #' @param random.nb.sim If \code{random} is set to \code{1}, a binary that indicates the number 
 #' of generations that will be made.
@@ -341,6 +354,8 @@
 #' The default is \code{0}.
 #' @param init.kappa smoothing parameter used to penalized the log-likelihood. By default (init.kappa = NULL) the values used 
 #' are obtain by cross-validation.
+#' @param ckappa Vector of two fixed values to add to the smoothing parameters. By default it is set to (0,0). this argument allows
+#' to well manage the smoothing parameters in the event of convergence issues.
 #' @param nb.decimal Number of decimal required for results presentation.
 #' @param print.times a logical parameter to print estimation time. Default
 #' is TRUE.
@@ -352,20 +367,31 @@
 #' 
 #'    \item{EPS}{A vector containing the obtained convergence thresholds with the Marquardt algorithm,  
 #'     for the parameters, the log-likelihood and for the gradient;}
-#'    \item{b}{A vector containing estimates for the splines parameter's, 
+#'    \item{b}{\if{latex}{A vector containing estimates for the splines parameter's; 
 #'    the power's parameter \eqn{\zeta} (if \code{indicator.zeta} is set to \code{1}),
-#'     the standard error of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}), elements of the
+#'     the standard error of the shared individual-level frailty \eqn{\omega_{ij}} (\eqn{\theta}),elements of the
 #'     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma = LL^T}, with \eqn{\Sigma} 
-#'     the covariances of the random effects \eqn{(v_{S_i},v_{T_i})}, the coefficient \eqn{\alpha} 
-#'     (if \code{indicator.alpha} is set to \code{1}), the satandard error of the random effect \eqn{u_i} and the 
-#'     regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
+#'     the covariance of the random effects \eqn{(v_{S_i},v_{T_i})}; the coefficient \eqn{\alpha} 
+#'     (if \code{indicator.alpha} is set to \code{1}); the satandard error of the random effect \eqn{u_i}; and 
+#'     the regression coefficients \eqn{\beta_S} and \eqn{\beta_T};}
+#'     \if{html}{A vector containing estimates for the splines parameter's; 
+#'     the power's parameter \eqn{\zeta} (if \code{indicator.zeta} is set to \code{1}),
+#'     the standard error of the shared individual-level frailty \eqn{\omega}\out{<sub>ij</sub>} (\eqn{\theta}),elements of the
+#'     lower triangular matrix (L) from the Cholesky decomposition such that \eqn{\Sigma} = LL\out{<sup>T</sup>}, with \eqn{\Sigma} 
+#'     the covariance of the random effects (\out{v<sub>S<sub>i</sub></sub>},\out{v<sub>T<sub>i</sub></sub>}); 
+#'     the coefficient \eqn{\alpha} (if \code{indicator.alpha} is set to \code{1}); the satandard error 
+#'     of the random effect \code{u}\out{<sub>i</sub>}and the regression coefficients \eqn{\beta}\out{<sub>S</sub>} 
+#'     and \eqn{\beta}\out{<sub>T</sub>};}
+#'     }
 #'     \item{varH}{The variance matrix of all parameters in \code{b} (before positivity constraint transformation 
 #'    for the variance of the measurement error, for which the delta method is used);}
 #'    \item{varHIH}{The robust estimation of the variance matrix of all parameters in \code{b};}
 #'    \item{loglikPenal}{The complete marginal penalized log-likelihood;}
 #'    \item{LCV}{the approximated likelihood cross-validation criterion in the semiparametric case (with \code{H}
 #'     minus the converged Hessian matrix, and \code{l(.)} the full log-likelihood).
-#'    \deqn{LCV = \frac{1}{n}(trace(H^{-1}_{pl}H) - l(.));}}
+#'    \if{html}{
+#'     {\figure{lcv.png}{options: width="50\%"}}}
+#'     \if{latex}{\deqn{LCV = \frac{1}{n}(trace(H^{-1}_{pl}H) - l(.))};}}
 #'    \item{xS}{vector of times for surrogate endpoint where both survival and hazard function are estimated. 
 #'    By default seq(0,max(time),length=99), where time is the vector of survival times;}
 #'    \item{lamS}{array (dim = 3) of hazard estimates and confidence bands, for surrogate endpoint;}
@@ -379,22 +405,26 @@
 #'    \item{gamma}{Estimate for \eqn{\gamma};}
 #'    \item{alpha}{Estimate for \eqn{\alpha};}
 #'    \item{zeta}{Estimate for \eqn{\zeta};}
-#'    \item{sigma.s}{Estimate for \eqn{\sigma_S};}
-#'    \item{sigma.t}{Estimate for \eqn{\sigma_T};}
-#'    \item{sigma.st}{Estimate for \eqn{\sigma_{ST}};}
-#'    \item{beta.s}{Estimate for \eqn{\beta_S};}
-#'    \item{beta.t}{Estimate for \eqn{\beta_T};}
+#'    \item{sigma.s}{Estimate for \if{latex}{\eqn{\sigma^2_{v_S}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>}};}
+#'    \item{sigma.t}{Estimate for \if{latex}{\eqn{\sigma^2_{v_T}}}\if{html}{\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}};}
+#'    \item{sigma.st}{Estimate for \if{latex}{\eqn{\sigma_{v_{ST}}}} \if{html}{\eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>}};}
+#'    \item{beta.s}{Estimate for \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}};}
+#'    \item{beta.t}{Estimate for \if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}};}
 #'    \item{ui}{A binary, that indicates if the heterogeneity between trial on the baseline risk 
-#'    has been Considered (\code{1}), using the shared cluster specific frailties (\eqn{u_i}), 
+#'    has been Considered (\code{1}), using the shared cluster specific frailties \if{latex}{(\eqn{u_i})}
+#'    \if{html}{(\code{u}\out{<sub>i</sub>})}, 
 #'    or not (\code{0});}
 #'    \item{ktau}{The Kendall's \eqn{\tau} with the correspondant 95  \eqn{\%} CI computed using the parametric bootstrap;}
-#'    \item{R2.boot}{The \eqn{R^2_{trial}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
+#'    \item{R2.boot}{The \if{latex}{\eqn{R^2_{trial}}}
+#'    \if{html}{\code{R}\out{<sup>2</sup><sub>trial</sub>}} with the correspondant 95 \eqn{\%} CI computed using the parametric bootstrap;}
 #'    \item{Coefficients}{The estimates with the corresponding standard errors and the 95 \eqn{\%} CI}
 #'    \item{kappa}{Positive smoothing parameters used for convergence. These values could be different to initial 
 #'    values if \code{kappa.use} is set to \code{3} or \code{4};}
 #'    \item{scale}{The value used to rescale the survival times}
 #'    \item{data}{The dataset used in the model}
-#'    \item{varcov.Sigma}{covariance matrix of (\eqn{\hat{\sigma_S}},\eqn{\hat{\sigma_{T}}}, \eqn{\hat{\sigma_{ST}}})
+#'    \item{varcov.Sigma}{covariance matrix of \if{latex}{(\eqn{\sigma^2_{v_S}},\eqn{\sigma^2_{v_T}},\eqn{\sigma_{v_{ST}}})}
+#'    \if{html}{the estimates of (\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>S</sub></sub>},\eqn{\sigma}\out{<sup>2</sup><sub>v<sub>T</sub></sub>}, 
+#'    \eqn{\sigma}\out{<sub>v<sub>ST</sub></sub>})}
 #'    obtained from the delta-method}
 #'    \item{parameter}{list of all arguments used in the model}
 #'
@@ -413,21 +443,22 @@
 #' Buyse, M., Molenberghs, G., Burzykowski, T., Renard, D., and Geys, H. (2000). The validation
 #' of surrogate endpoints in meta-analyses of randomized experiments. Biostatistics 1, 49-67
 #'
-#' Sofeu C.L., Emura T. and Rondeau V. (2018). One-step validation method for surrogate 
-#' endpoints in multiple randomized cancer clinical trials with failure-time endpoints. 
-#' \code{Under review}
+#' Sofeu, C. L., Emura, T., and Rondeau, V. (2019). One-step validation method for surrogate 
+#' endpoints using data from multiple randomized cancer clinical trials with failure-time endpoints. 
+#' Statistics in Medicine 38, 2928-2942.
 #' @export
 #' @importFrom doBy orderBy
 #'
 #' @examples
 #' 
+#' \dontrun{
 #' # Generation of data to use 
 #' data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
 #'          alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, 
-#'          sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25, 
+#'          sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25, 
 #'          full.data = 0, random.generator = 1, seed = 0, nb.reject.data = 0)
 #' 
-#' \dontrun{
+#' 
 #' #Surrogacy evaluation based on ganerated data with a combination of Monte Carlo 
 #' #and classical Gaussian Hermite integration.*
 #' # (Computation takes around 5 minutes)
@@ -459,6 +490,8 @@
 #' # results
 #' summary(joint.surro.ovar)
 #' 
+#' print(joint.surro.ovar)
+#' 
 #' # data from the adjuvant chemotherapy and resectable gastric cancer 
 #' # meta-analyses :
 #' # Joint surrogate model with initial values for the parameters and the 
@@ -472,7 +505,7 @@
 #'                 random.generator = 2, init.kappa = c(367700100,10025184521))
 #'
 #' # results
-#' summary(joint.surro.gast)
+#' print(joint.surro.gast)
 #' 
 #' }
 #' 
@@ -483,10 +516,12 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                       sigma.ss.init = 0.5, sigma.tt.init = 0.5, sigma.st.init = 0.48, gamma.init = 0.5, 
                       alpha.init = 1, zeta.init = 1, betas.init = 0.5, betat.init = 0.5, scale = 1, 
                       random.generator = 1, kappa.use = 4, random = 0, random.nb.sim = 0, seed = 0, 
-                      init.kappa = NULL, nb.decimal = 4, print.times = TRUE, print.iter = FALSE){
+                      init.kappa = NULL, ckappa = c(0,0), nb.decimal = 4, print.times = TRUE, 
+                      print.iter = FALSE){
   
  # The initial followup time. The default value is 0
   data$initTime <- 0 
+  pfs <- 1 # pfs : used to specified if the time to progression should be censored by the death time (0) or not (1). The default is 1. In this case, death is included in the surrogate endpoint. 
   
  # list of models parameters:
   parameter <- c(maxit = maxit,indicator.zeta = indicator.zeta, indicator.alpha = indicator.alpha,
@@ -524,12 +559,17 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   one.dataset <- 1
   real.data <- 1
   gener.only <- 0
+  theta.copule <- 0.5
   
   # end initialization
   
   # ==============parameters checking======================
   if(!(indicator.zeta %in% c(0,1)) | !(indicator.alpha %in% c(0,1)) | !(frail.base %in% c(0,1))){
     stop("model options indicator.zeta, indicator.alpha and frail.base must be set to 0 or 1")
+  }
+  
+  if(!(int.method %in% c(0, 1, 2, 4))){
+    stop("The integration method should be specifized by the code: 0, 1, 2 or 4")
   }
   
   if(is.null(data) & nb.dataset == 1){
@@ -568,14 +608,14 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   if(!is.null(data)){
     dataUse <- data
     # dataset's names control
-    varStatus=(c("initTime","timeS","statusS","timeT","statusT","trialID","patienID","trt") %in% names(data))
+    varStatus=(c("initTime","timeS","statusS","timeT","statusT","trialID","patientID","trt") %in% names(data))
     if(F %in% varStatus){
-      stop("Control the names of your variables. They must contain at leat 7 variables named: timeS, statusS, timeT, statusT, trialID, patienID and trt. see the help on this function")
+      stop("Control the names of your variables. They must contain at leat 7 variables named: timeS, statusS, timeT, statusT, trialID, patientID and trt. see the help on this function")
     }
     
     # traitement des donnees
-    if(max(table(data$patienID)) > 1){
-      stop("Control your dataset. You probably have a duplicate on individual (patienID variable)")
+    if(max(table(data$patientID)) > 1){
+      stop("Control your dataset. You probably have a duplicate on individual (patientID variable)")
     }
     
     if(!is.numeric(data$timeS)|!is.numeric(data$timeT)|!is.numeric(data$trialID)){
@@ -617,7 +657,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       trial <- c(trial, rep(i, a[i]))
     }
     dataUse$trialID <- trial
-    dataUse$patienID <- 1:(nrow(dataUse))
+    dataUse$patientID <- 1:(nrow(dataUse))
     
     nsujet1 <- nrow(dataUse)
     ng <- nrow(dataUse)
@@ -689,8 +729,8 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   kappa0 <- init.kappa
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
-    donnees <- dataUse[,c("trialID","patienID","trt","initTime","timeS","statusS")]
-    death   <- dataUse[,c("trialID","patienID","trt","initTime","timeT","statusT")]
+    donnees <- dataUse[,c("trialID","patientID","trt","initTime","timeS","statusS")]
+    death   <- dataUse[,c("trialID","patientID","trt","initTime","timeT","statusT")]
     # conversion en double des jeux de donneees. je le fais separemment pour distinguer 
     # les cas ou j'aurai plus de variables explicatives pour un des jeux de donnees que pour l'autre
     for(i in 1:ncol(donnees)){
@@ -700,7 +740,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       death[,i] <- as.double(death[,i])
     }
     if(is.null(kappa0)){
-      if(print.iter) cat("+++++++++++estimation of Kappas by ccross-validation +++++++++++")
+      if(print.iter) cat("+++++++++++estimation of Kappas by cross-validation +++++++++++")
       # kappas obtenus par validation croisee correspondant sur le jeu de donnees reelles
       #kappa0 <- frailtypack:::kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0)
       kappa0 <- kappa_val_croisee(don_S=donnees,don_T=death,njeu=1,n_obs=nsujet1,n_node=n.knots,adjust_S=1,adjust_T=1,kapp_0 = 0, print.times = F, scale = scale)
@@ -724,7 +764,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   logNormal <- 1 #lognormal: indique si on a une distribution lognormale des effets aleatoires (1) ou Gamma (0)
   
   # Parametres d'integration
-  nsim_node <- rep(NA,10)
+  nsim_node <- rep(NA,11)
   nsim_node[1] <- nb.mc # nombre de simulation pour l'integration par Monte carlo, vaut 0 si on ne veut pas faire du MC
   nsim_node[2] <- nb.gh # nombre de points de quadrature a utiliser (preference 5 points pour l'adaptatice et 32 poits pour la non adaptatice)
   nsim_node[3] <- adaptatif # doit-on faire de l'adaptative(1) ou de la non-adaptative(0)
@@ -732,11 +772,16 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   nsim_node[5] <- nparamfrail
   nsim_node[6] <- 1 # indique si lon fait de la vectorisation dans le calcul integral (1) ou non (0). rmq: la vectorisation permet de reduire le temps de calcul
   nsim_node[7] <- nb.frailty # indique le nombre d'effet aleatoire cas quadrature adaptative
-  type.joint <- 1 # type de modele a estimer: 0=joint classique avec un effet aleatoire partage au niveau individuel,1=joint surrogate avec 1 frailty partage indiv et 2 frailties correles essai,
+  type.joint <- 1 # type de modele a estimer: 0=joint classique avec un effet aleatoire partage au niveau individuel,1=joint surrogate avec 1 frailty partage indiv et 2 frailties correles essai
   # 2=joint surrogate sans effet aleatoire partage donc deux effets aleatoires a chaque fois"
   nsim_node[8] <- type.joint 
   nsim_node[9] <- nb.gh2 # nombre de point de quadrature a utiliser en cas de non convergence de prefenrence 7 ou 9 pour la pseudo adaptative et 32 pour la non adaptative
   nsim_node[10] <- nb.iterPGH # nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
+  nsim_node[11] <- 1 # model a utiliser pour la generation des donnee en cas de simulation: 1=joint surrogate avec 1 frailty partage indiv, 3=joint frailty copula model
+  nsim_node[12] <- 0 # not used: the copula function: 1 = clayton, 2=Gumbel
+ # on adapte le nombre de colonne des paramteres estimes au type de modele
+  ncol_param_estim <- 24
+  nsim_node[13] <- ncol_param_estim # nobre de colenne de la matrice des parametres estimes: depend du type de modele
   
   # Parametres associes au taux de kendall et au bootstrap
   meth.int.kendal <- 4
@@ -769,7 +814,8 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   #zeta.init  # valeur initiale de zeta_wij
   #betas.init  # valeur initiale de betas
   #betat.init  # valeur initiale de betat
-  
+  vbetast = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilise dans cette fonction
+  vbetastinit = matrix(c(1,1),nrow = 1, ncol = 2) # juste pour besoin de declaration, n'est pas utilise dans cette fonction
   if(nb.dataset == 1){
     # jeux de donnees (6 colonnes): donnees pour surrogate et death pour true
     if(true.init.val == 2){ # recherche des parametres initiaux
@@ -790,9 +836,9 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
       cox_true_sigmaT=try(frailtyPenal(Surv(timeT, statusT) ~ cluster(trialID) + trt
                                         , data = death, n.knots = nz, kappa=kappa0[2], print.times = F))
       
-      donnees_death <- merge(donnees,death[,c("patienID","timeT","statusT")])
+      donnees_death <- merge(donnees,death[,c("patientID","timeT","statusT")])
       # estimation of eta, theta, beta_S and beta_T using a joint frailty model (Rondeau et al. 2007)
-      joint_w=try(frailtyPenal(Surv(timeS,statusS) ~ cluster(patienID) + trt + terminal(statusT),
+      joint_w=try(frailtyPenal(Surv(timeS,statusS) ~ cluster(patientID) + trt + terminal(statusT),
                                   formula.terminalEvent = ~ trt, RandDist = "LogN", 
                                   data = dataUse, n.knots = nz, kappa = kappa0, print.times = F), silent = TRUE)
       
@@ -886,7 +932,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   # sigma.t <- # variance des effest aleatoires au niveau essai en interaction avec le traitement, associee au true
   paramSimul <- c(gamma1, gamma2, theta2, eta, gamma.ui, alpha.ui, theta2_t, rsqrt_theta, gamma.uit,
                   rsqrt_gamma.ui, betas, betat, lambdas, nus, lambdat,nut, mode_cens, temps_cens,
-                  cens0, rsqrt, sigma.s, sigma.t)
+                  cens0, rsqrt, sigma.s, sigma.t, theta.copule)
   
   # Autres parametres de simulation
   weib <- 1# 0= on simule les temps par une loi exponentielle, 1= on simule par une weibull
@@ -903,7 +949,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   nbre_sim <- random.nb.sim# dans le cas ou aleatoire=1, cette variable indique le nombre de generation qui vont etre faites
   graine <- seed # dans le cas ou l'on voudrait avoir la possibilite de reproduire les donnees generees alors on met la variable aleatoire=0 et on donne dans cette variable la graine a utiliser pour la generation
   autreParamSim <- c(weib,param.weibull,frailty_cor,affiche_stat,seed_,une_donnee,donne_reel,gener.only,
-                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine)
+                     kappa.use,decoup_simul,aleatoire,nbre_sim,graine,ckappa[1],ckappa[2],pfs)
   
   # autres dichiers de sortie
   # vecteur des pametres
@@ -992,7 +1038,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                   as.double(prop_i),
                   as.integer(n_sim1),
                   EPS2 = as.double(c(LIMparam, LIMlogl, LIMderiv)),
-                  as.double(kappa0),
+                  kappa0 = as.double(kappa0),
                   as.double(vect_kappa),
                   as.integer(logNormal),
                   nsim_node = as.integer(nsim_node),
@@ -1007,7 +1053,7 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                   as.integer(autreParamSim),
                   fichier_kendall = matrix (0,nrow = 1, ncol = 3), # debut section des parametres de sortie
                   fichier_R2 = matrix (0,nrow = 1, ncol = 3),
-                  param_estimes = matrix (0,nrow = 1, ncol = 24),
+                  param_estimes = matrix (0,nrow = 1, ncol = ncol_param_estim),
                   as.integer(sizeVect),
                   b = rep(0,np),
                   H_hessOut = matrix(0,np,np),
@@ -1031,6 +1077,8 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
                   dataHessian = matrix(0, nrow = np, ncol = np),
                   dataHessianIH = matrix(0, nrow = np*n_sim1, ncol = np),
                   datab = matrix(0, nrow = 1, ncol = np),
+                  as.double(vbetast),
+                  as.double(vbetastinit),
                   PACKAGE="frailtypack"
   )
   
@@ -1115,17 +1163,18 @@ jointSurroPenal = function(data, maxit = 40, indicator.zeta = 1, indicator.alpha
   result$ktau <- ans$ktau
   result$R2.boot <- ans$R2.boot
   result$Coefficients <- ans$Coefficients
-  result$kappa  <- kappa0
+  result$kappa  <- ans$kappa0
   result$scale <- scale
   result$data <- dataUse
   result$varcov.Sigma <- ans$Varcov
   result$parameter <- parameter
+  result$type.joint <- type.joint
   #result$dataTkendall <- ans$fichier_kendall
   #result$dataR2boot <- ans$fichier_R2
   
   if(is.na(result$n.iter)) {
-    result <- NULL # model did not converged 
-    print("===Model did not converged!!! please try to modified initial values or others parameters===:")
+    result <- NULL # model did not converge 
+    print("===Model did not converge===")
   } 
   
   # =====================++++++++++++++++++++++++++++++++++++++++++++++++++++

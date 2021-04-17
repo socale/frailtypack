@@ -1,13 +1,14 @@
-    
-    
-    
-    !========================          FUNCPAJ_SPLINES         ====================
+!========================          FUNCPAJ_SPLINES         ====================
         double precision function funcpajlongisplines(b,np,id,thi,jd,thj,k0)
     
+        use donnees, only:MC1,MC2,MC3,MC4,MC5,MC6,MC7,MC8,MC9,MC10,MC11,MC12,MC13,&
+MC14,MC15,MC16,MC17,MC18,MC19,MC20,MC21,MC22,MC23,MC24,MC25
         use donnees_indiv
         use lois_normales
         use tailles
         use comon
+    use Autres_fonctions, only:init_random_seed, pos_proc_domaine, bgos, uniran! Monte-carlo random generation
+        use var_surrogate, only: a_deja_simul,nbre_sim,Chol,Vect_sim_MC,graine,aleatoire!,frailt_base,nb_procs
         !use ParametresPourParallelisation
             use residusM
             use optim
@@ -49,8 +50,19 @@
             double precision,dimension(:,:),allocatable :: mat_sigma,varcov_marg_inv
             double precision,dimension(:),allocatable :: matv
             double precision,dimension(nva3,nva3) :: element
-    
-    
+        double precision,dimension(:,:),allocatable :: mat_sigmaB, varcov_marg_invB ! add TwoPart
+        double precision,dimension(:),allocatable :: matvB ! add TwoPart
+        double precision,dimension(nvaB,nvaB) :: elementB ! add TwoPart
+            !double precision,dimension(3):: resultatInt ! add Monte-carlo
+            double precision::func8J,func9J,func10J,func11J, funcTP4J,funcG
+        external::func8J,func9J,func10J,func11J, funcTP4J,funcG ! add Monte-carlo
+        !integer::vcdiag ! add Monte-carlo
+        double precision,dimension(nb1)::mu_mc
+    double precision,dimension(nb1,nb1)::vcjm
+    double precision,dimension(nodes_number,nb1)::fraili
+    double precision::SX,xMC ! for random generation
+    double precision,dimension(25000)::MC ! for Monte-carlo pre-generated points
+    integer::m     
             npp = np
         eps_s = 1.d-7
     !    print*,'debut funcpa'
@@ -68,13 +80,14 @@
         bh(i)=b(i)
         end do
     
+        fraili=0.d0
         if (id.ne.0) bh(id)=bh(id)+thi
         if (jd.ne.0) bh(jd)=bh(jd)+thj
     
             b1 = bh
-    
+
         n = (np-nva-effet-indic_ALPHA-1-nb_re - netadc - netar)/(effet+1) !nst        !to znaczy ze dzielimy lliczbe wezlow na 2
-    
+ 
         the1 = 0.d0
             the2 = 0.d0
         if(typeJoint.ne.2) then
@@ -289,7 +302,7 @@
                 vet2 = 0.d0
                 do j=1,nva2
     
-                    vet2 =vet2 + bh(np-nva3-nva2+j)*dble(vedc(k,j))
+                    vet2 =vet2 + bh(np-nva3-nva2-nvaB+j)*dble(vedc(k,j))
     
                 end do
                 vet2 = dexp(vet2)
@@ -320,17 +333,73 @@
     
         if(nea.ge.1) then
             it = 0
+            if(TwoPart.eq.1) then
+            itB=0
+            end if
             it_rec = 1
             epsabs = 1.d-100
             epsrel = 1.d-100
             restar = 0
             nf2 = nf
             nmes_o=0
+            if(TwoPart.eq.1) then
+            nmes_oB=0
+            end if
             integrale4 = 0.d0
-                            sum_mat= 0.d0
-    
-            do ig=1,ng
-    
+            sum_mat= 0.d0
+            if(TwoPart.eq.1) then
+            sum_matB=0.d0
+            end if
+
+    if(nb1.eq.1)then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            else if(nb1.eq.2) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            !Chol(1,2)=bh(np-nva-nb_re+2)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            else if(nb1.eq.3) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            Chol(3,1)=bh(np-nva-nb_re+4)
+            Chol(3,2)=bh(np-nva-nb_re+5)
+            Chol(3,3)=bh(np-nva-nb_re+6)
+            else if(nb1.eq.4) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            Chol(3,1)=bh(np-nva-nb_re+4)
+            Chol(3,2)=bh(np-nva-nb_re+5)
+            Chol(3,3)=bh(np-nva-nb_re+6)
+            Chol(4,1)=bh(np-nva-nb_re+7)
+            Chol(4,2)=bh(np-nva-nb_re+8)
+            Chol(4,3)=bh(np-nva-nb_re+9)
+            Chol(4,4)=bh(np-nva-nb_re+10)
+            else if(nb1.eq.5) then
+            Chol=0.d0 
+            Chol(1,1)=bh(np-nva-nb_re+1)
+            Chol(2,1)=bh(np-nva-nb_re+2)
+            Chol(2,2)=bh(np-nva-nb_re+3)
+            Chol(3,1)=bh(np-nva-nb_re+4)
+            Chol(3,2)=bh(np-nva-nb_re+5)
+            Chol(3,3)=bh(np-nva-nb_re+6)
+            Chol(4,1)=bh(np-nva-nb_re+7)
+            Chol(4,2)=bh(np-nva-nb_re+8)
+            Chol(4,3)=bh(np-nva-nb_re+9)
+            Chol(4,4)=bh(np-nva-nb_re+10)
+            Chol(5,1)=bh(np-nva-nb_re+11)
+            Chol(5,2)=bh(np-nva-nb_re+12)
+            Chol(5,3)=bh(np-nva-nb_re+13)
+            Chol(5,4)=bh(np-nva-nb_re+14)
+            Chol(5,5)=bh(np-nva-nb_re+15)
+            end if  
+
+            do ig=1,ng    
                 ycurrent  = 0.d0
                 auxig=ig
                 choix = 4
@@ -339,19 +408,25 @@
                 nmescurr = nmesrec(ig)
                 nmescurr1 = nmesrec1(ig)
                 it_cur = it
-    
+                if(TwoPart.eq.1)then
+                it_curB = itB !add TwoPart
+
+                Bcurrent  = 0.d0 
+                nmescurB =nmesB(ig)
+                allocate(mat_sigmaB(nmescurB,nmescurB))
+                end if
                     allocate(mat_sigma(nmescur,nmescur))
-    
+
                 x2 = 0.d0
                 x2cur = 0.d0
                 z1cur = 0.d0
                 current_mean = 0.d0
                             mat_sigma = 0.d0
-    
+
                 if(nmescur.gt.0) then
                     do i= 1,nmescur
                         ycurrent(i) = yy(it+i)
-                                                    mat_sigma(i,i) = sigmae**2.d0
+                        mat_sigma(i,i) = sigmae!**2.d0 !sigma is the variance ?!
                         if(s_cag_id.eq.1)then
                             if(ycurrent(i).gt.s_cag) then
                                 nmes_o(ig) = nmes_o(ig)+1
@@ -360,11 +435,22 @@
                             nmes_o(ig) = nmescur
                         end if
                     end do
-    
+				else
+                    nmes_o(ig) = nmescur
+				end if
+    ! add TwoPart
+    if(TwoPart.eq.1) then
+        if(nmescurB.gt.0) then
+            do i= 1,nmescurB
+                Bcurrent(i) = bb(itB+i)
+                nmes_oB(ig) = nmescurB
+            end do
+        end if
+    end if
+
                 res1cur = 0.d0
                 res2cur = 0.d0
                 res3cur = 0.d0
-    
                 if(typeJoint.eq.3) then
                 do i= 0,nmescurr-1
     
@@ -373,14 +459,13 @@
                 res2cur(i+1) = dut1(nt1(it_rec+i))
                 end do
             end if
-    
     ! creation de Zi
     
                 Z1=0.d0
                 l=0
     
                 if(nmescur.gt.0) then
-                    do k=1,nb1
+                    do k=1,nby
                         l=l+1
                         do i=1,nmescur
                             Z1(i,l)=dble(ziy(it+i,k))
@@ -394,21 +479,55 @@
     
                 l = 0
                 X2 = 0.d0
-    
+            if(nmescur.gt.0) then
                 do k=1,nva3
                     l = l + 1
                     do j=1,nmescur
                         X2(j,l) = dble(vey(it+j,k))
                     end do
                 end do
-    
-            varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nb1), &
-                    MATMUL(Ut(1:nb1,1:nb1),Utt(1:nb1,1:nb1))),transpose(ziy((it+1):(it+nmescur),1:nb1)))+ &
+            end if
+       ! add TwoPart  
+    if(TwoPart.eq.1) then
+        Z1B=0.d0
+        l=0    
+        if(nmescurB.gt.0) then
+            do k=1,nbB
+                l=l+1
+                do i=1,nmescurB
+                    Z1B(i,l)=dble(ziB(itB+i,k)) ! random effects covariates
+                end do
+            end do
+        else
+            do i=1,nmescurB
+                Z1B(i,1)=0.d0
+            end do
+        end if
+        XB=0.d0
+        l=0    
+        do k=1,nvaB
+            l = l + 1
+            do j=1,nmescurB
+                XB(j,l) = dble(veB(itB+j,k)) ! fixed effects covariates
+            end do
+        end do
+    end if     
+
+if(nmescur.gt.0) then	
+            varcov_marg((it+1):(it+nmescur),1:nmescur) =Matmul( MATMUL(ziy((it+1):(it+nmescur),1:nby), &
+                    MATMUL(Ut(1:nby,1:nby),Utt(1:nby,1:nby))),transpose(ziy((it+1):(it+nmescur),1:nby)))+ &
                     mat_sigma
-    
+end if
+                !add TwoPart
+            if(TwoPart.eq.1)then
+                varcov_margB((itB+1):(itB+nmescurB),1:nmescurB) =Matmul( MATMUL(ziB((itB+1):(itB+nmescurB),1:nbB), &
+                MATMUL(Ut(nby+1:nb1,nby+1:nb1),Utt(nby+1:nb1,nby+1:nb1))),transpose(ziB((itB+1):(itB+nmescurB),1:nbB)))
+            end if
+			
+if(nmescur.gt.0) then
             allocate(matv(nmescur*(nmescur+1)/2),varcov_marg_inv(nmescur,nmescur))
             matv = 0.d0
-                            do j=1,nmescur
+        do j=1,nmescur
         do k=j,nmescur
         jj=j+k*(k-1)/2
         matv(jj)=varcov_marg(it+j,k)
@@ -417,9 +536,31 @@
         end do
         ier = 0
         eps = 1.d-10
+
     
-    
-    
+!     open(2,file='/users/dr/debug.txt')  
+!     write(2,*)'nmescur',nmescur
+!     write(2,*)'nmescurB',nmescurB
+!     write(2,*)'nvaB',nvaB
+!     write(2,*)'nva',nva
+!     write(2,*)'Z1B(:,1)',Z1B(:,1)
+!     write(2,*)'Z1B(1,:)',Z1B(1,:)
+!     write(2,*)'ziB(1,:)',ziB(1,:)
+!     write(2,*)'ziB(:,1)',ziB(:,1)
+!     write(2,*)'XB(:,1)',XB(:,1)
+!     write(2,*)'XB(:,2)',XB(:,2)
+!     write(2,*)'XB(1,:)',XB(1,:)
+!     write(2,*)'Z1(:,1)',Z1(:,1)
+!     write(2,*)'Z1(:,2)',Z1(:,2)
+!     write(2,*)'Z1(1,:)',Z1(1,:)
+!     write(2,*)'X2(:,1)',X2(:,1)
+!     write(2,*)'X2(:,2)',X2(:,2)
+!     write(2,*)'X2(1,:)',X2(1,:)
+!     write(2,*)'Bcurrent(:)',Bcurrent(:)
+!     write(2,*)'bb(:)',bb(:)
+!     write(2,*)'ycurrent',ycurrent(:)
+!        close(2)
+!   stop
             call dsinvj(matv,nmescur,eps,ier)
     
         varcov_marg_inv=0.d0
@@ -433,7 +574,7 @@
             end do
                 end do
     
-    
+    element=0.d0
             element =  Matmul(Matmul(Transpose(vey(it+1:it+nmescur,1:nva3)), &
                                                             varcov_marg_inv(1:nmescur,1:nmescur)), vey(it+1:it+nmescur,1:nva3))
     
@@ -445,23 +586,106 @@
     
     
                             deallocate(matv,varcov_marg_inv)
-    
+       
     
     
             mu = 0.d0
-            mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3+1):np))
+            if(TwoPart.eq.0) then
+                mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3+1):np))
+            else if(TwoPart.eq.1) then
+                mu(1:nmescur,1) = matmul(X2(1:nmescur,1:(nva3)),bh((np-nva3-nvaB+1):(np-nvaB)))
+            end if
             xea = 0.d0
-    
+else
+    mu = 0.d0
+	        do k=1,nb1
+        Z1 (:,k)=0.d0
+            end do 
+end if
+
+
+    if(TwoPart.eq.1) then
+        allocate(matvB(nmescurB*(nmescurB+1)/2),varcov_marg_invB(nmescurB,nmescurB))
+        do j=1,nmescurB
+            do k=j,nmescurB
+                jj=j+k*(k-1)/2
+                matvB(jj)=varcov_margB(itB+j,k)
+            end do
+        end do   
+        call dsinvj(matvB,nmescurB,eps,ier)
+        varcov_marg_invB=0.d0
+        do j=1,nmescurB
+            do k=1,nmescurB
+                if (k.ge.j) then
+                    varcov_marg_invB(j,k)=matvB(j+k*(k-1)/2)
+                else
+                    varcov_marg_invB(j,k)=matvB(k+j*(j-1)/2)
+                end if
+            end do
+        end do    
+
+
+        
+        elementB =  Matmul(Matmul(Transpose(veB((itB+1):(itB+nmescurB),1:nvaB)), &
+            varcov_marg_invB(1:nmescurB,1:nmescurB)), veB((itB+1):(itB+nmescurB),1:nvaB))
+            
+        do j=1,nvaB
+            do k=1,nvaB
+                sum_matB(j,k) = sum_matB(j,k) +  elementB(j,k)
+            end do
+        end do
+
+        
+        muB = 0.d0
+    if(fixed_Binary.eq.99) then
+    fixed_Binary=0.d0
+    end if
+        muB(1:nmescurB,1) = fixed_Binary+matmul(XB(1:nmescurB,1:(nvaB)),bh((np-nvaB+1):np)) !modif linBin
+        
+!     open(2,file='/users/dr/debug.txt')  
+! write(2,*)'muB',muB(:,1)
+! write(2,*)'nmescurB',nmescurB
+! write(2,*)'mu',mu(:,1)
+!write(2,*)'nmescur',nmescur
+! write(2,*)'np',np
+! write(2,*)'bh(:)',bh(:)
+! write(2,*)'nvaB',nvaB
+! write(2,*)'nva3',nva3
+! write(2,*)'XB(:,1)',XB(:,1)
+! write(2,*)'XB(:,2)',XB(:,2)
+! write(2,*)'XB(:,3)',XB(:,3)
+! write(2,*)'XB(1,:)',XB(1,:)
+!  write(2,*)'X2(:,1)',X2(:,1)
+! write(2,*)'X2(:,2)',X2(:,2)
+! write(2,*)'X2(:,3)',X2(:,3)
+! write(2,*)'X2(1,:)',X2(1,:)
+! 
+!         close(2)
+!    stop
+        
+        deallocate(matvB,varcov_marg_invB)
+    end if    
+
             ut2cur = ut2(nt1dc(ig))
-    
+                   
+
                     choix = 3
-            if(methodGH.le.1) then
+            if(method_GH.le.1) then
+            
+        if(nmesy(numpat).gt.0) then
+            allocate(mu1(nmesy(numpat),1))
+        else
+            allocate(mu1(1,1))
+        end if
+
                 if(typeJoint.eq.2.and.nb1.eq.1) then
                     call gauherJ21(int,choix,nodes_number)
                 else if(typeJoint.eq.2.and.nb1.eq.2) then
                     call gauherJ22(int,choix,nodes_number)
                 else if(typeJoint.eq.2.and.nb1.eq.3) then 
                     call gauherJ23(int, choix, nodes_number)
+                else if(typeJoint.eq.2.and.nb1.eq.4) then
+                    call gauherJ24(int, choix, nodes_number)
                 else if(typeJoint.eq.3.and.nb1.eq.1) then
                     call gauherJ31(int,choix,nodes_number)
                 else if(typeJoint.eq.3.and.nb1.eq.2) then
@@ -469,28 +693,146 @@
                 else if(typeJoint.eq.3.and.nb1.eq.3) then
                     call gauherJ33(int,choix,nodes_number)
                 end if
+    deallocate(mu1) 
                 integrale4(ig) =int !result(1) !
-            else
+        
+            else if(method_GH.eq.2)then
                 call  hrmsym(nea, nf2,genz(1),genz(2),vraistot_splines, epsabs, &
                     epsrel, restar, result, abserr2, neval, ifail, work)
                 integrale4(ig) =result(1)
+    else if(method_GH.eq.3) then ! Monte-carlo   
+        mu_mc=0.d0
+        vcjm=0.d0
+        nbre_sim=nodes_number
+        vcjm = Chol
+       
+        if(a_deja_simul.eq.0) then
+            if(graine.eq.0) then
+                aleatoire=1
+                graine=1234 !seed
+            else
+                aleatoire=0 ! 1=full random / 0=seed
             end if
+          l=1
+        allocate(Vect_sim_MC(nodes_number,nb1))
+            if(aleatoire.eq.0) then
+            MC(1:1000)=MC1
+            MC(1001:2000)=MC2
+            MC(2001:3000)=MC3
+            MC(3001:4000)=MC4
+            MC(4001:5000)=MC5
+            MC(5001:6000)=MC6
+            MC(6001:7000)=MC7
+            MC(7001:8000)=MC8
+            MC(8001:9000)=MC9
+            MC(9001:10000)=MC10
+            MC(10001:11000)=MC11
+            MC(11001:12000)=MC12
+            MC(12001:13000)=MC13
+            MC(13001:14000)=MC14
+            MC(14001:15000)=MC15
+            MC(15001:16000)=MC16
+            MC(16001:17000)=MC17
+            MC(17001:18000)=MC18
+            MC(18001:19000)=MC19
+            MC(19001:20000)=MC20
+            MC(20001:21000)=MC21
+            MC(21001:22000)=MC22
+            MC(22001:23000)=MC23
+            MC(23001:24000)=MC24
+            MC(24001:25000)=MC25            
+                do while(l.le.nbre_sim)
+                    SX=1.d0
+                    xMC=0.d0
+                    Vect_sim_MC(l,1)=MC((graine-1)+l) ! random gaussian number N(0,1)
+                if(nb1.gt.1) then
+                    do m=2,nb1
+                    SX=1.d0
+                         Vect_sim_MC(l,m)=MC((graine-1)+(m-1)*nbre_sim+l) ! random gaussian number N(0,1)
+                     end do
+                endif
+                    l=l+1
+                end do
+            a_deja_simul=1 ! pour dire qu'on ne simule plus
+                
+            else
+                call init_random_seed(graine,aleatoire,nbre_sim)! initialisation de l'environnement de generation pour le seed
+                do while(l.le.nbre_sim)
+                    SX=1.d0
+                    xMC=0.d0
+                    call bgos(SX,0,Vect_sim_MC(l,1),xMC,0.d0) ! random gaussian number N(0,1)
+                if(nb1.gt.1) then
+                    do m=2,nb1
+                         SX=1.d0
+                         call bgos(SX,0,Vect_sim_MC(l,m),xMC,0.d0) ! random gaussian number N(0,1)
+                     end do
+                endif
+                    l=l+1
+                end do    
+            a_deja_simul=1 ! pour dire qu'on ne simule plus
+        end if
+      
+        endif            
 
+        l=1
+    do while(l.le.nbre_sim) ! uniform random multiplied by variance
+!        if(nb1.eq.1)then
+!            fraili(l,1)=0.d0+MATMUL(vcjm,Vect_sim_MC(l,1)) 
+!        else
+            fraili(l,:)=0.d0+MATMUL(vcjm,Vect_sim_MC(l,1:nb1)) ! random numbers MVN(0,sigma)
+!        endif
+        l=l+1
+    end do
+
+        !calcul de l'integrale par monte carlo pour l'integrale multiple
+        
+     !           open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+     !    write(2,*)' Vect_sim_MC', Vect_sim_MC(:,1)
+     !        close(2)
+     !        stop
+    
+ call MC_JointModels(int, funcG, nb1,fraili)
+ 
+        if(int.eq.0.d0) then
+            integrale4(ig)=0.1d-300
+        else
+            integrale4(ig) =int !result(1) !
+        end if
+    end if    
+            
+!open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')
+!       write(2,*)' Vect_sim_MC(l,1)', Vect_sim_MC(:,1)
+!        write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,2)
+!          write(2,*)'Vect_sim_MC(l,2)',Vect_sim_MC(:,3)
+!            write(2,*)'fraili1',fraili(:,1)
+!            write(2,*)'fraili2',fraili(:,2)
+!            write(2,*)'fraili2',fraili(:,3)
+!            write(2,*)'vcjm',vcjm
+!             write(2,*)'nb1',nb1
+!              write(2,*)'int',int
+!    close(2)
+ 
             it_rec = it_rec + nmescurr
             it = it + nmescur
-    
+            if(TwoPart.eq.1) then
+                itB = itB + nmescurB
+            end if
+
             if(integrale4(ig).gt.1.E+30) then
                 integrale4(ig) = 1.E+30
             end if
     
-        else
+if(nmescur.eq.(-1)) then ! this is for the case where we have no repeated measurements of the biomarker (not programmed yet)
         do k=1,nb1
         Z1 (k,1)=0.d0
-            end do
+            end do    
     
-    
+
     
         mu = 0.d0
+    if(TwoPart.eq.1) then
+        muB = 0.d0
+    end if
         !call gauherJ(int,choix)
             call  hrmsym( nea, nf2, genz(1), genz(2) ,vraistot_splines, epsabs, &
             epsrel, restar, result, abserr2, neval, ifail, work)
@@ -502,16 +844,25 @@
     
     
             it = it + nmescur
-    
+        if(TwoPart.eq.1) then
+            itB = itB + nmescurB
+        end if
         if(integrale4(ig).gt.1.E+30) then
         integrale4(ig) = 1.E+30
         end if
         end if
-        !    end if
-    
+        !    end if 
+         
         deallocate(mat_sigma)
+        if(TwoPart.eq.1) then
+            deallocate(mat_sigmaB)
+        end if
         end do
-    
+
+!    open(2,file='C:/Users/dr/Documents/Docs pro/Docs/1_DOC TRAVAIL/2_TPJM/GIT_2019/debug.txt')  
+!            write(2,*)' ping 2'
+!         close(2)
+!stop
     !************* FIN INTEGRALES **************************
         else
             sigmae = 1.d0
@@ -520,10 +871,24 @@
         res = 0.d0
         do k=1,ng
             sum=0.d0
-            if(nb1.ge.1) then
-                nmescur = nmesy(k)
-            else
-                nmescur = 0
+            if(TwoPart.eq.0) then
+                if(nb1.ge.1) then
+                    nmescur = nmesy(k)
+                else
+                    nmescur = 0
+                end if
+            else if(TwoPart.eq.1) then
+                if(nby.ge.1) then ! modif TwoPart
+                    nmescur = nmesy(k)
+                else
+                    nmescur = 0
+                end if
+                
+                if(nbB.ge.1) then ! modif TwoPart
+                    nmescurB = nmesB(k)
+                else
+                    nmescurB = 0
+                end if
             end if
     !*************************************************************************
     !     vraisemblnce
@@ -858,3 +1223,4 @@
     
     
     
+

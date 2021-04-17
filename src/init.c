@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <stdlib.h> 
 #include <R_ext/Rdynload.h>
 #include <R_ext/Visibility.h>
 
@@ -11,10 +11,11 @@ static const R_FortranMethodDef FortEntries[] = {
     {"cvpl_long",            (DL_FUNC) &F77_SUB(cvpl_long),            38},
 	{"cvplnl",            	(DL_FUNC) &F77_SUB(cvplnl),                45},
     {"frailpenal",           (DL_FUNC) &F77_SUB(frailpenal),           59},
+	{"frailpenalgen",           (DL_FUNC) &F77_SUB(frailpenalgen),           60},
     {"frailpred_sha_nor_mc", (DL_FUNC) &F77_SUB(frailpred_sha_nor_mc),  5},
     {"joint",                (DL_FUNC) &F77_SUB(joint),                65},
 	{"jointgen",                (DL_FUNC) &F77_SUB(jointgen),                65},
-    {"joint_longi",          (DL_FUNC) &F77_SUB(joint_longi),          64},
+    {"joint_longi",          (DL_FUNC) &F77_SUB(joint_longi),          65},
 	{"jointlonginl",          (DL_FUNC) &F77_SUB(jointlonginl),	       62},
     {"joint_multiv",         (DL_FUNC) &F77_SUB(joint_multiv),         63},
 	{"longiuninl",         (DL_FUNC) &F77_SUB(longiuninl),             31},
@@ -33,16 +34,15 @@ static const R_FortranMethodDef FortEntries[] = {
     {"survival2",            (DL_FUNC) &F77_SUB(survival2),             6},
     {"survivalj_cpm2",       (DL_FUNC) &F77_SUB(survivalj_cpm2),        8},
 	{"somme",                (DL_FUNC) &F77_SUB(somme),                 5},
-    {"jointsurrogate",       (DL_FUNC) &F77_SUB(jointsurrogate),       55},
+    {"jointsurrogate",       (DL_FUNC) &F77_SUB(jointsurrogate),       57},
     {"test",                 (DL_FUNC) &F77_SUB(test),       3},
-    {"surrosim",             (DL_FUNC) &F77_SUB(surrosim), 36},
+    {"surrosim",             (DL_FUNC) &F77_SUB(surrosim), 41},
     {"jointsurrokendall",    (DL_FUNC) &F77_SUB(jointsurrokendall), 24},
-    {"frailpenalgen",           (DL_FUNC) &F77_SUB(frailpenalgen),           60},
     {NULL, NULL, 0}
 };
 
-void
-attribute_visible
+void 
+attribute_visible 
 R_init_frailtypack(DllInfo *dll)
 {
     R_registerRoutines(dll, NULL, NULL, FortEntries, NULL);

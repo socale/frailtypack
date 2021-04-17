@@ -59,13 +59,13 @@
     double precision,dimension(mtaille(2),3)::lam2Out
     double precision,dimension(mtaille(4),3)::su2Out
     integer::ss,sss
-    double precision,dimension(np):: b!,b_save
+    double precision,dimension(np), intent(inout):: b!,b_save
     double precision,dimension(2),intent(out)::LCV
     double precision,dimension(2)::shapeweib,scaleweib
     double precision,dimension(4),intent(out)::paraweib
     
     integer,intent(in)::noVar1,noVar2,intcens0,param_weibull0 !param_weibull! parametrisation de la weibull utilisee: 0= parametrisation par defaut dans le programme de Virginie, 1= parametrisation 
-	!                                                         a l'aide de la fonction de weibull donnee dans le cours de Pierre
+    !                                                         a l'aide de la fonction de weibull donnee dans le cours de Pierre
     integer,intent(out)::cpt,cpt_dc,ier,ni
     integer::groupe,ij,kk,j,k,nz,n,ii,iii,iii2,cptstr1,cptstr2   & !code
     ,i,ic,icdc,istop,cptni,cptni1,cptni2,nb_echec,nb_echecor,id,cptbiais &
@@ -81,10 +81,10 @@
     double precision,external::funcpaGsplines,funcpaGcpm,funcpaGweib
     double precision,external::funcpaGsplines_intcens,funcpaGcpm_intcens,funcpaGweib_intcens
     double precision,external::funcpaGsplines_log,funcpaGcpm_log,funcpaGweib_log
-    double precision,external::funcpaj_tps,funcpaG_tps
+    double precision,external::funcpaj_tps,funcpaG_tps,funcpajsplines_copule_surrogate
     double precision,dimension(100)::xSu1,xSu2
 !cpm
-    integer::indd,ent,entdc,typeof0,nbintervR0,nbintervDC0
+    integer::indd,ent,entdc,typeof0,nbintervR0,nbintervDC0, np_2
     double precision::temp    
 !predictor
     double precision,dimension(ng0)::Resmartingale,Resmartingaledc,frailtypred,frailtyvar
@@ -119,7 +119,7 @@
     double precision,dimension(0:100,0:4*sum(filtretps0(nva10+1:nva10+nva20)))::BetaTpsMatDc
     double precision,dimension(paratps(2)+paratps(3))::basis
     double precision,dimension(3),intent(inout)::EPS ! seuils de convergence : on recupere les valeurs obtenues lors de l'algorithme a la fin
-    integer, dimension(10),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
+    integer, dimension(13),intent(in)::nsim_nodes !scl nsim_nodes: vecteur contenant le nbre de simulation(1) pour le MC et de noeud(2) pour la quadrature,le troisieme element indique si on fait l'adaptative(1) ou la non adaptative(0), le quatrieme indique la methode d'integration
                                                  !0=Monte carlo,1= MC+quadrature, 2=quadrature, le cinquieme le nombre de parametres associes a la fragilite
                                                  ! le septieme indique le nombre d'effet aleatoire dans le cas de la quadrature adaptative
                                                  ! et le huitieme le type de modele a estimer (0=joint surrogate classique,1=joint surrogate complet)
@@ -135,6 +135,8 @@
     
     param_weibull=param_weibull0
     estim_wij_chap=0
+    control_affichage = 0
+    control_adaptative_laplace = 0
     
    ! 100 continue
     !rang=0
@@ -187,11 +189,10 @@
             else
                 indice_eta = 1 
             endif
-        endif
-        
+        endif      
       
       !!print*,"indice_eta=",indice_eta
-      indice_theta=1
+      if(type_joint .ne.3) indice_theta=1
       indice_alpha=1
       indice_sigma=1
       indice_varS=1
@@ -203,7 +204,7 @@
         indice_gamma_t=1
         indice_gamma_st=indice_esti(4)
         indice_alpha_ui=indice_esti(3)
-        if(type_joint==1) then ! modele a fragilites partages
+        if(type_joint==1 .or. type_joint==3) then ! modele a fragilites partages
             allocate(chol(3,3))
         else ! modele complet
             allocate(chol(6,6))
@@ -236,6 +237,14 @@
     if(methodInt==3) then !integration par laplace
         allocate(wij_chap(nsujet0,1),control_wij_chap(nsujet0))
         control_wij_chap=0
+        if(frailt_base == 1) then
+            np_2 = 3
+            
+        else
+            np_2 = 2
+        endif
+        allocate(IhessLaplace(np_2,np_2),H_hess_laplace(np_2,np_2),&
+                b_i_laplace(np_2),v_i_laplace(np_2*(np_2+3)/2),hess_laplace(np_2,np_2),vvv_laplace(np_2*(np_2+1)/2))
         ! !print*,"suis dans joint",size(wij_chap),size(wij_chap,1),size(wij_chap,2)
     endif
     
@@ -418,8 +427,11 @@
     nva1=nva10
     nva2=nva20
     nva = nva1+nva2
-    nvarmax=nva
-    allocate(ve(nsujetmax,nvarmax),vedc(ngtemp,nvarmax))
+    !===========Fin scl: 12/04:2019================
+    !nvarmax=nva
+    !allocate(ve(nsujetmax,nvarmax),vedc(ngtemp,nvarmax))
+    allocate(ve(nsujetmax,nva1),vedc(ngtemp,nva2))
+    !===========Fin scl: 12/04:2019================
     allocate(ve1(nsujetmax,nva1),ve2(ngtemp,nva2))
     allocate(filtre(nva10),filtre2(nva20))
     nig=0
@@ -497,24 +509,30 @@
             endif
             iii = 0
             iii2 = 0
-            do ii = 1,nva20
-                if(filtre2(ii).eq.1)then
-                    iii2 = iii2 + 1
-                    vedc(k,iii2) = dble(vaxdc(ii))
-                endif
-            end do
+            !===========scl: 12/04:2019================
+            ! do ii = 1,nva20
+                ! if(filtre2(ii).eq.1)then
+                    ! iii2 = iii2 + 1
+                    ! vedc(k,iii2) = dble(vaxdc(ii))
+                ! endif
+            ! end do
+            vedc(k,:) = dble(vaxdc)
+            !===========Fin scl: 12/04:2019================
         else
 !------------------   censure a droite ou event recurr  c=0
             if(icdc.eq.0)then
                 cdc(k) = 0
                 iii = 0
                 iii2 = 0
-                do ii = 1,nva20
-                    if(filtre2(ii).eq.1)then
-                    iii2 = iii2 + 1
-                    vedc(k,iii2) = dble(vaxdc(ii))
-                    endif
-                end do 
+                !===========scl: 12/04:2019================
+                ! do ii = 1,nva20
+                    ! if(filtre2(ii).eq.1)then
+                    ! iii2 = iii2 + 1
+                    ! vedc(k,iii2) = dble(vaxdc(ii))
+                    ! endif
+                ! end do 
+                vedc(k,:) = dble(vaxdc) 
+                !===========Fin scl: 12/04:2019================
                 t0dc(k) = tt0dc
                 t1dc(k) = tt1dc
                 if(typeJoint.ne.1) gsuj(k) = groupe
@@ -554,9 +572,10 @@
         ttU=ttU0(i) !! rajout
         ic=ic0(i)
         groupe=groupe0(i)
+        !call dblepr("suis danc funcpan vax0=", -1, dble(vax0(i,:)), size(vax0,2))
 !------------------
         do j=1,nva10
-            vax(j)=vax0(i,j)
+            vax(j)=vax0(i,j) ! ensemble des observation du sujet i associees au surrrogate
         enddo
 !--------------
         if(tt0.gt.0.d0)then
@@ -579,13 +598,15 @@
             nig(groupe) = nig(groupe)+1 ! nb d event recurr dans un groupe
             iii = 0
             iii2 = 0
-!                  do ii = 1,ver
-            do ii = 1,nva10
-                if(filtre(ii).eq.1)then
-                    iii = iii + 1
-                    ve(i,iii) = dble(vax(ii)) !ici sur les observations
-                endif
-            end do
+            !===========scl: 12/04:2019================
+            ! do ii = 1,nva10
+                ! if(filtre(ii).eq.1)then
+                    ! iii = iii + 1
+                    ! ve(i,iii) = dble(vax(ii)) !ici sur les observations
+                ! endif
+            ! end do
+            ve(i,:) = dble(vax)
+            !===========Fin scl: 12/04:2019================
         else
 !------------------   censure a droite  c=0 pour donnees recurrentes
             if(ic.eq.0)then
@@ -593,13 +614,15 @@
                 c(i) = 0
                 iii = 0
                 iii2 = 0
-        !                     do ii = 1,ver
-                do ii = 1,nva10
-                    if(filtre(ii).eq.1)then
-                    iii = iii + 1
-                    ve(i,iii) = dble(vax(ii))
-                    endif
-                end do
+                !===========scl: 12/04:2019================
+                ! do ii = 1,nva10
+                    ! if(filtre(ii).eq.1)then
+                    ! iii = iii + 1
+                    ! ve(i,iii) = dble(vax(ii))
+                    ! endif
+                ! end do
+                ve(i,:) = dble(vax)
+                !===========Fin scl: 12/04:2019================
                 t0(i) =  tt0
                 t1(i) = tt1
                 tU(i) = ttU !! rajout
@@ -1195,7 +1218,8 @@
         allocate(invBi_chol_Essai(ntrials*9),invBi_chol_Individuel(ng0),ui_chap_Essai(ntrials,3))
                         
     endif
-                    
+    
+    !call intpr("type_joint =", -1, type_joint, 1)    
     call cpu_time(tp1)
     select case(typeof)
         case(0) ! fonction de risque de base approximee par des splines
@@ -1204,7 +1228,6 @@
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_surrogate_1)
                 case(1)                
                     if(methodInt==3) then !integration par laplace
-                        !!print*,"nb_procs",nb_procs
                         !!call MPI_ABORT(MPI_COMM_WORLD,erreur,code)! on stop tous les programmes appartenant au communicateur code, equivalent de l'instruction stop en sequantiel
                         !========= gestion du nombre d'essai a manipuler par processus dans le cas de laplace=========== 
                         n_par_pro=INT(ntrials/nb_procs)
@@ -1229,6 +1252,8 @@
                 
                 case(2)
                     call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_surrogate)    
+                case(3) ! the joint frailty-copula model
+                    call marq98j_SCL_0(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpajsplines_copule_surrogate)    
             endselect
         case(1) ! fonctions de risque de base supposees constantes par morceau
 !                 if (timedep.eq.0) then
@@ -1769,6 +1794,8 @@ deallocate(res2s_sujet,res2_dcs_sujet)
         mm3,mm2,mm1,mm,im3,im2,im1,im,zi,zidc,m3m3,m2m2,m1m1,mmm,&
         m3m2,m3m1,m3m,m2m1,m2m,m1m)
     end if
+    
+    if(methodInt==3) deallocate(IhessLaplace,H_hess_laplace,hess_laplace,vvv_laplace,b_i_laplace,v_i_laplace)
 
     if (typeof .ne. 0)deallocate(vvv) !,kkapa)
     

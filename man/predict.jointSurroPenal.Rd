@@ -2,53 +2,80 @@
 % Please edit documentation in R/predict.jointSurroPenal.R
 \name{predict.jointSurroPenal}
 \alias{predict.jointSurroPenal}
-\title{Predict Method for the one-step Joint surrogate model for the evaluation of a 
+\title{S3method predict for the one-step Joint surrogate models for the evaluation of a 
 canditate surrogate endpoint.}
 \usage{
-\method{predict}{jointSurroPenal}(object, datapred = NULL, var.used = "error.estim", 
-alpha. = 0.05, dec = 3, ...)
+\method{predict}{jointSurroPenal}(object, datapred = NULL, betaS.obs = NULL, 
+betaT.obs = NULL, ntrial0 = NULL, var.used = "error.estim", alpha. = 0.05, 
+dec = 3, colCI = "red", from = -2, to = 2, type = "Coef", ...)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling the function \code{jointSurroPenal}).}
+(output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).}
 
 \item{datapred}{Dataset to use for the prediction. If this argument is specified,
 the data structure must be the same as the parameter \code{data} in the 
-function \link{jointSurroPenal}. However, if observation on te true endpoint are
-not available, columns timeT and \code{statusT} can be absent.}
+function \link{jointSurroPenal} or \link{jointSurroCopPenal}. However, if observation on the true endpoint are
+not available, columns timeT and \code{statusT} can be absent. In this case, the \if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}
+are calculated using Cox proportional hazards models.}
+
+\item{betaS.obs}{Observed treatment effect on the surrogate endpoint, to use for the prediction of
+the treatment effect on the true endpoint. If not null, this value is used for prediction instead of
+\code{datapred}. The default is \code{NULL}.}
+
+\item{betaT.obs}{Observed treatment effect on the true endpoint. Used to assess the prediction if not null.
+The defaut is \code{NULL}.}
+
+\item{ntrial0}{Number of subjects include in the new trial. Required if \code{betaS.obs} is not null.
+The default is \code{NULL}.}
 
 \item{var.used}{This argument can take two values. The first one is \code{"error.estim"}
 and indicates if the prediction error take into account
 the estimation error of the estimates of the parameters. If the estimates 
 are supposed to be known or if the dataset includes a high number of trials with 
 a high number of subject per trial, value \code{No.error} can be used. 
-The default is \code{error.estim}.}
+The default is \code{error.estim} (highly recommended).}
 
 \item{alpha.}{The confidence level for the prediction interval. The default is \code{0.05}}
 
 \item{dec}{The desired number of digits after the decimal point for parameters
 and confidence intervals. Default of 3 digits is used.}
 
-\item{...}{other unused arguments.}
+\item{colCI}{The color used to display the confidence interval.}
+
+\item{from}{The range (with \code{to}) over which the function will be plotted. The default is 
+\code{from -2 to 2}}
+
+\item{to}{The range (with \code{from}) over which the function will be plotted. The default is 
+\code{from -2 to 2}}
+
+\item{type}{The type of graphic, \code{"Coef"} for the \code{log HR} or \code{"HR"} for hazard ratio.
+If set to \code{HR}, the arguments \code{from} and \code{to} must take positive values.
+The default is \code{"Coef"}.}
+
+\item{...}{other unused arguments. See the function (\link{plotTreatPredJointSurro})}
 }
 \value{
-Return and display a dataframe including for each trial the number of included subjects, 
-the observed 
-treatment effect on the surrogate endpoint, the observed treatment effect on
-the true endpoint (if available) and the predicted treatment effect on the 
-true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
+Returns and display a dataframe including for each trial the number of included subjects 
+(if available), the observed 
+treatment effect on surrogate endpoint, the observed treatment effect on
+true endpoint (if available) and the predicted treatment effect on 
+true enpoint with the associated prediction intervals. If the observe treatment effect on true 
 endpoint (if available) is included into the prediction interval, the last columns contains "*".
+This function also produces a plot of predicted treatment effects on the true endpoint
+according to the given values of the treatment effects on the surrogate endpoint, with 
+the prediction intervals.
 }
 \description{
 {
-Predict the treatment effect on the true endpoint (\eqn{beta_T}), based on the 
-treatment effect observed on the surrogate endpoint (\eqn{beta_S}).
+Predict the treatment effect on the true endpoint (\if{latex}{\eqn{\beta_T}} \if{html}{\eqn{\beta}\out{<sub>T</sub>}}), based on the 
+treatment effect observed on the surrogate endpoint (\if{latex}{\eqn{\beta_S}} \if{html}{\eqn{\beta}\out{<sub>S</sub>}}).
 }
 }
 \details{
 {
 Prediction is based on the formulas described in (Burzikwosky \emph{et al.}, 2006).
-We do not consider the case of prediction which suppose estimation error on 
+We do not consider the case in which the prediction take into account estimation error on 
 the estimate of the treatment effect on the surrogate endpoint in the new trial.
 }
 }
@@ -67,9 +94,21 @@ joint.surro.ovar <- jointSurroPenal(data = dataOvarian, n.knots = 8,
                 nb.mc = 200, scale = 1/365)
 
 # prediction of the treatment effects on the true endpoint in each trial of 
-the dataOvarian dataset
-# predict(joint.surro.ovar)
+# the dataOvarian dataset
+predict(joint.surro.ovar)
 
+# prediction of the treatment effect on the true endpoint from an observed 
+# treatment effect on the surrogate endpoint in a given trial
+
+# in log HR
+predict(joint.surro.ovar, betaS.obs = -0.797, betaT.obs = -1.018)
+predict(joint.surro.ovar, type = "Coef", betaS.obs = -1, leg.y = 0, leg.x = 0.3, to = 2.3)
+predict(joint.surro.ovar, type = "Coef", leg.y = 3.5, add.accept.area.betaS = F, to = 2.3)
+
+# in HR
+predict(joint.surro.ovar, betaS.obs = exp(-0.797), betaT.obs = exp(-1.018))
+predict(joint.surro.ovar, type = "HR", betaS.obs = log(0.65), leg.y = 5, to = 2.3)
+predict(joint.surro.ovar, type = "HR", leg.y = 5, add.accept.area.betaS = F, to = 2.3)
 }
 
 
@@ -78,9 +117,13 @@ the dataOvarian dataset
 Burzykowski T, Buyse M (2006). "Surrogate threshold effect: an alternative 
 measure for meta-analytic surrogate endpoint validation." Pharmaceutical 
 Statistics, 5(3), 173-186.ISSN 1539-1612.
+
+Sofeu, C. L. and Rondeau, V. (2020). How to use frailtypack for validating failure-time surrogate 
+endpoints using individual patient data from meta-analyses of randomized controlled trials. 
+PLOS ONE; 15, 1-25.
 }
 \seealso{
-\code{\link{jointSurroPenal}}
+\code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 }
 \author{
 Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

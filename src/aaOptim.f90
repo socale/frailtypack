@@ -524,8 +524,9 @@
  
        return
        end subroutine marq98j
-
-
+	   
+	   
+! Ajout par Jocelyn (pour generalisation)
     subroutine marq98j_modadd(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames)
 !
 !  fu = matrice des derivees secondes et premieres
@@ -928,8 +929,7 @@
  
        return
        end subroutine marq98j_modadd
-	   
-	   
+
 !------------------------------------------------------------
 !                          DERIVA
 !------------------------------------------------------------
@@ -951,7 +951,7 @@
     logical::endDeriva
 
     endDeriva=.false.
-    
+    fcith=0.d0
     select case(model)
     case(1,7)
         th=1.d-3 !joint

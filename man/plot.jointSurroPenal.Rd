@@ -48,7 +48,7 @@ this argument to a single keyword from the list '"bottomright"',
 the surrogate endpoint, \code{1} for the true endpoint, and \code{2} for both
 surrogate endpoint and true endpoint. The default is \code{2}.}
 
-\item{scale}{A numeric that allows to rescale the survival times. If no change is need the
+\item{scale}{A numeric that allows to rescale (by multiplication) the survival times. If no change is need the
 argument is set to 1, the default value. eg: 1/365 aims to convert days to years .}
 
 \item{...}{other unused arguments.}
@@ -92,6 +92,6 @@ plot(joint.surro.ovar,endpoint = 2,type.plot = "Su", conf.bands = T)
 
 }
 \seealso{
-\code{\link{jointSurroPenal}}
+\code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 }
 \keyword{surrogate}

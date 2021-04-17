@@ -4,6 +4,7 @@
     integer :: ndatemax,ndatemaxdc,nzmax
     integer :: nssgbyg,nssgmax
     integer :: nboumax,NSIMAX,NOBSMAX
+    integer :: nsujetBmax ! add TwoPart
     save
     end module tailles
 
@@ -74,6 +75,11 @@
                 integer,save:: it_rec
                 double precision:: ut2cur,frailpol,frailpol2,frailpol3,frailpol4
                 double precision,dimension(:),allocatable,save :: res1cur,res3cur,res2cur
+    double precision,dimension(:,:),allocatable,save::Z1B, muB,XB,mu1B,x2Bcur,z1Bcur ! add TwoPart
+    double precision,dimension(:),allocatable,save :: Bcurrent, current_meanRaw ! add TwoPart
+    integer,save::nmescurB, it_curB, interceptBin !add TwoPart
+    double precision,save::fixed_Binary
+    integer, save::GLMloglink0,MTP0 ! glm log lionk + marginal two part                                                           
     end module donnees_indiv
 
 
@@ -142,7 +148,7 @@
         integer,save :: nb_re,netar,netadc
         integer,save :: linkidyr,linkidyd,link
         double precision,dimension(:,:),allocatable,save::Ut,Utt,varcov_marg,sum_mat
-         !****** censure ? gauche
+         !****** censure a gauche
         double precision,save :: s_cag, box_cox_par
         integer,save :: s_cag_id, box_cox1
 !*****dace3
@@ -225,9 +231,21 @@
         double precision,dimension(:),allocatable,save::invBi_cholDet,vet22
         double precision,dimension(:,:),allocatable,save:: invBi_chol,b_lme,mat,matb_chol
         double precision,dimension(:),allocatable,save::v_jf,varv_jf
-        integer :: methodGH,nodes_number,initGH
+        integer::methodGH
+        integer,save :: method_GH,nodes_number,initGH
         integer :: res_ind,it,n_wezly
         integer :: nb_gh,nb_gl
+        !add current-level association - interaction with time
+        integer,save :: numInter, numInterB
+        integer,dimension(:),allocatable,save::positionVarT
+        
+    ! add TwoPart
+        integer,save :: TwoPart, nsujetB, nbB,nby, maxmesB, nvaB
+        double precision,dimension(:),allocatable,save::bb ! add TwoPart
+        double precision,dimension(:,:),allocatable,save :: ziB,varcov_margB, sum_matB
+    double precision,dimension(:,:),allocatable,save::veB
+        integer,dimension(:),allocatable,save:: nmesB,nmes_oB,groupeeB !add TwoPart
+        integer :: itB             
     end module comon
 !=====================================================================================
 
@@ -245,6 +263,7 @@
     double precision,dimension(:,:),allocatable,save::variable
     double precision,dimension(:),allocatable,save::Binit
     double precision,dimension(:,:),allocatable,save::ve1,ve2,ve3
+    double precision,dimension(:,:),allocatable,save::ve4 ! add TwoPart
     end module comongroup
 
     module jointmods
@@ -293,18 +312,20 @@
         double precision,save::cares,cbres,ddres
         double precision,dimension(:),allocatable,save:: vres
         integer , save :: ierres,nires,istopres,effetres,indg,it_res,it_res_rec
+        integer, save :: it_resB ! add TwoPart
         double precision,save::rlres,varuiR,moyuiR,varviR,moyviR,corruiviR
         double precision,dimension(:),allocatable::vuu,b_temp
         integer,save::indic_cumul
         integer,dimension(:),allocatable::n_ssgbygrp
         double precision,dimension(:,:),allocatable,save::vecuiRes2,cumulhaz1,cumulhaz0,&
                 cumulhazdc,invsigma,zet,zetd,zetr,XbetaY_res,Pred_y
+        double precision,dimension(:,:),allocatable,save::XbetaB_res !add TwoPart
         double precision,save::detSigma
            integer,save :: nig_mc,np_mc
     double precision,save :: sig2_mc,res1_mc
       double precision,dimension(:),allocatable,save::mu1_res
-              
-
+     double precision,dimension(:,:),allocatable,save::ZetB ! add TwoPart
+      double precision,dimension(:),allocatable,save::mu1_resB
     end module residusM
 
     module splines
@@ -316,7 +337,9 @@
     double precision,dimension(:,:),allocatable,save::HIH,IH,HI
     double precision,dimension(:,:),allocatable,save::BIAIS
     double precision,dimension(:),allocatable,save:: vax,vaxdc,vaxmeta,vaxy
+    double precision,dimension(:),allocatable,save:: vaxB ! add TwoPart
     integer,dimension(:),allocatable,save::filtre,filtre2,filtre3, filtre4
+    integer,dimension(:),allocatable,save::filtreB ! add TwoPart                                                  
     integer,save::ver
 
     end module splines
@@ -346,8 +369,8 @@
         double precision,dimension(:),allocatable,save:: mu,mui,xx1,ww1 !mu= vecteur des mu pour monte carlo et mui=vecteur des bi chapeau pour l'adaptative, xx1,ww1 points et poids de quadrature
         double precision,dimension(:,:),allocatable,save:: vc,vcinv !vc= matrice de var-cov des enffet aleatoires MC, invBi_chol=inverse de la matrice de cholesky pour l'adaptative,vcinv=matrice inverse des vc
         double precision,dimension(:),allocatable,save:: invBi_chol_Essai,invBi_chol_Individuel! contient les element de la cholesky du determinant de la hessienne, niveau essai et individuel
-        double precision,dimension(:,:),allocatable,save:: ui_chap,ui_chap_Essai ! ui_chap=matrice des effets aleatoires estimes pour l'adaptative, ui_chap_Essai pour les estimation au niveau essai
-        double precision,dimension(:),allocatable,save:: invBi_cholDet_Essai ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky au niveau essa
+        double precision,dimension(:,:),allocatable,save:: ui_chap,ui_chap_Essai, IhessLaplace,H_hess_laplace,hess_laplace ! ui_chap=matrice des effets aleatoires estimes pour l'adaptative, ui_chap_Essai pour les estimation au niveau essai
+        double precision,dimension(:),allocatable,save:: invBi_cholDet_Essai,vvv_laplace,b_i_laplace,v_i_laplace ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky au niveau essa
         !double precision,dimension(:),allocatable,save:: invBi_cholDet ! invBi_cholDet racine carree du determinant de l'inverse de  la matrice de choloesky: utiliser la subroutine dmfsd pour le calcul de la matrice de cholesky, niveau individuel
         integer,save::a_deja_simul! dit si on a deja simule une fois les donnees pour le calcul integrale par MC
         integer,save::sujet_essai_max,vectorisation,individu_j ! taille du plus grand essai, vectorisation= indique si l'on fait de la vectorisation dans le calcul integral pour reduire les temps de calcul ou pas
@@ -368,6 +391,9 @@
         integer, save::switch_adaptative ! variable qui prend la valeur 0 si on veut ommetre la pseudo adaptative (cas typique lorsqu'echou l'estimation des effets aleatoires a posteriori) ou 1 si tout se passe bien
         integer, save::nbre_itter_PGH ! nombre d'itteration aubout desquelles reestimer les effects aleatoires a posteriori pour la pseude adaptative. si 0 pas de resestimation
         integer,save::random_generator ! generateur des nombre aleatoire, (1) si Random_number() et (2) si uniran(). Random_number() me permet de gerer le seed
+        ! Add for the joint frailty-copula model -scl - 05-04-2019
+        integer,save:: copula_function, control_affichage, control_adaptative_laplace ! the copula function, can be 1 for clayton or 2 for Gumbel-Hougaard
+        double precision, save:: theta_copule ! copula parameters
     end module var_surrogate
     
     !gestion de la double precision

@@ -81,6 +81,7 @@
     
     if(missing(main)) main<-""
     
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if (event.type==1){ # both
       
       if(plot.type==1){
@@ -93,13 +94,116 @@
         }
         
         if (conf.bands){
-          matplot(x$xR[,1], x$lamR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
-          for (i in (1:x$n.strat)[-1]) matlines(x$xR[,i], x$lamR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
-          matlines(x$xD, x$lamD, col=color+x$n.strat, type="l", lty=c(1,2,2), ...)
+          if(is.null(x$family)) x$family = c(0,0)
+          if( (x$family[1] %in% c(3)) & (x$family[2] %in% c(3)) ){
+            par(mfrow=c(1,2))
+            matplot(x$xR[,1], x$lamR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab="Baseline hazard functions", ylim=c(yymin,yymax), main=main, ...)
+            for (i in (1:x$n.strat)[-1]) matlines(x$xR[,i], x$lamR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+            matlines(x$xD, x$lamD, col=color+x$n.strat, type="l", lty=c(1,2,2), ...)
+            
+            trapz <- function(x,y){
+              idx = 2:length(x)
+              return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+            }
+            
+            nblignes = nrow(x$lamR[,,1])-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xR
+            ord = x$lamR[,,1]
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            matplot(x=abs[-c(1)],
+                    y=cbind(matcumul[,(1:3)]),
+                    col=color, type="l", lty=c(1,2,2),
+                    main=main,
+                    xlab=Xlab, 
+                    ylab="Cumulative baseline hazard functions"
+            )
+            
+            nblignes = nrow(x$lamD)-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xD
+            ord = x$lamD
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            matlines(x=abs[-c(1)],
+                     y=cbind(matcumul[,(1:3)]),
+                     col=color+x$n.strat, type="l", lty=c(1,2,2)
+                     # main=main,
+                     # xlab=Xlab, 
+                     # ylab="Cumulative baseline hazard function"
+            )
+          }else{
+            matplot(x$xR[,1], x$lamR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+            for (i in (1:x$n.strat)[-1]) matlines(x$xR[,i], x$lamR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+            matlines(x$xD, x$lamD, col=color+x$n.strat, type="l", lty=c(1,2,2), ...)
+          }
         }else{
-          plot(x$xR[,1], x$lamR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
-          for (i in (1:x$n.strat)[-1]) lines(x$xR[,i], x$lamR[,1,i], col=color+(i-1), type="l", lty=1, ...)
-          lines(x$xD, x$lamD[,1], col=color+x$n.strat, type="l", lty=1, ...)
+          if(is.null(x$family)) x$family = c(0,0)
+          if( (x$family[1] %in% c(3)) & (x$family[2] %in% c(3)) ){
+            par(mfrow=c(1,2))
+            plot(x$xR[,1], x$lamR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab="Baseline hazard functions", ylim=c(yymin,yymax), main=main, ...)
+            for (i in (1:x$n.strat)[-1]) lines(x$xR[,i], x$lamR[,1,i], col=color+(i-1), type="l", lty=1, ...)
+            lines(x$xD, x$lamD[,1], col=color+x$n.strat, type="l", lty=1, ...)
+            
+            trapz <- function(x,y){
+              idx = 2:length(x)
+              return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+            }
+            
+            nblignes = nrow(x$lamR[,,1])-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xR
+            ord = x$lamR[,,1]
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            plot(x=abs[-c(1)],
+                 y=cbind(matcumul[,1]),
+                 col=color, type="l", lty=1,
+                 main=main,
+                 xlab=Xlab, 
+                 ylab="Cumulative baseline hazard functions", 
+                 ylim=c(0, max(matcumul[,1]))
+            )
+            
+            nblignes = nrow(x$lamD)-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xD
+            ord = x$lamD
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            lines(x=abs[-c(1)],
+                  y=cbind(matcumul[,1]),
+                  col=color+x$n.strat, type="l", lty=1
+                     # main=main,
+                     # xlab=Xlab, 
+                     # ylab="Cumulative baseline hazard function"
+            )
+          }else{
+            plot(x$xR[,1], x$lamR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+            for (i in (1:x$n.strat)[-1]) lines(x$xR[,i], x$lamR[,1,i], col=color+(i-1), type="l", lty=1, ...)
+            lines(x$xD, x$lamD[,1], col=color+x$n.strat, type="l", lty=1, ...)
+          }
         }
       }else{ 
         if (missing(Ylab)) Ylab <- "Baseline survival function"
@@ -140,7 +244,10 @@
       if (x$n.strat > 1) legend(pos.legend, c(paste("recurrent event strata =",1:x$n.strat),"terminal event"), lty=1, col=color+(0:x$n.strat), xjust=1, cex=cex.legend, ...)
       else legend(pos.legend, c("recurrent event","terminal event"), lty=1, col=c(color,color+x$n.strat), xjust=1, cex=cex.legend, ...)
     }
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
+    
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if (event.type==2){ # recurrent
       
       if(plot.type==1){
@@ -153,11 +260,67 @@
         }
         
         if (conf.bands){
-          matplot(x$xR[,1], x$lamR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
-          for (i in (1:x$n.strat)[-1]) matlines(x$xR[,i], x$lamR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+          if(is.null(x$family)) x$family = c(0,0)
+          if( (is.null(x$family[2])) | (x$family[2] %in% c(0,1,2,4)) ){
+            matplot(x$xR[,1], x$lamR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+            for (i in (1:x$n.strat)[-1]) matlines(x$xR[,i], x$lamR[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+          }else{
+            par(mfrow=c(1,2))
+            matplot(x$xR[,1], x$lamR[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab="Baseline hazard function", ylim=c(yymin,yymax), main=main, ...)
+            trapz <- function(x,y){
+              idx = 2:length(x)
+              return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+            }
+            nblignes = nrow(x$lamR[,,1])-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xR
+            ord = x$lamR[,,1]
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            matplot(x=abs[-c(1)],
+                    y=cbind(matcumul[,(1:3)]),
+                    col=color, type="l", lty=c(1,2,2),
+                    main=main,
+                    xlab=Xlab, 
+                    ylab="Cumulative baseline hazard function"
+            )
+          }
+          
         }else{
-          plot(x$xR[,1], x$lamR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
-          for (i in (1:x$n.strat)[-1]) lines(x$xR[,i], x$lamR[,1,i], col=color+(i-1), type="l", lty=1, ...)
+          if(is.null(x$family)) x$family = c(0,0)
+          if( (is.null(x$family[2])) | (x$family[2] %in% c(0,1,2,4)) ){
+            plot(x$xR[,1], x$lamR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+            for (i in (1:x$n.strat)[-1]) lines(x$xR[,i], x$lamR[,1,i], col=color+(i-1), type="l", lty=1, ...)
+          }else{
+            par(mfrow=c(1,2))
+            plot(x$xR[,1], x$lamR[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab="Baseline hazard function", ylim=c(yymin,yymax), main=main, ...)
+            trapz <- function(x,y){
+              idx = 2:length(x)
+              return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+            }
+            nblignes = nrow(x$lamR[,,1])-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xR
+            ord = x$lamR[,,1]
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            plot(x=abs[-c(1)], y=matcumul[,1],
+                    col=color, type="l", lty=1,
+                    main=main,
+                    xlab=Xlab, 
+                    ylab="Cumulative baseline hazard function"
+            )
+          }
         }
       }else{
         if (missing(Ylab)) Ylab <- "Baseline survival function"		
@@ -193,7 +356,10 @@
       if (x$n.strat > 1) legend(pos.legend, paste("recurrent event strata =",1:x$n.strat), lty=1, col=color+(1:x$n.strat-1), xjust=1, cex=cex.legend, ...)
       else legend(pos.legend, c("recurrent event"), lty=1, col=color, xjust=1, cex=cex.legend, ...)
     }
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
+  
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if (event.type==3){ # terminal
       
       if(plot.type==1){
@@ -206,9 +372,64 @@
         }
         
         if (conf.bands){
-          matplot(x$xD, x$lamD, col=color+x$n.strat, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+          if(is.null(x$family)) x$family = c(0,0)
+          if( (is.null(x$family[1])) | (x$family[1] %in% c(0,1,2,4)) ){
+            matplot(x$xD, x$lamD, col=color+x$n.strat, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+          }else{
+            par(mfrow=c(1,2))
+            matplot(x$xD, x$lamD, col=color+x$n.strat, type="l", lty=c(1,2,2), xlab=Xlab,ylab="Baseline hazard function", ylim=c(yymin,yymax), main=main, ...)
+            trapz <- function(x,y){
+              idx = 2:length(x)
+              return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+            }
+            # browser()
+            nblignes = nrow(x$lamD)-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xD
+            ord = x$lamD
+            # browser()
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            matplot(x=abs[-c(1)],
+                    y=cbind(matcumul[,(1:3)]),
+                    col=color+x$n.strat, type="l", lty=c(1,2,2),
+                    main=main,
+                    xlab=Xlab, 
+                    ylab="Cumulative baseline hazard function"
+            )
+          }
         }else{
-          plot(x$xD, x$lamD[,1], col=color+x$n.strat, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+          if(is.null(x$family)) x$family = c(0,0)
+          if( (is.null(x$family[1])) | (x$family[1] %in% c(0,1,2,4)) ){
+            plot(x$xD, x$lamD[,1], col=color+x$n.strat, type="l", lty=1, xlab=Xlab,ylab=Ylab, ylim=c(yymin,yymax), main=main, ...)
+          }else{
+            par(mfrow=c(1,2))
+            plot(x$xD, x$lamD[,1], col=color+x$n.strat, type="l", lty=1, xlab=Xlab,ylab="Baseline hazard function", ylim=c(yymin,yymax), main=main, ...)
+            trapz <- function(x,y){
+              idx = 2:length(x)
+              return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+            }
+            nblignes = nrow(x$lamD)-1
+            matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+            abs = x$xD
+            ord = x$lamD
+            for(j in 1:nblignes){
+              matcumul[j, ] = c(
+                trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+                trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+              )
+            }
+            plot(x=abs[-c(1)], y=cbind(matcumul[,1]), 
+                 col=color+x$n.strat, type="l", lty=1, main=main, xlab=Xlab, 
+                 ylab="Cumulative baseline hazard function"
+            )
+          }
         }
       }else{
         
@@ -239,6 +460,7 @@
       }
       legend(pos.legend, c("terminal event"), lty=1, col=color+x$n.strat, xjust=1, cex=cex.legend, ...)
     }
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     return(invisible())
   }

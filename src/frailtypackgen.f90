@@ -949,8 +949,8 @@
                     if (intcens.eq.1) then
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpassplines_intcens)
                     else 
-                        call dblepr("subroutine FRAILPENALGEN : appel marq98j (def dans aaOptim.f90)", -1, 0.d0, 1)
-                        call dblepr("NB : marq98j necessite vraisemblance def dans funcpassplines.f90", -1, 0.d0, 1)	
+                        !call dblepr("subroutine FRAILPENALGEN : appel marq98j (def dans aaOptim.f90)", -1, 0.d0, 1)
+                        !call dblepr("NB : marq98j necessite vraisemblance def dans funcpassplines.f90", -1, 0.d0, 1)	
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpassplines)
                     endif
                 else
@@ -961,11 +961,11 @@
 				    call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpas_tps)
 				endif
 			    if (familyrisk.eq.3) then
-                    call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpasgenadditif_tps", -1, 0.d0, 1)
+                    !call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpasgenadditif_tps", -1, 0.d0, 1)
                     call marq98j_modadd(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_tps)
 				endif
 				if (familyrisk.eq.4) then
-                    call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditifalternatif_tps", -1, 0.d0, 1)
+                    !call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditifalternatif_tps", -1, 0.d0, 1)
                     call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditifalternatif_tps)
 				endif
                 !call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpas_tps)
@@ -993,19 +993,19 @@
                         call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasweib_intcens)
                     else
 					    if (familyrisk.eq.0) then
-                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenweib", -1, 0.d0, 1)
+                            !call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenweib", -1, 0.d0, 1)
                             call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenweib)
 						endif
 						if (familyrisk.eq.1) then
-                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenloglogistic", -1, 0.d0, 1)
+                            !call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenloglogistic", -1, 0.d0, 1)
                             call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenloglogistic)
 						endif
 						if (familyrisk.eq.2) then
-                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenlognormal", -1, 0.d0, 1)
+                            !call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenlognormal", -1, 0.d0, 1)
                             call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenlognormal)
 						endif
 						if (familyrisk.eq.3) then
-						    call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpasgenadditif_pen", -1, 0.d0, 1)
+						    !call dblepr("FRAILPENALGEN : appel marq98j_modadd et funcpasgenadditif_pen", -1, 0.d0, 1)
                             call marq98j_modadd(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_pen)
                             !call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditif", -1, 0.d0, 1)
                             !call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif)
@@ -1013,7 +1013,7 @@
 							!call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_param)
 						endif
 						if (familyrisk.eq.4) then
-                            call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditif_alternatif", -1, 0.d0, 1)
+                            !call dblepr("FRAILPENALGEN : appel marq98j et funcpasgenadditif_alternatif", -1, 0.d0, 1)
                             call marq98j(k0,b,np,ni,v,res,ier,istop,effet,ca,cb,dd,funcpasgenadditif_alternatif)
 						endif
                     endif

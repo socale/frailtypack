@@ -2,7 +2,7 @@
 % Please edit documentation in R/loocv.R
 \name{loocv}
 \alias{loocv}
-\title{Leave-one-out crossvalidation for the one-step Joint surrogate model for the evaluation of a 
+\title{The trials leave-one-out crossvalidation for the one-step Joint surrogate model for evaluating a 
 canditate surrogate endpoint.}
 \usage{
 loocv(object, unusedtrial, var.used = "error.estim", alpha. = 0.05, 
@@ -10,7 +10,7 @@ dec = 3, print.times = TRUE)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
-(output from calling the function \code{jointSurroPenal}).}
+(output from calling the function \code{jointSurroPenal} or \code{jointSurroCopPenal}).}
 
 \item{unusedtrial}{A list of trial not to be taken into account in the cross-validation.
 This parameter is useful when after excluding some trials, the model is facing 
@@ -31,16 +31,23 @@ and confidence intervals. Default of 3 digits is used.}
 \item{print.times}{a logical parameter to print estimation time. Default is TRUE.}
 }
 \value{
-Returns an object of class \code{jointSurroPenalloocv} containing a dataframe (\code{result}) 
+This function returns an object of class \code{jointSurroPenalloocv} containing:
+\item{result}{A dataframe 
 including for each trial the number of included subjects, the observed 
 treatment effect on the surrogate endpoint, the observed treatment effect on
 the true endpoint and the predicted treatment effect on the 
 true enpoint with the associated prediction intervals. If the observed treatment effect on the true 
-endpoint is included into the prediction interval, the last columns contains "*".
+endpoint is included into the prediction interval, the last columns contains "*".} 
+\item{ntrial}{The number of trials in the meta-analysis}
+\item{notconvtrial}{The vector of trials that have not converged}
+\item{pred.error}{The prediction error, corresponding to the number of cases where the prediction interval does not included the observed treatment effect on T}
+\item{different.models}{The list of the \code{G} models obtained after excuded for the \code{i-th} trial}
+\item{loocv.summary}{A dataframe of the estimates for the \code{G} models; each raw including the results
+ without the subjects of the given trial}
 }
 \description{
 {
-Leave-one-out crossvalidation for the evaluation of the joint surrogate model 
+The trials leave-one-out crossvalidation for evaluating the joint surrogate model 
 }
 }
 \examples{
@@ -48,19 +55,24 @@ Leave-one-out crossvalidation for the evaluation of the joint surrogate model
 
 \dontrun{
 # Generation of data to use 
- data.sim <- jointSurrSimul(n.obs=600, n.trial = 30,cens.adm=549.24, 
-         alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7, 
-         sigma.t = 0.7, rsqrt = 0.8, betas = -1.25, betat = -1.25, 
-         full.data = 0, random.generator = 1, seed = 0, 
-         nb.reject.data = 0)
+ data.sim <- jointSurrSimul(n.obs=300, n.trial = 10,cens.adm=549.24,
+             alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7,
+             sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25,
+             full.data = 0, random.generator = 1, seed = 0,
+             nb.reject.data = 0)
 
 ###--- Joint surrogate model ---###
  
-joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2, 
-                   nb.mc = 300, nb.gh = 20)
-                
-dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = 26)
+joint.surro.sim.MCGH <- jointSurroPenal(data = data.sim, int.method = 2,
+                        nb.mc = 300, nb.gh = 20, print.iter = F)
+
+# Example of loocv taking into accountn ony trial 2 trials (1 and 3)
+dloocv <- loocv(joint.surro.sim.MCGH, unusedtrial = c(2,4:10))
 dloocv$result
+dloocv$loocv.summary
+
+# In order to summarize all the estimated models during the loocv proccess:
+dloocv$different.models
 
 }
 
@@ -72,7 +84,7 @@ measure for meta-analytic surrogate endpoint validation." Pharmaceutical
 Statistics, 5(3), 173-186.ISSN 1539-1612.
 }
 \seealso{
-\code{\link{jointSurroPenal}}
+\code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 }
 \author{
 Casimir Ledoux Sofeu \email{casimir.sofeu@u-bordeaux.fr}, \email{scl.ledoux@gmail.com} and 

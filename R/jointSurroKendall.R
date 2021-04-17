@@ -1,3 +1,7 @@
+
+# test de gitHub et Git IB
+
+
 jointSurroKendall <- function(theta, gamma, alpha = 1, eta = 1, adaptative = 0, npg = 20, ui = 1,
                               ui.chap.Essai=rep(0,4), invBi.chol.Essai.k = matrix(rep(0,16), nrow = 4, ncol = 4)){
   

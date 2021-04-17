@@ -10,13 +10,13 @@ citEntry(entry = "Article",
   volume       = "47",
   number       = "4",
   pages        = "1-28",
-  url          = "http://www.jstatsoft.org/v47/i04/",
+  url          = "https://www.jstatsoft.org/v47/i04/",
 
   textVersion  =
   paste("Virginie Rondeau, Yassin Mazroui, Juan R. Gonzalez (2012).",
         "frailtypack: An R Package for the Analysis of Correlated Survival Data with Frailty Models Using Penalized Likelihood Estimation or Parametrical Estimation.",
         "Journal of Statistical Software, 47(4), 1-28.",
-        "URL http://www.jstatsoft.org/v47/i04/.")
+        "URL https://www.jstatsoft.org/v47/i04/")
 )
 
 citEntry(entry = "Article",

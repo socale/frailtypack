@@ -77,7 +77,11 @@
     ut1=0.d0
     ut2=0.d0
     dut2=0.d0
-    dut1=0.d0        
+    dut1=0.d0
+    varS1=0.d0
+    varT1=0.d0
+    covST1=0.d0 
+    rang = 0    
     do i=1,np
         bh(i)=b(i)
     end do 
@@ -133,7 +137,7 @@
         if(indice_covST==1)then
             covST1 =bh(np-nva-nparamfrail+indice_eta+indice_theta+indice_varS+indice_varT+indice_covST)
         else
-            covST1=0
+            covST1=0.d0
         endif
         
         if(type_joint==2) then !on ajoute les parametre associes au modele complet avec effets aleatoires correles
@@ -690,7 +694,13 @@
                         integrale3(ig) = resultatInt(1) ! on recupere le premier element car les deux autres sont supposes etre la precision et la variance 
                     end if
                     !!print*,"funcpajsplines_surr ligne 312 nsujeti(ig)=",nsujeti(ig),"resultatInt=",integrale3(ig)  
-                end do    
+                end do 
+				!call intpr("control_affichage", -1, control_affichage, 1)
+				! if (control_affichage < 2) then
+					! call dblepr("valeur des integrales itteration 1", -1, integrale3, ntrials)
+					! control_affichage = control_affichage + 1
+				! endif
+				
             endif
             
             !cas effets aleatoires correles

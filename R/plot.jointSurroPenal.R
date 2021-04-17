@@ -36,13 +36,13 @@
 ##' @param endpoint A binary that indicates the endpoint to represent. \code{0} for
 ##' the surrogate endpoint, \code{1} for the true endpoint, and \code{2} for both
 ##' surrogate endpoint and true endpoint. The default is \code{2}.
-##' @param scale A numeric that allows to rescale the survival times. If no change is need the
+##' @param scale A numeric that allows to rescale (by multiplication) the survival times. If no change is need the
 ##' argument is set to 1, the default value. eg: 1/365 aims to convert days to years .
 ##' @param ... other unused arguments.
 ##' @return Print a plot of the baseline survival or hazard functions for each
 ##' type of event or both with the confidence bands or not (conf.bands
 ##' argument)
-##' @seealso \code{\link{jointSurroPenal}}
+##' @seealso \code{\link{jointSurroPenal}, \link{jointSurroCopPenal}}
 ##' @keywords surrogate
 ##' @export
 ##' @examples

@@ -13,19 +13,25 @@ jointSurroTKendall(object = NULL, theta, gamma, alpha = 1, zeta = 1,
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class. The default is \code{NULL}}
 
-\item{theta}{Variance of the individual-level random effect, \eqn{\omega_{ij}}. 
+\item{theta}{Variance of the individual-level random effect, \if{latex}{\eqn{\omega_{ij}}} 
+\if{html}{\eqn{\omega}\out{<sub>ij</sub>}}. 
 Required if \code{object} is set to \code{NULL}}
 
-\item{gamma}{Variance of the trial-level random effect associated with the baseline risk, \eqn{u_i}. 
+\item{gamma}{Variance of the trial-level random effect associated with the baseline risk, 
+\if{latex}{\eqn{u_i}} \if{html}{\code{u}\out{<sub>i</sub>}}. 
 Required if \code{object} is set to \code{NULL}. The default is \code{3.5}.}
 
-\item{alpha}{Power parameter associated with \eqn{u_i}. Required if \code{object} is set to \code{NULL}.
+\item{alpha}{Power parameter associated with \if{latex}{\eqn{u_i}} 
+\if{html}{\code{u}\out{<sub>i</sub>}}. Required if \code{object} is set to \code{NULL}.
+ The default is \code{1}.}
+
+\item{zeta}{Power parameter associated with \if{latex}{\eqn{\omega_{ij}}} 
+\if{html}{\eqn{\omega}\out{<sub>ij</sub>}}. Required if \code{object} is set to \code{NULL} 
 The default is \code{1}.}
 
-\item{zeta}{Power parameter associated with \eqn{\omega_{ij}}. Required if \code{object} is set to \code{NULL} 
-The default is \code{1}.}
-
-\item{sigma.v}{Covariance matrix  of the random effects treatment-by-trial interaction \eqn{(v_{S_i},v_{T_i})}}
+\item{sigma.v}{Covariance matrix  of the random effects treatment-by-trial interaction 
+(\if{latex}{\eqn{v_{S_i}}, \eqn{v_{T_i}}}\if{html}{v\out{<sub>S<sub>i</sub></sub>},
+v\out{<sub>T<sub>i</sub></sub>}})}
 
 \item{int.method}{A numeric, indicates the integration method: \code{0} for Monte carlo and 
 \code{1} for Gaussian-Hermite quadrature. The default is \code{0}}
@@ -61,7 +67,7 @@ This function return the estimated Kendall's \eqn{\tau}
 This function estimate the Kendall's \eqn{\tau} based on the joint surrogate model 
 described in \link{jointSurroPenal} (Sofeu \emph{et al.}, 2018), for the evaluation of 
 a candidate surrogate endpoints, at the individual-level . We used the Monte-carlo and the gaussian Hermite 
-quadrature methods for numerical integration. In case of Gaussian Hermite quadrature, 
+quadrature methods for numerical integration. in the event of Gaussian Hermite quadrature, 
 it is better to choose at least \code{20} quadature nodes for better results. 
 The actual value of nodes used is the maximum between \code{20} and \code{nb.gh}
 }
@@ -72,13 +78,14 @@ Ktau2 <- jointSurroTKendall(theta = 1, gamma = 0.8, alpha = 1, zeta = 1,
 
 ###---Kendall's \\eqn{\\tau} from a joint surrogate model ---###
 
+\dontrun{
 data.sim <-jointSurrSimul(n.obs=400, n.trial = 20,cens.adm=549, 
           alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, 
-          sigma.s = 0.7, sigma.t = 0.7,rsqrt = 0.8, betas = -1.25, 
+          sigma.s = 0.7, sigma.t = 0.7,cor = 0.8, betas = -1.25, 
           betat = -1.25, full.data = 0, random.generator = 1, 
           seed = 0, nb.reject.data = 0)
           
-\dontrun{
+
 ###---Estimation---###
 joint.surrogate <- jointSurroPenal(data = data.sim, nb.mc = 300, 
                    nb.gh = 20, indicator.alpha = 1, n.knots = 6)

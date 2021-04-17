@@ -68,16 +68,80 @@
     stop("estimator must be 'Hazard' or 'Survival'")
   }	
   
-  if(missing(main)) main<-""  
+  if(missing(main)) main<-""
+  if(!is.null(x$family)){
+    x$family2 = x$family
+  }else{
+    x$family2 = 0
+  }
   
   if(plot.type==1){ # hazard
-    
+    # browser()
     if(conf.bands){
-      matplot(x$x[,1], x$lam[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, main=main, ...)
-      for (i in (1:x$n.strat)[-1]) matlines(x$x[,i], x$lam[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+      if( (is.null(x$family)) | (x$family2 %in% c(0,1,2,4)) ){
+        par(mfrow=c(1,1))
+        matplot(x$x[,1], x$lam[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,ylab=Ylab, main=main, ...)
+        for (i in (1:x$n.strat)[-1]) matlines(x$x[,i], x$lam[,,i], col=color+(i-1), type="l", lty=c(1,2,2), ...)
+      }else{
+        par(mfrow=c(1,2))
+        matplot(x$x[,1], x$lam[,,1], col=color, type="l", lty=c(1,2,2), xlab=Xlab,
+                ylab="Baseline hazard function", main=main, ...)
+        trapz <- function(x,y){
+          idx = 2:length(x)
+          return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+        }
+        nblignes = nrow(x$lam[,,1])-1
+        matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+        abs = x$x
+        ord = x$lam[,,1]
+        for(j in 1:nblignes){
+          matcumul[j, ] = c(
+            trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+            trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+            trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+          )
+        }
+        matplot(x=abs[-c(1)],
+                y=cbind(matcumul[,(1:3)]),
+                col=color, type="l", lty=c(1,2,2),
+                main=main,
+                xlab=Xlab, 
+                ylab="Cumulative baseline hazard function"
+        )
+      }
     }else{
-      plot(x$x[,1], x$lam[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, main=main, ...)
-      for (i in (1:x$n.strat)[-1]) lines(x$x[,i], x$lam[,1,i], col=color+(i-1), type="l", lty=1, ...)
+      if( (is.null(x$family)) | (x$family2 %in% c(0,1,2,4)) ){
+        par(mfrow=c(1,1))
+        plot(x$x[,1], x$lam[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab=Ylab, main=main, ...)
+        for (i in (1:x$n.strat)[-1]) lines(x$x[,i], x$lam[,1,i], col=color+(i-1), type="l", lty=1, ...)
+      }else{
+        par(mfrow=c(1,2))
+        plot(x$x[,1], x$lam[,1,1], col=color, type="l", lty=1, xlab=Xlab,ylab="Baseline hazard function", main=main, ...)
+        trapz <- function(x,y){
+          idx = 2:length(x)
+          return (as.double( (x[idx] - x[idx-1]) %*% (y[idx] + y[idx-1])) / 2)
+        }
+        nblignes = nrow(x$lam[,,1])-1
+        matcumul = matrix(NA, nrow = nblignes, ncol = 3)
+        abs = x$x
+        ord = x$lam[,,1]
+        for(j in 1:nblignes){
+          matcumul[j, ] = c(
+            trapz(abs[1:(j+1)], ord[1:(j+1), 1]),
+            trapz(abs[1:(j+1)], ord[1:(j+1), 2]),
+            trapz(abs[1:(j+1)], ord[1:(j+1), 3])
+          )
+        }
+        plot(x=abs[-c(1)], y=matcumul[,1], col=color, type="l", lty=1, xlab=Xlab,ylab="Cumulative baseline hazard function", main=main, ...)
+        # matplot(x=abs[-c(1)],
+        #         y=cbind(matcumul[,(1:3)]),
+        #         col=color, type="l", lty=c(1,2,2),
+        #         main=main,
+        #         xlab=Xlab, 
+        #         ylab="Cumulative baseline hazard function"
+        # )
+      }
+      
     }
     
   }else{ # survival

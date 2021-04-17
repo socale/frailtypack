@@ -53,18 +53,6 @@ module func_laplace
             - const_res4(individu_j)*dexp(wij + ui + vsi*dble(ve(individu_j,1)))&
             - const_res5(individu_j)*dexp(zeta*wij + alpha_ui*ui + vti*dble(ve(individu_j,1)))
             
-        ! !print*,"res2s_sujet(individu_j)",res2s_sujet(individu_j)
-        ! !print*,"delta(individu_j)",delta(individu_j)
-        ! !print*,"deltastar(individu_j)",deltastar(individu_j)
-        ! !print*,"ui",ui
-        ! !print*,"alpha_ui",alpha_ui
-        ! !print*,"vsi",vsi
-        ! !print*,"vti",vti
-        ! !print*,"res2_dcs_sujet(individu_j)",res2_dcs_sujet(individu_j)
-        ! !print*,"dble(ve(individu_j,1))",dble(ve(individu_j,1))
-        ! !print*,"theta2",theta2
-        ! !print*,"res",res
-        !stop
         if(Test==1)then ! je fais ceci pour evaluer le calcul integral par laplace
             res=-bh(1) + 5.d0*dlog(bh(1))
         endif
@@ -370,7 +358,55 @@ module func_laplace
     return
     endfunction funcpaXi_chapeau
     
+    ! joint frailty_copula
+    double precision function funcpaLaplace_copula(b,np,id,thi,jd,thj,k0)
+        use var_surrogate, only:essai_courant,nsujeti,frailt_base
+        use fonction_A_integrer,only:Integrant_Copula
+        
+        implicit none
+         
+        integer,intent(in)::id,jd,np
+        integer::i
+        double precision,dimension(np),intent(in)::b
+        double precision,dimension(2),intent(in)::k0
+        double precision,intent(in)::thi,thj
+        double precision::vsi,vti,res,ui
+        double precision,dimension(np)::bh
+         
+        do i=1,np
+            bh(i)=b(i)
+        end do
+        
+        if (id.ne.0) bh(id)=bh(id)+thi
+        if (jd.ne.0) bh(jd)=bh(jd)+thj
+        
+        vsi=bh(1)
+        vti=bh(2)
+        if(frailt_base==0) then! on annule simplement le terme avec ui si on ne doit pas tenir compte de
+            ui=0.d0
+        else
+            ui=bh(3)
+        endif
+        res = Integrant_Copula(vsi,vti,ui,essai_courant,nsujeti(essai_courant))
+        if(res == 0.d0) res = 1.d-299
+        ! call dblepr("res funcpaadaptativ = ", -1, res, 1)
+        res = -(- dlog(res))
+        ! call dblepr("log res funcpaadaptativ = ", -1, res, 1)
+        
+        if ((res.ne.res).or.(abs(res).ge. 1.d30)) then ! pour test infini et NaN
+            funcpaLaplace_copula =-1.d9
+            !call dblepr("log res funcpaadaptativ = ", -1, res, 1)
+            goto 126
+        else
+            funcpaLaplace_copula = res
+        end if
     
-
+        126    continue
+        
+        !funcpaLaplace_copula = -((bh(1)+1.d0) ** 2.d0 + (bh(2)+2.d0) ** 2.d0 + (bh(3)-6.d0) ** 2.d0 )
+        return
+    
+    endfunction funcpaLaplace_copula
+    
 endmodule func_laplace
     
