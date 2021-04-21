@@ -3,6 +3,7 @@
 #' Prints a short summary of parameter estimates of a joint frailty model, or
 #' more generally an object of class 'frailtyPenal' for joint frailty models.
 #' 
+#' @importFrom utils type.convert
 #' 
 #' @usage
 #' 

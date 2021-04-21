@@ -609,10 +609,8 @@
 #' GenfrailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,
 #' family, hazard = "Splines", n.knots, kappa, betaknots = 1, betaorder = 3,
 #' RandDist = "Gamma", init.B, init.Theta, init.Alpha, Alpha, maxit = 300, 
-#' nb.gh, nb.gl, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, 
-#' print.times = TRUE)
-#nb.int, cross.validation = FALSE, jointGeneral, 
-#initialize = TRUE, init.Ksi, Ksi, init.Eta
+#' nb.gh, nb.gl, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE, 
+#' cross.validation, jointGeneral, nb.int, initialize, init.Ksi, Ksi, init.Eta)
 #' @param formula A formula object, with the response on the left of a
 #' '\out{&#126;}' operator, and the terms on the right. The response must be a
 #' survival object as returned by the '\code{Surv}' function 
@@ -698,26 +696,7 @@
 #' gradient (see Details), \eqn{10}\out{<sup>-3</sup>} by default.
 #' @param print.times A logical parameter to print iteration process. Default
 #' is TRUE.
-#@param nb.int Not relevant yet !! 
-#Number of time intervals (between 1 and 20) for the parametric
-#hazard functions ("Piecewise-per", "Piecewise-equi"). In a joint model, you
-#need to specify a number of time interval for both recurrent hazard function
-#and the death hazard function (vector of length 2).
-#@param initialize Not relevant yet (only for joint nested frailty models) !! 
-#Option \code{TRUE} indicates fitting an appropriate standard joint frailty
-#model (without group effect, only the subgroup effect) to provide initial
-#values for the joint nested model. Default is \code{TRUE}.
-#@param init.Ksi Not relevant yet ' (only for joint nested frailty models) !! 
-#Initial value for parameter \eqn{\xi}.
-#@param init.Eta Not relevant yet 
-#(only for general joint and joint nested frailty models) !! 
-#Only for general joint and joint nested frailty models :
-#initial value for the variance \eqn{\eta} of the frailty \eqn{v_i} (general
-#joint model) and of the frailty \eqn{\omega_i} (joint nested frailty model).
-#@param Ksi Not relevant yet (only for joint nested frailty models) !!
-#input \code{"None"} indicates a joint nested frailty model without 
-#the parameter \eqn{\xi}.
-#@param cross.validation Not implemented yet for the generalized settings.
+#' @param cross.validation Not implemented yet for the generalized settings.
 #Logical value. Is cross validation procedure used
 #for estimating smoothing parameter in the penalized likelihood estimation?
 #If so a search of the smoothing parameter using cross validation is done,
@@ -725,12 +704,31 @@
 #strata, neither for interval-censored data. The cross validation has been
 #implemented for a Cox proportional hazard model, with no covariates. The
 #default is FALSE.
-#@param jointGeneral Not relevant yet. 
+#' @param jointGeneral Not implemented yet for the generalized settings.
 #Logical value. Does the model include two independent
 #random effects? If so, this will fit a general joint frailty model with an
 #association between the recurrent events and a terminal event (explained by
 #the variance \eqn{\theta}) and an association amongst the recurrent events
 #(explained by the variance \eqn{\eta}).
+#' @param nb.int Not implemented yet for the generalized settings.
+#Number of time intervals (between 1 and 20) for the parametric
+#hazard functions ("Piecewise-per", "Piecewise-equi"). In a joint model, you
+#need to specify a number of time interval for both recurrent hazard function
+#and the death hazard function (vector of length 2).
+#' @param initialize Not implemented yet for the generalized settings.
+#Option \code{TRUE} indicates fitting an appropriate standard joint frailty
+#model (without group effect, only the subgroup effect) to provide initial
+#values for the joint nested model. Default is \code{TRUE}.
+#' @param init.Ksi Not implemented yet for the generalized settings.
+#Initial value for parameter \eqn{\xi}.
+#' @param init.Eta Not implemented yet for the generalized settings.
+#(only for general joint and joint nested frailty models) !! 
+#Only for general joint and joint nested frailty models :
+#initial value for the variance \eqn{\eta} of the frailty \eqn{v_i} (general
+#joint model) and of the frailty \eqn{\omega_i} (joint nested frailty model).
+#' @param Ksi Not implemented yet for the generalized settings.
+#input \code{"None"} indicates a joint nested frailty model without 
+#the parameter \eqn{\xi}.
 #' @return
 #'
 #' The following components are included in a 'frailtyPenal' object for each

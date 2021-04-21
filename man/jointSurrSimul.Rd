@@ -4,14 +4,38 @@
 \alias{jointSurrSimul}
 \title{Generate survival times for two endpoints using the joint frailty surrogate model}
 \usage{
-jointSurrSimul(n.obs = 600, n.trial = 30, cens.adm = 549.24,
-  alpha = 1.5, theta = 3.5, gamma = 2.5, zeta = 1, sigma.s = 0.7,
-  sigma.t = 0.7, cor = 0.8, betas = -1.25, betat = -1.25,
-  frailt.base = 1, lambda.S = 1.8, nu.S = 0.0045, lambda.T = 3,
-  nu.T = 0.0025, ver = 1, typeOf = 1, equi.subj.trial = 1,
-  equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
-  full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
-  seed = 0, nb.reject.data = 0, pfs = 0)
+jointSurrSimul(
+  n.obs = 600,
+  n.trial = 30,
+  cens.adm = 549.24,
+  alpha = 1.5,
+  theta = 3.5,
+  gamma = 2.5,
+  zeta = 1,
+  sigma.s = 0.7,
+  sigma.t = 0.7,
+  cor = 0.8,
+  betas = -1.25,
+  betat = -1.25,
+  frailt.base = 1,
+  lambda.S = 1.8,
+  nu.S = 0.0045,
+  lambda.T = 3,
+  nu.T = 0.0025,
+  ver = 1,
+  typeOf = 1,
+  equi.subj.trial = 1,
+  equi.subj.trt = 1,
+  prop.subj.trial = NULL,
+  prop.subj.trt = NULL,
+  full.data = 0,
+  random.generator = 1,
+  random = 0,
+  random.nb.sim = 0,
+  seed = 0,
+  nb.reject.data = 0,
+  pfs = 0
+)
 }
 \arguments{
 \item{n.obs}{Number of considered  subjects. The default is \code{600}.}

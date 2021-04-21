@@ -4,15 +4,41 @@
 \alias{jointSurrCopSimul}
 \title{Generate survival times for two endpoints using the joint frailty-copula model for surrogacy}
 \usage{
-jointSurrCopSimul(n.obs = 600, n.trial = 30, prop.cens = 0,
-  cens.adm = 549, alpha = 1.5, gamma = 2.5, sigma.s = 0.7,
-  sigma.t = 0.7, cor = 0.9, betas = c(-1.25, 0.5), betat = c(-1.25,
-  0.5), frailt.base = 1, lambda.S = 1.3, nu.S = 0.0025, lambda.T = 1.1,
-  nu.T = 0.0025, ver = 2, typeOf = 1, equi.subj.trial = 1,
-  equi.subj.trt = 1, prop.subj.trial = NULL, prop.subj.trt = NULL,
-  full.data = 0, random.generator = 1, random = 0, random.nb.sim = 0,
-  seed = 0, nb.reject.data = 0, thetacopule = 6, filter.surr = c(1, 1),
-  filter.true = c(1, 1), covar.names = "trt", pfs = 0)
+jointSurrCopSimul(
+  n.obs = 600,
+  n.trial = 30,
+  prop.cens = 0,
+  cens.adm = 549,
+  alpha = 1.5,
+  gamma = 2.5,
+  sigma.s = 0.7,
+  sigma.t = 0.7,
+  cor = 0.9,
+  betas = c(-1.25, 0.5),
+  betat = c(-1.25, 0.5),
+  frailt.base = 1,
+  lambda.S = 1.3,
+  nu.S = 0.0025,
+  lambda.T = 1.1,
+  nu.T = 0.0025,
+  ver = 2,
+  typeOf = 1,
+  equi.subj.trial = 1,
+  equi.subj.trt = 1,
+  prop.subj.trial = NULL,
+  prop.subj.trt = NULL,
+  full.data = 0,
+  random.generator = 1,
+  random = 0,
+  random.nb.sim = 0,
+  seed = 0,
+  nb.reject.data = 0,
+  thetacopule = 6,
+  filter.surr = c(1, 1),
+  filter.true = c(1, 1),
+  covar.names = "trt",
+  pfs = 0
+)
 }
 \arguments{
 \item{n.obs}{Number of considered  subjects. The default is \code{600}.}

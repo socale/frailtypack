@@ -4,14 +4,16 @@
 \name{dataMultiv}
 \alias{dataMultiv}
 \title{Simulated data for two types of recurrent events and a terminal event}
-\format{This data frame contains the following columns: \describe{
+\format{
+This data frame contains the following columns: \describe{
 \item{PATIENT}{identification of patient} \item{obs}{number of observation
 for a patient} \item{TIME0}{start of interval} \item{TIME1}{end of interval
 (death or censoring time)} \item{INDICREC}{recurrent of type 1 status (0:no,
 1:yes)} \item{INDICMETA}{recurrent of type 2 status (0:no, 1:yes)}
 \item{INDICDEATH}{censoring status (0:alive, 1:death)} \item{v1}{dichotomous
 covariate (0,1)} \item{v2}{dichotomous covariate (0,1)}
-\item{v3}{dichotomous covariate (0,1)} \item{TIMEGAP}{time to event} }}
+\item{v3}{dichotomous covariate (0,1)} \item{TIMEGAP}{time to event} }
+}
 \usage{
 data(dataMultiv)
 }

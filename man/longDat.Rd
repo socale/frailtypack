@@ -4,13 +4,15 @@
 \name{longDat}
 \alias{longDat}
 \title{Longitudinal semicontinuous biomarker dataset (TPJM)}
-\format{This data frame contains the following columns: 
+\format{
+This data frame contains the following columns: 
 \describe{
 \item{id}{The identification number of a patient}
 \item{timej}{The measurement times of the biomarker}
 \item{trtY}{Treatment covariate}
 \item{Y}{Biomarker value}
-}}
+}
+}
 \usage{
 data(longDat)
 }

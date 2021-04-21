@@ -4,12 +4,14 @@
 \name{dataNested}
 \alias{dataNested}
 \title{Simulated data with two levels of grouping}
-\format{This data frame contains the following columns: \describe{
+\format{
+This data frame contains the following columns: \describe{
 \item{group}{group identification variable} \item{subgroup}{subgroup
 identification variable} \item{t1}{start of interval (0 or truncated time)}
 \item{t2}{end of interval (death or censoring time)} \item{event}{censoring
 status (0: alive, 1: death)} \item{cov1}{dichotomous covariate (0,1)}
-\item{cov2}{dichotomous covariate (0,1)} }}
+\item{cov2}{dichotomous covariate (0,1)} }
+}
 \source{
 V. Rondeau, L. Filleul, P. Joly (2006). Nested frailty models using maximum
 penalized likelihood estimation. \emph{Statistics in Medecine}, \bold{25},

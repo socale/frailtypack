@@ -5,7 +5,8 @@
 \alias{colorectalLongi}
 \title{Follow-up of metastatic colorectal cancer patients : longitudinal
 measurements of tumor size}
-\format{This data frame contains the following columns: \describe{
+\format{
+This data frame contains the following columns: \describe{
 \item{id}{identification of each subject. Repeated for each recurrence}
 \item{year}{time of visit counted in years from baseline}
 \item{tumor.size}{Individual longitudinal measurement of transformed
@@ -15,7 +16,8 @@ which treatment arm a patient was allocated? 1: sequential (S); 2:
 combination (C)} \item{age}{Age at baseline: 1: <50 years, 2: 50-69 years,
 3: >69 years} \item{who.PS}{WHO performance status at baseline: 1: status 0,
 2: status 1, 3: status 2} \item{prev.resection}{Previous resection of the
-primate tumor?  0: No, 1: Yes} }}
+primate tumor?  0: No, 1: Yes} }
+}
 \usage{
 data(colorectalLongi)
 }

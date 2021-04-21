@@ -7,8 +7,8 @@
 GenfrailtyPenal(formula, formula.terminalEvent, data, recurrentAG = FALSE,
 family, hazard = "Splines", n.knots, kappa, betaknots = 1, betaorder = 3,
 RandDist = "Gamma", init.B, init.Theta, init.Alpha, Alpha, maxit = 300, 
-nb.gh, nb.gl, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, 
-print.times = TRUE)
+nb.gh, nb.gl, LIMparam = 1e-3, LIMlogl = 1e-3, LIMderiv = 1e-3, print.times = TRUE, 
+cross.validation, jointGeneral, nb.int, initialize, init.Ksi, Ksi, init.Eta)
 }
 \arguments{
 \item{formula}{A formula object, with the response on the left of a
@@ -117,6 +117,20 @@ gradient (see Details), \eqn{10}\out{<sup>-3</sup>} by default.}
 
 \item{print.times}{A logical parameter to print iteration process. Default
 is TRUE.}
+
+\item{cross.validation}{Not implemented yet for the generalized settings.}
+
+\item{jointGeneral}{Not implemented yet for the generalized settings.}
+
+\item{nb.int}{Not implemented yet for the generalized settings.}
+
+\item{initialize}{Not implemented yet for the generalized settings.}
+
+\item{init.Ksi}{Not implemented yet for the generalized settings.}
+
+\item{Ksi}{Not implemented yet for the generalized settings.}
+
+\item{init.Eta}{Not implemented yet for the generalized settings.}
 }
 \value{
 The following components are included in a 'frailtyPenal' object for each

@@ -5,14 +5,16 @@
 \alias{dataNCC}
 \title{Simulated data for recurrent events and a terminal event with weigths using
 nested case-control design}
-\format{This data frame contains the following columns: \describe{
+\format{
+This data frame contains the following columns: \describe{
 \item{id}{identification of patient} \item{cov1}{dichotomous covariate
 (0,1)} \item{cov2}{dichotomous covariate (0,1)} \item{t.start}{start of
 interval} \item{t.stop}{end of interval (death or censoring time)}
 \item{gaptime}{time to event} \item{event}{recurrent event status (0:no,
 1:yes)} \item{deathdays}{time of terminal event (death or right-censoring)}
 \item{death}{censoring status (0:alive, 1:death)} \item{ncc.wts}{weights for
-NCC design} }}
+NCC design} }
+}
 \usage{
 data(dataNCC)
 }
