@@ -32,7 +32,7 @@ time-dependent covariates. The default is FALSE.}
 \code{"AH"} for an additive hazards model,
 \code{"PO"} for a proportional odds model and 
 \code{"probit"} for a probit model. 
-A vector of lenght 2 is expected for joint models 
+A vector of length 2 is expected for joint models 
 (e.g., \code{family=c("PH","PH")}).}
 
 \item{hazard}{Type of hazard functions: 
@@ -352,7 +352,7 @@ where
 (\eqn{t} | \bold{\eqn{x}}\out{<sub>ij</sub>} ; \bold{\eqn{\xi}})
 designates the survival function for an average value of the frailty.
 
-Following Liu et al, the latter function is expressed in terms of 
+Following Liu et al. (2017, 2018), the latter function is expressed in terms of 
 a link function \eqn{g}(.) and a linear predictor 
 \eqn{\eta}\out{<sub>ij</sub>}
 (\eqn{t}, \bold{\eqn{x}}\out{<sub>ij</sub>}; \bold{\eqn{\xi}}) 
@@ -383,7 +383,7 @@ PROM for "Probit Model" and AHM for "Additive Hazards Model".
 {\figure{gsm4.png}{options: width="100\%"}}
 
 
-\bold{I.(a) Fully parameter case}
+\bold{I.(a) Fully parametric case}
 
 In the fully parametric case, linear predictors considered are of the form
 
@@ -446,7 +446,7 @@ The frailty term acts differently for the two survival functions
 \eqn{u}\out{<sub>i</sub>}\out{<sup>&#945;</sup>} for the death one). 
 The covariates could be different for the recurrent and terminal event parts.
 
-\bold{II.(a) Fully parameter case}
+\bold{II.(a) Fully parametric case}
 
 For the \eqn{j}\out{<sup>th</sup>} recurrence (j=1,...,n\out{<sub>i</sub>}) 
 and the \eqn{i}\out{<sup>th</sup>} patient (i=1,...,N), 
@@ -470,7 +470,7 @@ are two vectors of baseline covariates associated with
 recurrent and terminal events.
 
 - \bold{\eqn{\xi}}\out{<sub>R</sub>} and \bold{\eqn{\xi}}\out{<sub>D</sub>} 
-are parameter vectors for recurrent and terminal events.
+are the parameter vectors for recurrent and terminal events.
 
 - \eqn{\alpha} is a parameter allowing more flexibility in the association 
 between recurrent and terminal events processes.
@@ -479,7 +479,7 @@ between recurrent and terminal events processes.
 drown from a \eqn{\Gamma}(1/\eqn{\theta},1/\eqn{\theta}).
 
 
-\bold{II.(b) Flexible semi-parameter case}
+\bold{II.(b) Flexible semi-parametric case}
 
 If one chooses to fit a PHM or an AHM for recurrent and/or terminal events, 
 a splines-based approach for modeling baseline hazard functions 
@@ -753,7 +753,7 @@ data, family, \dots)}
 
 \bold{OPTIMIZATION ALGORITHM}
 
-The estimated parameter are obtained using the robust Marquardt algorithm
+The estimated parameters are obtained using the robust Marquardt algorithm
 (Marquardt, 1963) which is a combination between a Newton-Raphson algorithm
 and a steepest descent algorithm. The iterations are stopped when 
 the difference between two consecutive log-likelihoods is small 
