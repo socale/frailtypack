@@ -76,7 +76,7 @@ Ktau1 <- jointSurroTKendall(theta = 3.5, gamma = 2.5, nb.gh = 32)
 Ktau2 <- jointSurroTKendall(theta = 1, gamma = 0.8, alpha = 1, zeta = 1, 
          nb.gh = 32)
 
-###---Kendall's \\eqn{\\tau} from a joint surrogate model ---###
+###---Kendall's \eqn{\tau} from a joint surrogate model ---###
 
 \dontrun{
 data.sim <-jointSurrSimul(n.obs=400, n.trial = 20,cens.adm=549, 

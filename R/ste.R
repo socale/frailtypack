@@ -94,9 +94,9 @@
 ##' PLOS ONE; 15, 1-25.
 ##' 
 ##' @keywords surrogate prediction ste Surrogate threshold effect
-##' @export
 ##' @importFrom stats optimize
 ##' @importFrom rootSolve uniroot.all
+##' @export
 ##' @examples
 ##' 
 ##' 

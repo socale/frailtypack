@@ -299,3 +299,40 @@ F77_SUB(jointsurrokendall)(
   
 
 void F77_SUB(test)(double *donnee, int *nrow, double *som);
+
+
+void
+  F77_SUB(frailpenalgen)(int *nsujetAux, int *ngAux, int *icenAux, int *nstAux, int *effetAux,
+          int *nzAux, double *axT, double *tt0Aux, double *tt1Aux,int *icAux,
+          int *groupeAux, int *nvaAux, double *strAux, double *vaxAux, int *AGAux,
+          int *noVar, int *maxitAux, int *irep1, int *np, double *b,
+          double *H_hessOut, double *HIHOut, double *resOut, double *LCV,
+          double *xTOut, double *lamTOut, double *xSuT, double *suTOut,
+          int *typeof0, int *equidistant, int *nbintervR0, int *mt,
+          int *ni, int *cpt, int *ier, double *k0, double *ddl, int *istop,
+          double *shapeweib, double *scaleweib, int *mt1, double *ziOut,
+          double *Resmartingale, double *martingaleCox, double *frailtypred,
+          double *frailtyvar, double *frailtysd, double *linearpred,
+          double *time, int *intcensAux, double *ttUAux,int *logNormal0,
+          int *timedep0, int *nbinnerknots0, int *qorder0,int *filtretps0,
+          double *BetaTpsMat, double *EPS, int *nbgh, int *familyrisk);
+		  
+void
+F77_SUB(jointgen)(int *nsujet0, int *ngrp, int *strAux, int *lignedc0, int *nz0,
+						double *axT, double *tt00, double *tt10, int *ic0, int *groupe0,
+						int *groupe00, int *fam0, double *tt0dc0, double *tt1dc0, int *icdc0,
+						double *tempdc, int *icdc00, int *nva10, double *vax0, int *nva20, double *vaxdc0,
+						double *vaxdc00, int *noVar, double *wtsvec0, int *maxit0, int *np, double *b,
+						double *H_hessOut, double *HIHOut, double *resOut, double *LCV, double *x1Out,
+						double *lamOut, double *xSu1, double *suOut, double *x2Out,
+						double *lam2Out, double *xSu2, double *su2Out, int *typeofequidist,
+						int *nbinterv0, int *mtaille, int *counts,
+						int *IerIstop, double *paraweib, double *MartinGales,
+						double *linearpred, double *linearpreddc, double *ziOut,
+						double *time, double *timedc, double *linearpredG, int *typeJoint0,
+						int *intcens0, int *indices0, double *ttU0, int *ordretmp, 
+						int *init_and_logN,
+						int *paratps, int *filtretps0, double *BetaTpsMat,
+						double *BetaTpsMatDc, double *EPS, int *nbgauss, 
+						int*familyrisk);
+						

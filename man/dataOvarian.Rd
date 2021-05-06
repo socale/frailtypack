@@ -4,7 +4,8 @@
 \name{dataOvarian}
 \alias{dataOvarian}
 \title{Advanced Ovarian Cancer dataset}
-\format{This data frame contains the following columns: 
+\format{
+This data frame contains the following columns: 
 \describe{
 \item{patientID}{The identification number of a patient} 
 \item{trialID}{The center in which a patient was treated}
@@ -14,7 +15,8 @@ and 1 = cyclophosphamide plus adriamycin plus cisplatin(CAP)}
 \item{statusS}{Censoring indicator for for Progression-free survival}
 \item{timeT}{The true endpoint (survival time)}
 \item{statusT}{Censoring indicator for survival time}
-}}
+}
+}
 \source{
 Ovarian cancer Meta-Analysis Project (1991). Cyclophosphamide plus cisplatin plus adriamycin
 versus Cyclophosphamide, doxorubicin, and cisplatin chemotherapy of ovarian carcinoma: 

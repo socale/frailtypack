@@ -4,10 +4,12 @@
 \name{bcos}
 \alias{bcos}
 \title{Breast Cosmesis Data}
-\format{A data frame with 94 observations and 3 variables: \describe{
+\format{
+A data frame with 94 observations and 3 variables: \describe{
 \item{left}{left end point of the breast retraction interval}
 \item{right}{right end point of the breast retraction interval}
-\item{treatment}{type of treatment received} }}
+\item{treatment}{type of treatment received} }
+}
 \source{
 Finkelstein, D.M. and Wolfe, R.A. (1985). A semiparametric model for
 regression analysis of interval-censored failure time data.

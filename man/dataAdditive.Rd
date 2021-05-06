@@ -4,13 +4,15 @@
 \name{dataAdditive}
 \alias{dataAdditive}
 \title{Simulated data as a gathering of clinical trials databases}
-\format{This data frame contains the following columns: \describe{
+\format{
+This data frame contains the following columns: \describe{
 \item{group}{identification variable} \item{t1}{start of interval (=0,
 because left-truncated data are not allowed)} \item{t2}{end of interval
 (death or censoring time)} \item{event}{censoring status (0:alive, 1:death,
 as acensoring indicator} \item{var1}{dichotomous covariate (=0 or 1,as a
 treatment variable)} \item{var2}{dichotomous covariate (=0 or 1,as a
-treatment variable)} }}
+treatment variable)} }
+}
 \source{
 V. Rondeau, S. Michiels, B.Liquet, and J.P. Pignon (2008). Investigating
 trial and treatment heterogeneity in an individual patient data

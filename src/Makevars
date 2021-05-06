@@ -45,6 +45,17 @@ funcpascpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpasweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpas_tps.o: aaOptim.o aaOptimres.o Aparameters.o
 
+# Nouvel ajout pour la généralisation
+frailtypackgen.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenweib.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenloglogistic.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenlognormal.o: aaUseFunction.o aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenadditif_pen.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenadditif_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenadditif_alternatif.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpasgenadditifalternatif_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+
+
 joint.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajgeneral.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajsplines.o: aaOptim.o aaOptimres.o Aparameters.o
@@ -59,6 +70,13 @@ funcpajsplines_logIndiv.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajcpm_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpajweib_log.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpaj_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+
+# Nouvel ajout pour la généralisation
+jointgen.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajgenparam.o: aaOptim.o aaOptimres.o Aparameters.o
+funcpajgen_tps.o: aaOptim.o aaOptimres.o Aparameters.o
+
+
 funcpaGsplines.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpaGcpm.o: aaOptim.o aaOptimres.o Aparameters.o
 funcpaGweib.o: aaOptim.o aaOptimres.o Aparameters.o

@@ -104,7 +104,7 @@
 !*****************************************************************
     double precision,save :: K_G0, K_D0, lambda,y0
     double precision,dimension(:,:),allocatable:: nodes,weights
-      integer,dimension(2),save::genz
+      integer,dimension(2),save::genz,famillerisque
       integer,save::npp,ni_cur, which_random
         double precision,save::vals
         integer ,save:: all, nnodes_all

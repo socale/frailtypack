@@ -1,3 +1,7 @@
+Changes in Version 3.4.0 may 2021
+o New generalized shared and joint frailty models for recurrent and terminal events. 
+  (Proportional and additive hazard, proportional odds and probit models) 
+
 Changes in Version 3.3.2 october 2020
 o Fixed an important error in the new marginal two-part joint model.
 o Fixed an issue with the Cholesky matrix for the Monte-Carlo integration.

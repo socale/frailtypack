@@ -524,6 +524,411 @@
  
        return
        end subroutine marq98j
+	   
+	   
+! Ajout par Jocelyn (pour generalisation)
+    subroutine marq98j_modadd(k0,b,m,ni,v,rl,ier,istop,effet,ca,cb,dd,fctnames)
+!
+!  fu = matrice des derivees secondes et premieres
+!
+!  istop: raison de l'arret
+!  1: critere d'arret satisfait (prm=ca, vraisblce=cb, derivee=dd)
+!  2: nb max d'iterations atteints
+!  4: Erreur
+    !use residusM,only:indg
+    use parameters
+    !use comon,only: c,cdc,Hspl_hess,indic_eta,ndate,ndatedc,nst,nsujet,&
+    !nt0,nt0dc,nt1,nt1dc,nva1,nva2,PEN_deri,t0,t0dc,t1,t1dc
+    use comon,only:nva,model,I_hess,H_hess,hess,indic_ALPHA,&
+    typeof,vvv,ni_cur!,indic_tronc
+
+!add additive
+    !use additiv,only:correl
+
+    IMPLICIT NONE
+!   variables globales
+    integer,intent(in) :: m,effet
+    integer,intent(inout)::ni,ier,istop
+    double precision,dimension(m*(m+3)/2),intent(out)::v
+    double precision,intent(out)::rl
+    double precision,dimension(m),intent(inout)::b
+    double precision,intent(out)::ca,cb,dd
+    double precision,dimension(2)::k0
+    double precision,dimension(2)::zero
+!   variables locales
+    integer::nql,ii,nfmax,idpos,ncount,id,jd,m1,j,i,ij,k 
+    character(len=100)::bar ! Pour la progressBar
+    double precision,dimension(m*(m+3)/2)::fu,v1,vnonpen
+    double precision,dimension(m)::delta,b1,bh
+    double precision::da,dm,ga,tr
+    double precision::GHG,step,eps,vw,fi,maxt, &
+    z,rl1,th,ep
+    external::fctnames
+    double precision::fctnames
+!---------- ajout
+    integer::kkk
+    
+    zero=0.d0
+    id=0
+    jd=0
+    z=0.d0
+    th=1.d-5
+    eps=1.d-7!1.d-6
+    nfmax=m*(m+1)/2
+    ca=epsa+1.d0
+    cb=epsb+1.d0
+    rl1=-1.d+10
+    ni=0
+	ni_cur=ni
+    istop=0
+    da=0.01d0
+    dm=5.d0
+    nql=1
+    m1=m*(m+1)/2
+    ep=1.d-20
+    
+    
+    Main:Do       
+        
+        call derivaJ(b,m,v,rl,k0,fctnames)         
+        
+    rl1=rl
+    
+        !print *,"rl1 = ", rl1
+        if(rl.eq.-1.D9) then
+            istop=4
+            goto 110
+        endif
+        !write(*,*)'iteration***',ni,'vrais',rl
+        
+        !Myriam ! Construction de la progressBar
+        if (((effet == 2).and.(model == 1)).or.(model == 7)) then 
+            if(maxiter < 100) then
+                bar(1:3) = "0%|"    
+                do k=1, maxiter
+                    bar(3+k:3+k)="-"
+                enddo
+                bar(maxiter+5:maxiter+5) = "|"
+                do k=maxiter+6, 100
+                    bar(k:k+1)=" "
+                enddo
+                
+                do k=1, ni
+                    bar(3+k:3+k)="*"
+                enddo
+                call intpr(bar, -1, ni, 0)
+                call intpr('Iteration:', -1, ni, 1)
+            else
+                bar(1:3) = "0%|"    
+                do k=1, 70
+                    bar(3+k:3+k)="-"
+                enddo
+                bar(73:100) = "|                          "
+                
+                if (modulo(ni,3) == 0) then 
+                    do k=1, ni/3
+                        bar(3+k:3+k)="*"
+                    enddo
+                    if (ni < 300) then 
+                        call intpr(bar, -1, ni, 0)
+                        call intpr('Iteration:', -1, ni, 1) 
+                    else 
+                        call intpr('Iteration:', -1, ni, 1)
+                    endif
+                endif
+            endif            
+        endif
+    
+    ! Fin de la progressBar
+    
+    !write(*,*) 'iteration ***', ni, 'vecteur b ', b
+    !write(*,*) 'm', m, 'iun', iun, 'z', z, 'k0', k0
+
+    dd = 0.d0
+    fu = 0.d0
+
+    do i=1,m
+        do j=i,m
+            ij=(j-1)*j/2+i
+            fu(ij)=v(ij)
+        end do
+    end do
+
+        call dsinvj(fu,m,ep,ier)
+
+    if (ier.eq.-1) then ! hessienne non inversible
+        !print*,"here"
+        dd=epsd+1.d0
+    else
+        GHG = 0.d0
+        do i=1,m
+            do j=1,m
+                if(j.ge.i) then
+                    ij=(j-1)*j/2+i
+                else
+                    ij=(i-1)*i/2+j
+                end if
+                GHG = GHG + v(m1+i)*fu(ij)*V(m1+j)
+            end do
+        end do
+        dd=GHG/dble(m)
+    end if
+
+!write(*,*)'epsa',ca,'epsb',cb,'epsd',dd
+!   write(*,*)'aaOptim: b(knots)',b(1:12)
+! write(*,*) 'aaOptim: m',m, nva, nva1, nva2
+  !! write(*,*)'aaOptim: b(random):', b((m-nva-3):(m-nva))
+   !!write(*,*)'aaOptim: b(covar)',b((m-nva+1):m)
+
+!     print*,ca,cb,dd
+!     print*,b
+!    print*,"-------------------------"
+!     if (ni.eq.50) then
+!         print*,"====================> FAUSSE CONVERGENCE"
+!         ca=1.d-5
+!         cb=1.d-5
+!         dd=1.d-5
+!     endif
+
+    if(ca.lt.epsa.and.cb.lt.epsb.and.dd.lt.epsd) exit main
+
+        tr=0.d0
+        do i=1,m
+            ii=i*(i+1)/2
+            tr=tr+dabs(v(ii))
+        end do
+        tr=tr/dble(m)
+
+        ncount=0
+        ga=0.01d0
+
+ 400    do i=1,nfmax+m
+           fu(i)=v(i)
+        end do
+        
+        do i=1,m
+            ii=i*(i+1)/2
+            if (v(ii).ne.0) then
+                fu(ii)=v(ii)+da*((1.d0-ga)*dabs(v(ii))+ga*tr)
+            else
+                fu(ii)=da*ga*tr
+            endif
+        end do
+        
+        call dcholej(fu,m,nql,idpos)
+
+        if (idpos.ne.0) then
+            ncount=ncount+1
+            if (ncount.le.3.or.ga.ge.1.d0) then
+                da=da*dm
+            else
+                ga=ga*dm
+                if (ga.gt.1.d0) ga=1.d0
+            endif
+
+            goto 400
+
+        else
+        
+            do i=1,m
+            
+                delta(i)=fu(nfmax+i)
+                b1(i)=b(i)+delta(i)
+            end do
+            
+            rl=fctnames(b1,m,id,z,jd,z,k0)
+            
+            if(rl.eq.-1.D9) then
+                istop=4
+                goto 110
+            end if
+            if (rl1.lt.rl) then
+                if(da.lt.eps) then
+                    da=eps
+                else
+                    da=da/(dm+2.d0)
+                endif
+                goto 800
+            endif
+        endif
+!      write(6,*) 'loglikelihood not improved '
+        call dmaxt(maxt,delta,m)
+                
+        if(maxt.eq.0.D0) then
+            vw=th
+        else
+            !call dmaxt(maxt,delta,m)
+            vw=th/maxt
+
+        endif
+        step=dlog(1.5d0)
+        call searpasj(vw,step,b,bh,m,delta,fi,k0,fctnames)
+        
+        rl=-fi
+        if(rl.eq.-1.D9) then
+            istop=4
+            goto 110
+        end if
+        do i=1,m
+            delta(i)=vw*delta(i)
+        end do
+        da=(dm-3.d0)*da
+
+ 800     cb=dabs(rl1-rl)
+
+        ca=0.d0
+        do i=1,m
+            ca=ca+delta(i)*delta(i)
+        end do
+        !write(6,*) 'ca =',ca,' cb =',cb,' dd =',dd
+
+        !print*,"rl1=",rl1
+        !print*,"ca =",ca," cb =",cb," dd =",dd
+        do i=1,m
+            b(i)=b(i)+delta(i)
+        end do
+        
+        ni=ni+1
+		ni_cur=ni
+        if (ni.ge.maxiter) then
+            istop=2
+!            write(6,*) 'maximum number of iteration reached'
+            goto 110
+        end if
+    End do Main
+    
+    v=0.D0
+
+    v(1:m*(m+1)/2)=fu(1:m*(m+1)/2)
+
+    istop=1
+
+!================ pour les bandes de confiance
+!==== on ne retient que les para des splines
+        
+    call derivaJ(b,m,v,rl,k0,fctnames)
+     !print*,"dans aaOptim, appel de derivaJ  with GAP vec funcpa... "
+    if(rl.eq.-1.D9) then
+        istop=4
+        goto 110
+    end if
+
+    do i=1,(m*(m+3)/2)
+        v1(i)=0.d0
+    end do
+!---- Choix du model
+
+    select case(model)
+        case(1,7)
+            m1=m-nva-effet-indic_alpha !joint
+        case(6)  !Uni 
+            m1 = m - nva - effet*2 - indic_alpha*2
+        !cas supplementaire rajout? pour joint general
+        case(5)
+            m1=m-nva-effet-indic_alpha !joint general (du moment que indic_eta=indic_alpha=1)
+        case(2)
+            m1=m-nva-effet*2 !additive
+        case(3)
+            m1=m-nva-effet !nested
+        case(4)
+            m1=m-nva-effet !shared
+    end select
+
+    kkk=m1*(m1+1)/2
+
+    do i=1,m1
+        kkk=kkk+1
+        do j=i,m1
+            k = (((j-1)*j)/2) +i
+            v1(k)=v(k)/(4.d0*b(i)*b(j))
+        end do
+        v1(kkk)=v1(kkk)+(v(kkk)/(4.d0*b(i)*b(i)*b(i)))
+    end do
+    
+    ep=10.d-10
+    call dsinvJ(v1,m1,ep,ier)
+
+    if (ier.eq.-1) then
+!         write(*,*)   'echec inversion matrice information'
+        istop=3
+    endif
+
+
+
+    do i=1,m1
+        do j=i,m1
+            hess(i,j)=v1((j-1)*j/2+i)
+        end do
+    end do
+
+    do i=2,m1
+        do j=1,i-1
+            hess(i,j)=hess(j,i)
+        end do
+    end do
+
+    ep=10.d-10
+    call dsinvJ(v,m,ep,ier)
+
+    if (ier.eq.-1) then
+        istop=3
+
+!AD:
+!        call dsinvj(v1,m1,ep,ier)
+!        if (ier.eq.-1) then
+!             write(*,*)'echec inversion matrice information
+!     & prms fixes'
+!            istop=31
+!        else
+!            DO k=1,m1*(m1+1)/2
+!                v(k)=v1(k)
+!            END DO
+!        end if
+! fin ajout amadou
+    endif
+    
+    ep=10.d-10
+    call derivaJ(b,m,vnonpen,rl,zero,fctnames)
+
+    do i=1,m
+        do j=i,m
+            I_hess(i,j)=vnonpen((j-1)*j/2+i)
+        end do
+    end do
+
+    do i=2,m
+        do j=1,i-1
+            I_hess(i,j)=I_hess(j,i)
+        end do
+    end do
+
+!========================================================
+
+!   H_hess est moins la hessienne inverse sur la vraisemblance penalisee
+    do i=1,m
+        do j=i,m
+            H_hess(i,j)=v((j-1)*j/2+i)
+        end do
+    end do
+!       write(*,*) 'H_hess(16,16) fin marq',H_hess(16,16),m,((j-1)*j/2+i)
+
+    do i=2,m
+        do j=1,i-1
+            H_hess(i,j)=H_hess(j,i)
+        end do
+    end do
+
+ !AD:
+    if (typeof .ne. 0) then
+        do i=1,m*(m+1)/2
+            vvv(i)=v(i)
+        end do
+    end if
+
+ 110   continue
+ 
+       return
+       end subroutine marq98j_modadd
 
 !------------------------------------------------------------
 !                          DERIVA

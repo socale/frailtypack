@@ -5,7 +5,8 @@
 \alias{colorectal}
 \title{Follow-up of metastatic colorectal cancer patients: times of new lesions
 appearance and death}
-\format{This data frame contains the following columns: \describe{
+\format{
+This data frame contains the following columns: \describe{
 \item{id}{identification of each subject. Repeated for each recurrence}
 \item{time0}{start of interval (0 or previous recurrence time)}
 \item{time1}{recurrence or censoring time} \item{new.lesions}{Appearance of
@@ -16,7 +17,8 @@ years, 2: 50-69 years, 3: >69 years} \item{who.PS}{WHO performance status at
 baseline: 1: status 0, 2: status 1, 3: status 2}
 \item{prev.resection}{Previous resection of the primate tumor?  0: No, 1:
 Yes} \item{state}{death indicator. 0: alive, 1: dead}
-\item{gap.time}{interocurrence time or censoring time} }}
+\item{gap.time}{interocurrence time or censoring time} }
+}
 \usage{
 data(colorectal)
 }
