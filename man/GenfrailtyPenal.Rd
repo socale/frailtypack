@@ -12,7 +12,7 @@ cross.validation, jointGeneral, nb.int, initialize, init.Ksi, Ksi, init.Eta)
 }
 \arguments{
 \item{formula}{A formula object, with the response on the left of a
-'\out{&#126;}' operator, and the terms on the right. The response must be a
+\eqn{\sim} operator, and the terms on the right. The response must be a
 survival object as returned by the '\code{Surv}' function 
 like in survival package. Interactions are possible using ' * ' or ' : '.}
 
