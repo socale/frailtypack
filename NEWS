@@ -1,6 +1,7 @@
 Changes in Version 3.4.0 may 2021
 o New generalized shared and joint frailty models for recurrent and terminal events. 
   (Proportional and additive hazard, proportional odds and probit models) 
+o In the jointSurroPenal() function, removing the example based on the adjuvant chemotherapy and resectable gastric cancer meta-analysesovarian, due to the high computing time it needs.
 
 Changes in Version 3.3.2 october 2020
 o Fixed an important error in the new marginal two-part joint model.

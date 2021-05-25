@@ -4,13 +4,15 @@
 \name{survDat}
 \alias{survDat}
 \title{Survival dataset (TPJM)}
-\format{This data frame contains the following columns: 
+\format{
+This data frame contains the following columns: 
 \describe{
 \item{id}{The identification number of a patient}
 \item{deathTimes}{The event times (death or censoring)}
 \item{d}{Censoring indicator}
 \item{trt}{Treatment covariate}
-}}
+}
+}
 \usage{
 data(survDat)
 }

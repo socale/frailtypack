@@ -4,16 +4,39 @@
 \alias{plotTreatPredJointSurro}
 \title{Plot of the prediction of the treatment effect on the true endpoint and the STE}
 \usage{
-plotTreatPredJointSurro(object, from = -3, to = 2, type = "Coef",
-  var.used = "error.estim", alpha. = 0.05, n = 1000, lty = 2, d = 3,
-  colCI = "blue", xlab = "beta.S", ylab = "beta.T.predict",
-  pred.int.use = "up", main = NULL, add.accept.area.betaS = TRUE,
-  ybottom = -0.05, ytop = 0.05, density = 20, angle = 45,
-  legend.show = TRUE, leg.x = NULL, leg.y = 2,
+plotTreatPredJointSurro(
+  object,
+  from = -3,
+  to = 2,
+  type = "Coef",
+  var.used = "error.estim",
+  alpha. = 0.05,
+  n = 1000,
+  lty = 2,
+  d = 3,
+  colCI = "blue",
+  xlab = "beta.S",
+  ylab = "beta.T.predict",
+  pred.int.use = "up",
+  main = NULL,
+  add.accept.area.betaS = TRUE,
+  ybottom = -0.05,
+  ytop = 0.05,
+  density = 20,
+  angle = 45,
+  legend.show = TRUE,
+  leg.x = NULL,
+  leg.y = 2,
   legend = c("Prediction model", "95\% prediction Interval",
-  "Beta.S for nonzero beta.T", "STE"), leg.text.col = "black",
-  leg.lty = c(1, 2, 4, NA), leg.pch = c(NA, NA, 7, 1), leg.bg = "white",
-  leg.bty = "n", leg.cex = 0.85, ...)
+    "Beta.S for nonzero beta.T", "STE"),
+  leg.text.col = "black",
+  leg.lty = c(1, 2, 4, NA),
+  leg.pch = c(NA, NA, 7, 1),
+  leg.bg = "white",
+  leg.bty = "n",
+  leg.cex = 0.85,
+  ...
+)
 }
 \arguments{
 \item{object}{An object inheriting from \code{jointSurroPenal} class
