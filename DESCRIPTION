@@ -9,7 +9,7 @@ Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Agnieszka Krol, Casimir L. Sofeu, Julien Dumerc, Denis Rustand, 
 		Jocelyn Chauvet
 Maintainer: Virginie Rondeau <virginie.rondeau@u-bordeaux.fr>
-Depends: R (>= 2.10.0), survival, boot, MASS, survC1, doBy
+Depends: R (>= 2.10.0), survival, boot, MASS, survC1, doBy, rmarkdown
 Imports: statmod, nlme, shiny, rootSolve
 LazyLoad: no
 Description: The following several classes of frailty models using a penalized likelihood estimation on the hazard function but also a parametric estimation can be fit using this R package:
@@ -32,7 +32,7 @@ License: GPL (>= 2.0)
 URL:
         https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
         https://frailtypack-pkg.shinyapps.io/shiny_frailtypack
-Suggests: knitr, rmarkdown, testthat
+Suggests: knitr, testthat
 VignetteBuilder: knitr
 Repository: CRAN
 Date/Publication: 2020-10-07 13:22:03 UTC
