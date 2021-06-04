@@ -1,7 +1,7 @@
 Package: frailtypack
 Version: 3.4.0
-Date: 2021-05-25
-Title: General Frailty Models (Shared, Joint and Nested Frailty Models) with prediction; 
+Date: 2021-06-04
+Title: General Frailty Models (Shared, Joint and Nested Frailty Models) with Prediction; 
        Evaluation of Failure-Time Surrogate Endpoints; 
 	   Shared and Joint Frailty Generalized Survival Models
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
@@ -31,7 +31,7 @@ Description: The following several classes of frailty models using a penalized l
 License: GPL (>= 2.0)
 URL:
         https://virginie1rondeau.wixsite.com/virginierondeau/software-frailtypack
-        https://frailtypack-pkg.shinyapps.io/shiny_frailtypack
+        https://frailtypack-pkg.shinyapps.io/shiny_frailtypack/
 Suggests: knitr, testthat
 VignetteBuilder: knitr
 Repository: CRAN
