@@ -49,7 +49,7 @@ Agnieszka Krol, Audrey Mauguen, Yassin Mazroui, Alexandre Laurent, Stefan Michie
 Casimir Ledoux Sofeu and Virginie Rondeau (2020). [How to use frailtypack for validating failure-time surrogate endpoints using individual patient data from meta-analyses of randomized controlled trials.] (https://doi.org/10.1371/journal.pone.0228098) *PLOS ONE*, **15**, 1-25.
 
 #### Shiny
-A shiny application of frailtypack is available, allowing modelisation and prediction of several models presents in frailtypack, at https://frailtypack-pkg.shinyapps.io/shiny_frailtypack.
+A shiny application of frailtypack is available, allowing modelisation and prediction of several models presents in frailtypack, at https://frailtypack-pkg.shinyapps.io/shiny_frailtypack/
 This application can be run in a local mode in R thanks to the function runShiny().
 
 ##### Note 

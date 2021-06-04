@@ -1201,7 +1201,7 @@
       stop("Available options for argument 'family' are 'PH', 'AH', PO' and 'probit'")
     }
 
-    # JOCELYN : pas de paramètres "initialize", "init.Ksi", "Ksi", "init.Eta"
+    # JOCELYN : pas de parametres "initialize", "init.Ksi", "Ksi", "init.Eta"
     if (!missing(initialize) | !missing(init.Ksi) | !missing(Ksi) | !missing(init.Eta)){
       stop ("Options 'initialize', 'init.Ksi', 'Ksi' and 'init.Eta' are only available for joint nested frailty models, which are not implemented in the generalized framework.")
     }
@@ -1345,7 +1345,7 @@
       if (missing(kappa))stop("smoothing parameter (kappa) is required")
       #AD:
 
-      # JOCELYN : pas de validation croisée pour les modèles de survie généralisés
+      # JOCELYN : pas de validation croisee pour les modeles de survie generalises
       if (cross.validation){
         stop("The cross validation is not implemented for Generalized (Joint) Frailty Models")
       }
@@ -1531,7 +1531,7 @@
     if (is.null(vartimedep)) timedep <- 0
     else timedep <- 1
 
-    # JOCELYN : Dans quels cas peut-on ajuster un modèle avec certains effets dépendant du temps ?
+    # JOCELYN : Dans quels cas peut-on ajuster un modele avec certains effets dependant du temps ?
     if( (missing(formula.terminalEvent)) & (hazard=="parametric") & (timedep==1)){
       if (!(family=="PH")){
         stop("For AH, PO and probit models, considering time-varying effects is not allowed when hazard='parametric'")
