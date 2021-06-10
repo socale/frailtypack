@@ -1,9 +1,7 @@
 Package: frailtypack
 Version: 3.4.0
 Date: 2021-06-04
-Title: General Frailty Models (Shared, Joint and Nested Frailty Models) with Prediction; 
-       Evaluation of Failure-Time Surrogate Endpoints; 
-	   Shared and Joint Frailty Generalized Survival Models
+Title: Shared, Joint (Generalized) Frailty Models; Surrogate Endpoints
 Author: Virginie Rondeau, Juan R. Gonzalez, Yassin Mazroui, Audrey
         Mauguen, Amadou Diakite, Alexandre Laurent, Myriam Lopez, 
         Agnieszka Krol, Casimir L. Sofeu, Julien Dumerc, Denis Rustand, 
