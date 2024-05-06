@@ -31,7 +31,7 @@ You can install frailtypack from github with:
 
 ``` r
 # install.packages("frailtypack")
-devtools::install_github("socale/frailtypack"", ref = "master"")
+devtools::install_github("socale/frailtypack", ref = "master")
 ```
 
 Example
